@@ -5,12 +5,41 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Save Tag Pet | Identificação inteligente</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f4f7f6;color:#172b2b}
-header{background:#102a43;color:#fff;padding:18px;text-align:center}
-.logo{font-size:25px;font-weight:800}.logo span{color:#35d98a}
-.sub{font-size:10px;letter-spacing:2px;margin-top:3px;opacity:.8}
-main{max-width:700px;margin:auto;padding:18px}
-.card{background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 25px #0001;margin-bottom:16px}
-.photo{width:100%;height:310px;object-fit:cover}
-.content{padding:
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f7f6;color:#172b2b}header,footer{background:#102a43;color:#fff;text-align:center;padding:22px}.logo{font-size:27px;font-weight:800}.logo span,footer span{color:#35d98a}.sub{font-size:11px;letter-spacing:2px;margin-top:4px}main{max-width:720px;margin:auto;padding:18px}.card,section,nav a{background:#fff;border-radius:20px;box-shadow:0 4px 18px #0001}.card{overflow:hidden;margin-bottom:16px}.photo{width:100%;height:300px;object-fit:cover}.content,section{padding:20px}h1{font-size:34px;color:#102a43;margin:0 0 4px}.muted{color:#718080;margin:0 0 15px}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}.tag{background:#e5f8ef;color:#087a50;padding:7px 11px;border-radius:20px;font-size:12px;font-weight:bold}.alert{background:#e7f8f1;border:1px solid #bcebd6;border-radius:16px;padding:16px}.alert h2{font-size:17px;color:#087a50;margin:0 0 7px}.alert p{font-size:13px;color:#526565}.buttons{display:flex;gap:9px}.btn{flex:1;text-align:center;text-decoration:none;color:white;padding:12px;border-radius:10px;font-weight:bold}.whats{background:#20b968}.call{background:#102a43}nav{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px}nav a{text-align:center;text-decoration:none;color:#102a43;padding:13px 3px;font-size:12px;font-weight:bold}nav b{display:block;font-size:20px;margin-bottom:4px}.title{font-size:20px;color:#102a43;margin:0 0 15px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.info{background:#f5f8f7;padding:12px;border-radius:12px}.info small{display:block;color:#829090;font-size:10px;text-transform:uppercase;margin-bottom:3px}.info strong{color:#102a43}.item{padding:12px 0;border-bottom:1px solid #edf1f0;font-size:14px}.item:last-child{border:0}.ok{float:right;color:#0b965f;font-weight:bold}.lost{background:#fff1f1;border:1px solid #ffcaca}.lost h2{color:#c83339}footer p{font-size:13px;opacity:.8} @media(min-width:700px){.card{display:grid;grid-template-columns:1fr 1fr}.photo{height:100%;min-height:470px}}
+</style>
+</head>
+<body>
+<header><div class="logo">Save Tag <span>Pet</span></div><div class="sub">IDENTIFICAÇÃO INTELIGENTE</div></header>
+<main>
+<div class="card">
+<img class="photo" src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=85" alt="Pet">
+<div class="content">
+<h1>Thor</h1><p class="muted">Labrador Retriever • Macho</p>
+<div class="tags"><span class="tag">✓ TAG ATIVA</span><span class="tag">✓ CASTRADO</span><span class="tag">✓ DÓCIL</span></div>
+<div class="alert"><h2>🐾 ENCONTROU MEU PET?</h2><p>Se você encontrou o Thor, entre em contato com o tutor.</p><div class="buttons"><a class="btn whats" href="https://wa.me/5513999999999">WhatsApp</a><a class="btn call" href="tel:+5513999999999">Ligar</a></div></div>
+</div></div>
+<nav><a href="#pet"><b>🐶</b>Pet</a><a href="#vacinas"><b>💉</b>Vacinas</a><a href="#saude"><b>❤️</b>Saúde</a><a href="#tutor"><b>👤</b>Tutor</a></nav>
+<section id="pet"><h2 class="title">🐾 Informações do Pet</h2><div class="grid">
+<div class="info"><small>Nome</small><strong>Thor</strong></div><div class="info"><small>Raça</small><strong>Labrador Retriever</strong></div>
+<div class="info"><small>Nascimento</small><strong>15/03/2022</strong></div><div class="info"><small>Sexo</small><strong>Macho</strong></div>
+<div class="info"><small>Cor</small><strong>Dourado</strong></div><div class="info"><small>Peso</small><strong>32 kg</strong></div>
+</div></section>
+<section id="vacinas"><h2 class="title">💉 Vacinas</h2>
+<div class="item"><strong>V10</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 10/02/2026</small></div>
+<div class="item"><strong>Antirrábica</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 15/03/2026</small></div>
+<div class="item"><strong>Gripe Canina</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 20/04/2026</small></div>
+<div class="item"><strong>Giárdia</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 20/04/2026</small></div>
+</section>
+<section id="saude"><h2 class="title">❤️ Saúde</h2>
+<div class="item"><strong>Alergias</strong><br>Nenhuma alergia cadastrada.</div>
+<div class="item"><strong>Condições de saúde</strong><br>Nenhuma condição informada.</div>
+<div class="item"><strong>Medicamentos</strong><br>Nenhum medicamento contínuo.</div>
+<div class="item"><strong>Observações</strong><br>Pet dócil e acostumado com crianças.</div>
+</section>
+<section id="tutor"><h2 class="title">👤 Tutor</h2><div class="grid"><div class="info"><small>Nome</small><strong>Emerson</strong></div><div class="info"><small>Cidade</small><strong>Praia Grande - SP</strong></div></div></section>
+<section class="lost"><h2>🚨 Meu pet está perdido</h2><p>Quando ativado pelo tutor, este alerta aparecerá com destaque para ajudar na localização.</p></section>
+<section><p style="font-size:12px;color:#687878">🔒 <strong>Privacidade:</strong> o tutor poderá escolher quais informações ficam visíveis para quem encontrar o pet.</p></section>
+</main>
+<footer><div class="logo">Save Tag <span>Pet</span></div><p>Identifique. Encontre. Proteja.</p><p>Um toque pode trazer seu pet de volta. 💚</p></footer>
+</body>
+</html>
