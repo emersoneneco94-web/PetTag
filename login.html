@@ -8,7 +8,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -19,62 +21,71 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
 }
 
-.card{
+.container{
   width:100%;
-  max-width:420px;
-  background:white;
-  border-radius:22px;
-  padding:32px;
-  box-shadow:0 10px 35px rgba(0,0,0,.10);
+  max-width:430px;
+  padding:20px;
 }
 
 .logo{
   text-align:center;
-  font-size:28px;
+  font-size:32px;
   font-weight:800;
-  margin-bottom:5px;
+  color:#ffffff;
+  background:#102b45;
+  padding:28px 10px;
+  border-radius:20px 20px 0 0;
 }
 
 .logo span{
-  color:#35a96b;
+  color:#54d36b;
 }
 
 .subtitle{
   text-align:center;
-  color:#687878;
-  margin-bottom:28px;
+  color:#ffffff;
+  background:#102b45;
+  padding:0 10px 25px;
+  font-weight:bold;
+  letter-spacing:1px;
 }
 
-h1{
-  font-size:22px;
-  margin-bottom:20px;
+.card{
+  background:white;
+  padding:28px;
+  border-radius:0 0 20px 20px;
+  box-shadow:0 10px 35px rgba(0,0,0,.10);
+}
+
+h2{
+  margin-top:0;
+  text-align:center;
 }
 
 label{
   display:block;
-  font-size:14px;
+  margin-top:15px;
+  margin-bottom:6px;
   font-weight:bold;
-  margin:14px 0 6px;
 }
 
 input{
   width:100%;
   padding:14px;
-  border:1px solid #d7dfdc;
+  border:1px solid #d5dddd;
   border-radius:10px;
-  font-size:15px;
+  font-size:16px;
 }
 
 button{
   width:100%;
-  border:0;
   padding:14px;
   margin-top:20px;
+  border:0;
   border-radius:10px;
-  background:#35a96b;
+  background:#54d36b;
   color:white;
   font-size:16px;
   font-weight:bold;
@@ -86,21 +97,35 @@ button:hover{
 }
 
 .secondary{
-  background:#172b2b;
-}
-
-.message{
-  margin-top:15px;
-  text-align:center;
-  font-size:14px;
+  background:#102b45;
 }
 
 .link{
   text-align:center;
-  margin-top:20px;
-  color:#35a96b;
+  margin-top:18px;
+  color:#102b45;
   cursor:pointer;
   font-weight:bold;
+}
+
+.message{
+  margin-top:15px;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  display:none;
+}
+
+.success{
+  display:block;
+  background:#e4f8e8;
+  color:#17652a;
+}
+
+.error{
+  display:block;
+  background:#fde8e8;
+  color:#a32222;
 }
 
 .hidden{
@@ -111,86 +136,100 @@ button:hover{
   display:block;
   text-align:center;
   margin-top:20px;
-  color:#687878;
+  color:#102b45;
   text-decoration:none;
-  font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="container">
 
   <div class="logo">
     Save Tag <span>Pet</span>
   </div>
 
   <div class="subtitle">
-    Identidade digital do seu pet
+    IDENTIFICAÇÃO INTELIGENTE
   </div>
 
-  <!-- LOGIN -->
-  <div id="loginBox">
+  <div class="card">
 
-    <h1>Entrar na minha conta</h1>
+    <!-- LOGIN -->
+    <div id="loginBox">
 
-    <label>E-mail</label>
-    <input id="loginEmail" type="email" placeholder="seu@email.com">
+      <h2>Entrar na sua conta</h2>
 
-    <label>Senha</label>
-    <input id="loginPassword" type="password" placeholder="Sua senha">
+      <label>E-mail</label>
+      <input id="loginEmail" type="email" placeholder="seu@email.com">
 
-    <button onclick="entrar()">
-      Entrar
-    </button>
+      <label>Senha</label>
+      <input id="loginSenha" type="password" placeholder="Sua senha">
 
-    <div class="message" id="loginMessage"></div>
+      <button onclick="entrar()">Entrar</button>
 
-    <div class="link" onclick="mostrarCadastro()">
-      Ainda não tenho uma conta
+      <div id="loginMessage" class="message"></div>
+
+      <div class="link" onclick="mostrarCadastro()">
+        Ainda não tenho uma conta
+      </div>
+
     </div>
 
-  </div>
 
+    <!-- CADASTRO -->
+    <div id="cadastroBox" class="hidden">
 
-  <!-- CADASTRO -->
-  <div id="cadastroBox" class="hidden">
+      <h2>Criar minha conta</h2>
 
-    <h1>Criar minha conta</h1>
+      <label>Nome</label>
+      <input id="cadNome" type="text" placeholder="Seu nome">
 
-    <label>Nome</label>
-    <input id="nome" type="text" placeholder="Seu nome">
+      <label>E-mail</label>
+      <input id="cadEmail" type="email" placeholder="seu@email.com">
 
-    <label>E-mail</label>
-    <input id="cadEmail" type="email" placeholder="seu@email.com">
+      <label>Telefone</label>
+      <input id="cadTelefone" type="tel" placeholder="(13) 99999-9999">
 
-    <label>Senha</label>
-    <input id="cadPassword" type="password" placeholder="Crie uma senha">
+      <label>Cidade</label>
+      <input id="cadCidade" type="text" placeholder="Praia Grande">
 
-    <label>Telefone / WhatsApp</label>
-    <input id="telefone" type="tel" placeholder="(13) 99999-9999">
+      <label>Senha</label>
+      <input id="cadSenha" type="password" placeholder="Mínimo 6 caracteres">
 
-    <button onclick="cadastrar()">
-      Criar minha conta
-    </button>
+      <button onclick="cadastrar()">Criar conta</button>
 
-    <div class="message" id="cadMessage"></div>
+      <div id="cadMessage" class="message"></div>
 
-    <div class="link" onclick="mostrarLogin()">
-      Já tenho uma conta
+      <div class="link" onclick="mostrarLogin()">
+        Já tenho uma conta
+      </div>
+
     </div>
 
-  </div>
+    <a class="voltar" href="index.html">
+      ← Voltar para o site
+    </a>
 
-  <a class="voltar" href="index.html">
-    ← Voltar para o site
-  </a>
+  </div>
 
 </div>
 
 
 <script>
+
+/* =====================================================
+   SUPABASE
+   ===================================================== */
+
+/*
+   IMPORTANTE:
+   NÃO invente esses dois valores.
+
+   Mantenha aqui os mesmos valores que você já colocou
+   anteriormente no seu login.html:
+*/
 
 const SUPABASE_URL = "https://mqiwoubhivutavpnpeax.supabase.co";
 const SUPABASE_KEY = "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
@@ -201,116 +240,210 @@ const supabase = window.supabase.createClient(
 );
 
 
+/* =====================================================
+   ALTERNAR LOGIN / CADASTRO
+   ===================================================== */
+
 function mostrarCadastro(){
 
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("cadastroBox").classList.remove("hidden");
+  document.getElementById("loginBox")
+    .classList.add("hidden");
+
+  document.getElementById("cadastroBox")
+    .classList.remove("hidden");
 
 }
 
 
 function mostrarLogin(){
 
-  document.getElementById("cadastroBox").classList.add("hidden");
-  document.getElementById("loginBox").classList.remove("hidden");
+  document.getElementById("cadastroBox")
+    .classList.add("hidden");
+
+  document.getElementById("loginBox")
+    .classList.remove("hidden");
 
 }
 
 
-async function cadastrar(){
-
-  const nome = document.getElementById("nome").value.trim();
-  const email = document.getElementById("cadEmail").value.trim();
-  const password = document.getElementById("cadPassword").value;
-  const telefone = document.getElementById("telefone").value.trim();
-
-  const mensagem = document.getElementById("cadMessage");
-
-  if(!nome || !email || !password){
-
-    mensagem.textContent =
-      "Preencha nome, e-mail e senha.";
-
-    return;
-  }
-
-  mensagem.textContent = "Criando sua conta...";
-
-  const { data, error } = await supabase.auth.signUp({
-
-    email: email,
-    password: password,
-
-    options:{
-      data:{
-        nome: nome,
-        telefone: telefone
-      }
-    }
-
-  });
-
-  if(error){
-
-    mensagem.textContent =
-      "Erro: " + error.message;
-
-    return;
-  }
-
-  mensagem.textContent =
-    "Conta criada! Verifique seu e-mail para confirmar o cadastro.";
-
-}
-
+/* =====================================================
+   LOGIN
+   ===================================================== */
 
 async function entrar(){
 
   const email =
     document.getElementById("loginEmail").value.trim();
 
-  const password =
-    document.getElementById("loginPassword").value;
+  const senha =
+    document.getElementById("loginSenha").value;
 
-  const mensagem =
+  const msg =
     document.getElementById("loginMessage");
 
-  if(!email || !password){
+  msg.className = "message";
+  msg.textContent = "";
 
-    mensagem.textContent =
-      "Digite seu e-mail e sua senha.";
+  if(!email || !senha){
 
+    msg.className = "message error";
+    msg.textContent = "Informe seu e-mail e sua senha.";
     return;
-  }
 
-  mensagem.textContent = "Entrando...";
+  }
 
   const { data, error } =
     await supabase.auth.signInWithPassword({
-
       email: email,
-      password: password
-
+      password: senha
     });
 
   if(error){
 
-    mensagem.textContent =
+    msg.className = "message error";
+    msg.textContent =
       "E-mail ou senha incorretos.";
-
     return;
+
   }
 
-  mensagem.textContent =
-    "Login realizado!";
-
-  setTimeout(function(){
-
-    window.location.href = "painel.html";
-
-  },800);
+  msg.className = "message success";
+  msg.textContent =
+    "Login realizado com sucesso!";
 
 }
+
+
+/* =====================================================
+   CADASTRO
+   ===================================================== */
+
+async function cadastrar(){
+
+  const nome =
+    document.getElementById("cadNome").value.trim();
+
+  const email =
+    document.getElementById("cadEmail").value.trim();
+
+  const telefone =
+    document.getElementById("cadTelefone").value.trim();
+
+  const cidade =
+    document.getElementById("cadCidade").value.trim();
+
+  const senha =
+    document.getElementById("cadSenha").value;
+
+  const msg =
+    document.getElementById("cadMessage");
+
+  msg.className = "message";
+  msg.textContent = "";
+
+  if(!nome || !email || !senha){
+
+    msg.className = "message error";
+    msg.textContent =
+      "Preencha nome, e-mail e senha.";
+
+    return;
+
+  }
+
+  if(senha.length < 6){
+
+    msg.className = "message error";
+    msg.textContent =
+      "A senha precisa ter pelo menos 6 caracteres.";
+
+    return;
+
+  }
+
+
+  const { data, error } =
+    await supabase.auth.signUp({
+
+      email: email,
+      password: senha,
+
+      options:{
+        data:{
+          nome: nome
+        }
+      }
+
+    });
+
+
+  if(error){
+
+    msg.className = "message error";
+    msg.textContent = error.message;
+    return;
+
+  }
+
+
+  /*
+     Se o Supabase já criar a sessão,
+     cadastramos também os dados do tutor.
+  */
+
+  if(data.session){
+
+    const user = data.user;
+
+    const { error: tutorError } =
+      await supabase
+        .from("tutores")
+        .insert({
+
+          id: user.id,
+          nome: nome,
+          telefone: telefone,
+          email: email,
+          cidade: cidade
+
+        });
+
+
+    if(tutorError){
+
+      console.error(tutorError);
+
+    }
+
+  }
+
+
+  msg.className = "message success";
+
+  msg.textContent =
+    "Conta criada! Verifique seu e-mail para confirmar o cadastro, caso o Supabase solicite.";
+
+
+}
+
+
+/* =====================================================
+   VERIFICAR SESSÃO
+   ===================================================== */
+
+supabase.auth.getSession()
+.then(({ data }) => {
+
+  if(data.session){
+
+    console.log(
+      "Usuário já está logado:",
+      data.session.user.email
+    );
+
+  }
+
+});
 
 </script>
 
