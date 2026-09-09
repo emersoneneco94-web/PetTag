@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Save Tag Pet | Entrar</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f3f7f5;
+    color:#172b2f;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:430px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo h1{
+    margin:0;
+    font-size:34px;
+    font-weight:800;
+}
+
+.logo h1 span{
+    color:#21a366;
+}
+
+.logo p{
+    margin:8px 0 0;
+    font-size:12px;
+    letter-spacing:2px;
+    color:#687779;
+}
+
+.card{
+    background:#fff;
+    border-radius:22px;
+    padding:30px 25px;
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+}
+
+h2{
+    text-align:center;
+    margin:0 0 25px;
+    font-size:24px;
+}
+
+label{
+    display:block;
+    margin:15px 0 7px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:14px;
+
+    border:1px solid #d7dfdc;
+    border-radius:10px;
+
+    font-size:16px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#21a366;
+}
+
+button{
+    width:100%;
+    margin-top:22px;
+    padding:15px;
+
+    border:0;
+    border-radius:11px;
+
+    background:#21a366;
+    color:white;
+
+    font-size:16px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+button:hover{
+    background:#198b55;
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.link{
+    text-align:center;
+    margin-top:18px;
+
+    color:#21a366;
+
+    font-weight:bold;
+    font-size:14px;
+
+    cursor:pointer;
+}
+
+.link:hover{
+    text-decoration:underline;
+}
+
+.voltar{
+    display:block;
+    text-align:center;
+    margin-top:22px;
+
+    color:#687779;
+    text-decoration:none;
+
+    font-size:14px;
+}
+
+.hidden{
+    display:none !important;
+}
+
+.mensagem{
+    display:none;
+
+    margin-top:15px;
+    padding:12px;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    font-size:14px;
+    line-height:1.4;
+}
+
+.mensagem.sucesso{
+    display:block;
+    background:#e8f7ef;
+    color:#187443;
+}
+
+.mensagem.erro{
+    display:block;
+    background:#fdecec;
+    color:#a52b2b;
+}
+
+.mensagem.info{
+    display:block;
+    background:#eef5f7;
+    color:#28545d;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LOGO -->
+
+    <div class="logo">
+
+        <h1>
+            Save Tag <span>Pet</span>
+        </h1>
+
+        <p>
+            IDENTIFICAÇÃO INTELIGENTE
+        </p>
+
+    </div>
+
+
+    <!-- CARD -->
+
+    <div class="card">
+
+
+        <!-- =========================
+             LOGIN
+        ========================== -->
+
+        <div id="loginBox">
+
+            <h2>
+                Entrar na sua conta
+            </h2>
+
+
+            <label>
+                E-mail
+            </label>
+
+            <input
+                id="loginEmail"
+                type="email"
+                placeholder="seu@email.com"
+                autocomplete="email"
+            >
+
+
+            <label>
+                Senha
+            </label>
+
+            <input
+                id="loginSenha"
+                type="password"
+                placeholder="Sua senha"
+                autocomplete="current-password"
+            >
+
+
+            <button
+                id="btnEntrar"
+                type="button"
+                onclick="entrar()"
+            >
+                Entrar
+            </button>
+
+
+            <div
+                id="mensagemLogin"
+                class="mensagem">
+            </div>
+
+
+            <!-- CADASTRO -->
+
+            <div
+                class="link"
+                onclick="mostrarCadastro()"
+            >
+                Ainda não tenho uma conta
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CADASTRO
+        ========================== -->
+
+        <div
+            id="cadastroBox"
+            class="hidden"
+        >
+
+            <h2>
+                Criar minha conta
+            </h2>
+
+
+            <label>
+                Nome
+            </label>
+
+            <input
+                id="nome"
+                type="text"
+                placeholder="Seu nome"
+                autocomplete="name"
+            >
+
+
+            <label>
+                E-mail
+            </label>
+
+            <input
+                id="cadastroEmail"
+                type="email"
+                placeholder="seu@email.com"
+                autocomplete="email"
+            >
+
+
+            <label>
+                WhatsApp / Telefone
+            </label>
+
+            <input
+                id="telefone"
+                type="tel"
+                placeholder="(13) 99999-9999"
+                autocomplete="tel"
+            >
+
+
+            <label>
+                Cidade
+            </label>
+
+            <input
+                id="cidade"
+                type="text"
+                placeholder="Sua cidade"
+                autocomplete="address-level2"
+            >
+
+
+            <label>
+                Senha
+            </label>
+
+            <input
+                id="cadastroSenha"
+                type="password"
+                placeholder="Mínimo de 6 caracteres"
+                autocomplete="new-password"
+            >
+
+
+            <button
+                id="btnCadastrar"
+                type="button"
+                onclick="cadastrar()"
+            >
+                Criar conta
+            </button>
+
+
+            <div
+                id="mensagemCadastro"
+                class="mensagem">
+            </div>
+
+
+            <div
+                class="link"
+                onclick="mostrarLogin()"
+            >
+                ← Já tenho uma conta
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <a
+        class="voltar"
+        href="index.html"
+    >
+        ← Voltar para o site
+    </a>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+"https://mqiwoubhivutavpnpeax.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_JV-XGEU9DeEGZfjGbUw1g_u10df1ll";
+
+
+let supabaseClient = null;
+
+
+/* =====================================================
+   ABRIR CADASTRO
+===================================================== */
+
+function mostrarCadastro(){
+
+    document
+        .getElementById("loginBox")
+        .classList.add("hidden");
+
+    document
+        .getElementById("cadastroBox")
+        .classList.remove("hidden");
+
+    limparMensagens();
+}
+
+
+/* =====================================================
+   VOLTAR PARA LOGIN
+===================================================== */
+
+function mostrarLogin(){
+
+    document
+        .getElementById("cadastroBox")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginBox")
+        .classList.remove("hidden");
+
+    limparMensagens();
+}
+
+
+/* =====================================================
+   LIMPAR MENSAGENS
+===================================================== */
+
+function limparMensagens(){
+
+    const login =
+        document.getElementById("mensagemLogin");
+
+    const cadastro =
+        document.getElementById("mensagemCadastro");
+
+
+    login.textContent = "";
+    login.className = "mensagem";
+
+
+    cadastro.textContent = "";
+    cadastro.className = "mensagem";
+}
+
+
+/* =====================================================
+   MENSAGEM
+===================================================== */
+
+function mensagem(id,texto,tipo){
+
+    const elemento =
+        document.getElementById(id);
+
+    elemento.textContent = texto;
+
+    elemento.className =
+        "mensagem " + tipo;
+}
+
+
+/* =====================================================
+   INICIAR SUPABASE
+===================================================== */
+
+function iniciarSupabase(){
+
+    try{
+
+        if(
+            window.supabase &&
+            typeof window.supabase.createClient === "function"
+        ){
+
+            supabaseClient =
+                window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_KEY
+                );
+
+            console.log("Supabase conectado.");
+
+        }else{
+
+            console.log(
+                "Supabase ainda não carregou."
+            );
+
+        }
+
+    }catch(erro){
+
+        console.error(
+            "Erro Supabase:",
+            erro
+        );
+
+    }
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function entrar(){
+
+    limparMensagens();
+
+
+    if(!supabaseClient){
+
+        mensagem(
+            "mensagemLogin",
+            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    const email =
+        document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+
+    const senha =
+        document
+        .getElementById("loginSenha")
+        .value;
+
+
+    if(!email || !senha){
+
+        mensagem(
+            "mensagemLogin",
+            "Digite seu e-mail e sua senha.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    const botao =
+        document.getElementById("btnEntrar");
+
+
+    botao.disabled = true;
+
+    botao.textContent =
+        "Entrando...";
+
+
+    try{
+
+        const resultado =
+            await supabaseClient.auth.signInWithPassword({
+
+                email:email,
+
+                password:senha
+
+            });
+
+
+        if(resultado.error){
+
+            mensagem(
+                "mensagemLogin",
+                resultado.error.message,
+                "erro"
+            );
+
+            return;
+        }
+
+
+        mensagem(
+            "mensagemLogin",
+            "Login realizado com sucesso!",
+            "sucesso"
+        );
+
+
+        setTimeout(
+            function(){
+
+                window.location.href =
+                    "index.html";
+
+            },
+            700
+        );
+
+
+    }catch(erro){
+
+        console.error(erro);
+
+        mensagem(
+            "mensagemLogin",
+            "Erro ao entrar. Tente novamente.",
+            "erro"
+        );
+
+    }finally{
+
+        botao.disabled = false;
+
+        botao.textContent =
+            "Entrar";
+
+    }
+
+}
+
+
+/* =====================================================
+   CADASTRO
+===================================================== */
+
+async function cadastrar(){
+
+    limparMensagens();
+
+
+    if(!supabaseClient){
+
+        mensagem(
+            "mensagemCadastro",
+            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    const nome =
+        document
+        .getElementById("nome")
+        .value
+        .trim();
+
+
+    const email =
+        document
+        .getElementById("cadastroEmail")
+        .value
+        .trim();
+
+
+    const telefone =
+        document
+        .getElementById("telefone")
+        .value
+        .trim();
+
+
+    const cidade =
+        document
+        .getElementById("cidade")
+        .value
+        .trim();
+
+
+    const senha =
+        document
+        .getElementById("cadastroSenha")
+        .value;
+
+
+    if(
+        !nome ||
+        !email ||
+        !telefone ||
+        !cidade ||
+        !senha
+    ){
+
+        mensagem(
+            "mensagemCadastro",
+            "Preencha todos os campos.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    if(senha.length < 6){
+
+        mensagem(
+            "mensagemCadastro",
+            "A senha precisa ter pelo menos 6 caracteres.",
+            "erro"
+        );
+
+        return;
+    }
+
+
+    const botao =
+        document.getElementById("btnCadastrar");
+
+
+    botao.disabled = true;
+
+    botao.textContent =
+        "Criando conta...";
+
+
+    try{
+
+        const resultado =
+            await supabaseClient.auth.signUp({
+
+                email:email,
+
+                password:senha
+
+            });
+
+
+        if(resultado.error){
+
+            mensagem(
+                "mensagemCadastro",
+                resultado.error.message,
+                "erro"
+            );
+
+            return;
+        }
+
+
+        const usuario =
+            resultado.data.user;
+
+
+        if(!usuario){
+
+            mensagem(
+                "mensagemCadastro",
+                "Não foi possível criar a conta.",
+                "erro"
+            );
+
+            return;
+        }
+
+
+        /*
+         ==================================================
+         Se o Supabase não exigir confirmação de e-mail,
+         salva também os dados do tutor.
+         ==================================================
+        */
+
+        if(resultado.data.session){
+
+            const tutor =
+                await supabaseClient
+                .from("tutores")
+                .insert({
+
+                    id:usuario.id,
+
+                    nome:nome,
+
+                    telefone:telefone,
+
+                    email:email,
+
+                    cidade:cidade
+
+                });
+
+
+            if(tutor.error){
+
+                console.error(
+                    "Erro ao salvar tutor:",
+                    tutor.error
+                );
+
+                mensagem(
+                    "mensagemCadastro",
+                    "A conta foi criada, mas os dados do tutor não foram salvos.",
+                    "erro"
+                );
+
+                return;
+            }
+
+
+            mensagem(
+                "mensagemCadastro",
+                "Conta criada com sucesso!",
+                "sucesso"
+            );
+
+
+            setTimeout(
+                function(){
+
+                    window.location.href =
+                        "index.html";
+
+                },
+                1000
+            );
+
+
+        }else{
+
+            mensagem(
+                "mensagemCadastro",
+                "Conta criada! Verifique seu e-mail para confirmar o cadastro.",
+                "sucesso"
+            );
+
+        }
+
+
+    }catch(erro){
+
+        console.error(erro);
+
+        mensagem(
+            "mensagemCadastro",
+            "Erro ao criar a conta. Tente novamente.",
+            "erro"
+        );
+
+    }finally{
+
+        botao.disabled = false;
+
+        botao.textContent =
+            "Criar conta";
+
+    }
+
+}
+
+
+/* =====================================================
+   INICIAR
+===================================================== */
+
+iniciarSupabase();
+
+</script>
+
+</body>
+
+</html>
