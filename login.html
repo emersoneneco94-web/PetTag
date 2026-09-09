@@ -233,13 +233,7 @@ button:hover{
 
 const SUPABASE_URL = "https://mqiwoubhivutavpnpeax.supabase.co";
 const SUPABASE_KEY = "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-
+let supabase = null;
 /* =====================================================
    ALTERNAR LOGIN / CADASTRO
    ===================================================== */
