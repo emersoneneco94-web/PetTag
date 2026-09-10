@@ -1044,20 +1044,14 @@ if(codigoTag){
 const resultado =
     await supabaseClient
     .auth
-    .signUp({
+    .signInWithPassword({
 
         email:email,
 
         password:senha,
 
-        options:{
-
-            emailRedirectTo:
-                urlConfirmacao.toString()
-
-        }
-
-    });
+        
+            });
 
 
         if(resultado.error){
