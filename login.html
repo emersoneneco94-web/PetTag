@@ -967,51 +967,6 @@ async function entrar(){
 
 }
 
-    limparMensagens();
-
-
-    if(!supabaseClient){
-
-        mensagem(
-            "mensagemLogin",
-
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const email =
-        document
-        .getElementById("loginEmail")
-        .value
-        .trim();
-
-
-    const senha =
-        document
-        .getElementById("loginSenha")
-        .value;
-
-
-    if(!email || !senha){
-
-        mensagem(
-            "mensagemLogin",
-
-            "Digite seu e-mail e sua senha.",
-
-            "erro"
-        );
-
-        return;
-
-    }
-
 
     const botao =
         document.getElementById(
