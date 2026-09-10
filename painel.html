@@ -456,7 +456,30 @@ hr{
         Meu pet está perdido
       </label>
     </div>
+<div class="field">
+  <label>Último local onde foi visto</label>
+  <input
+    id="petUltimoLocal"
+    type="text"
+    placeholder="Ex.: Vila Antártica, Praia Grande - SP"
+  >
+</div>
 
+<div class="field">
+  <label>Data em que desapareceu</label>
+  <input
+    id="petDataPerdido"
+    type="date"
+  >
+</div>
+
+<div class="field">
+  <label>Horário aproximado</label>
+  <input
+    id="petHoraPerdido"
+    type="time"
+  >
+</div>
     <div class="field">
       <label>Mensagem caso o pet esteja perdido</label>
       <textarea id="petMensagemPerdido"
@@ -1053,9 +1076,24 @@ async function salvarPet(){
       ).checked,
 
     mensagem_perdido:
-      document.getElementById(
+    document.getElementById(
         "petMensagemPerdido"
-      ).value.trim()
+    ).value.trim(),
+
+ultimo_local_perdido:
+    document.getElementById(
+        "petUltimoLocal"
+    ).value.trim() || null,
+
+data_perdido:
+    document.getElementById(
+        "petDataPerdido"
+    ).value || null,
+
+hora_perdido:
+    document.getElementById(
+        "petHoraPerdido"
+    ).value || null
   };
 
 
