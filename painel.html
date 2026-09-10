@@ -621,12 +621,51 @@ hr{
 
 
     <input
-      type="hidden"
-      id="petId"
-    >
+     <input
+  type="hidden"
+  id="petId"
+>
+
+<div class="field">
+
+  <label>
+    Foto do pet
+  </label>
+
+  <input
+    type="file"
+    id="petFoto"
+    accept="image/jpeg,image/png,image/webp"
+  >
+
+  <small
+    style="
+      display:block;
+      margin-top:6px;
+      color:#66777b;
+    "
+  >
+    Escolha uma foto do seu pet.
+  </small>
+
+  <img
+    id="previewPetFoto"
+    src=""
+    alt="Prévia da foto"
+    style="
+      display:none;
+      width:140px;
+      height:140px;
+      object-fit:cover;
+      border-radius:16px;
+      margin-top:10px;
+    "
+  >
+
+</div>
 
 
-    <div class="grid">
+<div class="grid">
 
 
       <div class="field">
@@ -2071,6 +2110,7 @@ async function salvarPet(){
     );
 
     return;
+
   }
 
 
@@ -2087,6 +2127,65 @@ async function salvarPet(){
 
 
   try{
+
+    /* =========================================
+       FOTO
+    ========================================= */
+
+    const campoFoto =
+      document.getElementById(
+        "petFoto"
+      );
+
+    const arquivoFoto =
+      campoFoto &&
+      campoFoto.files &&
+      campoFoto.files.length
+        ? campoFoto.files[0]
+        : null;
+
+
+    if(arquivoFoto){
+
+      const tiposPermitidos = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ];
+
+
+      if(
+        !tiposPermitidos.includes(
+          arquivoFoto.type
+        )
+      ){
+
+        throw new Error(
+          "A foto deve estar em JPG, PNG ou WEBP."
+        );
+
+      }
+
+
+      /* Limite de 5 MB */
+
+      if(
+        arquivoFoto.size >
+        5 * 1024 * 1024
+      ){
+
+        throw new Error(
+          "A foto deve ter no máximo 5 MB."
+        );
+
+      }
+
+    }
+
+
+    /* =========================================
+       DADOS DO PET
+    ========================================= */
 
     const dados = {
 
@@ -2237,7 +2336,6 @@ async function salvarPet(){
       petId =
         resultado.data.id;
 
-
     }
 
 
@@ -2264,6 +2362,105 @@ async function salvarPet(){
 
       petId =
         resultado.data.id;
+
+    }
+
+
+    /* =========================================
+       UPLOAD DA FOTO
+    ========================================= */
+
+    if(arquivoFoto){
+
+      botao.textContent =
+        "Enviando foto...";
+
+
+      const extensao =
+        arquivoFoto.name
+          .split(".")
+          .pop()
+          .toLowerCase();
+
+
+      const nomeArquivo =
+        petId +
+        "-" +
+        Date.now() +
+        "." +
+        extensao;
+
+
+      const caminho =
+        usuarioAtual.id +
+        "/" +
+        nomeArquivo;
+
+
+      const resultadoUpload =
+        await supabaseClient
+          .storage
+          .from("pet-fotos")
+          .upload(
+            caminho,
+            arquivoFoto,
+            {
+              cacheControl: "3600",
+              upsert: false,
+              contentType:
+                arquivoFoto.type
+            }
+          );
+
+
+      if(resultadoUpload.error){
+
+        throw resultadoUpload.error;
+
+      }
+
+
+      const resultadoUrl =
+        supabaseClient
+          .storage
+          .from("pet-fotos")
+          .getPublicUrl(
+            caminho
+          );
+
+
+      const fotoUrl =
+        resultadoUrl
+          .data
+          .publicUrl;
+
+
+      /* =====================================
+         SALVAR URL DA FOTO NO PET
+      ===================================== */
+
+      const resultadoFoto =
+        await supabaseClient
+          .from("pets")
+          .update({
+            foto_url:
+              fotoUrl
+          })
+          .eq(
+            "id",
+            petId
+          )
+          .eq(
+            "tutor_id",
+            usuarioAtual.id
+          );
+
+
+      if(resultadoFoto.error){
+
+        throw resultadoFoto.error;
+
+      }
 
     }
 
@@ -2352,7 +2549,9 @@ async function salvarPet(){
     else{
 
       mostrarMensagem(
-        "Pet salvo com sucesso!",
+        arquivoFoto
+          ? "Pet e foto salvos com sucesso!"
+          : "Pet salvo com sucesso!",
         "success"
       );
 
@@ -2387,7 +2586,6 @@ async function salvarPet(){
       "Salvar pet";
 
   }
-
 }
 
 
