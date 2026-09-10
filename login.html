@@ -2,8 +2,13 @@
 <html lang="pt-BR">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
 <title>Save Tag Pet | Entrar</title>
 
@@ -18,8 +23,11 @@
 body{
     margin:0;
     min-height:100vh;
+
     font-family:Arial,Helvetica,sans-serif;
+
     background:#f3f7f5;
+
     color:#172b2f;
 
     display:flex;
@@ -41,6 +49,7 @@ body{
 
 .logo h1{
     margin:0;
+
     font-size:34px;
     font-weight:800;
 }
@@ -51,39 +60,52 @@ body{
 
 .logo p{
     margin:8px 0 0;
+
     font-size:12px;
     letter-spacing:2px;
+
     color:#687779;
 }
 
 .card{
     background:#fff;
+
     border-radius:22px;
+
     padding:30px 25px;
+
     box-shadow:0 10px 35px rgba(0,0,0,.08);
 }
 
 h2{
     text-align:center;
+
     margin:0 0 25px;
+
     font-size:24px;
 }
 
 label{
     display:block;
+
     margin:15px 0 7px;
+
     font-size:14px;
+
     font-weight:bold;
 }
 
 input{
     width:100%;
+
     padding:14px;
 
     border:1px solid #d7dfdc;
+
     border-radius:10px;
 
     font-size:16px;
+
     outline:none;
 }
 
@@ -93,16 +115,21 @@ input:focus{
 
 button{
     width:100%;
+
     margin-top:22px;
+
     padding:15px;
 
     border:0;
+
     border-radius:11px;
 
     background:#21a366;
+
     color:white;
 
     font-size:16px;
+
     font-weight:bold;
 
     cursor:pointer;
@@ -114,16 +141,19 @@ button:hover{
 
 button:disabled{
     opacity:.6;
+
     cursor:not-allowed;
 }
 
 .link{
     text-align:center;
+
     margin-top:18px;
 
     color:#21a366;
 
     font-weight:bold;
+
     font-size:14px;
 
     cursor:pointer;
@@ -135,10 +165,13 @@ button:disabled{
 
 .voltar{
     display:block;
+
     text-align:center;
+
     margin-top:22px;
 
     color:#687779;
+
     text-decoration:none;
 
     font-size:14px;
@@ -152,6 +185,7 @@ button:disabled{
     display:none;
 
     margin-top:15px;
+
     padding:12px;
 
     border-radius:10px;
@@ -159,34 +193,104 @@ button:disabled{
     text-align:center;
 
     font-size:14px;
+
     line-height:1.4;
 }
 
 .mensagem.sucesso{
     display:block;
+
     background:#e8f7ef;
+
     color:#187443;
 }
 
 .mensagem.erro{
     display:block;
+
     background:#fdecec;
+
     color:#a52b2b;
 }
 
 .mensagem.info{
     display:block;
+
     background:#eef5f7;
+
     color:#28545d;
+}
+
+
+/* =========================================
+   AVISO DE ATIVAÇÃO
+========================================= */
+
+.tag-ativacao{
+
+    background:#e8f7ef;
+
+    border:1px solid #c8ead7;
+
+    border-radius:14px;
+
+    padding:14px;
+
+    margin-bottom:22px;
+
+    text-align:center;
+}
+
+.tag-ativacao .icone{
+
+    font-size:30px;
+
+    margin-bottom:6px;
+}
+
+.tag-ativacao strong{
+
+    display:block;
+
+    color:#187443;
+
+    font-size:16px;
+
+    margin-bottom:5px;
+}
+
+.tag-ativacao span{
+
+    display:block;
+
+    color:#59645e;
+
+    font-size:13px;
+
+    line-height:1.4;
+}
+
+.tag-codigo{
+
+    margin-top:8px;
+
+    font-weight:bold;
+
+    color:#173d2d;
+
+    letter-spacing:1px;
 }
 
 </style>
 
 </head>
 
+
 <body>
 
+
 <div class="container">
+
 
     <!-- LOGO -->
 
@@ -208,11 +312,43 @@ button:disabled{
     <div class="card">
 
 
-        <!-- =========================
+        <!-- =====================================
+             AVISO DE ATIVAÇÃO
+        ====================================== -->
+
+        <div
+            id="avisoAtivacao"
+            class="tag-ativacao hidden"
+        >
+
+            <div class="icone">
+                🐾
+            </div>
+
+            <strong>
+                Ativação da sua TAG
+            </strong>
+
+            <span>
+                Você está ativando uma TAG Save Tag Pet.
+            </span>
+
+            <div
+                id="codigoTag"
+                class="tag-codigo"
+            >
+                -
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
              LOGIN
-        ========================== -->
+        ====================================== -->
 
         <div id="loginBox">
+
 
             <h2>
                 Entrar na sua conta
@@ -222,6 +358,7 @@ button:disabled{
             <label>
                 E-mail
             </label>
+
 
             <input
                 id="loginEmail"
@@ -234,6 +371,7 @@ button:disabled{
             <label>
                 Senha
             </label>
+
 
             <input
                 id="loginSenha"
@@ -250,22 +388,30 @@ button:disabled{
             >
                 Entrar
             </button>
+
+
             <button
-  type="button"
-  onclick="recuperarSenha()"
-  style="background:none;border:none;color:#19a765;cursor:pointer;font-size:15px;margin-top:12px;"
->
-  🔑 Esqueci minha senha
-</button>
+                type="button"
+                onclick="recuperarSenha()"
+                style="
+                    background:none;
+                    border:none;
+                    color:#19a765;
+                    cursor:pointer;
+                    font-size:15px;
+                    margin-top:12px;
+                "
+            >
+                🔑 Esqueci minha senha
+            </button>
 
 
             <div
                 id="mensagemLogin"
-                class="mensagem">
+                class="mensagem"
+            >
             </div>
 
-
-            <!-- CADASTRO -->
 
             <div
                 class="link"
@@ -277,14 +423,15 @@ button:disabled{
         </div>
 
 
-        <!-- =========================
+        <!-- =====================================
              CADASTRO
-        ========================== -->
+        ====================================== -->
 
         <div
             id="cadastroBox"
             class="hidden"
         >
+
 
             <h2>
                 Criar minha conta
@@ -294,6 +441,7 @@ button:disabled{
             <label>
                 Nome
             </label>
+
 
             <input
                 id="nome"
@@ -307,6 +455,7 @@ button:disabled{
                 E-mail
             </label>
 
+
             <input
                 id="cadastroEmail"
                 type="email"
@@ -318,6 +467,7 @@ button:disabled{
             <label>
                 WhatsApp / Telefone
             </label>
+
 
             <input
                 id="telefone"
@@ -331,6 +481,7 @@ button:disabled{
                 Cidade
             </label>
 
+
             <input
                 id="cidade"
                 type="text"
@@ -342,6 +493,7 @@ button:disabled{
             <label>
                 Senha
             </label>
+
 
             <input
                 id="cadastroSenha"
@@ -362,7 +514,8 @@ button:disabled{
 
             <div
                 id="mensagemCadastro"
-                class="mensagem">
+                class="mensagem"
+            >
             </div>
 
 
@@ -390,6 +543,7 @@ button:disabled{
 
 <script>
 
+
 /* =====================================================
    SUPABASE
 ===================================================== */
@@ -397,11 +551,107 @@ button:disabled{
 const SUPABASE_URL =
 "https://mqiwoubhivutavpnpeax.supabase.co";
 
+
+/*
+   IMPORTANTE:
+
+   Use aqui a MESMA Publishable Key
+   que já estava no seu login.html atual.
+*/
+
 const SUPABASE_KEY =
 "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
 
 let supabaseClient = null;
+
+
+/* =====================================================
+   IDENTIFICAR TAG
+===================================================== */
+
+const parametros =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+let tagCodigo =
+    parametros.get("tag");
+
+
+/*
+   Se existir uma TAG na URL,
+   salva no navegador.
+
+   Isso permite preservar a TAG
+   durante o cadastro e confirmação
+   de e-mail.
+*/
+
+if(tagCodigo){
+
+    tagCodigo =
+        tagCodigo
+        .trim()
+        .toUpperCase();
+
+    localStorage.setItem(
+        "save_tag_pet_ativacao",
+        tagCodigo
+    );
+
+}
+
+
+/*
+   Se não veio TAG na URL,
+   tenta recuperar a última TAG
+   que estava sendo ativada.
+*/
+
+if(!tagCodigo){
+
+    tagCodigo =
+        localStorage.getItem(
+            "save_tag_pet_ativacao"
+        );
+
+}
+
+
+/* =====================================================
+   MOSTRAR AVISO DA TAG
+===================================================== */
+
+function mostrarAvisoTag(){
+
+    if(!tagCodigo){
+        return;
+    }
+
+
+    const aviso =
+        document.getElementById(
+            "avisoAtivacao"
+        );
+
+
+    const codigo =
+        document.getElementById(
+            "codigoTag"
+        );
+
+
+    aviso.classList.remove(
+        "hidden"
+    );
+
+
+    codigo.textContent =
+        "TAG: " + tagCodigo;
+
+}
 
 
 /* =====================================================
@@ -414,11 +664,14 @@ function mostrarCadastro(){
         .getElementById("loginBox")
         .classList.add("hidden");
 
+
     document
         .getElementById("cadastroBox")
         .classList.remove("hidden");
 
+
     limparMensagens();
+
 }
 
 
@@ -432,11 +685,14 @@ function mostrarLogin(){
         .getElementById("cadastroBox")
         .classList.add("hidden");
 
+
     document
         .getElementById("loginBox")
         .classList.remove("hidden");
 
+
     limparMensagens();
+
 }
 
 
@@ -447,18 +703,28 @@ function mostrarLogin(){
 function limparMensagens(){
 
     const login =
-        document.getElementById("mensagemLogin");
+        document.getElementById(
+            "mensagemLogin"
+        );
+
 
     const cadastro =
-        document.getElementById("mensagemCadastro");
+        document.getElementById(
+            "mensagemCadastro"
+        );
 
 
     login.textContent = "";
-    login.className = "mensagem";
+
+    login.className =
+        "mensagem";
 
 
     cadastro.textContent = "";
-    cadastro.className = "mensagem";
+
+    cadastro.className =
+        "mensagem";
+
 }
 
 
@@ -466,15 +732,23 @@ function limparMensagens(){
    MENSAGEM
 ===================================================== */
 
-function mensagem(id,texto,tipo){
+function mensagem(
+    id,
+    texto,
+    tipo
+){
 
     const elemento =
         document.getElementById(id);
 
-    elemento.textContent = texto;
+
+    elemento.textContent =
+        texto;
+
 
     elemento.className =
         "mensagem " + tipo;
+
 }
 
 
@@ -488,7 +762,8 @@ function iniciarSupabase(){
 
         if(
             window.supabase &&
-            typeof window.supabase.createClient === "function"
+            typeof window.supabase.createClient ===
+            "function"
         ){
 
             supabaseClient =
@@ -497,7 +772,10 @@ function iniciarSupabase(){
                     SUPABASE_KEY
                 );
 
-            console.log("Supabase conectado.");
+
+            console.log(
+                "Supabase conectado."
+            );
 
         }else{
 
@@ -515,6 +793,31 @@ function iniciarSupabase(){
         );
 
     }
+
+}
+
+
+/* =====================================================
+   IR PARA PRÓXIMA ETAPA
+===================================================== */
+
+function continuarComTag(){
+
+    if(tagCodigo){
+
+        window.location.href =
+            "painel.html?tag=" +
+            encodeURIComponent(
+                tagCodigo
+            );
+
+    }else{
+
+        window.location.href =
+            "painel.html";
+
+    }
+
 }
 
 
@@ -536,6 +839,7 @@ async function entrar(){
         );
 
         return;
+
     }
 
 
@@ -561,11 +865,14 @@ async function entrar(){
         );
 
         return;
+
     }
 
 
     const botao =
-        document.getElementById("btnEntrar");
+        document.getElementById(
+            "btnEntrar"
+        );
 
 
     botao.disabled = true;
@@ -595,6 +902,7 @@ async function entrar(){
             );
 
             return;
+
         }
 
 
@@ -608,8 +916,7 @@ async function entrar(){
         setTimeout(
             function(){
 
-                window.location.href =
-                    "index.html";
+                continuarComTag();
 
             },
             700
@@ -618,7 +925,10 @@ async function entrar(){
 
     }catch(erro){
 
-        console.error(erro);
+        console.error(
+            erro
+        );
+
 
         mensagem(
             "mensagemLogin",
@@ -656,6 +966,7 @@ async function cadastrar(){
         );
 
         return;
+
     }
 
 
@@ -708,6 +1019,7 @@ async function cadastrar(){
         );
 
         return;
+
     }
 
 
@@ -720,11 +1032,14 @@ async function cadastrar(){
         );
 
         return;
+
     }
 
 
     const botao =
-        document.getElementById("btnCadastrar");
+        document.getElementById(
+            "btnCadastrar"
+        );
 
 
     botao.disabled = true;
@@ -735,12 +1050,35 @@ async function cadastrar(){
 
     try{
 
+
+        /*
+         =================================================
+         CRIA A CONTA
+         =================================================
+        */
+
         const resultado =
             await supabaseClient.auth.signUp({
 
                 email:email,
 
-                password:senha
+                password:senha,
+
+                options:{
+
+                    /*
+                     * Depois que o usuário confirmar
+                     * o e-mail, ele volta para o login
+                     * mantendo a TAG.
+                     */
+
+                    emailRedirectTo:
+                        tagCodigo
+                        ? "https://save-tag-pet.vercel.app/login.html?tag=" +
+                          encodeURIComponent(tagCodigo)
+                        : "https://save-tag-pet.vercel.app/login.html"
+
+                }
 
             });
 
@@ -754,6 +1092,7 @@ async function cadastrar(){
             );
 
             return;
+
         }
 
 
@@ -770,22 +1109,23 @@ async function cadastrar(){
             );
 
             return;
+
         }
 
 
         /*
-         ==================================================
-         Se o Supabase não exigir confirmação de e-mail,
-         salva também os dados do tutor.
-         ==================================================
+         =================================================
+         SE O SUPABASE JÁ GEROU UMA SESSÃO
+         =================================================
         */
 
         if(resultado.data.session){
 
+
             const tutor =
                 await supabaseClient
                 .from("tutores")
-                .insert({
+                .upsert({
 
                     id:usuario.id,
 
@@ -807,6 +1147,7 @@ async function cadastrar(){
                     tutor.error
                 );
 
+
                 mensagem(
                     "mensagemCadastro",
                     "A conta foi criada, mas os dados do tutor não foram salvos.",
@@ -814,6 +1155,7 @@ async function cadastrar(){
                 );
 
                 return;
+
             }
 
 
@@ -827,8 +1169,7 @@ async function cadastrar(){
             setTimeout(
                 function(){
 
-                    window.location.href =
-                        "index.html";
+                    continuarComTag();
 
                 },
                 1000
@@ -837,9 +1178,16 @@ async function cadastrar(){
 
         }else{
 
+
+            /*
+             =================================================
+             CONFIRMAÇÃO DE E-MAIL
+             =================================================
+            */
+
             mensagem(
                 "mensagemCadastro",
-                "Conta criada! Verifique seu e-mail para confirmar o cadastro.",
+                "Conta criada! Verifique seu e-mail para confirmar o cadastro. Depois, entre novamente para continuar a ativação da TAG.",
                 "sucesso"
             );
 
@@ -848,7 +1196,10 @@ async function cadastrar(){
 
     }catch(erro){
 
-        console.error(erro);
+        console.error(
+            erro
+        );
+
 
         mensagem(
             "mensagemCadastro",
@@ -869,59 +1220,107 @@ async function cadastrar(){
 
 
 /* =====================================================
-   INICIAR
+   RECUPERAR SENHA
+===================================================== */
+
+async function recuperarSenha(){
+
+    const email =
+        document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+
+    if(!email){
+
+        mensagem(
+            "mensagemLogin",
+            "Digite seu e-mail para receber o link de recuperação.",
+            "erro"
+        );
+
+        return;
+
+    }
+
+
+    if(!supabaseClient){
+
+        mensagem(
+            "mensagemLogin",
+            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+            "erro"
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const { error } =
+            await supabaseClient
+            .auth
+            .resetPasswordForEmail(
+                email,
+                {
+
+                    redirectTo:
+                        "https://save-tag-pet.vercel.app/alterar-senha.html"
+
+                }
+            );
+
+
+        if(error){
+
+            mensagem(
+                "mensagemLogin",
+                error.message,
+                "erro"
+            );
+
+            return;
+
+        }
+
+
+        mensagem(
+            "mensagemLogin",
+            "Enviamos um link para seu e-mail. Verifique sua caixa de entrada.",
+            "sucesso"
+        );
+
+
+    }catch(erro){
+
+        console.error(
+            erro
+        );
+
+
+        mensagem(
+            "mensagemLogin",
+            "Não foi possível enviar o e-mail de recuperação.",
+            "erro"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   INICIALIZAÇÃO
 ===================================================== */
 
 iniciarSupabase();
 
-    async function recuperarSenha() {
-  const email = document.getElementById("loginEmail").value.trim();
+mostrarAvisoTag();
 
-  if (!email) {
-    mensagem(
-      "mensagemLogin",
-      "Digite seu e-mail para receber o link de recuperação.",
-      "erro"
-    );
-    return;
-  }
 
-  if (!supabaseClient) {
-    mensagem(
-      "mensagemLogin",
-      "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-      "erro"
-    );
-    return;
-  }
-
-  try {
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://save-tag-pet.vercel.app/alterar-senha.html"
-    });
-
-    if (error) {
-      mensagem(
-        "mensagemLogin",
-        error.message,
-        "erro"
-      );
-      return;
-    }
-
-    mensagem(
-      "mensagemLogin",
-      "Enviamos um link para seu e-mail. Verifique sua caixa de entrada.",
-      "sucesso"
-    );
-  } catch (erro) {
-    mensagem(
-      "mensagemLogin",
-      "Não foi possível enviar o e-mail de recuperação.",
-      "erro"
-    );
-  }
-}
 </script>
 
 </body>
