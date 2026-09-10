@@ -14,7 +14,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <style>
 
 *{
@@ -22,9 +21,7 @@
 }
 
 body{
-
     margin:0;
-
     min-height:100vh;
 
     font-family:
@@ -37,66 +34,53 @@ body{
     color:#172b2f;
 
     display:flex;
-
     align-items:center;
-
     justify-content:center;
 
     padding:20px;
-
 }
 
 .container{
-
     width:100%;
-
     max-width:430px;
-
 }
 
 .logo{
-
     text-align:center;
-
     margin-bottom:25px;
-
 }
 
 .logo h1{
-
     margin:0;
-
     font-size:34px;
-
     font-weight:800;
-
 }
 
 .logo h1 span{
-
     color:#21a366;
-
 }
 
 .logo p{
-
     margin:8px 0 0;
 
     font-size:12px;
-
     letter-spacing:2px;
 
     color:#687779;
-
 }
 
+.card{
+    background:#fff;
 
-/* =========================
-   ATIVAÇÃO
-========================= */
+    border-radius:22px;
+
+    padding:30px 25px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.08);
+}
 
 .ativacao{
-
     background:#e8f6ee;
 
     border:1px solid #c7e9d5;
@@ -108,29 +92,26 @@ body{
     margin-bottom:16px;
 
     text-align:center;
+}
 
+.ativacao.hidden{
+    display:none;
 }
 
 .ativacao .icone{
-
     font-size:30px;
-
     margin-bottom:6px;
-
 }
 
 .ativacao h3{
-
     margin:0 0 7px;
 
     color:#17643e;
 
     font-size:19px;
-
 }
 
 .ativacao p{
-
     margin:5px 0;
 
     color:#4d6258;
@@ -138,11 +119,9 @@ body{
     font-size:14px;
 
     line-height:1.5;
-
 }
 
 .codigo{
-
     display:inline-block;
 
     margin-top:7px;
@@ -160,39 +139,17 @@ body{
     font-weight:800;
 
     letter-spacing:1px;
-
-}
-
-
-/* =========================
-   CARD
-========================= */
-
-.card{
-
-    background:#fff;
-
-    border-radius:22px;
-
-    padding:30px 25px;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.08);
-
 }
 
 h2{
-
     text-align:center;
 
     margin:0 0 25px;
 
     font-size:24px;
-
 }
 
 label{
-
     display:block;
 
     margin:15px 0 7px;
@@ -200,11 +157,9 @@ label{
     font-size:14px;
 
     font-weight:bold;
-
 }
 
 input{
-
     width:100%;
 
     padding:14px;
@@ -216,17 +171,13 @@ input{
     font-size:16px;
 
     outline:none;
-
 }
 
 input:focus{
-
     border-color:#21a366;
-
 }
 
 button{
-
     width:100%;
 
     margin-top:22px;
@@ -246,25 +197,33 @@ button{
     font-weight:bold;
 
     cursor:pointer;
-
 }
 
 button:hover{
-
     background:#198b55;
-
 }
 
 button:disabled{
-
     opacity:.6;
 
     cursor:not-allowed;
+}
 
+.btn-secundario{
+    background:none;
+
+    color:#19a765;
+
+    margin-top:12px;
+
+    padding:10px;
+}
+
+.btn-secundario:hover{
+    background:#f1faf5;
 }
 
 .link{
-
     text-align:center;
 
     margin-top:18px;
@@ -276,17 +235,13 @@ button:disabled{
     font-size:14px;
 
     cursor:pointer;
-
 }
 
 .link:hover{
-
     text-decoration:underline;
-
 }
 
 .voltar{
-
     display:block;
 
     text-align:center;
@@ -298,17 +253,13 @@ button:disabled{
     text-decoration:none;
 
     font-size:14px;
-
 }
 
 .hidden{
-
     display:none !important;
-
 }
 
 .mensagem{
-
     display:none;
 
     margin-top:15px;
@@ -322,37 +273,30 @@ button:disabled{
     font-size:14px;
 
     line-height:1.4;
-
 }
 
 .mensagem.sucesso{
-
     display:block;
 
     background:#e8f7ef;
 
     color:#187443;
-
 }
 
 .mensagem.erro{
-
     display:block;
 
     background:#fdecec;
 
     color:#a52b2b;
-
 }
 
 .mensagem.info{
-
     display:block;
 
     background:#eef5f7;
 
     color:#28545d;
-
 }
 
 </style>
@@ -381,9 +325,7 @@ button:disabled{
     </div>
 
 
-    <!-- =========================
-         ATIVAÇÃO DA TAG
-    ========================== -->
+    <!-- ATIVAÇÃO DA TAG -->
 
     <div
         id="ativacaoBox"
@@ -421,9 +363,7 @@ button:disabled{
     <div class="card">
 
 
-        <!-- =========================
-             LOGIN
-        ========================== -->
+        <!-- LOGIN -->
 
         <div id="loginBox">
 
@@ -466,16 +406,10 @@ button:disabled{
 
 
             <button
+                id="btnRecuperar"
                 type="button"
+                class="btn-secundario"
                 onclick="recuperarSenha()"
-                style="
-                    background:none;
-                    border:none;
-                    color:#19a765;
-                    cursor:pointer;
-                    font-size:15px;
-                    margin-top:12px;
-                "
             >
                 🔑 Esqueci minha senha
             </button>
@@ -498,9 +432,7 @@ button:disabled{
         </div>
 
 
-        <!-- =========================
-             CADASTRO
-        ========================== -->
+        <!-- CADASTRO -->
 
         <div
             id="cadastroBox"
@@ -597,6 +529,7 @@ button:disabled{
 
         </div>
 
+
     </div>
 
 
@@ -607,8 +540,8 @@ button:disabled{
         ← Voltar para o site
     </a>
 
-</div>
 
+</div>
 
 
 <script>
@@ -619,20 +552,23 @@ button:disabled{
 ===================================================== */
 
 const SUPABASE_URL =
-"https://mqiwoubhivutavpnpeax.supabase.co";
+    "https://mqiwoubhivutavpnpeax.supabase.co";
 
 
 /*
-    COLOQUE AQUI A MESMA PUBLISHABLE KEY
-    QUE JÁ ESTÁ NO SEU login.html ATUAL.
+   IMPORTANTE:
+
+   Coloque aqui a MESMA PUBLISHABLE KEY
+   que já estava no seu login.html.
+
+   NÃO coloque Service Role Key.
 */
 
 const SUPABASE_KEY =
-"sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+    "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
 
 let supabaseClient = null;
-
 
 
 /* =====================================================
@@ -649,81 +585,35 @@ const codigoTag =
     parametros.get("tag");
 
 
-
 /* =====================================================
-   MOSTRAR INFORMAÇÃO DA TAG
+   MOSTRAR TAG
 ===================================================== */
 
 function mostrarInformacaoTag(){
 
     if(!codigoTag){
-
         return;
-
     }
 
 
-    document
-        .getElementById("ativacaoBox")
-        .classList
-        .remove("hidden");
+    const box =
+        document.getElementById(
+            "ativacaoBox"
+        );
 
 
-    document
-        .getElementById("codigoTag")
-        .textContent =
-            codigoTag;
-
-}
+    const codigo =
+        document.getElementById(
+            "codigoTag"
+        );
 
 
+    box.classList.remove("hidden");
 
-/* =====================================================
-   ABRIR CADASTRO
-===================================================== */
-
-function mostrarCadastro(){
-
-    document
-        .getElementById("loginBox")
-        .classList
-        .add("hidden");
-
-
-    document
-        .getElementById("cadastroBox")
-        .classList
-        .remove("hidden");
-
-
-    limparMensagens();
+    codigo.textContent =
+        codigoTag.toUpperCase();
 
 }
-
-
-
-/* =====================================================
-   VOLTAR PARA LOGIN
-===================================================== */
-
-function mostrarLogin(){
-
-    document
-        .getElementById("cadastroBox")
-        .classList
-        .add("hidden");
-
-
-    document
-        .getElementById("loginBox")
-        .classList
-        .remove("hidden");
-
-
-    limparMensagens();
-
-}
-
 
 
 /* =====================================================
@@ -758,9 +648,8 @@ function limparMensagens(){
 }
 
 
-
 /* =====================================================
-   MENSAGEM
+   MOSTRAR MENSAGEM
 ===================================================== */
 
 function mensagem(
@@ -782,6 +671,51 @@ function mensagem(
 
 }
 
+
+/* =====================================================
+   MOSTRAR CADASTRO
+===================================================== */
+
+function mostrarCadastro(){
+
+    document
+        .getElementById("loginBox")
+        .classList
+        .add("hidden");
+
+
+    document
+        .getElementById("cadastroBox")
+        .classList
+        .remove("hidden");
+
+
+    limparMensagens();
+
+}
+
+
+/* =====================================================
+   MOSTRAR LOGIN
+===================================================== */
+
+function mostrarLogin(){
+
+    document
+        .getElementById("cadastroBox")
+        .classList
+        .add("hidden");
+
+
+    document
+        .getElementById("loginBox")
+        .classList
+        .remove("hidden");
+
+
+    limparMensagens();
+
+}
 
 
 /* =====================================================
@@ -811,8 +745,8 @@ function iniciarSupabase(){
 
         }else{
 
-            console.log(
-                "Supabase ainda não carregou."
+            console.error(
+                "Biblioteca Supabase não carregou."
             );
 
         }
@@ -820,7 +754,7 @@ function iniciarSupabase(){
     }catch(erro){
 
         console.error(
-            "Erro Supabase:",
+            "Erro ao iniciar Supabase:",
             erro
         );
 
@@ -829,38 +763,29 @@ function iniciarSupabase(){
 }
 
 
-
 /* =====================================================
    DESTINO APÓS LOGIN
 ===================================================== */
 
 function continuarAposLogin(){
 
-    /*
-       Se o login veio de uma TAG,
-       mantém o código da TAG.
-    */
-
     if(codigoTag){
 
         window.location.href =
             "painel.html?tag=" +
-            encodeURIComponent(codigoTag);
+            encodeURIComponent(
+                codigoTag
+            );
 
         return;
 
     }
 
 
-    /*
-       Login normal sem TAG.
-    */
-
     window.location.href =
         "painel.html";
 
 }
-
 
 
 /* =====================================================
@@ -871,6 +796,7 @@ async function entrar(){
 
     limparMensagens();
 
+
     if(!supabaseClient){
 
         mensagem(
@@ -880,18 +806,26 @@ async function entrar(){
         );
 
         return;
+
     }
+
 
     const email =
         document
-        .getElementById("loginEmail")
-        .value
-        .trim();
+            .getElementById(
+                "loginEmail"
+            )
+            .value
+            .trim();
+
 
     const senha =
         document
-        .getElementById("loginSenha")
-        .value;
+            .getElementById(
+                "loginSenha"
+            )
+            .value;
+
 
     if(!email || !senha){
 
@@ -902,25 +836,37 @@ async function entrar(){
         );
 
         return;
+
     }
 
+
     const botao =
-        document.getElementById("btnEntrar");
+        document.getElementById(
+            "btnEntrar"
+        );
+
 
     botao.disabled = true;
-    botao.textContent = "Entrando...";
+
+    botao.textContent =
+        "Entrando...";
+
 
     try{
 
         const resultado =
             await supabaseClient
-            .auth
-            .signInWithPassword({
+                .auth
+                .signInWithPassword({
 
-                email: email,
-                password: senha
+                    email:
+                        email,
 
-            });
+                    password:
+                        senha
+
+                });
+
 
         if(resultado.error){
 
@@ -931,10 +877,59 @@ async function entrar(){
             );
 
             return;
+
         }
 
+
         mensagem(
-            "mensagemLogin",           
+            "mensagemLogin",
+            "Login realizado com sucesso!",
+            "sucesso"
+        );
+
+
+        setTimeout(
+            function(){
+
+                continuarAposLogin();
+
+            },
+            700
+        );
+
+
+    }catch(erro){
+
+        console.error(
+            erro
+        );
+
+
+        mensagem(
+            "mensagemLogin",
+            "Erro ao entrar. Tente novamente.",
+            "erro"
+        );
+
+
+    }finally{
+
+        botao.disabled = false;
+
+        botao.textContent =
+            "Entrar";
+
+    }
+
+}
+
+
+/* =====================================================
+   CADASTRO
+===================================================== */
+
+async function cadastrar(){
+
     limparMensagens();
 
 
@@ -942,9 +937,7 @@ async function entrar(){
 
         mensagem(
             "mensagemCadastro",
-
             "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-
             "erro"
         );
 
@@ -955,36 +948,36 @@ async function entrar(){
 
     const nome =
         document
-        .getElementById("nome")
-        .value
-        .trim();
+            .getElementById("nome")
+            .value
+            .trim();
 
 
     const email =
         document
-        .getElementById("cadastroEmail")
-        .value
-        .trim();
+            .getElementById("cadastroEmail")
+            .value
+            .trim();
 
 
     const telefone =
         document
-        .getElementById("telefone")
-        .value
-        .trim();
+            .getElementById("telefone")
+            .value
+            .trim();
 
 
     const cidade =
         document
-        .getElementById("cidade")
-        .value
-        .trim();
+            .getElementById("cidade")
+            .value
+            .trim();
 
 
     const senha =
         document
-        .getElementById("cadastroSenha")
-        .value;
+            .getElementById("cadastroSenha")
+            .value;
 
 
     if(
@@ -997,9 +990,7 @@ async function entrar(){
 
         mensagem(
             "mensagemCadastro",
-
             "Preencha todos os campos.",
-
             "erro"
         );
 
@@ -1012,9 +1003,7 @@ async function entrar(){
 
         mensagem(
             "mensagemCadastro",
-
             "A senha precisa ter pelo menos 6 caracteres.",
-
             "erro"
         );
 
@@ -1038,32 +1027,47 @@ async function entrar(){
     try{
 
         const urlConfirmacao =
-    new URL("https://save-tag-pet.vercel.app/login.html");
+            new URL(
+                "https://save-tag-pet.vercel.app/login.html"
+            );
 
-if(codigoTag){
-    urlConfirmacao.searchParams.set("tag", codigoTag);
-}
 
-const resultado =
-    await supabaseClient
-    .auth
-    .signUp({
-        email:email,
-        password:senha,
-        options:{
-            emailRedirectTo:
-                urlConfirmacao.toString()
+        if(codigoTag){
+
+            urlConfirmacao.searchParams.set(
+                "tag",
+                codigoTag
+            );
+
         }
-    });
+
+
+        const resultado =
+            await supabaseClient
+                .auth
+                .signUp({
+
+                    email:
+                        email,
+
+                    password:
+                        senha,
+
+                    options:{
+
+                        emailRedirectTo:
+                            urlConfirmacao.toString()
+
+                    }
+
+                });
 
 
         if(resultado.error){
 
             mensagem(
                 "mensagemCadastro",
-
                 resultado.error.message,
-
                 "erro"
             );
 
@@ -1080,9 +1084,7 @@ const resultado =
 
             mensagem(
                 "mensagemCadastro",
-
                 "Não foi possível criar a conta.",
-
                 "erro"
             );
 
@@ -1091,29 +1093,34 @@ const resultado =
         }
 
 
-
-        /* =============================================
-           SALVAR TUTOR
-        ============================================= */
+        /*
+           Se o Supabase criou a sessão imediatamente,
+           salvamos os dados do tutor.
+        */
 
         if(resultado.data.session){
 
             const tutor =
                 await supabaseClient
-                .from("tutores")
-                .insert({
+                    .from("tutores")
+                    .insert({
 
-                    id:usuario.id,
+                        id:
+                            usuario.id,
 
-                    nome:nome,
+                        nome:
+                            nome,
 
-                    telefone:telefone,
+                        telefone:
+                            telefone,
 
-                    email:email,
+                        email:
+                            email,
 
-                    cidade:cidade
+                        cidade:
+                            cidade
 
-                });
+                    });
 
 
             if(tutor.error){
@@ -1126,9 +1133,7 @@ const resultado =
 
                 mensagem(
                     "mensagemCadastro",
-
                     "A conta foi criada, mas os dados do tutor não foram salvos.",
-
                     "erro"
                 );
 
@@ -1139,9 +1144,7 @@ const resultado =
 
             mensagem(
                 "mensagemCadastro",
-
                 "Conta criada com sucesso!",
-
                 "sucesso"
             );
 
@@ -1159,9 +1162,8 @@ const resultado =
         }else{
 
             /*
-              Caso o Supabase exija confirmação
-              de e-mail, mantém a informação da TAG
-              na mensagem.
+               Caso seja necessária confirmação
+               do e-mail.
             */
 
             if(codigoTag){
@@ -1169,7 +1171,9 @@ const resultado =
                 mensagem(
                     "mensagemCadastro",
 
-                    "Conta criada! Confirme seu e-mail. Depois, entre novamente para continuar a ativação da TAG " + codigoTag + ".",
+                    "Conta criada! Confirme seu e-mail. Depois, entre novamente para continuar a ativação da TAG " +
+                    codigoTag +
+                    ".",
 
                     "sucesso"
                 );
@@ -1191,14 +1195,14 @@ const resultado =
 
     }catch(erro){
 
-        console.error(erro);
+        console.error(
+            erro
+        );
 
 
         mensagem(
             "mensagemCadastro",
-
             "Erro ao criar a conta. Tente novamente.",
-
             "erro"
         );
 
@@ -1215,18 +1219,22 @@ const resultado =
 }
 
 
-
 /* =====================================================
    RECUPERAR SENHA
 ===================================================== */
 
 async function recuperarSenha(){
 
+    limparMensagens();
+
+
     const email =
         document
-        .getElementById("loginEmail")
-        .value
-        .trim();
+            .getElementById(
+                "loginEmail"
+            )
+            .value
+            .trim();
 
 
     if(!email){
@@ -1259,21 +1267,35 @@ async function recuperarSenha(){
     }
 
 
+    const botao =
+        document.getElementById(
+            "btnRecuperar"
+        );
+
+
+    botao.disabled = true;
+
+    botao.textContent =
+        "Enviando...";
+
+
     try{
 
         const resultado =
             await supabaseClient
-            .auth
-            .resetPasswordForEmail(
+                .auth
+                .resetPasswordForEmail(
 
-                email,
+                    email,
 
-                {
-                    redirectTo:
-                    "https://save-tag-pet.vercel.app/alterar-senha.html"
-                }
+                    {
 
-            );
+                        redirectTo:
+                            "https://save-tag-pet.vercel.app/alterar-senha.html"
+
+                    }
+
+                );
 
 
         if(resultado.error){
@@ -1302,7 +1324,9 @@ async function recuperarSenha(){
 
     }catch(erro){
 
-        console.error(erro);
+        console.error(
+            erro
+        );
 
 
         mensagem(
@@ -1313,14 +1337,21 @@ async function recuperarSenha(){
             "erro"
         );
 
+
+    }finally{
+
+        botao.disabled = false;
+
+        botao.textContent =
+            "🔑 Esqueci minha senha";
+
     }
 
 }
 
 
-
 /* =====================================================
-   INICIAR
+   INICIAR SISTEMA
 ===================================================== */
 
 iniciarSupabase();
