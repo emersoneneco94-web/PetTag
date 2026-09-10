@@ -1131,16 +1131,24 @@ async function cadastrar(){
 
     try{
 
-        const resultado =
-            await supabaseClient
-            .auth
-            .signUp({
+        const urlConfirmacao =
+    new URL("https://save-tag-pet.vercel.app/login.html");
 
-                email:email,
+if(codigoTag){
+    urlConfirmacao.searchParams.set("tag", codigoTag);
+}
 
-                password:senha
-
-            });
+const resultado =
+    await supabaseClient
+    .auth
+    .signUp({
+        email:email,
+        password:senha,
+        options:{
+            emailRedirectTo:
+                urlConfirmacao.toString()
+        }
+    });
 
 
         if(resultado.error){
