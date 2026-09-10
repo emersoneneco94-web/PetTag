@@ -871,6 +871,104 @@ async function entrar(){
 
     limparMensagens();
 
+    if(!supabaseClient){
+
+        mensagem(
+            "mensagemLogin",
+            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+            "erro"
+        );
+
+        return;
+    }
+
+    const email =
+        document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+    const senha =
+        document
+        .getElementById("loginSenha")
+        .value;
+
+    if(!email || !senha){
+
+        mensagem(
+            "mensagemLogin",
+            "Digite seu e-mail e sua senha.",
+            "erro"
+        );
+
+        return;
+    }
+
+    const botao =
+        document.getElementById("btnEntrar");
+
+    botao.disabled = true;
+    botao.textContent = "Entrando...";
+
+    try{
+
+        const resultado =
+            await supabaseClient
+            .auth
+            .signInWithPassword({
+
+                email: email,
+                password: senha
+
+            });
+
+        if(resultado.error){
+
+            mensagem(
+                "mensagemLogin",
+                resultado.error.message,
+                "erro"
+            );
+
+            return;
+        }
+
+        mensagem(
+            "mensagemLogin",
+            "Login realizado com sucesso!",
+            "sucesso"
+        );
+
+        setTimeout(
+            function(){
+
+                continuarAposLogin();
+
+            },
+            700
+        );
+
+    }catch(erro){
+
+        console.error(erro);
+
+        mensagem(
+            "mensagemLogin",
+            "Erro ao entrar. Tente novamente.",
+            "erro"
+        );
+
+    }finally{
+
+        botao.disabled = false;
+        botao.textContent = "Entrar";
+
+    }
+
+}
+
+    limparMensagens();
+
 
     if(!supabaseClient){
 
