@@ -929,16 +929,37 @@ async function entrar(){
 
     try{
 
-        const resultado =
-            await supabaseClient
-            .auth
-            .signInWithPassword({
+        const urlConfirmacao =
+    new URL(
+        "https://save-tag-pet.vercel.app/login.html"
+    );
 
-                email:email,
+if(codigoTag){
 
-                password:senha
+    urlConfirmacao.searchParams.set(
+        "tag",
+        codigoTag
+    );
 
-            });
+}
+
+const resultado =
+    await supabaseClient
+    .auth
+    .signUp({
+
+        email:email,
+
+        password:senha,
+
+        options:{
+
+            emailRedirectTo:
+                urlConfirmacao.toString()
+
+        }
+
+    });
 
 
         if(resultado.error){
