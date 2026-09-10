@@ -250,6 +250,13 @@ button:disabled{
             >
                 Entrar
             </button>
+            <button
+  type="button"
+  onclick="recuperarSenha()"
+  style="background:none;border:none;color:#19a765;cursor:pointer;font-size:15px;margin-top:12px;"
+>
+  🔑 Esqueci minha senha
+</button>
 
 
             <div
@@ -867,6 +874,54 @@ async function cadastrar(){
 
 iniciarSupabase();
 
+    async function recuperarSenha() {
+  const email = document.getElementById("loginEmail").value.trim();
+
+  if (!email) {
+    mensagem(
+      "mensagemLogin",
+      "Digite seu e-mail para receber o link de recuperação.",
+      "erro"
+    );
+    return;
+  }
+
+  if (!supabaseClient) {
+    mensagem(
+      "mensagemLogin",
+      "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
+      "erro"
+    );
+    return;
+  }
+
+  try {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://save-tag-pet.vercel.app/alterar-senha.html"
+    });
+
+    if (error) {
+      mensagem(
+        "mensagemLogin",
+        error.message,
+        "erro"
+      );
+      return;
+    }
+
+    mensagem(
+      "mensagemLogin",
+      "Enviamos um link para seu e-mail. Verifique sua caixa de entrada.",
+      "sucesso"
+    );
+  } catch (erro) {
+    mensagem(
+      "mensagemLogin",
+      "Não foi possível enviar o e-mail de recuperação.",
+      "erro"
+    );
+  }
+}
 </script>
 
 </body>
