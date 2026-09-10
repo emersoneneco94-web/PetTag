@@ -486,7 +486,6 @@ hr{
   </div>
 
 
-
   <!-- =====================================
        DADOS DO TUTOR
   ====================================== -->
@@ -571,7 +570,6 @@ hr{
   </div>
 
 
-
   <!-- =====================================
        PETS
   ====================================== -->
@@ -606,7 +604,6 @@ hr{
     </button>
 
   </div>
-
 
 
   <!-- =====================================
@@ -741,7 +738,6 @@ hr{
     </div>
 
 
-
     <div class="grid">
 
 
@@ -776,7 +772,6 @@ hr{
     </div>
 
 
-
     <div class="field">
 
       <label>
@@ -789,7 +784,6 @@ hr{
       ></textarea>
 
     </div>
-
 
 
     <div class="field">
@@ -809,7 +803,6 @@ hr{
     </div>
 
 
-
     <div class="field">
 
       <label>
@@ -823,7 +816,6 @@ hr{
       >
 
     </div>
-
 
 
     <div class="field">
@@ -840,7 +832,6 @@ hr{
     </div>
 
 
-
     <div class="field">
 
       <label>
@@ -855,7 +846,6 @@ hr{
     </div>
 
 
-
     <div class="field">
 
       <label>
@@ -868,7 +858,6 @@ hr{
       ></textarea>
 
     </div>
-
 
 
     <div class="actions">
@@ -892,7 +881,6 @@ hr{
     </div>
 
   </div>
-
 
 
   <!-- =====================================
@@ -1019,7 +1007,6 @@ hr{
   </div>
 
 
-
   <!-- =====================================
        SAÚDE
   ====================================== -->
@@ -1144,7 +1131,6 @@ hr{
 </div>
 
 
-
 <script>
 
 
@@ -1157,8 +1143,9 @@ const SUPABASE_URL =
 
 
 /*
+  IMPORTANTE:
   Mantenha aqui a mesma Publishable Key
-  que você já utiliza no projeto.
+  que já estava no seu painel.html atual.
 */
 
 const SUPABASE_KEY =
@@ -1202,7 +1189,6 @@ if(tagCodigo){
 }
 
 
-
 /* =====================================================
    INICIALIZAÇÃO
 ===================================================== */
@@ -1230,7 +1216,6 @@ function iniciarSupabase(){
   verificarLogin();
 
 }
-
 
 
 /* =====================================================
@@ -1293,7 +1278,8 @@ async function verificarLogin(){
 
   /*
     Se chegou aqui com uma TAG,
-    verifica a situação dela.
+    verifica a situação dela através
+    da função segura do Supabase.
   */
 
   if(tagCodigo){
@@ -1305,7 +1291,6 @@ async function verificarLogin(){
 }
 
 
-
 /* =====================================================
    PREPARAR ATIVAÇÃO DA TAG
 ===================================================== */
@@ -1314,25 +1299,36 @@ async function prepararAtivacaoTag(){
 
   try{
 
+    /*
+      IMPORTANTE:
+
+      Não consultamos mais a tabela "tags"
+      diretamente.
+
+      Usamos a função segura:
+      verificar_tag_ativacao
+    */
+
     const {
       data,
       error
     } =
       await supabaseClient
-        .from("tags")
-        .select(
-          "id,codigo,pet_id,ativa"
-        )
-        .eq(
-          "codigo",
-          tagCodigo
-        )
-        .maybeSingle();
+        .rpc(
+          "verificar_tag_ativacao",
+          {
+            p_codigo:
+              tagCodigo
+          }
+        );
 
 
     if(error){
 
-      console.error(error);
+      console.error(
+        "Erro ao verificar TAG:",
+        error
+      );
 
       mostrarMensagem(
         "Não foi possível verificar a TAG.",
@@ -1346,6 +1342,21 @@ async function prepararAtivacaoTag(){
     if(!data){
 
       mostrarMensagem(
+        "Não foi possível verificar a TAG.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* =========================================
+       TAG NÃO ENCONTRADA
+    ========================================= */
+
+    if(data.encontrada === false){
+
+      mostrarMensagem(
         "TAG não encontrada.",
         "error"
       );
@@ -1354,9 +1365,9 @@ async function prepararAtivacaoTag(){
     }
 
 
-    /*
-      TAG desativada
-    */
+    /* =========================================
+       TAG DESATIVADA
+    ========================================= */
 
     if(data.ativa === false){
 
@@ -1369,75 +1380,26 @@ async function prepararAtivacaoTag(){
     }
 
 
-    /*
-      TAG já vinculada
-    */
+    /* =========================================
+       TAG DISPONÍVEL
+    ========================================= */
 
-    if(data.pet_id){
+    if(data.disponivel === true){
 
-      /*
-        Verifica se o pet vinculado
-        pertence ao usuário atual.
-      */
-
-      const {
-        data:petVinculado,
-        error:erroPet
-      } =
-        await supabaseClient
-          .from("pets")
-          .select("id,nome")
-          .eq(
-            "id",
-            data.pet_id
-          )
-          .eq(
-            "tutor_id",
-            usuarioAtual.id
-          )
-          .maybeSingle();
-
-
-      if(erroPet){
-
-        console.error(erroPet);
-
-        return;
-      }
-
-
-      if(petVinculado){
-
-        mostrarTagAtivada();
-
-        /*
-          Seleciona o pet automaticamente.
-        */
-
-        petSelecionado =
-          pets.find(
-            p => p.id === petVinculado.id
-          ) || null;
-
-      }else{
-
-        mostrarMensagem(
-          "Esta TAG já está vinculada a outro pet.",
-          "error"
-        );
-
-      }
-
+      mostrarTagDisponivel();
 
       return;
     }
 
 
-    /*
-      TAG disponível
-    */
+    /* =========================================
+       TAG JÁ VINCULADA
+    ========================================= */
 
-    mostrarTagDisponivel();
+    mostrarMensagem(
+      "Esta TAG já está vinculada a um pet.",
+      "info"
+    );
 
   }catch(erro){
 
@@ -1454,7 +1416,6 @@ async function prepararAtivacaoTag(){
   }
 
 }
-
 
 
 /* =====================================================
@@ -1489,7 +1450,6 @@ function mostrarTagDisponivel(){
 }
 
 
-
 /* =====================================================
    MOSTRAR TAG ATIVADA
 ===================================================== */
@@ -1512,7 +1472,6 @@ function mostrarTagAtivada(){
     .remove("hidden");
 
 }
-
 
 
 /* =====================================================
@@ -1595,7 +1554,6 @@ async function carregarTutor(){
       data.cidade || "";
 
 }
-
 
 
 /* =====================================================
@@ -1682,7 +1640,6 @@ async function salvarTutor(){
 }
 
 
-
 /* =====================================================
    PETS
 ===================================================== */
@@ -1723,7 +1680,6 @@ async function carregarPets(){
   renderizarPets();
 
 }
-
 
 
 /* =====================================================
@@ -1776,6 +1732,7 @@ function renderizarPets(){
                   "Sem nome"
                 )}
               </h3>
+
 
               <div class="pet-meta">
 
@@ -1851,7 +1808,6 @@ function renderizarPets(){
 }
 
 
-
 /* =====================================================
    NOVO PET
 ===================================================== */
@@ -1913,7 +1869,6 @@ function novoPet(){
   });
 
 }
-
 
 
 /* =====================================================
@@ -2093,7 +2048,6 @@ function editarPet(id){
 }
 
 
-
 /* =====================================================
    SALVAR PET
 ===================================================== */
@@ -2133,7 +2087,6 @@ async function salvarPet(){
 
 
   try{
-
 
     const dados = {
 
@@ -2349,17 +2302,12 @@ async function salvarPet(){
         );
 
 
-        /*
-          Se o pet foi criado mas a TAG
-          não pôde ser vinculada, não apagamos
-          o pet automaticamente.
-        */
-
         mostrarMensagem(
           "O pet foi cadastrado, mas não foi possível ativar a TAG: " +
           resultadoTag.error.message,
           "error"
         );
+
 
         await carregarPets();
 
@@ -2370,9 +2318,9 @@ async function salvarPet(){
       }
 
 
-      /*
-        TAG ativada
-      */
+      /* =====================================
+         TAG ATIVADA
+      ===================================== */
 
       mostrarTagAtivada();
 
@@ -2443,7 +2391,6 @@ async function salvarPet(){
 }
 
 
-
 /* =====================================================
    CANCELAR PET
 ===================================================== */
@@ -2465,7 +2412,6 @@ function cancelarPet(){
   limparFormularioPet();
 
 }
-
 
 
 /* =====================================================
@@ -2582,7 +2528,6 @@ function limparFormularioPet(){
 }
 
 
-
 /* =====================================================
    VACINAS / SAÚDE
 ===================================================== */
@@ -2639,7 +2584,6 @@ async function abrirDadosPet(id){
   });
 
 }
-
 
 
 /* =====================================================
@@ -2746,7 +2690,6 @@ async function carregarVacinas(petId){
       .join("");
 
 }
-
 
 
 /* =====================================================
@@ -2896,7 +2839,6 @@ async function adicionarVacina(){
 }
 
 
-
 /* =====================================================
    SAÚDE
 ===================================================== */
@@ -3000,7 +2942,6 @@ async function carregarSaude(petId){
       .join("");
 
 }
-
 
 
 /* =====================================================
@@ -3127,7 +3068,6 @@ async function adicionarSaude(){
 }
 
 
-
 /* =====================================================
    UTILIDADES
 ===================================================== */
@@ -3157,7 +3097,6 @@ function formatarData(data){
 }
 
 
-
 function escapeHtml(text){
 
   return String(
@@ -3185,7 +3124,6 @@ function escapeHtml(text){
   );
 
 }
-
 
 
 /* =====================================================
@@ -3228,7 +3166,6 @@ function mostrarMensagem(
 }
 
 
-
 /* =====================================================
    VOLTAR
 ===================================================== */
@@ -3239,7 +3176,6 @@ function voltarSite(){
     "index.html";
 
 }
-
 
 
 /* =====================================================
@@ -3261,7 +3197,6 @@ async function sair(){
     "login.html";
 
 }
-
 
 
 /* =====================================================
