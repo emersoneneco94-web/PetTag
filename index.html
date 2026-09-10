@@ -1,236 +1,320 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Save Tag Pet</title>
+  <title>Save Tag Pet</title>
 
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f3f7f5;
-  color:#17221d;
-}
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      background:#f3f7f5;
+      color:#17221d;
+    }
 
-.container{
-  width:100%;
-  max-width:520px;
-  margin:auto;
-  padding:18px;
-}
+    .container{
+      width:100%;
+      max-width:520px;
+      margin:auto;
+      padding:18px;
+    }
 
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-}
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
+    }
 
-.logo{
-  font-size:24px;
-  font-weight:800;
-  color:#173d2d;
-}
+    .logo{
+      font-size:24px;
+      font-weight:800;
+      color:#173d2d;
+    }
 
-.logo span{
-  color:#36a269;
-}
+    .logo span{
+      color:#36a269;
+    }
 
-.card{
-  background:white;
-  border-radius:22px;
-  padding:20px;
-  margin-bottom:16px;
-  box-shadow:0 5px 20px rgba(0,0,0,.07);
-}
+    .card{
+      background:white;
+      border-radius:22px;
+      padding:20px;
+      margin-bottom:16px;
+      box-shadow:0 5px 20px rgba(0,0,0,.07);
+    }
 
-.hero{
-  padding:0;
-  overflow:hidden;
-}
+    .hero{
+      padding:0;
+      overflow:hidden;
+    }
 
-.pet-photo{
-  width:100%;
-  height:330px;
-  object-fit:cover;
-  display:block;
-  background:#e8eee9;
-}
+    .pet-photo{
+      width:100%;
+      height:330px;
+      object-fit:cover;
+      display:block;
+      background:#e8eee9;
+    }
 
-.pet-info{
-  padding:20px;
-}
+    .pet-info{
+      padding:20px;
+    }
 
-.pet-name{
-  font-size:34px;
-  font-weight:800;
-  margin-bottom:5px;
-}
+    .pet-name{
+      font-size:34px;
+      font-weight:800;
+      margin-bottom:5px;
+    }
 
-.pet-sub{
-  color:#66736c;
-  font-size:16px;
-}
+    .pet-sub{
+      color:#66736c;
+      font-size:16px;
+    }
 
-.badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:14px;
-}
+    .badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
 
-.badge{
-  background:#e8f6ee;
-  color:#26794e;
-  padding:7px 11px;
-  border-radius:20px;
-  font-size:13px;
-  font-weight:700;
-}
+    .badge{
+      background:#e8f6ee;
+      color:#26794e;
+      padding:7px 11px;
+      border-radius:20px;
+      font-size:13px;
+      font-weight:700;
+    }
 
-.section-title{
-  font-size:20px;
-  font-weight:800;
-  margin-bottom:16px;
-}
+    .badge-danger{
+      background:#ffe8e8;
+      color:#d73e3e;
+    }
 
-.info-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
+    .section-title{
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:16px;
+    }
 
-.info-item{
-  background:#f6f8f7;
-  border-radius:14px;
-  padding:13px;
-}
+    .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
 
-.info-label{
-  font-size:12px;
-  color:#758078;
-  margin-bottom:5px;
-}
+    .info-item{
+      background:#f6f8f7;
+      border-radius:14px;
+      padding:13px;
+    }
 
-.info-value{
-  font-weight:700;
-  font-size:15px;
-}
+    .info-label{
+      font-size:12px;
+      color:#758078;
+      margin-bottom:5px;
+    }
 
-.contact{
-  background:#173d2d;
-  color:white;
-}
+    .info-value{
+      font-weight:700;
+      font-size:15px;
+    }
 
-.contact h2{
-  margin-bottom:8px;
-}
+    .contact{
+      background:#173d2d;
+      color:white;
+    }
 
-.contact p{
-  color:#d8e8df;
-  line-height:1.5;
-  margin-bottom:16px;
-}
+    .contact h2{
+      margin-bottom:8px;
+    }
 
-.buttons{
-  display:flex;
-  gap:10px;
-}
+    .contact p{
+      color:#d8e8df;
+      line-height:1.5;
+      margin-bottom:16px;
+    }
 
-.btn{
-  flex:1;
-  border:none;
-  border-radius:13px;
-  padding:13px;
-  text-align:center;
-  text-decoration:none;
-  font-weight:800;
-  cursor:pointer;
-}
+    .buttons{
+      display:flex;
+      gap:10px;
+    }
 
-.btn-whatsapp{
-  background:#36c979;
-  color:white;
-}
+    .btn{
+      flex:1;
+      border:none;
+      border-radius:13px;
+      padding:13px;
+      text-align:center;
+      text-decoration:none;
+      font-weight:800;
+      cursor:pointer;
+      display:block;
+    }
 
-.btn-call{
-  background:white;
-  color:#173d2d;
-}
+    .btn-whatsapp{
+      background:#36c979;
+      color:white;
+    }
 
-.lost{
-  border:2px solid #e85b5b;
-  background:#fff7f7;
-}
+    .btn-call{
+      background:white;
+      color:#173d2d;
+    }
 
-.lost-title{
-  color:#d73e3e;
-  font-size:20px;
-  font-weight:800;
-  margin-bottom:10px;
-}
+    .btn-primary{
+      background:#173d2d;
+      color:white;
+      width:100%;
+      margin-top:8px;
+    }
 
-.lost p{
-  line-height:1.5;
-  margin-bottom:8px;
-}
+    .lost{
+      border:2px solid #e85b5b;
+      background:#fff7f7;
+    }
 
-.hidden{
-  display:none!important;
-}
+    .lost-title{
+      color:#d73e3e;
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
 
-.text{
-  color:#59645e;
-  line-height:1.55;
-}
+    .lost p{
+      line-height:1.5;
+      margin-bottom:8px;
+    }
 
-.empty{
-  color:#8a938e;
-  font-style:italic;
-}
+    .hidden{
+      display:none!important;
+    }
 
-.footer{
-  text-align:center;
-  padding:25px 10px 35px;
-  color:#718078;
-  font-size:13px;
-}
+    .text{
+      color:#59645e;
+      line-height:1.55;
+    }
 
-.loading{
-  text-align:center;
-  padding:50px 20px;
-}
+    .empty{
+      color:#8a938e;
+      font-style:italic;
+    }
 
-.error{
-  text-align:center;
-  padding:40px 20px;
-}
+    .footer{
+      text-align:center;
+      padding:25px 10px 35px;
+      color:#718078;
+      font-size:13px;
+    }
 
-.error h2{
-  margin-bottom:10px;
-}
+    .loading{
+      text-align:center;
+      padding:50px 20px;
+    }
 
-@media(max-width:400px){
-  .pet-photo{
-    height:270px;
-  }
+    .error{
+      text-align:center;
+      padding:40px 20px;
+    }
 
-  .pet-name{
-    font-size:29px;
-  }
+    .error h2{
+      margin-bottom:10px;
+    }
 
-  .info-grid{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+    /* ATIVAÇÃO DA TAG */
+
+    .activation{
+      text-align:center;
+      padding:28px 20px;
+    }
+
+    .activation-icon{
+      font-size:54px;
+      margin-bottom:12px;
+    }
+
+    .activation h1{
+      font-size:28px;
+      margin-bottom:10px;
+      color:#173d2d;
+    }
+
+    .activation-subtitle{
+      color:#59645e;
+      line-height:1.55;
+      margin-bottom:20px;
+    }
+
+    .activation-info{
+      background:#f6f8f7;
+      border-radius:15px;
+      padding:14px;
+      margin-bottom:18px;
+    }
+
+    .activation-info small{
+      display:block;
+      color:#758078;
+      margin-bottom:5px;
+    }
+
+    .activation-info strong{
+      font-size:18px;
+      color:#173d2d;
+      letter-spacing:1px;
+    }
+
+    .activation-steps{
+      text-align:left;
+      margin-top:22px;
+    }
+
+    .activation-step{
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+      color:#59645e;
+      line-height:1.4;
+    }
+
+    .step-number{
+      min-width:26px;
+      height:26px;
+      border-radius:50%;
+      background:#e8f6ee;
+      color:#26794e;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    @media(max-width:400px){
+
+      .pet-photo{
+        height:270px;
+      }
+
+      .pet-name{
+        font-size:29px;
+      }
+
+      .info-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -238,23 +322,124 @@ body{
 <div class="container">
 
   <header class="header">
-    <div class="logo">Save <span>Tag</span> Pet</div>
+    <div class="logo">
+      Save <span>Tag</span> Pet
+    </div>
   </header>
+
+
+  <!-- CARREGANDO -->
 
   <div id="loading" class="card loading">
     Carregando informações do pet...
   </div>
 
+
+  <!-- ERRO / TAG NÃO ENCONTRADA -->
+
   <div id="erro" class="card error hidden">
+
     <h2>Pet não encontrado</h2>
+
     <p class="text">
       Não conseguimos localizar uma TAG ativa para este código.
     </p>
+
   </div>
+
+
+  <!-- TAG DISPONÍVEL PARA ATIVAÇÃO -->
+
+  <div id="ativacao" class="card activation hidden">
+
+    <div class="activation-icon">
+      🐾
+    </div>
+
+    <h1>
+      Sua TAG está pronta!
+    </h1>
+
+    <p class="activation-subtitle">
+      Esta TAG ainda não foi ativada.
+      Ative agora e cadastre todas as informações do seu PET.
+    </p>
+
+
+    <div class="activation-info">
+
+      <small>
+        Código da TAG
+      </small>
+
+      <strong id="codigoTagAtivacao">
+        -
+      </strong>
+
+    </div>
+
+
+    <a
+      id="btnAtivar"
+      href="login.html"
+      class="btn btn-primary"
+    >
+      ATIVAR MINHA TAG
+    </a>
+
+
+    <div class="activation-steps">
+
+      <div class="activation-step">
+
+        <div class="step-number">
+          1
+        </div>
+
+        <div>
+          Crie sua conta ou entre com seu login.
+        </div>
+
+      </div>
+
+
+      <div class="activation-step">
+
+        <div class="step-number">
+          2
+        </div>
+
+        <div>
+          Ative sua TAG e vincule ao seu cadastro.
+        </div>
+
+      </div>
+
+
+      <div class="activation-step">
+
+        <div class="step-number">
+          3
+        </div>
+
+        <div>
+          Cadastre seu PET e todas as informações.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CONTEÚDO DO PET -->
 
   <main id="conteudo" class="hidden">
 
+
     <!-- PET -->
+
     <section class="card hero">
 
       <img
@@ -266,26 +451,38 @@ body{
 
       <div class="pet-info">
 
-        <h1 id="petNome" class="pet-name">Pet</h1>
+        <h1 id="petNome" class="pet-name">
+          Pet
+        </h1>
 
         <p id="petSub" class="pet-sub">
           Carregando...
         </p>
 
         <div class="badges">
-          <span class="badge">TAG ATIVA</span>
-          <span id="badgePerdido" class="badge hidden">
+
+          <span class="badge">
+            TAG ATIVA
+          </span>
+
+          <span id="badgePerdido" class="badge badge-danger hidden">
             PET PERDIDO
           </span>
+
         </div>
 
       </div>
+
     </section>
 
+
     <!-- ENCONTROU -->
+
     <section class="card contact">
 
-      <h2>Encontrou meu pet?</h2>
+      <h2>
+        Encontrou meu pet?
+      </h2>
 
       <p id="mensagemContato">
         Entre em contato com o tutor através dos canais abaixo.
@@ -297,6 +494,8 @@ body{
           id="btnWhatsApp"
           class="btn btn-whatsapp"
           href="#"
+          target="_blank"
+          rel="noopener"
         >
           WhatsApp
         </a>
@@ -313,7 +512,9 @@ body{
 
     </section>
 
+
     <!-- INFORMAÇÕES -->
+
     <section class="card">
 
       <h2 class="section-title">
@@ -323,40 +524,89 @@ body{
       <div class="info-grid">
 
         <div class="info-item">
-          <div class="info-label">Nome</div>
-          <div id="infoNome" class="info-value">-</div>
+
+          <div class="info-label">
+            Nome
+          </div>
+
+          <div id="infoNome" class="info-value">
+            -
+          </div>
+
         </div>
 
-        <div class="info-item">
-          <div class="info-label">Espécie</div>
-          <div id="infoEspecie" class="info-value">-</div>
-        </div>
 
         <div class="info-item">
-          <div class="info-label">Raça</div>
-          <div id="infoRaca" class="info-value">-</div>
+
+          <div class="info-label">
+            Espécie
+          </div>
+
+          <div id="infoEspecie" class="info-value">
+            -
+          </div>
+
         </div>
 
-        <div class="info-item">
-          <div class="info-label">Sexo</div>
-          <div id="infoSexo" class="info-value">-</div>
-        </div>
 
         <div class="info-item">
-          <div class="info-label">Nascimento</div>
-          <div id="infoNascimento" class="info-value">-</div>
+
+          <div class="info-label">
+            Raça
+          </div>
+
+          <div id="infoRaca" class="info-value">
+            -
+          </div>
+
         </div>
 
+
         <div class="info-item">
-          <div class="info-label">Cidade</div>
-          <div id="infoCidade" class="info-value">-</div>
+
+          <div class="info-label">
+            Sexo
+          </div>
+
+          <div id="infoSexo" class="info-value">
+            -
+          </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <div class="info-label">
+            Nascimento
+          </div>
+
+          <div id="infoNascimento" class="info-value">
+            -
+          </div>
+
+        </div>
+
+
+        <div class="info-item">
+
+          <div class="info-label">
+            Cidade
+          </div>
+
+          <div id="infoCidade" class="info-value">
+            -
+          </div>
+
         </div>
 
       </div>
 
     </section>
 
+
     <!-- SAÚDE -->
+
     <section class="card">
 
       <h2 class="section-title">
@@ -366,20 +616,32 @@ body{
       <div class="info-grid">
 
         <div class="info-item">
-          <div class="info-label">Alergias</div>
+
+          <div class="info-label">
+            Alergias
+          </div>
+
           <div id="infoAlergias" class="info-value">
             Não informado
           </div>
+
         </div>
 
+
         <div class="info-item">
-          <div class="info-label">Medicamentos</div>
+
+          <div class="info-label">
+            Medicamentos
+          </div>
+
           <div id="infoMedicamentos" class="info-value">
             Não informado
           </div>
+
         </div>
 
       </div>
+
 
       <div style="margin-top:12px">
 
@@ -399,14 +661,20 @@ body{
 
     </section>
 
+
     <!-- PET PERDIDO -->
-    <section id="cardPerdido" class="card lost hidden">
+
+    <section
+      id="cardPerdido"
+      class="card lost hidden"
+    >
 
       <div class="lost-title">
         🚨 PET PERDIDO
       </div>
 
-      <p id="perdidoMensagem"></p>
+      <p id="perdidoMensagem">
+      </p>
 
       <p>
         <strong>Último local:</strong>
@@ -425,7 +693,9 @@ body{
 
     </section>
 
+
     <!-- TUTOR -->
+
     <section class="card">
 
       <h2 class="section-title">
@@ -448,27 +718,35 @@ body{
 
   </main>
 
+
   <footer class="footer">
+
     Save Tag Pet<br>
+
     Um toque, muitos cuidados! 💚
+
   </footer>
 
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <script>
 
 const SUPABASE_URL =
   "https://mqiwoubhivutavpnpeax.supabase.co";
 
+
 /*
-  IMPORTANTE:
-  Mantenha aqui a mesma PUBLISHABLE KEY
-  que já estava no seu index.html atual.
+  COLOQUE AQUI A MESMA PUBLISHABLE KEY
+  QUE JÁ ESTÁ NO SEU INDEX.HTML ATUAL.
 */
+
 const SUPABASE_KEY =
   "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+
 
 const supabaseClient =
   window.supabase.createClient(
@@ -477,34 +755,21 @@ const supabaseClient =
   );
 
 
-function escapeHTML(valor){
-
-  if(valor === null || valor === undefined){
-    return "";
-  }
-
-  return String(valor)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
 function formatarData(data){
 
   if(!data){
     return "-";
   }
 
-  const partes = data.split("-");
+  const partes =
+    String(data).split("-");
 
   if(partes.length !== 3){
     return data;
   }
 
   return `${partes[2]}/${partes[1]}/${partes[0]}`;
+
 }
 
 
@@ -515,16 +780,25 @@ function formatarHora(hora){
   }
 
   return String(hora).substring(0,5);
+
 }
 
 
 async function carregarPet(){
 
   const params =
-    new URLSearchParams(window.location.search);
+    new URLSearchParams(
+      window.location.search
+    );
+
 
   const codigo =
     params.get("tag");
+
+
+  /*
+    SEM CÓDIGO DA TAG
+  */
 
   if(!codigo){
 
@@ -537,10 +811,15 @@ async function carregarPet(){
       .classList.remove("hidden");
 
     return;
+
   }
 
 
   try{
+
+    /*
+      CONSULTA AO SUPABASE
+    */
 
     const resposta =
       await fetch(
@@ -575,6 +854,10 @@ async function carregarPet(){
       await resposta.json();
 
 
+    /*
+      TAG NÃO EXISTE
+    */
+
     if(!dados || !dados.length){
 
       document
@@ -586,22 +869,79 @@ async function carregarPet(){
         .classList.remove("hidden");
 
       return;
+
     }
 
 
-    const pet = dados[0];
+    const pet =
+      dados[0];
 
+
+    /*
+      TAG EXISTE, MAS AINDA NÃO TEM PET
+    */
+
+    if(pet.tag_disponivel === true){
+
+      document
+        .getElementById("loading")
+        .classList.add("hidden");
+
+
+      document
+        .getElementById("ativacao")
+        .classList.remove("hidden");
+
+
+      /*
+        MOSTRA O CÓDIGO DA TAG
+      */
+
+      document
+        .getElementById("codigoTagAtivacao")
+        .textContent =
+          pet.tag_codigo || codigo;
+
+
+      /*
+        ENVIA O CÓDIGO DA TAG PARA O LOGIN
+
+        Exemplo:
+        login.html?tag=TESTE001
+      */
+
+      document
+        .getElementById("btnAtivar")
+        .href =
+          `login.html?tag=${encodeURIComponent(
+            pet.tag_codigo || codigo
+          )}`;
+
+
+      return;
+
+    }
+
+
+    /*
+      TAG ATIVA E VINCULADA A UM PET
+    */
 
     preencherPagina(pet);
 
 
   }catch(erro){
 
-    console.error(erro);
+    console.error(
+      "Erro:",
+      erro
+    );
+
 
     document
       .getElementById("loading")
       .classList.add("hidden");
+
 
     document
       .getElementById("erro")
@@ -614,9 +954,18 @@ async function carregarPet(){
 
 function preencherPagina(pet){
 
+  /*
+    ESCONDE CARREGAMENTO
+  */
+
   document
     .getElementById("loading")
     .classList.add("hidden");
+
+
+  /*
+    MOSTRA PERFIL
+  */
 
   document
     .getElementById("conteudo")
@@ -636,7 +985,9 @@ function preencherPagina(pet){
   document
     .getElementById("petSub")
     .textContent =
-      `${pet.raca || "Raça não informada"} • ${pet.sexo || "Sexo não informado"}`;
+      `${pet.raca || "Raça não informada"} • ${
+        pet.sexo || "Sexo não informado"
+      }`;
 
 
   document
@@ -758,9 +1109,25 @@ function preencherPagina(pet){
 
   if(pet.whatsapp){
 
-    const whatsapp =
+    let whatsapp =
       String(pet.whatsapp)
         .replace(/\D/g,"");
+
+
+    /*
+      Se o número tiver 10 ou 11 dígitos,
+      adiciona o código do Brasil.
+    */
+
+    if(
+      whatsapp.length === 10 ||
+      whatsapp.length === 11
+    ){
+
+      whatsapp =
+        "55" + whatsapp;
+
+    }
 
 
     document
