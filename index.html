@@ -2,91 +2,834 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Save Tag Pet | Identificação inteligente</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Save Tag Pet</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f7f6;color:#172b2b}header,footer{background:#102a43;color:#fff;text-align:center;padding:22px}.logo{font-size:27px;font-weight:800}.logo span,footer span{color:#35d98a}.sub{font-size:11px;letter-spacing:2px;margin-top:4px}main{max-width:720px;margin:auto;padding:18px}.card,section,nav a{background:#fff;border-radius:20px;box-shadow:0 4px 18px #0001}.card{overflow:hidden;margin-bottom:16px}.photo{width:100%;height:300px;object-fit:cover}.content,section{padding:20px}h1{font-size:34px;color:#102a43;margin:0 0 4px}.muted{color:#718080;margin:0 0 15px}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}.tag{background:#e5f8ef;color:#087a50;padding:7px 11px;border-radius:20px;font-size:12px;font-weight:bold}.alert{background:#e7f8f1;border:1px solid #bcebd6;border-radius:16px;padding:16px}.alert h2{font-size:17px;color:#087a50;margin:0 0 7px}.alert p{font-size:13px;color:#526565}.buttons{display:flex;gap:9px}.btn{flex:1;text-align:center;text-decoration:none;color:white;padding:12px;border-radius:10px;font-weight:bold}.whats{background:#20b968}.call{background:#102a43}nav{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px}nav a{text-align:center;text-decoration:none;color:#102a43;padding:13px 3px;font-size:12px;font-weight:bold}nav b{display:block;font-size:20px;margin-bottom:4px}.title{font-size:20px;color:#102a43;margin:0 0 15px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.info{background:#f5f8f7;padding:12px;border-radius:12px}.info small{display:block;color:#829090;font-size:10px;text-transform:uppercase;margin-bottom:3px}.info strong{color:#102a43}.item{padding:12px 0;border-bottom:1px solid #edf1f0;font-size:14px}.item:last-child{border:0}.ok{float:right;color:#0b965f;font-weight:bold}.lost{background:#fff1f1;border:1px solid #ffcaca}.lost h2{color:#c83339}footer p{font-size:13px;opacity:.8} @media(min-width:700px){.card{display:grid;grid-template-columns:1fr 1fr}.photo{height:100%;min-height:470px}}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f3f7f5;
+  color:#17221d;
+}
+
+.container{
+  width:100%;
+  max-width:520px;
+  margin:auto;
+  padding:18px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+  color:#173d2d;
+}
+
+.logo span{
+  color:#36a269;
+}
+
+.card{
+  background:white;
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:0 5px 20px rgba(0,0,0,.07);
+}
+
+.hero{
+  padding:0;
+  overflow:hidden;
+}
+
+.pet-photo{
+  width:100%;
+  height:330px;
+  object-fit:cover;
+  display:block;
+  background:#e8eee9;
+}
+
+.pet-info{
+  padding:20px;
+}
+
+.pet-name{
+  font-size:34px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.pet-sub{
+  color:#66736c;
+  font-size:16px;
+}
+
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:14px;
+}
+
+.badge{
+  background:#e8f6ee;
+  color:#26794e;
+  padding:7px 11px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:700;
+}
+
+.section-title{
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.info-item{
+  background:#f6f8f7;
+  border-radius:14px;
+  padding:13px;
+}
+
+.info-label{
+  font-size:12px;
+  color:#758078;
+  margin-bottom:5px;
+}
+
+.info-value{
+  font-weight:700;
+  font-size:15px;
+}
+
+.contact{
+  background:#173d2d;
+  color:white;
+}
+
+.contact h2{
+  margin-bottom:8px;
+}
+
+.contact p{
+  color:#d8e8df;
+  line-height:1.5;
+  margin-bottom:16px;
+}
+
+.buttons{
+  display:flex;
+  gap:10px;
+}
+
+.btn{
+  flex:1;
+  border:none;
+  border-radius:13px;
+  padding:13px;
+  text-align:center;
+  text-decoration:none;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.btn-whatsapp{
+  background:#36c979;
+  color:white;
+}
+
+.btn-call{
+  background:white;
+  color:#173d2d;
+}
+
+.lost{
+  border:2px solid #e85b5b;
+  background:#fff7f7;
+}
+
+.lost-title{
+  color:#d73e3e;
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.lost p{
+  line-height:1.5;
+  margin-bottom:8px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.text{
+  color:#59645e;
+  line-height:1.55;
+}
+
+.empty{
+  color:#8a938e;
+  font-style:italic;
+}
+
+.footer{
+  text-align:center;
+  padding:25px 10px 35px;
+  color:#718078;
+  font-size:13px;
+}
+
+.loading{
+  text-align:center;
+  padding:50px 20px;
+}
+
+.error{
+  text-align:center;
+  padding:40px 20px;
+}
+
+.error h2{
+  margin-bottom:10px;
+}
+
+@media(max-width:400px){
+  .pet-photo{
+    height:270px;
+  }
+
+  .pet-name{
+    font-size:29px;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
+
 <body>
-<header><div class="logo">Save Tag <span>Pet</span></div><div class="sub">IDENTIFICAÇÃO INTELIGENTE</div></header>
-<main>
-<div class="card">
-<img class="photo" src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=85" alt="Pet">
-<div class="content">
-<h1>Thor</h1><p class="muted">Labrador Retriever • Macho</p>
-<div class="tags"><span class="tag">✓ TAG ATIVA</span><span class="tag">✓ CASTRADO</span><span class="tag">✓ DÓCIL</span></div>
-<div class="alert"><h2>🐾 ENCONTROU MEU PET?</h2><p>Se você encontrou o Thor, entre em contato com o tutor.</p><div class="buttons"><a class="btn whats" href="https://wa.me/5513999999999">WhatsApp</a><a class="btn call" href="tel:+5513999999999">Ligar</a></div></div>
-</div></div>
-<nav><a href="#pet"><b>🐶</b>Pet</a><a href="#vacinas"><b>💉</b>Vacinas</a><a href="#saude"><b>❤️</b>Saúde</a><a href="#tutor"><b>👤</b>Tutor</a></nav>
-<section id="pet"><h2 class="title">🐾 Informações do Pet</h2><div class="grid">
-<div class="info"><small>Nome</small><strong>Thor</strong></div><div class="info"><small>Raça</small><strong>Labrador Retriever</strong></div>
-<div class="info"><small>Nascimento</small><strong>15/03/2022</strong></div><div class="info"><small>Sexo</small><strong>Macho</strong></div>
-<div class="info"><small>Cor</small><strong>Dourado</strong></div><div class="info"><small>Peso</small><strong>32 kg</strong></div>
-</div></section>
-<section id="vacinas"><h2 class="title">💉 Vacinas</h2>
-<div class="item"><strong>V10</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 10/02/2026</small></div>
-<div class="item"><strong>Antirrábica</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 15/03/2026</small></div>
-<div class="item"><strong>Gripe Canina</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 20/04/2026</small></div>
-<div class="item"><strong>Giárdia</strong><span class="ok">✓ Em dia</span><br><small>Aplicada: 20/04/2026</small></div>
-</section>
-<section id="saude"><h2 class="title">❤️ Saúde</h2>
-<div class="item"><strong>Alergias</strong><br>Nenhuma alergia cadastrada.</div>
-<div class="item"><strong>Condições de saúde</strong><br>Nenhuma condição informada.</div>
-<div class="item"><strong>Medicamentos</strong><br>Nenhum medicamento contínuo.</div>
-<div class="item"><strong>Observações</strong><br>Pet dócil e acostumado com crianças.</div>
-</section>
-<section id="tutor"><h2 class="title">👤 Tutor</h2><div class="grid"><div class="info"><small>Nome</small><strong>Emerson</strong></div><div class="info"><small>Cidade</small><strong>Praia Grande - SP</strong></div></div></section>
-<section class="lost"><h2>🚨 Meu pet está perdido</h2><p>Quando ativado pelo tutor, este alerta aparecerá com destaque para ajudar na localização.</p></section>
-<section><p style="font-size:12px;color:#687878">🔒 <strong>Privacidade:</strong> o tutor poderá escolher quais informações ficam visíveis para quem encontrar o pet.</p></section>
-</main>
-<footer><div class="logo">Save Tag <span>Pet</span></div><p>Identifique. Encontre. Proteja.</p><p>Um toque pode trazer seu pet de volta. 💚</p></footer>
-</body>
-</html>
+
+<div class="container">
+
+  <header class="header">
+    <div class="logo">Save <span>Tag</span> Pet</div>
+  </header>
+
+  <div id="loading" class="card loading">
+    Carregando informações do pet...
+  </div>
+
+  <div id="erro" class="card error hidden">
+    <h2>Pet não encontrado</h2>
+    <p class="text">
+      Não conseguimos localizar uma TAG ativa para este código.
+    </p>
+  </div>
+
+  <main id="conteudo" class="hidden">
+
+    <!-- PET -->
+    <section class="card hero">
+
+      <img
+        id="petFoto"
+        class="pet-photo"
+        src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=80"
+        alt="Foto do pet"
+      >
+
+      <div class="pet-info">
+
+        <h1 id="petNome" class="pet-name">Pet</h1>
+
+        <p id="petSub" class="pet-sub">
+          Carregando...
+        </p>
+
+        <div class="badges">
+          <span class="badge">TAG ATIVA</span>
+          <span id="badgePerdido" class="badge hidden">
+            PET PERDIDO
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ENCONTROU -->
+    <section class="card contact">
+
+      <h2>Encontrou meu pet?</h2>
+
+      <p id="mensagemContato">
+        Entre em contato com o tutor através dos canais abaixo.
+      </p>
+
+      <div class="buttons">
+
+        <a
+          id="btnWhatsApp"
+          class="btn btn-whatsapp"
+          href="#"
+        >
+          WhatsApp
+        </a>
+
+        <a
+          id="btnTelefone"
+          class="btn btn-call"
+          href="#"
+        >
+          Ligar
+        </a>
+
+      </div>
+
+    </section>
+
+    <!-- INFORMAÇÕES -->
+    <section class="card">
+
+      <h2 class="section-title">
+        Informações do Pet
+      </h2>
+
+      <div class="info-grid">
+
+        <div class="info-item">
+          <div class="info-label">Nome</div>
+          <div id="infoNome" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Espécie</div>
+          <div id="infoEspecie" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Raça</div>
+          <div id="infoRaca" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Sexo</div>
+          <div id="infoSexo" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Nascimento</div>
+          <div id="infoNascimento" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Cidade</div>
+          <div id="infoCidade" class="info-value">-</div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SAÚDE -->
+    <section class="card">
+
+      <h2 class="section-title">
+        Saúde
+      </h2>
+
+      <div class="info-grid">
+
+        <div class="info-item">
+          <div class="info-label">Alergias</div>
+          <div id="infoAlergias" class="info-value">
+            Não informado
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Medicamentos</div>
+          <div id="infoMedicamentos" class="info-value">
+            Não informado
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:12px">
+
+        <div class="info-item">
+
+          <div class="info-label">
+            Observações
+          </div>
+
+          <div id="infoObservacoes" class="text">
+            Nenhuma observação cadastrada.
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- PET PERDIDO -->
+    <section id="cardPerdido" class="card lost hidden">
+
+      <div class="lost-title">
+        🚨 PET PERDIDO
+      </div>
+
+      <p id="perdidoMensagem"></p>
+
+      <p>
+        <strong>Último local:</strong>
+        <span id="perdidoLocal">-</span>
+      </p>
+
+      <p>
+        <strong>Data:</strong>
+        <span id="perdidoData">-</span>
+      </p>
+
+      <p>
+        <strong>Horário:</strong>
+        <span id="perdidoHora">-</span>
+      </p>
+
+    </section>
+
+    <!-- TUTOR -->
+    <section class="card">
+
+      <h2 class="section-title">
+        Tutor
+      </h2>
+
+      <div class="info-item">
+
+        <div class="info-label">
+          Responsável
+        </div>
+
+        <div id="tutorNome" class="info-value">
+          -
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    Save Tag Pet<br>
+    Um toque, muitos cuidados! 💚
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const SUPABASE_URL = 'https://mqiwoubhivutavpnpeax.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll';
 
-async function carregarPet() {
-  const params = new URLSearchParams(window.location.search);
-  const codigo = params.get('tag') || 'THOR8F42';
+const SUPABASE_URL =
+  "https://mqiwoubhivutavpnpeax.supabase.co";
 
-  try {
-    const resposta = await fetch(
-      `${SUPABASE_URL}/rest/v1/rpc/get_pet_public`,
-      {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ p_codigo: codigo })
-      }
-    );
+/*
+  IMPORTANTE:
+  Mantenha aqui a mesma PUBLISHABLE KEY
+  que já estava no seu index.html atual.
+*/
+const SUPABASE_KEY =
+  "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
-    const pets = await resposta.json();
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-    if (!resposta.ok || !pets.length) {
-      document.querySelector('h1').textContent = 'Pet não encontrado';
+
+function escapeHTML(valor){
+
+  if(valor === null || valor === undefined){
+    return "";
+  }
+
+  return String(valor)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function formatarData(data){
+
+  if(!data){
+    return "-";
+  }
+
+  const partes = data.split("-");
+
+  if(partes.length !== 3){
+    return data;
+  }
+
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+
+function formatarHora(hora){
+
+  if(!hora){
+    return "-";
+  }
+
+  return String(hora).substring(0,5);
+}
+
+
+async function carregarPet(){
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const codigo =
+    params.get("tag");
+
+  if(!codigo){
+
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
+
+    document
+      .getElementById("erro")
+      .classList.remove("hidden");
+
+    return;
+  }
+
+
+  try{
+
+    const resposta =
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/rpc/get_pet_public`,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json",
+            "apikey":SUPABASE_KEY,
+            "Authorization":
+              `Bearer ${SUPABASE_KEY}`
+          },
+
+          body:JSON.stringify({
+            p_codigo:codigo
+          })
+        }
+      );
+
+
+    if(!resposta.ok){
+
+      throw new Error(
+        "Erro ao consultar o pet"
+      );
+
+    }
+
+
+    const dados =
+      await resposta.json();
+
+
+    if(!dados || !dados.length){
+
+      document
+        .getElementById("loading")
+        .classList.add("hidden");
+
+      document
+        .getElementById("erro")
+        .classList.remove("hidden");
+
       return;
     }
 
-    const pet = pets[0];
 
-    document.querySelector('h1').textContent = pet.nome;
+    const pet = dados[0];
 
-    const dados = document.querySelector('.muted');
-    if (dados) {
-      dados.textContent =
-        `${pet.raca || ''} • ${pet.sexo || ''}`;
-    }
 
-    console.log('Pet carregado:', pet);
-  } catch (erro) {
-    console.error('Erro ao carregar pet:', erro);
+    preencherPagina(pet);
+
+
+  }catch(erro){
+
+    console.error(erro);
+
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
+
+    document
+      .getElementById("erro")
+      .classList.remove("hidden");
+
   }
+
 }
 
+
+function preencherPagina(pet){
+
+  document
+    .getElementById("loading")
+    .classList.add("hidden");
+
+  document
+    .getElementById("conteudo")
+    .classList.remove("hidden");
+
+
+  /*
+    DADOS PRINCIPAIS
+  */
+
+  document
+    .getElementById("petNome")
+    .textContent =
+      pet.nome || "Pet";
+
+
+  document
+    .getElementById("petSub")
+    .textContent =
+      `${pet.raca || "Raça não informada"} • ${pet.sexo || "Sexo não informado"}`;
+
+
+  document
+    .getElementById("infoNome")
+    .textContent =
+      pet.nome || "-";
+
+
+  document
+    .getElementById("infoEspecie")
+    .textContent =
+      pet.especie || "-";
+
+
+  document
+    .getElementById("infoRaca")
+    .textContent =
+      pet.raca || "-";
+
+
+  document
+    .getElementById("infoSexo")
+    .textContent =
+      pet.sexo || "-";
+
+
+  document
+    .getElementById("infoNascimento")
+    .textContent =
+      formatarData(
+        pet.data_nascimento
+      );
+
+
+  document
+    .getElementById("infoCidade")
+    .textContent =
+      pet.cidade || "-";
+
+
+  /*
+    FOTO
+  */
+
+  if(pet.foto_url){
+
+    document
+      .getElementById("petFoto")
+      .src =
+        pet.foto_url;
+
+  }
+
+
+  /*
+    SAÚDE
+  */
+
+  document
+    .getElementById("infoAlergias")
+    .textContent =
+      pet.alergias ||
+      "Nenhuma informada";
+
+
+  document
+    .getElementById("infoMedicamentos")
+    .textContent =
+      pet.medicamentos ||
+      "Nenhum informado";
+
+
+  document
+    .getElementById("infoObservacoes")
+    .textContent =
+      pet.observacoes ||
+      "Nenhuma observação cadastrada.";
+
+
+  /*
+    TUTOR
+  */
+
+  document
+    .getElementById("tutorNome")
+    .textContent =
+      pet.tutor_nome ||
+      "Tutor não informado";
+
+
+  /*
+    TELEFONE
+  */
+
+  if(pet.telefone){
+
+    const telefone =
+      String(pet.telefone)
+        .replace(/\D/g,"");
+
+
+    document
+      .getElementById("btnTelefone")
+      .href =
+        `tel:${telefone}`;
+
+  }else{
+
+    document
+      .getElementById("btnTelefone")
+      .classList.add("hidden");
+
+  }
+
+
+  /*
+    WHATSAPP
+  */
+
+  if(pet.whatsapp){
+
+    const whatsapp =
+      String(pet.whatsapp)
+        .replace(/\D/g,"");
+
+
+    document
+      .getElementById("btnWhatsApp")
+      .href =
+        `https://wa.me/${whatsapp}`;
+
+  }else{
+
+    document
+      .getElementById("btnWhatsApp")
+      .classList.add("hidden");
+
+  }
+
+
+  /*
+    PET PERDIDO
+  */
+
+  if(pet.perdido === true){
+
+    document
+      .getElementById("cardPerdido")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("badgePerdido")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("perdidoMensagem")
+      .textContent =
+        pet.mensagem_perdido ||
+        "Este pet está desaparecido. Se você o encontrou, entre em contato com o tutor.";
+
+
+    document
+      .getElementById("perdidoLocal")
+      .textContent =
+        pet.ultimo_local_perdido ||
+        "Não informado";
+
+
+    document
+      .getElementById("perdidoData")
+      .textContent =
+        formatarData(
+          pet.data_perdido
+        );
+
+
+    document
+      .getElementById("perdidoHora")
+      .textContent =
+        formatarHora(
+          pet.hora_perdido
+        );
+
+  }
+
+}
+
+
 carregarPet();
+
 </script>
+
+</body>
+</html>
