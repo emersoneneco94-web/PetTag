@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Save Tag Pet | Minha Conta</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f7f5;
+  color:#172b2f;
+}
+
+header{
+  background:#071b2b;
+  color:white;
+  padding:18px 20px;
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:800;
+}
+
+.logo span{
+  color:#48c98b;
+}
+
+.header-user{
+  font-size:14px;
+  opacity:.9;
+}
+
+.container{
+  max-width:1100px;
+  margin:30px auto;
+  padding:0 16px;
+}
+
+h1{
+  margin:0 0 8px;
+  font-size:30px;
+}
+
+.subtitle{
+  color:#66777b;
+  margin-bottom:25px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:24px;
+  margin-bottom:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.06);
+}
+
+.card h2{
+  margin-top:0;
+  color:#071b2b;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.field{
+  margin-bottom:15px;
+}
+
+.field label{
+  display:block;
+  font-weight:700;
+  margin-bottom:7px;
+  font-size:14px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px;
+  border:1px solid #d8e0df;
+  border-radius:10px;
+  font-size:15px;
+  outline:none;
+  background:white;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:#48c98b;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:13px 18px;
+  font-weight:700;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.btn-primary{
+  background:#18a86b;
+  color:white;
+}
+
+.btn-primary:hover{
+  background:#128b59;
+}
+
+.btn-secondary{
+  background:#e9f1ef;
+  color:#173337;
+}
+
+.btn-danger{
+  background:#e05252;
+  color:white;
+}
+
+.btn-dark{
+  background:#071b2b;
+  color:white;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.pet-list{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.pet-item{
+  border:1px solid #e0e8e6;
+  border-radius:14px;
+  padding:18px;
+}
+
+.pet-item h3{
+  margin:0 0 7px;
+}
+
+.pet-meta{
+  color:#66777b;
+  font-size:14px;
+  line-height:1.6;
+}
+
+.status{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:20px;
+  background:#e7f7ef;
+  color:#118557;
+  font-size:12px;
+  font-weight:700;
+  margin-top:8px;
+}
+
+.status-lost{
+  background:#ffe8e8;
+  color:#c52f2f;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.message{
+  padding:13px 15px;
+  border-radius:10px;
+  margin-bottom:18px;
+  display:none;
+}
+
+.message.success{
+  background:#e8f8ef;
+  color:#137548;
+}
+
+.message.error{
+  background:#ffe8e8;
+  color:#b92c2c;
+}
+
+.vaccine-row,
+.health-row{
+  border:1px solid #e1e8e6;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.row-title{
+  font-weight:700;
+  margin-bottom:5px;
+}
+
+.small{
+  font-size:13px;
+  color:#66777b;
+}
+
+hr{
+  border:0;
+  border-top:1px solid #e5ebe9;
+  margin:25px 0;
+}
+
+.loading{
+  text-align:center;
+  padding:40px;
+  color:#66777b;
+}
+
+.top-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+@media(max-width:700px){
+  .grid,
+  .grid-3,
+  .pet-list{
+    grid-template-columns:1fr;
+  }
+
+  .header-inner{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  h1{
+    font-size:25px;
+  }
+
+  .card{
+    padding:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      Save <span>Tag</span> Pet
+    </div>
+
+    <div class="header-user" id="usuarioHeader">
+      Carregando...
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="top-actions">
+    <button class="btn-secondary" onclick="voltarSite()">
+      ← Voltar ao site
+    </button>
+
+    <button class="btn-danger" onclick="sair()">
+      Sair
+    </button>
+  </div>
+
+  <h1>Minha conta</h1>
+
+  <div class="subtitle">
+    Gerencie seus dados e as informações dos seus pets.
+  </div>
+
+  <div id="mensagem" class="message"></div>
+
+  <!-- DADOS DO TUTOR -->
+  <div class="card">
+
+    <h2>👤 Meus dados</h2>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Nome</label>
+        <input id="tutorNome" type="text">
+      </div>
+
+      <div class="field">
+        <label>E-mail</label>
+        <input id="tutorEmail" type="email" disabled>
+      </div>
+
+      <div class="field">
+        <label>Telefone / WhatsApp</label>
+        <input id="tutorTelefone" type="text">
+      </div>
+
+      <div class="field">
+        <label>Cidade</label>
+        <input id="tutorCidade" type="text">
+      </div>
+
+    </div>
+
+    <button class="btn-primary" onclick="salvarTutor()">
+      Salvar meus dados
+    </button>
+
+  </div>
+
+
+  <!-- PETS -->
+  <div class="card">
+
+    <h2>🐶 Meus pets</h2>
+
+    <div id="listaPets" class="pet-list">
+      <div class="loading">
+        Carregando seus pets...
+      </div>
+    </div>
+
+    <hr>
+
+    <button class="btn-primary" onclick="novoPet()">
+      + Cadastrar novo pet
+    </button>
+
+  </div>
+
+
+  <!-- EDITOR PET -->
+  <div id="editorPet" class="card hidden">
+
+    <h2 id="tituloEditor">
+      🐾 Cadastrar pet
+    </h2>
+
+    <input type="hidden" id="petId">
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Nome do pet *</label>
+        <input id="petNome" type="text">
+      </div>
+
+      <div class="field">
+        <label>Espécie</label>
+        <select id="petEspecie">
+          <option value="Cão">Cão</option>
+          <option value="Gato">Gato</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Raça</label>
+        <input id="petRaca" type="text">
+      </div>
+
+      <div class="field">
+        <label>Sexo</label>
+        <select id="petSexo">
+          <option value="">Selecione</option>
+          <option value="Macho">Macho</option>
+          <option value="Fêmea">Fêmea</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Data de nascimento</label>
+        <input id="petNascimento" type="date">
+      </div>
+
+      <div class="field">
+        <label>Cidade</label>
+        <input id="petCidade" type="text">
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Alergias</label>
+        <textarea id="petAlergias"
+          placeholder="Ex.: alergia a determinado medicamento..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Medicamentos</label>
+        <textarea id="petMedicamentos"
+          placeholder="Medicamentos utilizados atualmente..."></textarea>
+      </div>
+
+    </div>
+
+    <div class="field">
+      <label>Observações</label>
+      <textarea id="petObservacoes"
+        placeholder="Outras informações importantes sobre o pet..."></textarea>
+    </div>
+
+    <div class="field">
+      <label>
+        <input
+          id="petPerdido"
+          type="checkbox"
+          style="width:auto;margin-right:8px;"
+        >
+        Meu pet está perdido
+      </label>
+    </div>
+
+    <div class="field">
+      <label>Mensagem caso o pet esteja perdido</label>
+      <textarea id="petMensagemPerdido"
+        placeholder="Ex.: Por favor, entre em contato comigo."></textarea>
+    </div>
+
+    <div class="actions">
+
+      <button class="btn-primary" onclick="salvarPet()">
+        Salvar pet
+      </button>
+
+      <button class="btn-secondary" onclick="cancelarPet()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- VACINAS -->
+  <div id="secaoVacinas" class="card hidden">
+
+    <h2>💉 Vacinas</h2>
+
+    <div id="listaVacinas">
+      <div class="small">
+        Selecione um pet para visualizar as vacinas.
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>Adicionar vacina</h3>
+
+    <div class="grid-3">
+
+      <div class="field">
+        <label>Vacina *</label>
+        <input id="vacinaNome" type="text"
+          placeholder="Ex.: V10">
+      </div>
+
+      <div class="field">
+        <label>Data da aplicação</label>
+        <input id="vacinaData" type="date">
+      </div>
+
+      <div class="field">
+        <label>Próxima dose</label>
+        <input id="vacinaProxima" type="date">
+      </div>
+
+    </div>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Veterinário</label>
+        <input id="vacinaVeterinario" type="text">
+      </div>
+
+      <div class="field">
+        <label>Observações</label>
+        <input id="vacinaObservacoes" type="text">
+      </div>
+
+    </div>
+
+    <button class="btn-primary" onclick="adicionarVacina()">
+      + Adicionar vacina
+    </button>
+
+  </div>
+
+
+  <!-- SAÚDE -->
+  <div id="secaoSaude" class="card hidden">
+
+    <h2>🏥 Histórico de saúde</h2>
+
+    <div id="listaSaude">
+      <div class="small">
+        Selecione um pet para visualizar o histórico.
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>Adicionar registro</h3>
+
+    <div class="grid">
+
+      <div class="field">
+        <label>Tipo</label>
+        <select id="saudeTipo">
+          <option value="Consulta">Consulta</option>
+          <option value="Doença">Doença</option>
+          <option value="Cirurgia">Cirurgia</option>
+          <option value="Exame">Exame</option>
+          <option value="Outro">Outro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Título *</label>
+        <input id="saudeTitulo"
+          placeholder="Ex.: Consulta veterinária">
+      </div>
+
+    </div>
+
+    <div class="field">
+      <label>Descrição</label>
+      <textarea id="saudeDescricao"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Data do evento</label>
+      <input id="saudeData" type="date">
+    </div>
+
+    <button class="btn-primary" onclick="adicionarSaude()">
+      + Adicionar registro
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+  "https://mqiwoubhivutavpnpeax.supabase.co";
+
+/*
+  IMPORTANTE:
+  Cole abaixo a MESMA Publishable Key utilizada no login.html.
+  NÃO coloque a Service Role Key.
+*/
+const SUPABASE_KEY =
+  "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+
+let supabaseClient = null;
+let usuarioAtual = null;
+let pets = [];
+let petSelecionado = null;
+
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+function iniciarSupabase(){
+
+  if(!window.supabase){
+
+    mostrarMensagem(
+      "Não foi possível carregar o sistema. Atualize a página.",
+      "error"
+    );
+
+    return;
+  }
+
+  supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+  verificarLogin();
+}
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function verificarLogin(){
+
+  const {
+    data,
+    error
+  } = await supabaseClient.auth.getSession();
+
+  if(error){
+
+    console.error(error);
+
+    window.location.href =
+      "login.html";
+
+    return;
+  }
+
+  if(!data.session){
+
+    window.location.href =
+      "login.html";
+
+    return;
+  }
+
+  usuarioAtual =
+    data.session.user;
+
+  document.getElementById(
+    "usuarioHeader"
+  ).textContent =
+    usuarioAtual.email;
+
+  await carregarTutor();
+  await carregarPets();
+}
+
+
+/* =========================
+   TUTOR
+========================= */
+
+async function carregarTutor(){
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("tutores")
+    .select("*")
+    .eq("id", usuarioAtual.id)
+    .maybeSingle();
+
+  if(error){
+
+    console.error(error);
+
+    mostrarMensagem(
+      "Erro ao carregar seus dados.",
+      "error"
+    );
+
+    return;
+  }
+
+  if(!data){
+
+    document.getElementById(
+      "tutorEmail"
+    ).value =
+      usuarioAtual.email || "";
+
+    return;
+  }
+
+  document.getElementById(
+    "tutorNome"
+  ).value =
+    data.nome || "";
+
+  document.getElementById(
+    "tutorEmail"
+  ).value =
+    data.email ||
+    usuarioAtual.email ||
+    "";
+
+  document.getElementById(
+    "tutorTelefone"
+  ).value =
+    data.telefone || "";
+
+  document.getElementById(
+    "tutorCidade"
+  ).value =
+    data.cidade || "";
+}
+
+
+async function salvarTutor(){
+
+  const nome =
+    document.getElementById("tutorNome").value.trim();
+
+  const telefone =
+    document.getElementById("tutorTelefone").value.trim();
+
+  const cidade =
+    document.getElementById("tutorCidade").value.trim();
+
+  const email =
+    usuarioAtual.email || "";
+
+  const {
+    error
+  } = await supabaseClient
+    .from("tutores")
+    .upsert({
+      id:usuarioAtual.id,
+      nome:nome,
+      telefone:telefone,
+      email:email,
+      cidade:cidade
+    });
+
+  if(error){
+
+    console.error(error);
+
+    mostrarMensagem(
+      "Não foi possível salvar seus dados: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  mostrarMensagem(
+    "Seus dados foram salvos com sucesso!",
+    "success"
+  );
+}
+
+
+/* =========================
+   PETS
+========================= */
+
+async function carregarPets(){
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("pets")
+    .select("*")
+    .eq("tutor_id", usuarioAtual.id)
+    .order("nome");
+
+  if(error){
+
+    console.error(error);
+
+    mostrarMensagem(
+      "Erro ao carregar seus pets.",
+      "error"
+    );
+
+    return;
+  }
+
+  pets = data || [];
+
+  renderizarPets();
+}
+
+
+function renderizarPets(){
+
+  const lista =
+    document.getElementById("listaPets");
+
+  if(!pets.length){
+
+    lista.innerHTML = `
+      <div class="pet-item">
+        <h3>Nenhum pet cadastrado</h3>
+        <div class="pet-meta">
+          Cadastre seu primeiro pet para começar.
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  lista.innerHTML =
+    pets.map(pet => {
+
+      const perdido =
+        pet.perdido === true;
+
+      return `
+        <div class="pet-item">
+
+          <h3>
+            ${escapeHtml(pet.nome || "Sem nome")}
+          </h3>
+
+          <div class="pet-meta">
+            ${escapeHtml(pet.especie || "")}
+            ${pet.raca ? " • " + escapeHtml(pet.raca) : ""}
+            ${pet.sexo ? " • " + escapeHtml(pet.sexo) : ""}
+          </div>
+
+          <span class="status ${
+            perdido ? "status-lost" : ""
+          }">
+            ${
+              perdido
+              ? "🚨 PET PERDIDO"
+              : "✓ Cadastro ativo"
+            }
+          </span>
+
+          <div class="actions">
+
+            <button
+              class="btn-primary"
+              onclick="editarPet('${pet.id}')">
+              Editar
+            </button>
+
+            <button
+              class="btn-secondary"
+              onclick="abrirDadosPet('${pet.id}')">
+              Vacinas / Saúde
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+function novoPet(){
+
+  petSelecionado = null;
+
+  limparFormularioPet();
+
+  document.getElementById(
+    "tituloEditor"
+  ).textContent =
+    "🐾 Cadastrar pet";
+
+  document.getElementById(
+    "editorPet"
+  ).classList.remove("hidden");
+
+  document.getElementById(
+    "secaoVacinas"
+  ).classList.add("hidden");
+
+  document.getElementById(
+    "secaoSaude"
+  ).classList.add("hidden");
+
+  window.scrollTo({
+    top:document.getElementById(
+      "editorPet"
+    ).offsetTop - 20,
+    behavior:"smooth"
+  });
+}
+
+
+function editarPet(id){
+
+  const pet =
+    pets.find(p => p.id === id);
+
+  if(!pet) return;
+
+  petSelecionado = pet;
+
+  document.getElementById("petId").value =
+    pet.id;
+
+  document.getElementById("petNome").value =
+    pet.nome || "";
+
+  document.getElementById("petEspecie").value =
+    pet.especie || "Cão";
+
+  document.getElementById("petRaca").value =
+    pet.raca || "";
+
+  document.getElementById("petSexo").value =
+    pet.sexo || "";
+
+  document.getElementById("petNascimento").value =
+    pet.data_nascimento || "";
+
+  document.getElementById("petCidade").value =
+    pet.cidade || "";
+
+  document.getElementById("petAlergias").value =
+    pet.alergias || "";
+
+  document.getElementById("petMedicamentos").value =
+    pet.medicamentos || "";
+
+  document.getElementById("petObservacoes").value =
+    pet.observacoes || "";
+
+  document.getElementById("petPerdido").checked =
+    pet.perdido === true;
+
+  document.getElementById(
+    "petMensagemPerdido"
+  ).value =
+    pet.mensagem_perdido || "";
+
+  document.getElementById(
+    "tituloEditor"
+  ).textContent =
+    "✏️ Editar " + (pet.nome || "pet");
+
+  document.getElementById(
+    "editorPet"
+  ).classList.remove("hidden");
+
+  window.scrollTo({
+    top:document.getElementById(
+      "editorPet"
+    ).offsetTop - 20,
+    behavior:"smooth"
+  });
+}
+
+
+async function salvarPet(){
+
+  const nome =
+    document.getElementById("petNome").value.trim();
+
+  if(!nome){
+
+    mostrarMensagem(
+      "Informe o nome do pet.",
+      "error"
+    );
+
+    return;
+  }
+
+  const dados = {
+
+    tutor_id:
+      usuarioAtual.id,
+
+    nome:
+      nome,
+
+    especie:
+      document.getElementById(
+        "petEspecie"
+      ).value,
+
+    raca:
+      document.getElementById(
+        "petRaca"
+      ).value.trim(),
+
+    sexo:
+      document.getElementById(
+        "petSexo"
+      ).value || null,
+
+    data_nascimento:
+      document.getElementById(
+        "petNascimento"
+      ).value || null,
+
+    cidade:
+      document.getElementById(
+        "petCidade"
+      ).value.trim(),
+
+    alergias:
+      document.getElementById(
+        "petAlergias"
+      ).value.trim(),
+
+    medicamentos:
+      document.getElementById(
+        "petMedicamentos"
+      ).value.trim(),
+
+    observacoes:
+      document.getElementById(
+        "petObservacoes"
+      ).value.trim(),
+
+    perdido:
+      document.getElementById(
+        "petPerdido"
+      ).checked,
+
+    mensagem_perdido:
+      document.getElementById(
+        "petMensagemPerdido"
+      ).value.trim()
+  };
+
+
+  let error;
+
+
+  if(petSelecionado){
+
+    const resultado =
+      await supabaseClient
+        .from("pets")
+        .update(dados)
+        .eq("id", petSelecionado.id)
+        .eq("tutor_id", usuarioAtual.id);
+
+    error =
+      resultado.error;
+
+  }else{
+
+    const resultado =
+      await supabaseClient
+        .from("pets")
+        .insert(dados);
+
+    error =
+      resultado.error;
+  }
+
+
+  if(error){
+
+    console.error(error);
+
+    mostrarMensagem(
+      "Erro ao salvar pet: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+
+  mostrarMensagem(
+    "Pet salvo com sucesso!",
+    "success"
+  );
+
+  cancelarPet();
+
+  await carregarPets();
+}
+
+
+function cancelarPet(){
+
+  document.getElementById(
+    "editorPet"
+  ).classList.add("hidden");
+
+  petSelecionado = null;
+
+  limparFormularioPet();
+}
+
+
+function limparFormularioPet(){
+
+  document.getElementById("petId").value = "";
+
+  document.getElementById("petNome").value = "";
+
+  document.getElementById("petEspecie").value = "Cão";
+
+  document.getElementById("petRaca").value = "";
+
+  document.getElementById("petSexo").value = "";
+
+  document.getElementById("petNascimento").value = "";
+
+  document.getElementById("petCidade").value = "";
+
+  document.getElementById("petAlergias").value = "";
+
+  document.getElementById("petMedicamentos").value = "";
+
+  document.getElementById("petObservacoes").value = "";
+
+  document.getElementById("petPerdido").checked = false;
+
+  document.getElementById(
+    "petMensagemPerdido"
+  ).value = "";
+}
+
+
+/* =========================
+   VACINAS
+========================= */
+
+async function abrirDadosPet(id){
+
+  const pet =
+    pets.find(p => p.id === id);
+
+  if(!pet) return;
+
+  petSelecionado = pet;
+
+  document.getElementById(
+    "secaoVacinas"
+  ).classList.remove("hidden");
+
+  document.getElementById(
+    "secaoSaude"
+  ).classList.remove("hidden");
+
+  await carregarVacinas(id);
+  await carregarSaude(id);
+
+  window.scrollTo({
+    top:document.getElementById(
+      "secaoVacinas"
+    ).offsetTop - 20,
+    behavior:"smooth"
+  });
+}
+
+
+async function carregarVacinas(petId){
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("vacinas")
+    .select("*")
+    .eq("pet_id", petId)
+    .order("data_aplicacao", {
+      ascending:false
+    });
+
+  if(error){
+
+    console.error(error);
+
+    return;
+  }
+
+  const lista =
+    document.getElementById(
+      "listaVacinas"
+    );
+
+  if(!data || !data.length){
+
+    lista.innerHTML = `
+      <div class="small">
+        Nenhuma vacina cadastrada.
+      </div>
+    `;
+
+    return;
+  }
+
+  lista.innerHTML =
+    data.map(v => `
+      <div class="vaccine-row">
+
+        <div class="row-title">
+          💉 ${escapeHtml(v.nome || "")}
+        </div>
+
+        <div class="small">
+          Aplicação:
+          ${formatarData(v.data_aplicacao)}
+        </div>
+
+        ${
+          v.proxima_dose
+          ? `
+            <div class="small">
+              Próxima dose:
+              ${formatarData(v.proxima_dose)}
+            </div>
+          `
+          : ""
+        }
+
+        ${
+          v.veterinario
+          ? `
+            <div class="small">
+              Veterinário:
+              ${escapeHtml(v.veterinario)}
+            </div>
+          `
+          : ""
+        }
+
+      </div>
+    `).join("");
+}
+
+
+async function adicionarVacina(){
+
+  if(!petSelecionado){
+
+    mostrarMensagem(
+      "Selecione um pet primeiro.",
+      "error"
+    );
+
+    return;
+  }
+
+  const nome =
+    document.getElementById(
+      "vacinaNome"
+    ).value.trim();
+
+  if(!nome){
+
+    mostrarMensagem(
+      "Informe o nome da vacina.",
+      "error"
+    );
+
+    return;
+  }
+
+  const {
+    error
+  } = await supabaseClient
+    .from("vacinas")
+    .insert({
+
+      pet_id:
+        petSelecionado.id,
+
+      nome:
+        nome,
+
+      data_aplicacao:
+        document.getElementById(
+          "vacinaData"
+        ).value || null,
+
+      proxima_dose:
+        document.getElementById(
+          "vacinaProxima"
+        ).value || null,
+
+      veterinario:
+        document.getElementById(
+          "vacinaVeterinario"
+        ).value.trim(),
+
+      observacoes:
+        document.getElementById(
+          "vacinaObservacoes"
+        ).value.trim()
+    });
+
+  if(error){
+
+    console.error(error);
+
+    mostrarMensagem(
+      "Erro ao adicionar vacina: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  document.getElementById(
+    "vacinaNome"
+  ).value = "";
+
+  document.getElementById(
+    "vacinaData"
+  ).value = "";
+
+  document.getElementById(
+    "vacinaProxima"
+  ).value = "";
+
+  document.getElementById(
+    "vacinaVeterinario"
+  ).value = "";
+
+  document.getElementById(
+    "vacinaObservacoes"
+  ).value = "";
+
+  mostrarMensagem(
+    "Vacina adicionada!",
+    "success"
+  );
+
+  await carregarVacinas(
+    petSelecionado.id
+  );
+}
+
+
+/* =========================
+   SAÚDE
+========================= */
+
+async function carregarSaude(petId){
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("saude_pet")
+    .select("*")
+    .eq("pet_id", petId)
+    .order("data_evento", {
+      ascending:false
+    });
+
+  if(error){
+
+    console.error(error);
+
+    return;
+  }
+
+  const lista =
+    document.getElementById(
+      "listaSaude"
+    );
+
+  if(!data || !data.length){
+
+    lista.innerHTML = `
+      <div class="small">
+        Nenhum registro de saúde cadastrado.
+      </div>
+    `;
+
+    return;
+  }
+
+  lista.innerHTML =
+    data.map(s => `
+      <div class="health-row">
+
+        <div class="row-title">
+          🏥 ${escapeHtml(s.titulo || "")}
+        </div>
+
+        <div class="small">
+          Tipo:
+          ${escapeHtml(s.tipo || "")}
+        </div>
+
+        ${
+          s.data_evento
+          ? `
+            <div class="small">
+              Data:
+              ${formatarData(s.data_evento)}
+            </div>
+          `
+          : ""
+        }
+
+        ${
+          s.descricao
+          ? `
+            <div style="margin-top:8px;">
+              ${escapeHtml(s.descricao)}
+            </div>
+          `
+          : ""
+        }
+
+      </div>
+    `).join("");
+}
+
+
+async function adicionarSaude(){
+
+  if(!petSelecionado){
+
+    mostrarMensagem(
+      "Selecione um pet primeiro.",
+      "error"
+    );
+
+    return;
+  }
+
+  const titulo =
+    document.getElementById(
+      "saudeTitulo"
+    ).value.trim();
+
+  if(!titulo){
+
+    mostrarMensagem(
+      "Informe um título.",
+      "error"
+    );
+
+    return;
+  }
+
+  const {
+    error
+  } = await supabaseClient
+    .from("saude_pet")
+    .insert({
+
+      pet_id:
+        petSelecionado.id,
+
+      tipo:
+        document.getElementById(
+          "saudeTipo"
+        ).value,
+
+      titulo:
+        titulo,
+
+      descricao:
+        document.getElementById(
+          "saudeDescricao"
+        ).value.trim(),
+
+      data_evento:
+        document.getElementById(
+          "saudeData"
+        ).value || null
+    });
+
+  if(error){
+
+    console.error(error);
+
+    mostrarMensagem(
+      "Erro ao adicionar registro: " +
+      error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  document.getElementById(
+    "saudeTitulo"
+  ).value = "";
+
+  document.getElementById(
+    "saudeDescricao"
+  ).value = "";
+
+  document.getElementById(
+    "saudeData"
+  ).value = "";
+
+  mostrarMensagem(
+    "Registro de saúde adicionado!",
+    "success"
+  );
+
+  await carregarSaude(
+    petSelecionado.id
+  );
+}
+
+
+/* =========================
+   UTILIDADES
+========================= */
+
+function formatarData(data){
+
+  if(!data) return "Não informado";
+
+  const partes =
+    data.split("-");
+
+  if(partes.length !== 3)
+    return data;
+
+  return (
+    partes[2] +
+    "/" +
+    partes[1] +
+    "/" +
+    partes[0]
+  );
+}
+
+
+function escapeHtml(text){
+
+  return String(text ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+function mostrarMensagem(
+  texto,
+  tipo
+){
+
+  const box =
+    document.getElementById(
+      "mensagem"
+    );
+
+  box.textContent =
+    texto;
+
+  box.className =
+    "message " + tipo;
+
+  box.style.display =
+    "block";
+
+  setTimeout(() => {
+
+    box.style.display =
+      "none";
+
+  },5000);
+}
+
+
+function voltarSite(){
+
+  window.location.href =
+    "index.html";
+}
+
+
+async function sair(){
+
+  if(supabaseClient){
+
+    await supabaseClient.auth.signOut();
+
+  }
+
+  window.location.href =
+    "login.html";
+}
+
+
+/* =========================
+   START
+========================= */
+
+iniciarSupabase();
+
+</script>
+
+</body>
+</html>
