@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Save Tag Pet | Nova senha</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f3f7f5;
+      color: #123047;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo h1 {
+      margin: 0;
+      font-size: 42px;
+      font-weight: 800;
+      color: #123047;
+    }
+
+    .logo h1 span {
+      color: #19a765;
+    }
+
+    .logo p {
+      margin: 10px 0 0;
+      color: #587080;
+      letter-spacing: 3px;
+      font-size: 14px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 28px;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(18, 48, 71, 0.10);
+    }
+
+    h2 {
+      text-align: center;
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    .descricao {
+      text-align: center;
+      color: #687984;
+      line-height: 1.5;
+      margin: 0 0 30px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 18px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #d4dddd;
+      border-radius: 14px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #19a765;
+      box-shadow: 0 0 0 3px rgba(25, 167, 101, 0.10);
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 25px;
+      background: #19a765;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #mensagem {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .sucesso {
+      background: #e5f7ed;
+      color: #137845;
+    }
+
+    .erro {
+      background: #fdeaea;
+      color: #b42323;
+    }
+
+    .voltar {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .voltar a {
+      color: #19a765;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .logo h1 {
+        font-size: 34px;
+      }
+
+      .card {
+        padding: 28px 22px;
+      }
+
+      h2 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">
+      <h1>Save Tag <span>Pet</span></h1>
+      <p>IDENTIFICAÇÃO INTELIGENTE</p>
+    </div>
+
+    <div class="card">
+
+      <h2>Crie uma nova senha</h2>
+
+      <p class="descricao">
+        Digite sua nova senha abaixo para recuperar o acesso à sua conta.
+      </p>
+
+      <label for="novaSenha">Nova senha</label>
+
+      <input
+        type="password"
+        id="novaSenha"
+        placeholder="Digite sua nova senha"
+        autocomplete="new-password"
+      >
+
+      <label for="confirmarSenha">Confirmar nova senha</label>
+
+      <input
+        type="password"
+        id="confirmarSenha"
+        placeholder="Digite novamente sua nova senha"
+        autocomplete="new-password"
+      >
+
+      <button id="btnSalvar" onclick="alterarSenha()">
+        Salvar nova senha
+      </button>
+
+      <div id="mensagem"></div>
+
+      <div class="voltar">
+        <a href="login.html">← Voltar para o login</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://mqiwoubhivutavpnpeax.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    function mostrarMensagem(texto, tipo) {
+
+      const elemento =
+        document.getElementById("mensagem");
+
+      elemento.textContent = texto;
+
+      elemento.className = tipo;
+
+      elemento.style.display = "block";
+    }
+
+
+    async function alterarSenha() {
+
+      const novaSenha =
+        document.getElementById("novaSenha").value;
+
+      const confirmarSenha =
+        document.getElementById("confirmarSenha").value;
+
+      const botao =
+        document.getElementById("btnSalvar");
+
+
+      if (!novaSenha || !confirmarSenha) {
+
+        mostrarMensagem(
+          "Preencha os dois campos.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      if (novaSenha.length < 6) {
+
+        mostrarMensagem(
+          "A senha deve ter pelo menos 6 caracteres.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      if (novaSenha !== confirmarSenha) {
+
+        mostrarMensagem(
+          "As senhas não são iguais.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      botao.disabled = true;
+
+      botao.textContent = "Salvando...";
+
+
+      try {
+
+        const { error } =
+          await supabaseClient.auth.updateUser({
+            password: novaSenha
+          });
+
+
+        if (error) {
+
+          mostrarMensagem(
+            "Não foi possível alterar a senha: " +
+            error.message,
+            "erro"
+          );
+
+          botao.disabled = false;
+
+          botao.textContent =
+            "Salvar nova senha";
+
+          return;
+        }
+
+
+        mostrarMensagem(
+          "Senha alterada com sucesso! Você será direcionado para o login.",
+          "sucesso"
+        );
+
+
+        setTimeout(() => {
+
+          window.location.href =
+            "login.html";
+
+        }, 2500);
+
+
+      } catch (erro) {
+
+        mostrarMensagem(
+          "Ocorreu um erro. Tente novamente.",
+          "erro"
+        );
+
+        botao.disabled = false;
+
+        botao.textContent =
+          "Salvar nova senha";
+      }
+
+    }
+
+  </script>
+
+</body>
+</html>
