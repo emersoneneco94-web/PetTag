@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Save Tag Pet | Minha Conta</title>
@@ -9,6 +12,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+
 *{
   box-sizing:border-box;
 }
@@ -133,6 +137,11 @@ button{
   font-size:14px;
 }
 
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
 .btn-primary{
   background:#18a86b;
   color:white;
@@ -214,13 +223,21 @@ button{
 }
 
 .message.success{
+  display:block;
   background:#e8f8ef;
   color:#137548;
 }
 
 .message.error{
+  display:block;
   background:#ffe8e8;
   color:#b92c2c;
+}
+
+.message.info{
+  display:block;
+  background:#eef5f7;
+  color:#28545d;
 }
 
 .vaccine-row,
@@ -260,7 +277,72 @@ hr{
   margin-bottom:20px;
 }
 
+
+/* =========================================
+   ATIVAÇÃO DA TAG
+========================================= */
+
+.tag-activation{
+  background:#e8f8ef;
+  border:2px solid #48c98b;
+  border-radius:16px;
+  padding:18px 20px;
+  margin-bottom:20px;
+}
+
+.tag-activation-title{
+  color:#137548;
+  font-size:19px;
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.tag-activation-text{
+  color:#3f5d50;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.tag-code{
+  display:inline-block;
+  background:white;
+  color:#071b2b;
+  font-weight:800;
+  padding:7px 12px;
+  border-radius:8px;
+  margin-top:9px;
+  letter-spacing:1px;
+}
+
+
+/* =========================================
+   TAG ATIVADA
+========================================= */
+
+.tag-active{
+  background:#e8f8ef;
+  border:2px solid #48c98b;
+  border-radius:16px;
+  padding:18px 20px;
+  margin-bottom:20px;
+}
+
+.tag-active-title{
+  color:#137548;
+  font-size:19px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.tag-active-text{
+  color:#3f5d50;
+  line-height:1.5;
+  font-size:14px;
+}
+
+
 @media(max-width:700px){
+
   .grid,
   .grid-3,
   .pet-list{
@@ -279,220 +361,531 @@ hr{
   .card{
     padding:18px;
   }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <header>
+
   <div class="header-inner">
+
     <div class="logo">
       Save <span>Tag</span> Pet
     </div>
 
-    <div class="header-user" id="usuarioHeader">
+    <div
+      class="header-user"
+      id="usuarioHeader"
+    >
       Carregando...
     </div>
+
   </div>
+
 </header>
+
 
 <div class="container">
 
+
   <div class="top-actions">
-    <button class="btn-secondary" onclick="voltarSite()">
+
+    <button
+      class="btn-secondary"
+      onclick="voltarSite()"
+    >
       ← Voltar ao site
     </button>
 
-    <button class="btn-danger" onclick="sair()">
+    <button
+      class="btn-danger"
+      onclick="sair()"
+    >
       Sair
     </button>
+
   </div>
 
-  <h1>Minha conta</h1>
+
+  <h1>
+    Minha conta
+  </h1>
+
 
   <div class="subtitle">
     Gerencie seus dados e as informações dos seus pets.
   </div>
 
-  <div id="mensagem" class="message"></div>
 
-  <!-- DADOS DO TUTOR -->
-  <div class="card">
+  <div
+    id="mensagem"
+    class="message"
+  ></div>
 
-    <h2>👤 Meus dados</h2>
 
-    <div class="grid">
+  <!-- =====================================
+       ATIVAÇÃO DA TAG
+  ====================================== -->
 
-      <div class="field">
-        <label>Nome</label>
-        <input id="tutorNome" type="text">
-      </div>
+  <div
+    id="tagActivation"
+    class="tag-activation hidden"
+  >
 
-      <div class="field">
-        <label>E-mail</label>
-        <input id="tutorEmail" type="email" disabled>
-      </div>
+    <div class="tag-activation-title">
+      🐾 Ative sua TAG
+    </div>
 
-      <div class="field">
-        <label>Telefone / WhatsApp</label>
-        <input id="tutorTelefone" type="text">
-      </div>
+    <div class="tag-activation-text">
 
-      <div class="field">
-        <label>Cidade</label>
-        <input id="tutorCidade" type="text">
+      Encontramos uma TAG pronta para ser vinculada
+      ao seu pet.
+
+      <br>
+
+      Cadastre seu pet abaixo e, ao salvar,
+      a TAG será vinculada automaticamente.
+
+      <div
+        id="tagCode"
+        class="tag-code"
+      >
+        TAG
       </div>
 
     </div>
 
-    <button class="btn-primary" onclick="salvarTutor()">
+  </div>
+
+
+  <!-- =====================================
+       TAG ATIVADA
+  ====================================== -->
+
+  <div
+    id="tagActive"
+    class="tag-active hidden"
+  >
+
+    <div class="tag-active-title">
+      ✅ TAG ativada com sucesso!
+    </div>
+
+    <div class="tag-active-text">
+      Sua TAG está vinculada ao pet e já pode ser utilizada
+      para identificação.
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================
+       DADOS DO TUTOR
+  ====================================== -->
+
+  <div class="card">
+
+    <h2>
+      👤 Meus dados
+    </h2>
+
+
+    <div class="grid">
+
+
+      <div class="field">
+
+        <label>
+          Nome
+        </label>
+
+        <input
+          id="tutorNome"
+          type="text"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          E-mail
+        </label>
+
+        <input
+          id="tutorEmail"
+          type="email"
+          disabled
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Telefone / WhatsApp
+        </label>
+
+        <input
+          id="tutorTelefone"
+          type="text"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Cidade
+        </label>
+
+        <input
+          id="tutorCidade"
+          type="text"
+        >
+
+      </div>
+
+
+    </div>
+
+
+    <button
+      class="btn-primary"
+      onclick="salvarTutor()"
+    >
       Salvar meus dados
     </button>
 
   </div>
 
 
-  <!-- PETS -->
+
+  <!-- =====================================
+       PETS
+  ====================================== -->
+
   <div class="card">
 
-    <h2>🐶 Meus pets</h2>
+    <h2>
+      🐶 Meus pets
+    </h2>
 
-    <div id="listaPets" class="pet-list">
+
+    <div
+      id="listaPets"
+      class="pet-list"
+    >
+
       <div class="loading">
         Carregando seus pets...
       </div>
+
     </div>
+
 
     <hr>
 
-    <button class="btn-primary" onclick="novoPet()">
+
+    <button
+      class="btn-primary"
+      onclick="novoPet()"
+    >
       + Cadastrar novo pet
     </button>
 
   </div>
 
 
-  <!-- EDITOR PET -->
-  <div id="editorPet" class="card hidden">
+
+  <!-- =====================================
+       EDITOR PET
+  ====================================== -->
+
+  <div
+    id="editorPet"
+    class="card hidden"
+  >
 
     <h2 id="tituloEditor">
       🐾 Cadastrar pet
     </h2>
 
-    <input type="hidden" id="petId">
+
+    <input
+      type="hidden"
+      id="petId"
+    >
+
 
     <div class="grid">
 
-      <div class="field">
-        <label>Nome do pet *</label>
-        <input id="petNome" type="text">
-      </div>
 
       <div class="field">
-        <label>Espécie</label>
+
+        <label>
+          Nome do pet *
+        </label>
+
+        <input
+          id="petNome"
+          type="text"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Espécie
+        </label>
+
         <select id="petEspecie">
-          <option value="Cão">Cão</option>
-          <option value="Gato">Gato</option>
-          <option value="Outro">Outro</option>
+
+          <option value="Cão">
+            Cão
+          </option>
+
+          <option value="Gato">
+            Gato
+          </option>
+
+          <option value="Outro">
+            Outro
+          </option>
+
         </select>
+
       </div>
 
-      <div class="field">
-        <label>Raça</label>
-        <input id="petRaca" type="text">
-      </div>
 
       <div class="field">
-        <label>Sexo</label>
+
+        <label>
+          Raça
+        </label>
+
+        <input
+          id="petRaca"
+          type="text"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Sexo
+        </label>
+
         <select id="petSexo">
-          <option value="">Selecione</option>
-          <option value="Macho">Macho</option>
-          <option value="Fêmea">Fêmea</option>
+
+          <option value="">
+            Selecione
+          </option>
+
+          <option value="Macho">
+            Macho
+          </option>
+
+          <option value="Fêmea">
+            Fêmea
+          </option>
+
         </select>
+
       </div>
 
-      <div class="field">
-        <label>Data de nascimento</label>
-        <input id="petNascimento" type="date">
-      </div>
 
       <div class="field">
-        <label>Cidade</label>
-        <input id="petCidade" type="text">
+
+        <label>
+          Data de nascimento
+        </label>
+
+        <input
+          id="petNascimento"
+          type="date"
+        >
+
       </div>
+
+
+      <div class="field">
+
+        <label>
+          Cidade
+        </label>
+
+        <input
+          id="petCidade"
+          type="text"
+        >
+
+      </div>
+
 
     </div>
+
+
 
     <div class="grid">
 
-      <div class="field">
-        <label>Alergias</label>
-        <textarea id="petAlergias"
-          placeholder="Ex.: alergia a determinado medicamento..."></textarea>
-      </div>
 
       <div class="field">
-        <label>Medicamentos</label>
-        <textarea id="petMedicamentos"
-          placeholder="Medicamentos utilizados atualmente..."></textarea>
+
+        <label>
+          Alergias
+        </label>
+
+        <textarea
+          id="petAlergias"
+          placeholder="Ex.: alergia a determinado medicamento..."
+        ></textarea>
+
       </div>
+
+
+      <div class="field">
+
+        <label>
+          Medicamentos
+        </label>
+
+        <textarea
+          id="petMedicamentos"
+          placeholder="Medicamentos utilizados atualmente..."
+        ></textarea>
+
+      </div>
+
 
     </div>
 
-    <div class="field">
-      <label>Observações</label>
-      <textarea id="petObservacoes"
-        placeholder="Outras informações importantes sobre o pet..."></textarea>
-    </div>
+
 
     <div class="field">
+
       <label>
+        Observações
+      </label>
+
+      <textarea
+        id="petObservacoes"
+        placeholder="Outras informações importantes sobre o pet..."
+      ></textarea>
+
+    </div>
+
+
+
+    <div class="field">
+
+      <label>
+
         <input
           id="petPerdido"
           type="checkbox"
           style="width:auto;margin-right:8px;"
         >
+
         Meu pet está perdido
+
       </label>
+
     </div>
-<div class="field">
-  <label>Último local onde foi visto</label>
-  <input
-    id="petUltimoLocal"
-    type="text"
-    placeholder="Ex.: Vila Antártica, Praia Grande - SP"
-  >
-</div>
 
-<div class="field">
-  <label>Data em que desapareceu</label>
-  <input
-    id="petDataPerdido"
-    type="date"
-  >
-</div>
 
-<div class="field">
-  <label>Horário aproximado</label>
-  <input
-    id="petHoraPerdido"
-    type="time"
-  >
-</div>
+
     <div class="field">
-      <label>Mensagem caso o pet esteja perdido</label>
-      <textarea id="petMensagemPerdido"
-        placeholder="Ex.: Por favor, entre em contato comigo."></textarea>
+
+      <label>
+        Último local onde foi visto
+      </label>
+
+      <input
+        id="petUltimoLocal"
+        type="text"
+        placeholder="Ex.: Vila Antártica, Praia Grande - SP"
+      >
+
     </div>
+
+
+
+    <div class="field">
+
+      <label>
+        Data em que desapareceu
+      </label>
+
+      <input
+        id="petDataPerdido"
+        type="date"
+      >
+
+    </div>
+
+
+
+    <div class="field">
+
+      <label>
+        Horário aproximado
+      </label>
+
+      <input
+        id="petHoraPerdido"
+        type="time"
+      >
+
+    </div>
+
+
+
+    <div class="field">
+
+      <label>
+        Mensagem caso o pet esteja perdido
+      </label>
+
+      <textarea
+        id="petMensagemPerdido"
+        placeholder="Ex.: Por favor, entre em contato comigo."
+      ></textarea>
+
+    </div>
+
+
 
     <div class="actions">
 
-      <button class="btn-primary" onclick="salvarPet()">
+      <button
+        id="btnSalvarPet"
+        class="btn-primary"
+        onclick="salvarPet()"
+      >
         Salvar pet
       </button>
 
-      <button class="btn-secondary" onclick="cancelarPet()">
+
+      <button
+        class="btn-secondary"
+        onclick="cancelarPet()"
+      >
         Cancelar
       </button>
 
@@ -501,139 +894,318 @@ hr{
   </div>
 
 
-  <!-- VACINAS -->
-  <div id="secaoVacinas" class="card hidden">
 
-    <h2>💉 Vacinas</h2>
+  <!-- =====================================
+       VACINAS
+  ====================================== -->
+
+  <div
+    id="secaoVacinas"
+    class="card hidden"
+  >
+
+    <h2>
+      💉 Vacinas
+    </h2>
+
 
     <div id="listaVacinas">
+
       <div class="small">
         Selecione um pet para visualizar as vacinas.
       </div>
+
     </div>
+
 
     <hr>
 
-    <h3>Adicionar vacina</h3>
+
+    <h3>
+      Adicionar vacina
+    </h3>
+
 
     <div class="grid-3">
 
-      <div class="field">
-        <label>Vacina *</label>
-        <input id="vacinaNome" type="text"
-          placeholder="Ex.: V10">
-      </div>
 
       <div class="field">
-        <label>Data da aplicação</label>
-        <input id="vacinaData" type="date">
+
+        <label>
+          Vacina *
+        </label>
+
+        <input
+          id="vacinaNome"
+          type="text"
+          placeholder="Ex.: V10"
+        >
+
       </div>
 
+
       <div class="field">
-        <label>Próxima dose</label>
-        <input id="vacinaProxima" type="date">
+
+        <label>
+          Data da aplicação
+        </label>
+
+        <input
+          id="vacinaData"
+          type="date"
+        >
+
       </div>
+
+
+      <div class="field">
+
+        <label>
+          Próxima dose
+        </label>
+
+        <input
+          id="vacinaProxima"
+          type="date"
+        >
+
+      </div>
+
 
     </div>
+
 
     <div class="grid">
 
-      <div class="field">
-        <label>Veterinário</label>
-        <input id="vacinaVeterinario" type="text">
-      </div>
 
       <div class="field">
-        <label>Observações</label>
-        <input id="vacinaObservacoes" type="text">
+
+        <label>
+          Veterinário
+        </label>
+
+        <input
+          id="vacinaVeterinario"
+          type="text"
+        >
+
       </div>
+
+
+      <div class="field">
+
+        <label>
+          Observações
+        </label>
+
+        <input
+          id="vacinaObservacoes"
+          type="text"
+        >
+
+      </div>
+
 
     </div>
 
-    <button class="btn-primary" onclick="adicionarVacina()">
+
+    <button
+      class="btn-primary"
+      onclick="adicionarVacina()"
+    >
       + Adicionar vacina
     </button>
 
   </div>
 
 
-  <!-- SAÚDE -->
-  <div id="secaoSaude" class="card hidden">
 
-    <h2>🏥 Histórico de saúde</h2>
+  <!-- =====================================
+       SAÚDE
+  ====================================== -->
+
+  <div
+    id="secaoSaude"
+    class="card hidden"
+  >
+
+    <h2>
+      🏥 Histórico de saúde
+    </h2>
+
 
     <div id="listaSaude">
+
       <div class="small">
         Selecione um pet para visualizar o histórico.
       </div>
+
     </div>
+
 
     <hr>
 
-    <h3>Adicionar registro</h3>
+
+    <h3>
+      Adicionar registro
+    </h3>
+
 
     <div class="grid">
 
+
       <div class="field">
-        <label>Tipo</label>
+
+        <label>
+          Tipo
+        </label>
+
         <select id="saudeTipo">
-          <option value="Consulta">Consulta</option>
-          <option value="Doença">Doença</option>
-          <option value="Cirurgia">Cirurgia</option>
-          <option value="Exame">Exame</option>
-          <option value="Outro">Outro</option>
+
+          <option value="Consulta">
+            Consulta
+          </option>
+
+          <option value="Doença">
+            Doença
+          </option>
+
+          <option value="Cirurgia">
+            Cirurgia
+          </option>
+
+          <option value="Exame">
+            Exame
+          </option>
+
+          <option value="Outro">
+            Outro
+          </option>
+
         </select>
+
       </div>
+
 
       <div class="field">
-        <label>Título *</label>
-        <input id="saudeTitulo"
-          placeholder="Ex.: Consulta veterinária">
+
+        <label>
+          Título *
+        </label>
+
+        <input
+          id="saudeTitulo"
+          placeholder="Ex.: Consulta veterinária"
+        >
+
       </div>
 
+
     </div>
+
 
     <div class="field">
-      <label>Descrição</label>
-      <textarea id="saudeDescricao"></textarea>
+
+      <label>
+        Descrição
+      </label>
+
+      <textarea
+        id="saudeDescricao"
+      ></textarea>
+
     </div>
+
 
     <div class="field">
-      <label>Data do evento</label>
-      <input id="saudeData" type="date">
+
+      <label>
+        Data do evento
+      </label>
+
+      <input
+        id="saudeData"
+        type="date"
+      >
+
     </div>
 
-    <button class="btn-primary" onclick="adicionarSaude()">
+
+    <button
+      class="btn-primary"
+      onclick="adicionarSaude()"
+    >
       + Adicionar registro
     </button>
 
   </div>
 
+
 </div>
+
 
 
 <script>
 
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
 const SUPABASE_URL =
   "https://mqiwoubhivutavpnpeax.supabase.co";
 
+
 /*
-  IMPORTANTE:
-  Cole abaixo a MESMA Publishable Key utilizada no login.html.
-  NÃO coloque a Service Role Key.
+  Mantenha aqui a mesma Publishable Key
+  que você já utiliza no projeto.
 */
+
 const SUPABASE_KEY =
   "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
+
 let supabaseClient = null;
+
 let usuarioAtual = null;
+
 let pets = [];
+
 let petSelecionado = null;
 
 
-/* =========================
+/*
+  Código da TAG recebido pela URL.
+
+  Exemplo:
+
+  painel.html?tag=TESTE001
+*/
+
+const parametros =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+let tagCodigo =
+  parametros.get("tag");
+
+
+if(tagCodigo){
+
+  tagCodigo =
+    tagCodigo
+      .trim()
+      .toUpperCase();
+
+}
+
+
+
+/* =====================================================
    INICIALIZAÇÃO
-========================= */
+===================================================== */
 
 function iniciarSupabase(){
 
@@ -647,72 +1219,321 @@ function iniciarSupabase(){
     return;
   }
 
+
   supabaseClient =
     window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
 
+
   verificarLogin();
+
 }
 
 
-/* =========================
+
+/* =====================================================
    LOGIN
-========================= */
+===================================================== */
 
 async function verificarLogin(){
 
   const {
     data,
     error
-  } = await supabaseClient.auth.getSession();
+  } =
+    await supabaseClient
+      .auth
+      .getSession();
+
 
   if(error){
 
     console.error(error);
 
     window.location.href =
-      "login.html";
+      tagCodigo
+        ? "login.html?tag=" +
+          encodeURIComponent(tagCodigo)
+        : "login.html";
 
     return;
   }
+
 
   if(!data.session){
 
     window.location.href =
-      "login.html";
+      tagCodigo
+        ? "login.html?tag=" +
+          encodeURIComponent(tagCodigo)
+        : "login.html";
 
     return;
   }
 
+
   usuarioAtual =
     data.session.user;
 
-  document.getElementById(
-    "usuarioHeader"
-  ).textContent =
-    usuarioAtual.email;
+
+  document
+    .getElementById(
+      "usuarioHeader"
+    )
+    .textContent =
+      usuarioAtual.email;
+
 
   await carregarTutor();
+
   await carregarPets();
+
+
+  /*
+    Se chegou aqui com uma TAG,
+    verifica a situação dela.
+  */
+
+  if(tagCodigo){
+
+    await prepararAtivacaoTag();
+
+  }
+
 }
 
 
-/* =========================
+
+/* =====================================================
+   PREPARAR ATIVAÇÃO DA TAG
+===================================================== */
+
+async function prepararAtivacaoTag(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("tags")
+        .select(
+          "id,codigo,pet_id,ativa"
+        )
+        .eq(
+          "codigo",
+          tagCodigo
+        )
+        .maybeSingle();
+
+
+    if(error){
+
+      console.error(error);
+
+      mostrarMensagem(
+        "Não foi possível verificar a TAG.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if(!data){
+
+      mostrarMensagem(
+        "TAG não encontrada.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /*
+      TAG desativada
+    */
+
+    if(data.ativa === false){
+
+      mostrarMensagem(
+        "Esta TAG está desativada.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /*
+      TAG já vinculada
+    */
+
+    if(data.pet_id){
+
+      /*
+        Verifica se o pet vinculado
+        pertence ao usuário atual.
+      */
+
+      const {
+        data:petVinculado,
+        error:erroPet
+      } =
+        await supabaseClient
+          .from("pets")
+          .select("id,nome")
+          .eq(
+            "id",
+            data.pet_id
+          )
+          .eq(
+            "tutor_id",
+            usuarioAtual.id
+          )
+          .maybeSingle();
+
+
+      if(erroPet){
+
+        console.error(erroPet);
+
+        return;
+      }
+
+
+      if(petVinculado){
+
+        mostrarTagAtivada();
+
+        /*
+          Seleciona o pet automaticamente.
+        */
+
+        petSelecionado =
+          pets.find(
+            p => p.id === petVinculado.id
+          ) || null;
+
+      }else{
+
+        mostrarMensagem(
+          "Esta TAG já está vinculada a outro pet.",
+          "error"
+        );
+
+      }
+
+
+      return;
+    }
+
+
+    /*
+      TAG disponível
+    */
+
+    mostrarTagDisponivel();
+
+  }catch(erro){
+
+    console.error(
+      "Erro na ativação:",
+      erro
+    );
+
+    mostrarMensagem(
+      "Erro ao verificar a TAG.",
+      "error"
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   MOSTRAR TAG DISPONÍVEL
+===================================================== */
+
+function mostrarTagDisponivel(){
+
+  document
+    .getElementById(
+      "tagActivation"
+    )
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById(
+      "tagActive"
+    )
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById(
+      "tagCode"
+    )
+    .textContent =
+      "TAG: " + tagCodigo;
+
+}
+
+
+
+/* =====================================================
+   MOSTRAR TAG ATIVADA
+===================================================== */
+
+function mostrarTagAtivada(){
+
+  document
+    .getElementById(
+      "tagActivation"
+    )
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById(
+      "tagActive"
+    )
+    .classList
+    .remove("hidden");
+
+}
+
+
+
+/* =====================================================
    TUTOR
-========================= */
+===================================================== */
 
 async function carregarTutor(){
 
   const {
     data,
     error
-  } = await supabaseClient
-    .from("tutores")
-    .select("*")
-    .eq("id", usuarioAtual.id)
-    .maybeSingle();
+  } =
+    await supabaseClient
+      .from("tutores")
+      .select("*")
+      .eq(
+        "id",
+        usuarioAtual.id
+      )
+      .maybeSingle();
+
 
   if(error){
 
@@ -726,65 +1547,118 @@ async function carregarTutor(){
     return;
   }
 
+
   if(!data){
 
-    document.getElementById(
-      "tutorEmail"
-    ).value =
-      usuarioAtual.email || "";
+    document
+      .getElementById(
+        "tutorEmail"
+      )
+      .value =
+        usuarioAtual.email || "";
 
     return;
   }
 
-  document.getElementById(
-    "tutorNome"
-  ).value =
-    data.nome || "";
 
-  document.getElementById(
-    "tutorEmail"
-  ).value =
-    data.email ||
-    usuarioAtual.email ||
-    "";
+  document
+    .getElementById(
+      "tutorNome"
+    )
+    .value =
+      data.nome || "";
 
-  document.getElementById(
-    "tutorTelefone"
-  ).value =
-    data.telefone || "";
 
-  document.getElementById(
-    "tutorCidade"
-  ).value =
-    data.cidade || "";
+  document
+    .getElementById(
+      "tutorEmail"
+    )
+    .value =
+      data.email ||
+      usuarioAtual.email ||
+      "";
+
+
+  document
+    .getElementById(
+      "tutorTelefone"
+    )
+    .value =
+      data.telefone || "";
+
+
+  document
+    .getElementById(
+      "tutorCidade"
+    )
+    .value =
+      data.cidade || "";
+
 }
 
+
+
+/* =====================================================
+   SALVAR TUTOR
+===================================================== */
 
 async function salvarTutor(){
 
   const nome =
-    document.getElementById("tutorNome").value.trim();
+    document
+      .getElementById(
+        "tutorNome"
+      )
+      .value
+      .trim();
+
 
   const telefone =
-    document.getElementById("tutorTelefone").value.trim();
+    document
+      .getElementById(
+        "tutorTelefone"
+      )
+      .value
+      .trim();
+
 
   const cidade =
-    document.getElementById("tutorCidade").value.trim();
+    document
+      .getElementById(
+        "tutorCidade"
+      )
+      .value
+      .trim();
+
 
   const email =
     usuarioAtual.email || "";
 
+
   const {
     error
-  } = await supabaseClient
-    .from("tutores")
-    .upsert({
-      id:usuarioAtual.id,
-      nome:nome,
-      telefone:telefone,
-      email:email,
-      cidade:cidade
-    });
+  } =
+    await supabaseClient
+      .from("tutores")
+      .upsert({
+
+        id:
+          usuarioAtual.id,
+
+        nome:
+          nome,
+
+        telefone:
+          telefone,
+
+        email:
+          email,
+
+        cidade:
+          cidade
+
+      });
+
 
   if(error){
 
@@ -799,27 +1673,35 @@ async function salvarTutor(){
     return;
   }
 
+
   mostrarMensagem(
     "Seus dados foram salvos com sucesso!",
     "success"
   );
+
 }
 
 
-/* =========================
+
+/* =====================================================
    PETS
-========================= */
+===================================================== */
 
 async function carregarPets(){
 
   const {
     data,
     error
-  } = await supabaseClient
-    .from("pets")
-    .select("*")
-    .eq("tutor_id", usuarioAtual.id)
-    .order("nome");
+  } =
+    await supabaseClient
+      .from("pets")
+      .select("*")
+      .eq(
+        "tutor_id",
+        usuarioAtual.id
+      )
+      .order("nome");
+
 
   if(error){
 
@@ -833,184 +1715,399 @@ async function carregarPets(){
     return;
   }
 
-  pets = data || [];
+
+  pets =
+    data || [];
+
 
   renderizarPets();
+
 }
 
+
+
+/* =====================================================
+   RENDERIZAR PETS
+===================================================== */
 
 function renderizarPets(){
 
   const lista =
-    document.getElementById("listaPets");
+    document.getElementById(
+      "listaPets"
+    );
+
 
   if(!pets.length){
 
     lista.innerHTML = `
       <div class="pet-item">
-        <h3>Nenhum pet cadastrado</h3>
+
+        <h3>
+          Nenhum pet cadastrado
+        </h3>
+
         <div class="pet-meta">
           Cadastre seu primeiro pet para começar.
         </div>
+
       </div>
     `;
 
     return;
   }
 
+
   lista.innerHTML =
-    pets.map(pet => {
+    pets
+      .map(
+        pet => {
 
-      const perdido =
-        pet.perdido === true;
+          const perdido =
+            pet.perdido === true;
 
-      return `
-        <div class="pet-item">
 
-          <h3>
-            ${escapeHtml(pet.nome || "Sem nome")}
-          </h3>
+          return `
+            <div class="pet-item">
 
-          <div class="pet-meta">
-            ${escapeHtml(pet.especie || "")}
-            ${pet.raca ? " • " + escapeHtml(pet.raca) : ""}
-            ${pet.sexo ? " • " + escapeHtml(pet.sexo) : ""}
-          </div>
+              <h3>
+                ${escapeHtml(
+                  pet.nome ||
+                  "Sem nome"
+                )}
+              </h3>
 
-          <span class="status ${
-            perdido ? "status-lost" : ""
-          }">
-            ${
-              perdido
-              ? "🚨 PET PERDIDO"
-              : "✓ Cadastro ativo"
-            }
-          </span>
+              <div class="pet-meta">
 
-          <div class="actions">
+                ${escapeHtml(
+                  pet.especie ||
+                  ""
+                )}
 
-            <button
-              class="btn-primary"
-              onclick="editarPet('${pet.id}')">
-              Editar
-            </button>
+                ${
+                  pet.raca
+                    ? " • " +
+                      escapeHtml(
+                        pet.raca
+                      )
+                    : ""
+                }
 
-            <button
-              class="btn-secondary"
-              onclick="abrirDadosPet('${pet.id}')">
-              Vacinas / Saúde
-            </button>
+                ${
+                  pet.sexo
+                    ? " • " +
+                      escapeHtml(
+                        pet.sexo
+                      )
+                    : ""
+                }
 
-          </div>
+              </div>
 
-        </div>
-      `;
 
-    }).join("");
+              <span
+                class="status ${
+                  perdido
+                    ? "status-lost"
+                    : ""
+                }"
+              >
+
+                ${
+                  perdido
+                    ? "🚨 PET PERDIDO"
+                    : "✓ Cadastro ativo"
+                }
+
+              </span>
+
+
+              <div class="actions">
+
+                <button
+                  class="btn-primary"
+                  onclick="editarPet('${pet.id}')"
+                >
+                  Editar
+                </button>
+
+
+                <button
+                  class="btn-secondary"
+                  onclick="abrirDadosPet('${pet.id}')"
+                >
+                  Vacinas / Saúde
+                </button>
+
+              </div>
+
+            </div>
+          `;
+
+        }
+      )
+      .join("");
+
 }
 
+
+
+/* =====================================================
+   NOVO PET
+===================================================== */
 
 function novoPet(){
 
   petSelecionado = null;
 
+
   limparFormularioPet();
 
-  document.getElementById(
-    "tituloEditor"
-  ).textContent =
-    "🐾 Cadastrar pet";
 
-  document.getElementById(
-    "editorPet"
-  ).classList.remove("hidden");
+  document
+    .getElementById(
+      "tituloEditor"
+    )
+    .textContent =
+      tagCodigo
+        ? "🐾 Cadastre o pet da sua TAG"
+        : "🐾 Cadastrar pet";
 
-  document.getElementById(
-    "secaoVacinas"
-  ).classList.add("hidden");
 
-  document.getElementById(
-    "secaoSaude"
-  ).classList.add("hidden");
+  document
+    .getElementById(
+      "editorPet"
+    )
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById(
+      "secaoVacinas"
+    )
+    .classList
+    .add("hidden");
+
+
+  document
+    .getElementById(
+      "secaoSaude"
+    )
+    .classList
+    .add("hidden");
+
 
   window.scrollTo({
-    top:document.getElementById(
-      "editorPet"
-    ).offsetTop - 20,
-    behavior:"smooth"
+
+    top:
+      document
+        .getElementById(
+          "editorPet"
+        )
+        .offsetTop - 20,
+
+    behavior:
+      "smooth"
+
   });
+
 }
 
+
+
+/* =====================================================
+   EDITAR PET
+===================================================== */
 
 function editarPet(id){
 
   const pet =
-    pets.find(p => p.id === id);
+    pets.find(
+      p => p.id === id
+    );
 
-  if(!pet) return;
 
-  petSelecionado = pet;
+  if(!pet)
+    return;
 
-  document.getElementById("petId").value =
-    pet.id;
 
-  document.getElementById("petNome").value =
-    pet.nome || "";
+  petSelecionado =
+    pet;
 
-  document.getElementById("petEspecie").value =
-    pet.especie || "Cão";
 
-  document.getElementById("petRaca").value =
-    pet.raca || "";
+  document
+    .getElementById(
+      "petId"
+    )
+    .value =
+      pet.id;
 
-  document.getElementById("petSexo").value =
-    pet.sexo || "";
 
-  document.getElementById("petNascimento").value =
-    pet.data_nascimento || "";
+  document
+    .getElementById(
+      "petNome"
+    )
+    .value =
+      pet.nome || "";
 
-  document.getElementById("petCidade").value =
-    pet.cidade || "";
 
-  document.getElementById("petAlergias").value =
-    pet.alergias || "";
+  document
+    .getElementById(
+      "petEspecie"
+    )
+    .value =
+      pet.especie || "Cão";
 
-  document.getElementById("petMedicamentos").value =
-    pet.medicamentos || "";
 
-  document.getElementById("petObservacoes").value =
-    pet.observacoes || "";
+  document
+    .getElementById(
+      "petRaca"
+    )
+    .value =
+      pet.raca || "";
 
-  document.getElementById("petPerdido").checked =
-    pet.perdido === true;
 
-  document.getElementById(
-    "petMensagemPerdido"
-  ).value =
-    pet.mensagem_perdido || "";
+  document
+    .getElementById(
+      "petSexo"
+    )
+    .value =
+      pet.sexo || "";
 
-  document.getElementById(
-    "tituloEditor"
-  ).textContent =
-    "✏️ Editar " + (pet.nome || "pet");
 
-  document.getElementById(
-    "editorPet"
-  ).classList.remove("hidden");
+  document
+    .getElementById(
+      "petNascimento"
+    )
+    .value =
+      pet.data_nascimento || "";
+
+
+  document
+    .getElementById(
+      "petCidade"
+    )
+    .value =
+      pet.cidade || "";
+
+
+  document
+    .getElementById(
+      "petAlergias"
+    )
+    .value =
+      pet.alergias || "";
+
+
+  document
+    .getElementById(
+      "petMedicamentos"
+    )
+    .value =
+      pet.medicamentos || "";
+
+
+  document
+    .getElementById(
+      "petObservacoes"
+    )
+    .value =
+      pet.observacoes || "";
+
+
+  document
+    .getElementById(
+      "petPerdido"
+    )
+    .checked =
+      pet.perdido === true;
+
+
+  document
+    .getElementById(
+      "petMensagemPerdido"
+    )
+    .value =
+      pet.mensagem_perdido || "";
+
+
+  document
+    .getElementById(
+      "petUltimoLocal"
+    )
+    .value =
+      pet.ultimo_local_perdido || "";
+
+
+  document
+    .getElementById(
+      "petDataPerdido"
+    )
+    .value =
+      pet.data_perdido || "";
+
+
+  document
+    .getElementById(
+      "petHoraPerdido"
+    )
+    .value =
+      pet.hora_perdido || "";
+
+
+  document
+    .getElementById(
+      "tituloEditor"
+    )
+    .textContent =
+      "✏️ Editar " +
+      (
+        pet.nome ||
+        "pet"
+      );
+
+
+  document
+    .getElementById(
+      "editorPet"
+    )
+    .classList
+    .remove("hidden");
+
 
   window.scrollTo({
-    top:document.getElementById(
-      "editorPet"
-    ).offsetTop - 20,
-    behavior:"smooth"
+
+    top:
+      document
+        .getElementById(
+          "editorPet"
+        )
+        .offsetTop - 20,
+
+    behavior:
+      "smooth"
+
   });
+
 }
 
+
+
+/* =====================================================
+   SALVAR PET
+===================================================== */
 
 async function salvarPet(){
 
   const nome =
-    document.getElementById("petNome").value.trim();
+    document
+      .getElementById(
+        "petNome"
+      )
+      .value
+      .trim();
+
 
   if(!nome){
 
@@ -1022,220 +2119,553 @@ async function salvarPet(){
     return;
   }
 
-  const dados = {
 
-    tutor_id:
-      usuarioAtual.id,
-
-    nome:
-      nome,
-
-    especie:
-      document.getElementById(
-        "petEspecie"
-      ).value,
-
-    raca:
-      document.getElementById(
-        "petRaca"
-      ).value.trim(),
-
-    sexo:
-      document.getElementById(
-        "petSexo"
-      ).value || null,
-
-    data_nascimento:
-      document.getElementById(
-        "petNascimento"
-      ).value || null,
-
-    cidade:
-      document.getElementById(
-        "petCidade"
-      ).value.trim(),
-
-    alergias:
-      document.getElementById(
-        "petAlergias"
-      ).value.trim(),
-
-    medicamentos:
-      document.getElementById(
-        "petMedicamentos"
-      ).value.trim(),
-
-    observacoes:
-      document.getElementById(
-        "petObservacoes"
-      ).value.trim(),
-
-    perdido:
-      document.getElementById(
-        "petPerdido"
-      ).checked,
-
-    mensagem_perdido:
+  const botao =
     document.getElementById(
-        "petMensagemPerdido"
-    ).value.trim(),
-
-ultimo_local_perdido:
-    document.getElementById(
-        "petUltimoLocal"
-    ).value.trim() || null,
-
-data_perdido:
-    document.getElementById(
-        "petDataPerdido"
-    ).value || null,
-
-hora_perdido:
-    document.getElementById(
-        "petHoraPerdido"
-    ).value || null
-  };
+      "btnSalvarPet"
+    );
 
 
-  let error;
+  botao.disabled = true;
+
+  botao.textContent =
+    "Salvando...";
 
 
-  if(petSelecionado){
-
-    const resultado =
-      await supabaseClient
-        .from("pets")
-        .update(dados)
-        .eq("id", petSelecionado.id)
-        .eq("tutor_id", usuarioAtual.id);
-
-    error =
-      resultado.error;
-
-  }else{
-
-    const resultado =
-      await supabaseClient
-        .from("pets")
-        .insert(dados);
-
-    error =
-      resultado.error;
-  }
+  try{
 
 
-  if(error){
+    const dados = {
 
-    console.error(error);
+      tutor_id:
+        usuarioAtual.id,
+
+      nome:
+        nome,
+
+      especie:
+        document
+          .getElementById(
+            "petEspecie"
+          )
+          .value,
+
+      raca:
+        document
+          .getElementById(
+            "petRaca"
+          )
+          .value
+          .trim(),
+
+      sexo:
+        document
+          .getElementById(
+            "petSexo"
+          )
+          .value ||
+        null,
+
+      data_nascimento:
+        document
+          .getElementById(
+            "petNascimento"
+          )
+          .value ||
+        null,
+
+      cidade:
+        document
+          .getElementById(
+            "petCidade"
+          )
+          .value
+          .trim(),
+
+      alergias:
+        document
+          .getElementById(
+            "petAlergias"
+          )
+          .value
+          .trim(),
+
+      medicamentos:
+        document
+          .getElementById(
+            "petMedicamentos"
+          )
+          .value
+          .trim(),
+
+      observacoes:
+        document
+          .getElementById(
+            "petObservacoes"
+          )
+          .value
+          .trim(),
+
+      perdido:
+        document
+          .getElementById(
+            "petPerdido"
+          )
+          .checked,
+
+      mensagem_perdido:
+        document
+          .getElementById(
+            "petMensagemPerdido"
+          )
+          .value
+          .trim(),
+
+      ultimo_local_perdido:
+        document
+          .getElementById(
+            "petUltimoLocal"
+          )
+          .value
+          .trim() ||
+        null,
+
+      data_perdido:
+        document
+          .getElementById(
+            "petDataPerdido"
+          )
+          .value ||
+        null,
+
+      hora_perdido:
+        document
+          .getElementById(
+            "petHoraPerdido"
+          )
+          .value ||
+        null
+
+    };
+
+
+    let petId = null;
+
+
+    /* =========================================
+       EDITAR PET EXISTENTE
+    ========================================= */
+
+    if(petSelecionado){
+
+      const resultado =
+        await supabaseClient
+          .from("pets")
+          .update(dados)
+          .eq(
+            "id",
+            petSelecionado.id
+          )
+          .eq(
+            "tutor_id",
+            usuarioAtual.id
+          )
+          .select("id")
+          .single();
+
+
+      if(resultado.error){
+
+        throw resultado.error;
+
+      }
+
+
+      petId =
+        resultado.data.id;
+
+
+    }
+
+
+    /* =========================================
+       CRIAR NOVO PET
+    ========================================= */
+
+    else{
+
+      const resultado =
+        await supabaseClient
+          .from("pets")
+          .insert(dados)
+          .select("id")
+          .single();
+
+
+      if(resultado.error){
+
+        throw resultado.error;
+
+      }
+
+
+      petId =
+        resultado.data.id;
+
+    }
+
+
+    /* =========================================
+       ATIVAÇÃO AUTOMÁTICA DA TAG
+    ========================================= */
+
+    if(
+      tagCodigo &&
+      !petSelecionado
+    ){
+
+      botao.textContent =
+        "Ativando TAG...";
+
+
+      const resultadoTag =
+        await supabaseClient
+          .rpc(
+            "ativar_tag_pet",
+            {
+              p_codigo:
+                tagCodigo,
+
+              p_pet_id:
+                petId
+            }
+          );
+
+
+      if(resultadoTag.error){
+
+        console.error(
+          resultadoTag.error
+        );
+
+
+        /*
+          Se o pet foi criado mas a TAG
+          não pôde ser vinculada, não apagamos
+          o pet automaticamente.
+        */
+
+        mostrarMensagem(
+          "O pet foi cadastrado, mas não foi possível ativar a TAG: " +
+          resultadoTag.error.message,
+          "error"
+        );
+
+        await carregarPets();
+
+        cancelarPet();
+
+        return;
+
+      }
+
+
+      /*
+        TAG ativada
+      */
+
+      mostrarTagAtivada();
+
+
+      mostrarMensagem(
+        "Pet cadastrado e TAG ativada com sucesso!",
+        "success"
+      );
+
+
+      /*
+        Remove o código da URL para evitar
+        tentar ativar novamente ao recarregar.
+      */
+
+      window.history.replaceState(
+        {},
+        document.title,
+        "painel.html"
+      );
+
+
+      tagCodigo =
+        null;
+
+    }
+
+
+    else{
+
+      mostrarMensagem(
+        "Pet salvo com sucesso!",
+        "success"
+      );
+
+    }
+
+
+    await carregarPets();
+
+
+    cancelarPet();
+
+
+  }catch(erro){
+
+    console.error(
+      erro
+    );
+
 
     mostrarMensagem(
       "Erro ao salvar pet: " +
-      error.message,
+      erro.message,
       "error"
     );
 
-    return;
+
+  }finally{
+
+    botao.disabled = false;
+
+    botao.textContent =
+      "Salvar pet";
+
   }
 
-
-  mostrarMensagem(
-    "Pet salvo com sucesso!",
-    "success"
-  );
-
-  cancelarPet();
-
-  await carregarPets();
 }
 
+
+
+/* =====================================================
+   CANCELAR PET
+===================================================== */
 
 function cancelarPet(){
 
-  document.getElementById(
-    "editorPet"
-  ).classList.add("hidden");
+  document
+    .getElementById(
+      "editorPet"
+    )
+    .classList
+    .add("hidden");
 
-  petSelecionado = null;
+
+  petSelecionado =
+    null;
+
 
   limparFormularioPet();
+
 }
 
+
+
+/* =====================================================
+   LIMPAR FORMULÁRIO
+===================================================== */
 
 function limparFormularioPet(){
 
-  document.getElementById("petId").value = "";
+  document
+    .getElementById(
+      "petId"
+    )
+    .value = "";
 
-  document.getElementById("petNome").value = "";
 
-  document.getElementById("petEspecie").value = "Cão";
+  document
+    .getElementById(
+      "petNome"
+    )
+    .value = "";
 
-  document.getElementById("petRaca").value = "";
 
-  document.getElementById("petSexo").value = "";
+  document
+    .getElementById(
+      "petEspecie"
+    )
+    .value =
+      "Cão";
 
-  document.getElementById("petNascimento").value = "";
 
-  document.getElementById("petCidade").value = "";
+  document
+    .getElementById(
+      "petRaca"
+    )
+    .value = "";
 
-  document.getElementById("petAlergias").value = "";
 
-  document.getElementById("petMedicamentos").value = "";
+  document
+    .getElementById(
+      "petSexo"
+    )
+    .value = "";
 
-  document.getElementById("petObservacoes").value = "";
 
-  document.getElementById("petPerdido").checked = false;
+  document
+    .getElementById(
+      "petNascimento"
+    )
+    .value = "";
 
-  document.getElementById(
-    "petMensagemPerdido"
-  ).value = "";
+
+  document
+    .getElementById(
+      "petCidade"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petAlergias"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petMedicamentos"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petObservacoes"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petPerdido"
+    )
+    .checked = false;
+
+
+  document
+    .getElementById(
+      "petMensagemPerdido"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petUltimoLocal"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petDataPerdido"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "petHoraPerdido"
+    )
+    .value = "";
+
 }
 
 
-/* =========================
-   VACINAS
-========================= */
+
+/* =====================================================
+   VACINAS / SAÚDE
+===================================================== */
 
 async function abrirDadosPet(id){
 
   const pet =
-    pets.find(p => p.id === id);
+    pets.find(
+      p => p.id === id
+    );
 
-  if(!pet) return;
 
-  petSelecionado = pet;
+  if(!pet)
+    return;
 
-  document.getElementById(
-    "secaoVacinas"
-  ).classList.remove("hidden");
 
-  document.getElementById(
-    "secaoSaude"
-  ).classList.remove("hidden");
+  petSelecionado =
+    pet;
+
+
+  document
+    .getElementById(
+      "secaoVacinas"
+    )
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById(
+      "secaoSaude"
+    )
+    .classList
+    .remove("hidden");
+
 
   await carregarVacinas(id);
+
   await carregarSaude(id);
 
+
   window.scrollTo({
-    top:document.getElementById(
-      "secaoVacinas"
-    ).offsetTop - 20,
-    behavior:"smooth"
+
+    top:
+      document
+        .getElementById(
+          "secaoVacinas"
+        )
+        .offsetTop - 20,
+
+    behavior:
+      "smooth"
+
   });
+
 }
 
+
+
+/* =====================================================
+   VACINAS
+===================================================== */
 
 async function carregarVacinas(petId){
 
   const {
     data,
     error
-  } = await supabaseClient
-    .from("vacinas")
-    .select("*")
-    .eq("pet_id", petId)
-    .order("data_aplicacao", {
-      ascending:false
-    });
+  } =
+    await supabaseClient
+      .from("vacinas")
+      .select("*")
+      .eq(
+        "pet_id",
+        petId
+      )
+      .order(
+        "data_aplicacao",
+        {
+          ascending:false
+        }
+      );
+
 
   if(error){
 
@@ -1244,10 +2674,12 @@ async function carregarVacinas(petId){
     return;
   }
 
+
   const lista =
     document.getElementById(
       "listaVacinas"
     );
+
 
   if(!data || !data.length){
 
@@ -1260,45 +2692,66 @@ async function carregarVacinas(petId){
     return;
   }
 
+
   lista.innerHTML =
-    data.map(v => `
-      <div class="vaccine-row">
+    data
+      .map(
+        v => `
 
-        <div class="row-title">
-          💉 ${escapeHtml(v.nome || "")}
-        </div>
+          <div class="vaccine-row">
 
-        <div class="small">
-          Aplicação:
-          ${formatarData(v.data_aplicacao)}
-        </div>
-
-        ${
-          v.proxima_dose
-          ? `
-            <div class="small">
-              Próxima dose:
-              ${formatarData(v.proxima_dose)}
+            <div class="row-title">
+              💉 ${escapeHtml(
+                v.nome || ""
+              )}
             </div>
-          `
-          : ""
-        }
 
-        ${
-          v.veterinario
-          ? `
             <div class="small">
-              Veterinário:
-              ${escapeHtml(v.veterinario)}
+              Aplicação:
+              ${formatarData(
+                v.data_aplicacao
+              )}
             </div>
-          `
-          : ""
-        }
 
-      </div>
-    `).join("");
+            ${
+              v.proxima_dose
+                ? `
+                  <div class="small">
+                    Próxima dose:
+                    ${formatarData(
+                      v.proxima_dose
+                    )}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+              v.veterinario
+                ? `
+                  <div class="small">
+                    Veterinário:
+                    ${escapeHtml(
+                      v.veterinario
+                    )}
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+
+        `
+      )
+      .join("");
+
 }
 
+
+
+/* =====================================================
+   ADICIONAR VACINA
+===================================================== */
 
 async function adicionarVacina(){
 
@@ -1312,10 +2765,15 @@ async function adicionarVacina(){
     return;
   }
 
+
   const nome =
-    document.getElementById(
-      "vacinaNome"
-    ).value.trim();
+    document
+      .getElementById(
+        "vacinaNome"
+      )
+      .value
+      .trim();
+
 
   if(!nome){
 
@@ -1327,38 +2785,54 @@ async function adicionarVacina(){
     return;
   }
 
+
   const {
     error
-  } = await supabaseClient
-    .from("vacinas")
-    .insert({
+  } =
+    await supabaseClient
+      .from("vacinas")
+      .insert({
 
-      pet_id:
-        petSelecionado.id,
+        pet_id:
+          petSelecionado.id,
 
-      nome:
-        nome,
+        nome:
+          nome,
 
-      data_aplicacao:
-        document.getElementById(
-          "vacinaData"
-        ).value || null,
+        data_aplicacao:
+          document
+            .getElementById(
+              "vacinaData"
+            )
+            .value ||
+          null,
 
-      proxima_dose:
-        document.getElementById(
-          "vacinaProxima"
-        ).value || null,
+        proxima_dose:
+          document
+            .getElementById(
+              "vacinaProxima"
+            )
+            .value ||
+          null,
 
-      veterinario:
-        document.getElementById(
-          "vacinaVeterinario"
-        ).value.trim(),
+        veterinario:
+          document
+            .getElementById(
+              "vacinaVeterinario"
+            )
+            .value
+            .trim(),
 
-      observacoes:
-        document.getElementById(
-          "vacinaObservacoes"
-        ).value.trim()
-    });
+        observacoes:
+          document
+            .getElementById(
+              "vacinaObservacoes"
+            )
+            .value
+            .trim()
+
+      });
+
 
   if(error){
 
@@ -1373,53 +2847,80 @@ async function adicionarVacina(){
     return;
   }
 
-  document.getElementById(
-    "vacinaNome"
-  ).value = "";
 
-  document.getElementById(
-    "vacinaData"
-  ).value = "";
+  document
+    .getElementById(
+      "vacinaNome"
+    )
+    .value = "";
 
-  document.getElementById(
-    "vacinaProxima"
-  ).value = "";
 
-  document.getElementById(
-    "vacinaVeterinario"
-  ).value = "";
+  document
+    .getElementById(
+      "vacinaData"
+    )
+    .value = "";
 
-  document.getElementById(
-    "vacinaObservacoes"
-  ).value = "";
+
+  document
+    .getElementById(
+      "vacinaProxima"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "vacinaVeterinario"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "vacinaObservacoes"
+    )
+    .value = "";
+
 
   mostrarMensagem(
     "Vacina adicionada!",
     "success"
   );
 
+
   await carregarVacinas(
     petSelecionado.id
   );
+
 }
 
 
-/* =========================
+
+/* =====================================================
    SAÚDE
-========================= */
+===================================================== */
 
 async function carregarSaude(petId){
 
   const {
     data,
     error
-  } = await supabaseClient
-    .from("saude_pet")
-    .select("*")
-    .eq("pet_id", petId)
-    .order("data_evento", {
-      ascending:false
-    });
+  } =
+    await supabaseClient
+      .from("saude_pet")
+      .select("*")
+      .eq(
+        "pet_id",
+        petId
+      )
+      .order(
+        "data_evento",
+        {
+          ascending:false
+        }
+      );
+
 
   if(error){
 
@@ -1428,10 +2929,12 @@ async function carregarSaude(petId){
     return;
   }
 
+
   const lista =
     document.getElementById(
       "listaSaude"
     );
+
 
   if(!data || !data.length){
 
@@ -1444,44 +2947,65 @@ async function carregarSaude(petId){
     return;
   }
 
+
   lista.innerHTML =
-    data.map(s => `
-      <div class="health-row">
+    data
+      .map(
+        s => `
 
-        <div class="row-title">
-          🏥 ${escapeHtml(s.titulo || "")}
-        </div>
+          <div class="health-row">
 
-        <div class="small">
-          Tipo:
-          ${escapeHtml(s.tipo || "")}
-        </div>
+            <div class="row-title">
+              🏥 ${escapeHtml(
+                s.titulo || ""
+              )}
+            </div>
 
-        ${
-          s.data_evento
-          ? `
             <div class="small">
-              Data:
-              ${formatarData(s.data_evento)}
+              Tipo:
+              ${escapeHtml(
+                s.tipo || ""
+              )}
             </div>
-          `
-          : ""
-        }
 
-        ${
-          s.descricao
-          ? `
-            <div style="margin-top:8px;">
-              ${escapeHtml(s.descricao)}
-            </div>
-          `
-          : ""
-        }
+            ${
+              s.data_evento
+                ? `
+                  <div class="small">
+                    Data:
+                    ${formatarData(
+                      s.data_evento
+                    )}
+                  </div>
+                `
+                : ""
+            }
 
-      </div>
-    `).join("");
+            ${
+              s.descricao
+                ? `
+                  <div style="margin-top:8px;">
+                    ${escapeHtml(
+                      s.descricao
+                    )}
+                  </div>
+                `
+                : ""
+            }
+
+          </div>
+
+        `
+      )
+      .join("");
+
 }
 
+
+
+/* =====================================================
+   ADICIONAR SAÚDE
+===================================================== */
 
 async function adicionarSaude(){
 
@@ -1495,10 +3019,15 @@ async function adicionarSaude(){
     return;
   }
 
+
   const titulo =
-    document.getElementById(
-      "saudeTitulo"
-    ).value.trim();
+    document
+      .getElementById(
+        "saudeTitulo"
+      )
+      .value
+      .trim();
+
 
   if(!titulo){
 
@@ -1510,33 +3039,45 @@ async function adicionarSaude(){
     return;
   }
 
+
   const {
     error
-  } = await supabaseClient
-    .from("saude_pet")
-    .insert({
+  } =
+    await supabaseClient
+      .from("saude_pet")
+      .insert({
 
-      pet_id:
-        petSelecionado.id,
+        pet_id:
+          petSelecionado.id,
 
-      tipo:
-        document.getElementById(
-          "saudeTipo"
-        ).value,
+        tipo:
+          document
+            .getElementById(
+              "saudeTipo"
+            )
+            .value,
 
-      titulo:
-        titulo,
+        titulo:
+          titulo,
 
-      descricao:
-        document.getElementById(
-          "saudeDescricao"
-        ).value.trim(),
+        descricao:
+          document
+            .getElementById(
+              "saudeDescricao"
+            )
+            .value
+            .trim(),
 
-      data_evento:
-        document.getElementById(
-          "saudeData"
-        ).value || null
-    });
+        data_evento:
+          document
+            .getElementById(
+              "saudeData"
+            )
+            .value ||
+          null
+
+      });
+
 
   if(error){
 
@@ -1551,42 +3092,59 @@ async function adicionarSaude(){
     return;
   }
 
-  document.getElementById(
-    "saudeTitulo"
-  ).value = "";
 
-  document.getElementById(
-    "saudeDescricao"
-  ).value = "";
+  document
+    .getElementById(
+      "saudeTitulo"
+    )
+    .value = "";
 
-  document.getElementById(
-    "saudeData"
-  ).value = "";
+
+  document
+    .getElementById(
+      "saudeDescricao"
+    )
+    .value = "";
+
+
+  document
+    .getElementById(
+      "saudeData"
+    )
+    .value = "";
+
 
   mostrarMensagem(
     "Registro de saúde adicionado!",
     "success"
   );
 
+
   await carregarSaude(
     petSelecionado.id
   );
+
 }
 
 
-/* =========================
+
+/* =====================================================
    UTILIDADES
-========================= */
+===================================================== */
 
 function formatarData(data){
 
-  if(!data) return "Não informado";
+  if(!data)
+    return "Não informado";
+
 
   const partes =
-    data.split("-");
+    String(data).split("-");
+
 
   if(partes.length !== 3)
     return data;
+
 
   return (
     partes[2] +
@@ -1595,19 +3153,44 @@ function formatarData(data){
     "/" +
     partes[0]
   );
+
 }
+
 
 
 function escapeHtml(text){
 
-  return String(text ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  return String(
+    text ?? ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
 }
 
+
+
+/* =====================================================
+   MENSAGEM
+===================================================== */
 
 function mostrarMensagem(
   texto,
@@ -1619,51 +3202,77 @@ function mostrarMensagem(
       "mensagem"
     );
 
+
   box.textContent =
     texto;
+
 
   box.className =
     "message " + tipo;
 
+
   box.style.display =
     "block";
 
-  setTimeout(() => {
 
-    box.style.display =
-      "none";
+  setTimeout(
+    () => {
 
-  },5000);
+      box.style.display =
+        "none";
+
+    },
+    6000
+  );
+
 }
 
+
+
+/* =====================================================
+   VOLTAR
+===================================================== */
 
 function voltarSite(){
 
   window.location.href =
     "index.html";
+
 }
 
+
+
+/* =====================================================
+   SAIR
+===================================================== */
 
 async function sair(){
 
   if(supabaseClient){
 
-    await supabaseClient.auth.signOut();
+    await supabaseClient
+      .auth
+      .signOut();
 
   }
 
+
   window.location.href =
     "login.html";
+
 }
 
 
-/* =========================
+
+/* =====================================================
    START
-========================= */
+===================================================== */
 
 iniciarSupabase();
 
 </script>
 
+
 </body>
-</html>
+
+  </html>
