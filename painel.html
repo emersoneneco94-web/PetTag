@@ -663,7 +663,40 @@ hr{
   >
 
 </div>
+<!-- FOTOS ADICIONAIS DO PET -->
+<div class="field" style="margin-top:18px;">
 
+  <label>📸 Fotos adicionais do pet</label>
+
+  <input
+    type="file"
+    id="petFotos"
+    accept="image/jpeg,image/png,image/webp"
+    multiple
+  >
+
+  <small
+    style="
+      display:block;
+      margin-top:6px;
+      color:#667777;
+    "
+  >
+    Adicione até 5 fotos adicionais do seu pet.
+    Total de até 6 fotos contando a foto principal.
+  </small>
+
+  <div
+    id="previewPetFotos"
+    style="
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+      gap:10px;
+      margin-top:12px;
+    "
+  ></div>
+
+</div>
 
 <div class="grid">
 
@@ -2516,7 +2549,103 @@ async function salvarPet(){
         throw resultadoFoto.error;
 
       }
+/* ==========================================
+   FOTOS ADICIONAIS DO PET
+   ========================================== */
 
+const inputFotos =
+  document.getElementById("petFotos");
+
+const fotosAdicionais =
+  inputFotos?.files || [];
+
+if(fotosAdicionais.length > 0){
+
+  /* Verifica quantas fotos adicionais o pet já possui */
+  const { data: fotosExistentes, error: erroFotos } =
+    await supabaseClient
+      .from("pet_fotos")
+      .select("id")
+      .eq("pet_id", petId);
+
+  if(erroFotos){
+    throw erroFotos;
+  }
+
+  const quantidadeExistente =
+    fotosExistentes?.length || 0;
+
+  if(
+    quantidadeExistente + fotosAdicionais.length > 5
+  ){
+    mostrarMensagem(
+      "O pet pode ter até 6 fotos no total: 1 principal + 5 adicionais.",
+      "error"
+    );
+
+    return;
+  }
+
+  /* Envia cada foto para o Storage */
+  for(
+    let i = 0;
+    i < fotosAdicionais.length;
+    i++
+  ){
+
+    const arquivo = fotosAdicionais[i];
+
+    const extensao =
+      arquivo.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+    const caminho =
+      `${usuarioAtual.id}/${petId}-galeria-${Date.now()}-${i}.${extensao}`;
+
+    const { error: erroUpload } =
+      await supabaseClient
+        .storage
+        .from("pet-fotos")
+        .upload(
+          caminho,
+          arquivo,
+          {
+            upsert: false,
+            contentType: arquivo.type
+          }
+        );
+
+    if(erroUpload){
+      throw erroUpload;
+    }
+
+    /* Pega a URL pública */
+    const { data: urlFoto } =
+      supabaseClient
+        .storage
+        .from("pet-fotos")
+        .getPublicUrl(caminho);
+
+    const fotoUrl =
+      urlFoto.publicUrl;
+
+    /* Salva na tabela pet_fotos */
+    const { error: erroBanco } =
+      await supabaseClient
+        .from("pet_fotos")
+        .insert({
+          pet_id: petId,
+          foto_url: fotoUrl,
+          principal: false
+        });
+
+    if(erroBanco){
+      throw erroBanco;
+    }
+  }
+}
     }
 
 
@@ -3457,7 +3586,73 @@ async function sair(){
 ===================================================== */
 
 iniciarSupabase();
+/* ==========================================
+   PRÉ-VISUALIZAÇÃO DAS FOTOS ADICIONAIS
+   ========================================== */
 
+const campoFotos =
+  document.getElementById("petFotos");
+
+const areaPreviewFotos =
+  document.getElementById("previewPetFotos");
+
+if(campoFotos && areaPreviewFotos){
+
+  campoFotos.addEventListener("change", function(){
+
+    areaPreviewFotos.innerHTML = "";
+
+    const arquivos =
+      Array.from(this.files);
+
+    if(arquivos.length > 5){
+
+      alert(
+        "Você pode selecionar no máximo 5 fotos adicionais."
+      );
+
+      this.value = "";
+      return;
+    }
+
+    arquivos.forEach((arquivo, indice) => {
+
+      const leitor =
+        new FileReader();
+
+      leitor.onload = function(e){
+
+        const div =
+          document.createElement("div");
+
+        div.style.position = "relative";
+
+        div.innerHTML = `
+          <img
+            src="${e.target.result}"
+            alt="Foto adicional ${indice + 1}"
+            style="
+              width:90px;
+              height:90px;
+              object-fit:cover;
+              border-radius:12px;
+              display:block;
+              box-shadow:0 2px 8px rgba(0,0,0,.12);
+            "
+          >
+        `;
+
+        areaPreviewFotos.appendChild(div);
+
+      };
+
+      leitor.readAsDataURL(arquivo);
+
+    });
+
+  });
+
+}
 </script>
 
 
