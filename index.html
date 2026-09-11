@@ -2,2957 +2,3297 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Save Tag Pet — Identificação inteligente para o seu pet</title>
+<meta charset="UTF-8">
 
-  <meta
-    name="description"
-    content="Save Tag Pet — identificação inteligente para cães e gatos através de TAG NFC."
-  >
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-  <style>
+<title>Save Tag Pet — Identificação inteligente para o seu pet</title>
 
-    /* =========================================================
-       RESET
-    ========================================================= */
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #eef9f7;
-      color: #12383d;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+<meta name="description"
+      content="Save Tag Pet — identificação inteligente para cães e gatos através de TAG NFC.">
 
 
-    /* =========================================================
-       LOADING / ERRO
-    ========================================================= */
+<style>
 
-    .loading,
-    .error {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 30px;
-    }
+/* =========================================================
+   RESET
+========================================================= */
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    /* =========================================================
-       ATIVAÇÃO
-    ========================================================= */
+html {
+    scroll-behavior: smooth;
+}
 
-    .activation {
-      width: calc(100% - 30px);
-      max-width: 520px;
-      margin: 50px auto;
-      padding: 30px 20px;
-      background: white;
-      border-radius: 25px;
-      text-align: center;
-      box-shadow: 0 10px 35px rgba(0,0,0,.08);
-    }
+body {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-    .activation-icon {
-      font-size: 55px;
-      margin-bottom: 15px;
-    }
+    background: #eef9f7;
+    color: #10363a;
+}
 
-    .activation h1 {
-      font-size: 30px;
-      color: #173d2d;
-      margin-bottom: 10px;
-    }
+a {
+    text-decoration: none;
+}
 
-    .activation p {
-      color: #59645e;
-      line-height: 1.55;
-      margin-bottom: 20px;
-    }
+button {
+    font-family: inherit;
+}
 
-    .activation-code {
-      background: #f1f7f5;
-      border-radius: 15px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-
-    .activation-code small {
-      display: block;
-      color: #758078;
-      margin-bottom: 5px;
-    }
-
-    .activation-code strong {
-      font-size: 20px;
-      letter-spacing: 1px;
-      color: #173d2d;
-    }
-
-    .activation-btn {
-      display: block;
-      width: 100%;
-      background: #20afa6;
-      color: white;
-      padding: 15px;
-      border-radius: 15px;
-      font-weight: 900;
-      font-size: 17px;
-    }
+.hidden {
+    display: none !important;
+}
 
 
-    /* =========================================================
-       PERFIL PÚBLICO DA TAG
-    ========================================================= */
+/* =========================================================
+   LOADING / ERRO
+========================================================= */
 
-    .tag-container {
-      width: 100%;
-      max-width: 520px;
-      margin: auto;
-      padding: 18px;
-    }
+.loading,
+.error {
 
-    .tag-card {
-      background: #fff;
-      border-radius: 22px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.07);
-    }
+    min-height: 100vh;
 
-    .tag-photo {
-      width: 100%;
-      height: 330px;
-      object-fit: cover;
-      border-radius: 18px;
-      display: block;
-    }
+    display: flex;
 
-    .tag-name {
-      font-size: 34px;
-      font-weight: 900;
-      margin-top: 18px;
-      color: #173d2d;
-    }
+    flex-direction: column;
 
-    .tag-sub {
-      color: #66736c;
-      font-size: 16px;
-      margin-top: 4px;
-    }
+    justify-content: center;
 
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
+    align-items: center;
 
-    .badge {
-      background: #e8f6ee;
-      color: #26794e;
-      padding: 7px 11px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-    }
+    text-align: center;
 
-    .badge-danger {
-      background: #ffe8e8;
-      color: #d73e3e;
-    }
+    padding: 30px;
 
-    .tag-section-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 16px;
-      color: #173d2d;
-    }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .info-item {
-      background: #f6f8f7;
-      border-radius: 14px;
-      padding: 13px;
-    }
-
-    .info-label {
-      font-size: 12px;
-      color: #758078;
-      margin-bottom: 5px;
-    }
-
-    .info-value {
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .contact-card {
-      background: #173d2d;
-      color: white;
-    }
-
-    .contact-card h2 {
-      margin-bottom: 8px;
-    }
-
-    .contact-card p {
-      color: #d8e8df;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-
-    .contact-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .contact-btn {
-      flex: 1;
-      border-radius: 13px;
-      padding: 13px;
-      text-align: center;
-      font-weight: 800;
-    }
-
-    .whatsapp-btn {
-      background: #36c979;
-      color: white;
-    }
-
-    .call-btn {
-      background: white;
-      color: #173d2d;
-    }
-
-    .lost-card {
-      border: 2px solid #e85b5b;
-      background: #fff7f7;
-    }
-
-    .lost-title {
-      color: #d73e3e;
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 10px;
-    }
-
-    .lost-card p {
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-
-    .tag-footer {
-      text-align: center;
-      padding: 25px 10px 35px;
-      color: #718078;
-      font-size: 13px;
-    }
-
-    .tutor-link {
-      display: inline-block;
-      margin-top: 10px;
-      color: #173d2d;
-      font-weight: 800;
-    }
+}
 
 
-    /* =========================================================
-       HOME
-    ========================================================= */
+/* =========================================================
+   HOME
+========================================================= */
 
-    .home {
-      min-height: 100vh;
-      background: #eef9f7;
-      overflow: hidden;
-    }
+.home {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    background:
+        #eef9f7;
+
+    overflow: hidden;
+
+}
 
 
-    /* =========================================================
-       HEADER
-    ========================================================= */
+/* =========================================================
+   HEADER
+========================================================= */
+
+.home-header {
+
+    width: 100%;
+
+    height: 97px;
+
+    background: #f9fdfc;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding:
+        10px 40px;
+
+    border-bottom:
+        1px solid #e5eeee;
+
+    position: relative;
+
+    z-index: 1000;
+}
+
+
+/* LOGO */
+
+.home-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    color: #0c3036;
+}
+
+.home-brand-icon {
+
+    font-size: 42px;
+
+    line-height: 1;
+}
+
+.home-brand-text strong {
+
+    display: block;
+
+    font-size: 30px;
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    letter-spacing: -1.5px;
+
+    color: #0b3037;
+}
+
+.home-brand-text strong span {
+
+    color: #1caea5;
+}
+
+.home-brand-text small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #7b888b;
+
+    font-size: 13px;
+}
+
+
+/* DESKTOP NAV */
+
+.home-nav {
+
+    display: none;
+
+}
+
+.home-nav a {
+
+    color: #173b40;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
+
+/* LOGIN */
+
+.btn-login {
+
+    display: none;
+
+}
+
+
+/* MENU */
+
+.mobile-menu {
+
+    width: 48px;
+
+    height: 48px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #12383d;
+
+    font-size: 39px;
+
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+/* MENU ABERTO */
+
+.mobile-menu-panel {
+
+    display: none;
+
+    position: absolute;
+
+    right: 20px;
+
+    top: 82px;
+
+    width: 240px;
+
+    padding: 12px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.15);
+}
+
+.mobile-menu-panel.open {
+
+    display: block;
+}
+
+.mobile-menu-panel a {
+
+    display: block;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    color: #12383d;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero-home {
+
+    width: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #f9fdfc 0%,
+            #f9fdfc 44%,
+            #f1faf8 65%,
+            #e8f6f2 100%
+        );
+}
+
+
+.hero-inner {
+
+    width: 100%;
+
+    min-height: 780px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   TEXTO DO HERO
+========================================================= */
+
+.hero-copy {
+
+    position: absolute;
+
+    z-index: 50;
+
+    left: 5.5%;
+
+    top: 40px;
+
+    width: 47%;
+}
+
+
+/* PILL */
+
+.hero-pill {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    background: #dff6f2;
+
+    color: #16736d;
+
+    padding:
+        9px 14px;
+
+    border-radius: 30px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    margin-bottom: 29px;
+}
+
+
+/* H1 */
+
+.hero-copy h1 {
+
+    color: #092e36;
+
+    font-size: 56px;
+
+    line-height: .95;
+
+    letter-spacing: -3px;
+
+    font-weight: 900;
+
+    margin-bottom: 27px;
+}
+
+.hero-copy h1 span {
+
+    display: block;
+
+    color: #20aea5;
+
+    margin-top: 6px;
+}
+
+
+/* TEXTO */
+
+.hero-copy p {
+
+    color: #536b70;
+
+    font-size: 18px;
+
+    line-height: 1.5;
+
+    max-width: 400px;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   BOTÃO
+========================================================= */
+
+.btn-main {
+
+    width: 355px;
+
+    height: 61px;
+
+    border-radius: 34px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #23b3a9,
+            #1eaea5
+        );
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 14px;
+
+    font-size: 20px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 10px 25px
+        rgba(31,175,166,.22);
+}
+
+.btn-main-cart {
+
+    font-size: 26px;
+}
+
+.btn-main-arrow {
+
+    font-size: 30px;
+}
+
+
+/* =========================================================
+   BENEFÍCIOS
+========================================================= */
+
+.quick-benefits {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 95px);
+
+    gap: 15px;
+
+    margin-top: 28px;
+}
+
+.quick-benefit {
+
+    text-align: center;
+}
+
+.quick-icon {
+
+    width: 58px;
+
+    height: 58px;
+
+    margin:
+        0 auto 8px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 27px;
+}
+
+.quick-green {
+
+    background: #def7f3;
+}
+
+.quick-blue {
+
+    background: #e7f2ff;
+}
+
+.quick-pink {
+
+    background: #ffedf2;
+}
+
+.quick-benefit strong {
+
+    display: block;
+
+    color: #193d42;
+
+    font-size: 13px;
+
+    line-height: 1.18;
+}
+
+
+/* =========================================================
+   ÁREA DO CACHORRO
+========================================================= */
+
+.hero-visual {
+
+    position: absolute;
+
+    right: 0;
+
+    top: 0;
+
+    width: 61%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    background:
+        #dceee9;
+}
+
+
+/* IMAGEM */
+
+.hero-dog-image {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    object-position:
+        57% center;
+}
+
+
+/*
+   Gradiente sobre a parte esquerda
+   da foto
+*/
+
+.hero-visual::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 35%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #f8fcfb 0%,
+            rgba(248,252,251,.85) 35%,
+            rgba(248,252,251,.25) 75%,
+            rgba(248,252,251,0) 100%
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   FRASE
+========================================================= */
+
+.story-note {
+
+    position: absolute;
+
+    z-index: 100;
+
+    right: 18px;
+
+    top: 28px;
+
+    width: 145px;
+
+    text-align: center;
+
+    color: #176d6a;
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+    font-size: 18px;
+
+    line-height: 1.18;
+
+    font-weight: 900;
+
+    transform:
+        rotate(-4deg);
+}
+
+.story-note .heart {
+
+    display: block;
+
+    font-size: 48px;
+
+    line-height: .8;
+
+    margin-bottom: 7px;
+}
+
+
+/* =========================================================
+   TAG FÍSICA
+========================================================= */
+
+.physical-tag {
+
+    position: absolute;
+
+    z-index: 100;
+
+    left: 50%;
+
+    top: 68%;
+
+    width: 76px;
+
+    height: 76px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    border: 3px solid white;
+
+    box-shadow:
+        0 7px 18px
+        rgba(0,0,0,.25);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #16867d;
+
+    transform:
+        rotate(-5deg);
+
+    font-weight: 900;
+}
+
+.physical-tag::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: -14px;
+
+    left: 27px;
+
+    width: 16px;
+
+    height: 16px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    border:
+        3px solid #c2c2c2;
+}
+
+.physical-tag .paw {
+
+    font-size: 23px;
+
+    line-height: 1;
+}
+
+.physical-tag .nfc {
+
+    font-size: 8px;
+
+    margin-top: 4px;
+}
+
+
+/* =========================================================
+   BALÃO TAG
+========================================================= */
+
+.tag-note {
+
+    position: absolute;
+
+    z-index: 110;
+
+    right: 34%;
+
+    bottom: 95px;
+
+    width: 130px;
+
+    padding: 11px;
+
+    background: white;
+
+    color: #185f61;
+
+    border-radius: 16px;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    line-height: 1.2;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 7px 18px
+        rgba(0,0,0,.13);
+
+    transform:
+        rotate(-5deg);
+}
+
+
+/* =========================================================
+   BALÃO CELULAR
+========================================================= */
+
+.phone-note {
+
+    position: absolute;
+
+    z-index: 110;
+
+    right: 8px;
+
+    bottom: 26px;
+
+    width: 140px;
+
+    padding: 12px;
+
+    background: white;
+
+    color: #21474c;
+
+    border-radius: 16px;
+
+    text-align: center;
+
+    font-size: 11px;
+
+    line-height: 1.25;
+
+    font-weight: 800;
+
+    box-shadow:
+        0 7px 18px
+        rgba(0,0,0,.13);
+
+    transform:
+        rotate(-5deg);
+}
+
+.phone-note-icon {
+
+    font-size: 24px;
+
+    margin-bottom: 4px;
+}
+
+
+/* =========================================================
+   PERFIL DIGITAL
+========================================================= */
+
+.profile-section {
+
+    position: relative;
+
+    z-index: 200;
+
+    width: 100%;
+
+    background: white;
+
+    border-radius:
+        40px 40px 0 0;
+
+    margin-top: -1px;
+
+    padding:
+        40px 25px 55px;
+}
+
+.profile-card {
+
+    width: 100%;
+
+    max-width: 680px;
+
+    margin: auto;
+}
+
+.profile-card h2 {
+
+    text-align: center;
+
+    color: #092e38;
+
+    font-size: 37px;
+
+    line-height: 1;
+
+    letter-spacing: -1.5px;
+
+    font-weight: 900;
+}
+
+.profile-subtitle {
+
+    text-align: center;
+
+    color: #536b70;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    margin-top: 11px;
+
+    margin-bottom: 28px;
+}
+
+
+/* =========================================================
+   FOTOS
+========================================================= */
+
+.photo-collage {
+
+    width: 100%;
+
+    max-width: 620px;
+
+    height: 245px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        .9fr 1.25fr .82fr;
+
+    gap: 8px;
+}
+
+.photo-collage img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+
+    border-radius: 17px;
+}
+
+.collage-left {
+
+    transform:
+        rotate(-3deg);
+}
+
+.collage-center {
+
+    transform:
+        scale(1.02);
+}
+
+.collage-right {
+
+    display: grid;
+
+    grid-template-rows:
+        1fr 1fr;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.feature-grid {
+
+    width: 100%;
+
+    max-width: 620px;
+
+    margin:
+        20px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 9px;
+}
+
+.feature {
+
+    min-height: 110px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 8px;
+}
+
+.feature:nth-child(1) {
+
+    background: #e0f8f4;
+}
+
+.feature:nth-child(2) {
+
+    background: #e8f3ff;
+}
+
+.feature:nth-child(3) {
+
+    background: #fff0f4;
+}
+
+.feature:nth-child(4) {
+
+    background: #fff7df;
+}
+
+.feature-icon {
+
+    font-size: 30px;
+
+    margin-bottom: 8px;
+}
+
+.feature strong {
+
+    color: #193d43;
+
+    font-size: 13px;
+
+    line-height: 1.15;
+}
+
+
+/* =========================================================
+   COMO FUNCIONA
+========================================================= */
+
+.how-section {
+
+    background: white;
+
+    padding:
+        55px 25px;
+
+    text-align: center;
+}
+
+.how-title {
+
+    color: #102f57;
+
+    font-size: 36px;
+
+    font-weight: 900;
+}
+
+.how-sub {
+
+    color: #35646a;
+
+    font-size: 18px;
+
+    margin-top: 7px;
+}
+
+.steps {
+
+    max-width: 900px;
+
+    margin:
+        35px auto 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 30px;
+}
+
+.step-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.step-icon {
+
+    width: 62px;
+
+    height: 62px;
+
+    border-radius: 50%;
+
+    background: #e2f8f5;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 28px;
+}
+
+.step-number {
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 50%;
+
+    background: #dff6f2;
+
+    color: #159e98;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 900;
+}
+
+.step h3 {
+
+    margin-top: 13px;
+
+    color: #153b43;
+}
+
+.step p {
+
+    margin-top: 7px;
+
+    color: #65777b;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   FAQ
+========================================================= */
+
+.faq-box {
+
+    max-width: 850px;
+
+    margin:
+        30px auto 0;
+
+    text-align: left;
+}
+
+.faq-item {
+
+    background: white;
+
+    border:
+        1px solid #e5eeee;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    margin-bottom: 13px;
+}
+
+.faq-item h3 {
+
+    color: #173d43;
+
+    margin-bottom: 7px;
+}
+
+.faq-item p {
+
+    color: #65777b;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RODAPÉ
+========================================================= */
+
+.home-footer {
+
+    background: #063e43;
+
+    color: white;
+
+    padding: 40px 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+.footer-brand strong {
+
+    display: block;
+
+    font-size: 24px;
+}
+
+.footer-brand small {
+
+    display: block;
+
+    margin-top: 6px;
+
+    color: #c8dfdd;
+}
+
+.footer-message {
+
+    text-align: center;
+
+    line-height: 1.4;
+}
+
+.footer-cta {
+
+    background: #1db1a8;
+
+    color: white;
+
+    padding: 15px 25px;
+
+    border-radius: 30px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   MOBILE / TABLET
+   ATÉ 1000px
+========================================================= */
+
+@media (max-width: 1000px) {
+
+
+    /* HEADER */
 
     .home-header {
-      height: 96px;
-      width: 100%;
-      background: #f9fdfc;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 40px;
-      border-bottom: 1px solid #e6efed;
-      position: relative;
-      z-index: 100;
-    }
 
-    .home-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+        height: 97px;
+
+        padding:
+            10px 38px;
     }
 
     .home-brand-icon {
-      font-size: 42px;
-      line-height: 1;
+
+        font-size: 38px;
     }
 
     .home-brand-text strong {
-      display: block;
-      font-size: 29px;
-      line-height: 1;
-      font-weight: 900;
-      letter-spacing: -1.2px;
-      color: #0d3035;
-    }
 
-    .home-brand-text strong span {
-      color: #1daea5;
+        font-size: 28px;
     }
 
     .home-brand-text small {
-      display: block;
-      margin-top: 5px;
-      color: #78888b;
-      font-size: 13px;
-    }
 
-    .home-nav,
-    .btn-login {
-      display: none;
+        font-size: 13px;
     }
 
     .mobile-menu {
-      border: 0;
-      background: transparent;
-      color: #12363b;
-      font-size: 42px;
-      line-height: 1;
-      cursor: pointer;
-      width: 55px;
-    }
 
-    .mobile-menu-panel {
-      display: none;
-      position: absolute;
-      right: 18px;
-      top: 82px;
-      width: 245px;
-      background: white;
-      padding: 12px;
-      border-radius: 18px;
-      box-shadow: 0 15px 40px rgba(0,0,0,.15);
-    }
-
-    .mobile-menu-panel.open {
-      display: block;
-    }
-
-    .mobile-menu-panel a {
-      display: block;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 800;
-      color: #12363b;
+        display: block;
     }
 
 
-    /* =========================================================
-       HERO
-    ========================================================= */
-
-    .hero-home {
-      width: 100%;
-      background:
-        linear-gradient(
-          90deg,
-          #f9fdfc 0%,
-          #f9fdfc 43%,
-          #f1faf8 58%,
-          #e9f7f4 100%
-        );
-    }
+    /* HERO */
 
     .hero-inner {
-      width: 100%;
-      min-height: 790px;
-      position: relative;
-      overflow: hidden;
+
+        min-height: 780px;
     }
 
     .hero-copy {
-      position: absolute;
-      z-index: 20;
-      left: 5.5%;
-      top: 43px;
-      width: 48%;
+
+        left: 5.5%;
+
+        top: 39px;
+
+        width: 48%;
     }
 
     .hero-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: #dff6f2;
-      color: #17736e;
-      padding: 9px 15px;
-      border-radius: 28px;
-      font-size: 15px;
-      font-weight: 800;
-      margin-bottom: 29px;
+
+        font-size: 13px;
+
+        padding:
+            9px 13px;
     }
 
     .hero-copy h1 {
-      color: #092e36;
-      font-size: 57px;
-      line-height: .94;
-      letter-spacing: -3px;
-      font-weight: 900;
-      margin-bottom: 27px;
-    }
 
-    .hero-copy h1 span {
-      display: block;
-      color: #20aca3;
-      margin-top: 7px;
+        font-size: 43px;
+
+        letter-spacing:
+            -2.4px;
     }
 
     .hero-copy p {
-      color: #526a70;
-      font-size: 18px;
-      line-height: 1.52;
-      max-width: 405px;
-      margin-bottom: 29px;
+
+        font-size: 16px;
+
+        max-width: 360px;
     }
 
     .btn-main {
-      width: 355px;
-      height: 62px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      border-radius: 34px;
-      background: #22b1a8;
-      color: white;
-      font-size: 20px;
-      font-weight: 900;
-      box-shadow: 0 10px 25px rgba(34,177,168,.22);
-    }
 
-    .btn-main-cart {
-      font-size: 28px;
-      line-height: 1;
-    }
+        width: 100%;
 
-    .btn-main-arrow {
-      font-size: 30px;
-      line-height: 1;
-      margin-left: 5px;
+        max-width: 355px;
+
+        height: 58px;
+
+        font-size: 18px;
     }
 
 
-    /* =========================================================
-       BENEFÍCIOS
-    ========================================================= */
+    /* BENEFÍCIOS */
 
     .quick-benefits {
-      display: grid;
-      grid-template-columns: repeat(3, 105px);
-      gap: 20px;
-      margin-top: 30px;
-    }
 
-    .quick-benefit {
-      text-align: center;
+        grid-template-columns:
+            repeat(3, 88px);
+
+        gap: 12px;
     }
 
     .quick-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      margin: 0 auto 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 27px;
-    }
 
-    .quick-green {
-      background: #dff7f3;
-    }
+        width: 55px;
 
-    .quick-blue {
-      background: #e4f1ff;
-    }
-
-    .quick-pink {
-      background: #ffedf2;
+        height: 55px;
     }
 
     .quick-benefit strong {
-      color: #1b3e43;
-      font-size: 13px;
-      line-height: 1.18;
-      display: block;
+
+        font-size: 12px;
     }
 
 
-    /* =========================================================
-       CACHORRO
-    ========================================================= */
+    /* CACHORRO */
 
     .hero-visual {
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 61%;
-      height: 100%;
-      overflow: hidden;
-      background: #dfeee9;
+
+        width: 61%;
+
+        height: 100%;
     }
 
     .hero-dog-image {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
 
-      /*
-        Ajuste principal para aproximar
-        exatamente o enquadramento da referência.
-      */
-      object-position: 54% center;
+        object-position:
+            57% center;
     }
-
-    .hero-visual::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 30%;
-      background:
-        linear-gradient(
-          90deg,
-          rgba(248,253,252,1) 0%,
-          rgba(248,253,252,.80) 30%,
-          rgba(248,253,252,.25) 70%,
-          rgba(248,253,252,0) 100%
-        );
-      pointer-events: none;
-    }
-
-
-    /* =========================================================
-       FRASE "MAIS QUE UMA TAG"
-    ========================================================= */
 
     .story-note {
-      position: absolute;
-      z-index: 30;
-      right: 20px;
-      top: 28px;
-      width: 155px;
-      color: #176c6b;
-      text-align: center;
-      font-family: "Trebuchet MS", Arial, sans-serif;
-      font-size: 19px;
-      line-height: 1.18;
-      font-weight: 900;
-      transform: rotate(-4deg);
+
+        right: 10px;
+
+        top: 25px;
+
+        width: 135px;
+
+        font-size: 17px;
     }
 
     .story-note .heart {
-      display: block;
-      font-size: 47px;
-      line-height: .8;
-      margin-bottom: 7px;
+
+        font-size: 42px;
     }
-
-
-    /* =========================================================
-       TAG
-    ========================================================= */
 
     .physical-tag {
-      position: absolute;
-      z-index: 35;
-      left: 54%;
-      top: 70%;
-      width: 76px;
-      height: 76px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid white;
-      box-shadow: 0 7px 17px rgba(0,0,0,.23);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transform: rotate(-5deg);
-      color: #177f77;
-      font-weight: 900;
+
+        left: 49%;
+
+        top: 69%;
+
+        width: 69px;
+
+        height: 69px;
     }
-
-    .physical-tag::before {
-      content: "";
-      position: absolute;
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      border: 3px solid #bdbdbd;
-      background: white;
-      top: -13px;
-      left: 27px;
-    }
-
-    .physical-tag .paw {
-      font-size: 22px;
-      line-height: 1;
-    }
-
-    .physical-tag .nfc {
-      font-size: 8px;
-      margin-top: 4px;
-      letter-spacing: .5px;
-    }
-
-
-    /* =========================================================
-       BALÃO DA TAG
-    ========================================================= */
 
     .tag-note {
-      position: absolute;
-      z-index: 40;
-      right: 38%;
-      bottom: 112px;
-      width: 145px;
-      background: white;
-      color: #185e60;
-      padding: 11px;
-      border-radius: 16px;
-      text-align: center;
-      font-size: 13px;
-      line-height: 1.2;
-      font-weight: 900;
-      box-shadow: 0 8px 20px rgba(0,0,0,.12);
-      transform: rotate(-5deg);
+
+        right: 33%;
+
+        bottom: 98px;
+
+        width: 128px;
     }
-
-
-    /* =========================================================
-       BALÃO CELULAR
-    ========================================================= */
 
     .phone-note {
-      position: absolute;
-      z-index: 40;
-      right: 12px;
-      bottom: 38px;
-      width: 160px;
-      background: white;
-      color: #21484d;
-      padding: 13px;
-      border-radius: 16px;
-      text-align: center;
-      font-size: 13px;
-      line-height: 1.23;
-      font-weight: 800;
-      box-shadow: 0 8px 20px rgba(0,0,0,.12);
-      transform: rotate(-5deg);
-    }
 
-    .phone-note-icon {
-      font-size: 25px;
-      margin-bottom: 3px;
+        right: 7px;
+
+        bottom: 25px;
+
+        width: 137px;
     }
 
 
-    /* =========================================================
-       PERFIL DIGITAL
-    ========================================================= */
+    /* PERFIL */
 
     .profile-section {
-      position: relative;
-      z-index: 50;
-      background: #fff;
-      border-radius: 43px 43px 0 0;
-      margin-top: -1px;
-      padding: 40px 25px 55px;
-    }
 
-    .profile-card {
-      width: 100%;
-      max-width: 680px;
-      margin: auto;
-      background: white;
+        border-radius:
+            38px 38px 0 0;
+
+        padding:
+            39px 25px 45px;
     }
 
     .profile-card h2 {
-      text-align: center;
-      color: #092e38;
-      font-size: 37px;
-      line-height: 1;
-      letter-spacing: -1.5px;
-      font-weight: 900;
+
+        font-size: 35px;
     }
 
     .profile-subtitle {
-      text-align: center;
-      color: #536c71;
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 12px;
-      margin-bottom: 28px;
+
+        font-size: 17px;
+    }
+
+}
+
+
+/* =========================================================
+   CELULAR PEQUENO
+========================================================= */
+
+@media (max-width: 600px) {
+
+
+    .home-header {
+
+        padding:
+            10px 22px;
+    }
+
+    .home-brand-icon {
+
+        font-size: 34px;
+    }
+
+    .home-brand-text strong {
+
+        font-size: 23px;
+    }
+
+    .home-brand-text small {
+
+        font-size: 10px;
     }
 
 
-    /* =========================================================
-       FOTOS
-    ========================================================= */
+    .hero-inner {
+
+        min-height: 735px;
+    }
+
+    .hero-copy {
+
+        left: 5.5%;
+
+        top: 34px;
+
+        width: 49%;
+    }
+
+    .hero-pill {
+
+        font-size: 10px;
+
+        padding:
+            8px 10px;
+    }
+
+    .hero-copy h1 {
+
+        font-size: 37px;
+
+        letter-spacing:
+            -2px;
+    }
+
+    .hero-copy p {
+
+        font-size: 14px;
+    }
+
+    .btn-main {
+
+        height: 54px;
+
+        font-size: 16px;
+    }
+
+    .quick-benefits {
+
+        grid-template-columns:
+            repeat(3, 70px);
+
+        gap: 10px;
+    }
+
+    .quick-icon {
+
+        width: 50px;
+
+        height: 50px;
+    }
+
+    .quick-benefit strong {
+
+        font-size: 10px;
+    }
+
+    .story-note {
+
+        width: 115px;
+
+        font-size: 15px;
+    }
+
+    .physical-tag {
+
+        width: 62px;
+
+        height: 62px;
+    }
+
+    .tag-note {
+
+        width: 115px;
+
+        right: 30%;
+
+        bottom: 90px;
+    }
+
+    .phone-note {
+
+        width: 120px;
+
+        font-size: 10px;
+    }
+
+
+    /* PERFIL */
+
+    .profile-section {
+
+        padding-left: 20px;
+
+        padding-right: 20px;
+    }
+
+    .profile-card h2 {
+
+        font-size: 31px;
+    }
+
+    .profile-subtitle {
+
+        font-size: 15px;
+    }
 
     .photo-collage {
-      width: 100%;
-      max-width: 620px;
-      height: 245px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: .9fr 1.25fr .82fr;
-      gap: 8px;
-      align-items: stretch;
-    }
 
-    .photo-collage img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      border-radius: 17px;
-    }
-
-    .collage-left {
-      transform: rotate(-3deg);
-    }
-
-    .collage-center {
-      transform: scale(1.02);
-    }
-
-    .collage-right {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      gap: 8px;
-    }
-
-
-    /* =========================================================
-       CARDS DE BENEFÍCIOS
-    ========================================================= */
-
-    .feature-grid {
-      width: 100%;
-      max-width: 620px;
-      margin: 20px auto 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 9px;
+        height: 210px;
     }
 
     .feature {
-      min-height: 112px;
-      border-radius: 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8px;
-    }
 
-    .feature:nth-child(1) {
-      background: #e1f8f4;
-    }
-
-    .feature:nth-child(2) {
-      background: #e8f3ff;
-    }
-
-    .feature:nth-child(3) {
-      background: #fff0f4;
-    }
-
-    .feature:nth-child(4) {
-      background: #fff8df;
-    }
-
-    .feature-icon {
-      font-size: 31px;
-      margin-bottom: 8px;
+        min-height: 100px;
     }
 
     .feature strong {
-      color: #193d43;
-      font-size: 14px;
-      line-height: 1.15;
-    }
 
-
-    /* =========================================================
-       COMO FUNCIONA
-    ========================================================= */
-
-    .how-section {
-      background: white;
-      padding: 55px 25px;
-      text-align: center;
-    }
-
-    .how-title {
-      color: #102f57;
-      font-size: 35px;
-      font-weight: 900;
-    }
-
-    .how-sub {
-      color: #35646a;
-      font-size: 18px;
-      margin-top: 7px;
-    }
-
-    .steps {
-      max-width: 850px;
-      margin: 35px auto 0;
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 30px;
-    }
-
-    .step {
-      text-align: center;
-    }
-
-    .step-top {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .step-icon {
-      width: 62px;
-      height: 62px;
-      border-radius: 50%;
-      background: #e2f8f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-    }
-
-    .step-number {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #dff6f2;
-      color: #159e98;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-    }
-
-    .step h3 {
-      margin-top: 13px;
-      color: #153b43;
-    }
-
-    .step p {
-      margin-top: 7px;
-      color: #65777b;
-      line-height: 1.45;
-    }
-
-
-    /* =========================================================
-       FAQ
-    ========================================================= */
-
-    .faq-box {
-      max-width: 850px;
-      margin: 30px auto 0;
-      text-align: left;
-    }
-
-    .faq-item {
-      background: white;
-      border: 1px solid #e5eeee;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 13px;
-    }
-
-    .faq-item h3 {
-      color: #173d43;
-      margin-bottom: 7px;
-    }
-
-    .faq-item p {
-      color: #65777b;
-      line-height: 1.5;
-    }
-
-
-    /* =========================================================
-       RODAPÉ
-    ========================================================= */
-
-    .home-footer {
-      background: #063e43;
-      color: white;
-      padding: 40px 25px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px;
-    }
-
-    .footer-brand strong {
-      display: block;
-      font-size: 24px;
-    }
-
-    .footer-brand small {
-      display: block;
-      margin-top: 6px;
-      color: #c8dfdd;
-    }
-
-    .footer-message {
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    .footer-cta {
-      background: #1db1a8;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 30px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-
-    /* =========================================================
-       MOBILE — FORMATO DA IMAGEM DE REFERÊNCIA
-    ========================================================= */
-
-    @media (max-width: 700px) {
-
-      body {
-        background: #eef9f7;
-      }
-
-      .home-header {
-        height: 97px;
-        padding: 12px 38px 12px 38px;
-      }
-
-      .home-brand {
-        gap: 8px;
-      }
-
-      .home-brand-icon {
-        font-size: 38px;
-      }
-
-      .home-brand-text strong {
-        font-size: 28px;
-      }
-
-      .home-brand-text small {
-        font-size: 13px;
-      }
-
-      .mobile-menu {
-        font-size: 39px;
-        width: 45px;
-      }
-
-      /* HERO */
-
-      .hero-inner {
-        min-height: 785px;
-      }
-
-      .hero-copy {
-        left: 5.5%;
-        top: 38px;
-        width: 49%;
-      }
-
-      .hero-pill {
-        font-size: 13px;
-        padding: 9px 13px;
-        margin-bottom: 29px;
-      }
-
-      .hero-copy h1 {
-        font-size: 43px;
-        letter-spacing: -2.4px;
-        line-height: .95;
-        margin-bottom: 25px;
-      }
-
-      .hero-copy h1 span {
-        margin-top: 5px;
-      }
-
-      .hero-copy p {
-        font-size: 16px;
-        line-height: 1.45;
-        max-width: 355px;
-        margin-bottom: 25px;
-      }
-
-      .btn-main {
-        width: 100%;
-        max-width: 355px;
-        height: 58px;
-        font-size: 18px;
-      }
-
-      .quick-benefits {
-        grid-template-columns: repeat(3, 88px);
-        gap: 12px;
-        margin-top: 27px;
-      }
-
-      .quick-icon {
-        width: 55px;
-        height: 55px;
-        font-size: 25px;
-      }
-
-      .quick-benefit strong {
-        font-size: 12px;
-      }
-
-      /* CACHORRO */
-
-      .hero-visual {
-        width: 61%;
-        height: 100%;
-      }
-
-      .hero-dog-image {
-        object-position: 57% center;
-      }
-
-      .story-note {
-        right: 10px;
-        top: 25px;
-        width: 135px;
-        font-size: 17px;
-      }
-
-      .story-note .heart {
-        font-size: 42px;
-      }
-
-      .physical-tag {
-        left: 51%;
-        top: 69%;
-        width: 69px;
-        height: 69px;
-      }
-
-      .physical-tag::before {
-        width: 15px;
-        height: 15px;
-        left: 24px;
-      }
-
-      .tag-note {
-        right: 34%;
-        bottom: 98px;
-        width: 128px;
         font-size: 11px;
-      }
-
-      .phone-note {
-        right: 7px;
-        bottom: 25px;
-        width: 137px;
-        font-size: 11px;
-      }
-
-      .phone-note-icon {
-        font-size: 23px;
-      }
-
-      /* PERFIL */
-
-      .profile-section {
-        border-radius: 38px 38px 0 0;
-        padding: 39px 25px 45px;
-      }
-
-      .profile-card h2 {
-        font-size: 35px;
-      }
-
-      .profile-subtitle {
-        font-size: 17px;
-        margin-top: 10px;
-        margin-bottom: 25px;
-      }
-
-      .photo-collage {
-        height: 240px;
-        gap: 7px;
-      }
-
-      .photo-collage img {
-        border-radius: 16px;
-      }
-
-      .collage-right {
-        gap: 7px;
-      }
-
-      .feature-grid {
-        gap: 8px;
-        margin-top: 18px;
-      }
-
-      .feature {
-        min-height: 108px;
-        border-radius: 17px;
-      }
-
-      .feature-icon {
-        font-size: 28px;
-        margin-bottom: 7px;
-      }
-
-      .feature strong {
-        font-size: 13px;
-      }
-
-      .steps {
-        grid-template-columns: 1fr;
-      }
-
-      .home-footer {
-        flex-direction: column;
-        text-align: center;
-      }
     }
 
-
-    /* =========================================================
-       TELAS MUITO PEQUENAS
-    ========================================================= */
-
-    @media (max-width: 500px) {
-
-      .home-header {
-        padding-left: 25px;
-        padding-right: 22px;
-      }
-
-      .home-brand-icon {
-        font-size: 34px;
-      }
-
-      .home-brand-text strong {
-        font-size: 23px;
-      }
-
-      .home-brand-text small {
-        font-size: 10px;
-      }
-
-      .mobile-menu {
-        font-size: 36px;
-      }
-
-      .hero-inner {
-        min-height: 735px;
-      }
-
-      .hero-copy {
-        left: 5.5%;
-        top: 35px;
-        width: 49%;
-      }
-
-      .hero-pill {
-        font-size: 11px;
-        padding: 8px 10px;
-        margin-bottom: 25px;
-      }
-
-      .hero-copy h1 {
-        font-size: 37px;
-        letter-spacing: -2px;
-      }
-
-      .hero-copy p {
-        font-size: 14px;
-        line-height: 1.43;
-      }
-
-      .btn-main {
-        height: 54px;
-        font-size: 16px;
-      }
-
-      .quick-benefits {
-        grid-template-columns: repeat(3, 70px);
-        gap: 12px;
-      }
-
-      .quick-icon {
-        width: 50px;
-        height: 50px;
-      }
-
-      .quick-benefit strong {
-        font-size: 10px;
-      }
-
-      .story-note {
-        width: 115px;
-        font-size: 15px;
-      }
-
-      .physical-tag {
-        width: 62px;
-        height: 62px;
-      }
-
-      .tag-note {
-        width: 115px;
-        right: 30%;
-        bottom: 90px;
-      }
-
-      .phone-note {
-        width: 120px;
-        font-size: 10px;
-      }
-
-      .profile-section {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-
-      .profile-card h2 {
-        font-size: 31px;
-      }
-
-      .profile-subtitle {
-        font-size: 15px;
-      }
-
-      .photo-collage {
-        height: 210px;
-      }
-
-      .feature {
-        min-height: 100px;
-      }
-
-      .feature strong {
-        font-size: 11px;
-      }
-    }
+}
 
 
-    /* =========================================================
-       DESKTOP
-    ========================================================= */
+/* =========================================================
+   DESKTOP
+   ACIMA DE 1000px
+========================================================= */
 
-    @media (min-width: 701px) {
+@media (min-width: 1001px) {
 
-      .home-header {
+
+    .home-header {
+
         max-width: 1450px;
-        margin: auto;
-      }
 
-      .home-nav {
+        margin: auto;
+
+        padding:
+            12px 48px;
+    }
+
+
+    .home-nav {
+
         display: flex;
-        gap: 28px;
-        margin-left: auto;
-        margin-right: 25px;
-      }
 
-      .home-nav a {
-        font-size: 14px;
-        font-weight: 800;
-        color: #17393e;
-      }
-
-      .btn-login {
-        display: inline-flex;
         align-items: center;
-        justify-content: center;
-        background: #123f42;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 14px;
-        font-weight: 800;
-      }
 
-      .mobile-menu {
-        display: none;
-      }
+        gap: 30px;
 
-      .hero-home {
-        max-width: 1450px;
-        margin: auto;
-      }
+        margin-left: auto;
 
-      .hero-inner {
-        min-height: 700px;
-      }
-
-      .hero-copy {
-        width: 43%;
-      }
-
-      .hero-copy h1 {
-        font-size: 62px;
-      }
-
-      .hero-visual {
-        width: 59%;
-      }
-
-      .profile-section {
-        max-width: 1450px;
-        margin: auto;
-      }
-
+        margin-right: 30px;
     }
 
-  </style>
+
+    .btn-login {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #123f42;
+
+        color: white;
+
+        padding:
+            13px 22px;
+
+        border-radius: 14px;
+
+        font-weight: 800;
+    }
+
+
+    .mobile-menu {
+
+        display: none;
+    }
+
+
+    .hero-home {
+
+        max-width: 1450px;
+
+        margin: auto;
+    }
+
+
+    .hero-inner {
+
+        min-height: 700px;
+    }
+
+
+    .hero-copy {
+
+        width: 43%;
+    }
+
+
+    .hero-copy h1 {
+
+        font-size: 62px;
+    }
+
+
+    .hero-visual {
+
+        width: 59%;
+    }
+
+
+    .profile-section {
+
+        max-width: 1450px;
+
+        margin: auto;
+    }
+
+}
+
+
+/* =========================================================
+   FALLBACK CASO A IMAGEM LOCAL NÃO EXISTA
+========================================================= */
+
+.hero-dog-image {
+
+    background:
+        url("https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1200&q=90")
+        center / cover
+        no-repeat;
+}
+
+</style>
+
 </head>
 
 
 <body>
 
 
-  <!-- =========================================================
-       LOADING
-  ========================================================= -->
+<!-- =========================================================
+     LOADING
+========================================================= -->
 
-  <div id="loading" class="loading hidden">
+<div
+    id="loading"
+    class="loading hidden"
+>
+
     <h2>🐾 Carregando...</h2>
+
     <p>Aguarde um momento.</p>
-  </div>
+
+</div>
 
 
-  <!-- =========================================================
-       ERRO
-  ========================================================= -->
+<!-- =========================================================
+     ERRO
+========================================================= -->
 
-  <div id="erro" class="error hidden">
+<div
+    id="erro"
+    class="error hidden"
+>
+
     <h2>🐾 Pet não encontrado</h2>
-    <p>Não encontramos uma TAG com esse código.</p>
-  </div>
-
-
-  <!-- =========================================================
-       ATIVAÇÃO
-  ========================================================= -->
-
-  <div id="ativacao" class="activation hidden">
-
-    <div class="activation-icon">🐾</div>
-
-    <h1>Ative sua TAG</h1>
 
     <p>
-      Esta TAG ainda está disponível.
-      Cadastre sua conta e vincule esta TAG ao seu pet.
+        Não encontramos uma TAG com esse código.
+    </p>
+
+</div>
+
+
+<!-- =========================================================
+     ATIVAÇÃO
+========================================================= -->
+
+<div
+    id="ativacao"
+    class="activation hidden"
+>
+
+    <div class="activation-icon">
+        🐾
+    </div>
+
+    <h1>
+        Ative sua TAG
+    </h1>
+
+    <p>
+        Esta TAG ainda está disponível.
+        Cadastre sua conta e vincule esta TAG ao seu pet.
     </p>
 
     <div class="activation-code">
 
-      <small>Código da TAG</small>
+        <small>
+            Código da TAG
+        </small>
 
-      <strong id="codigoTagAtivacao">---</strong>
+        <strong id="codigoTagAtivacao">
+            ---
+        </strong>
 
     </div>
 
     <a
-      id="btnAtivar"
-      class="activation-btn"
-      href="#"
+        id="btnAtivar"
+        class="activation-btn"
+        href="#"
     >
-      🔐 Ativar minha TAG
+        🔐 Ativar minha TAG
     </a>
 
-  </div>
+</div>
 
 
-  <!-- =========================================================
-       PERFIL PÚBLICO DA TAG
-  ========================================================= -->
+<!-- =========================================================
+     PERFIL PÚBLICO
+========================================================= -->
 
-  <main id="conteudo" class="hidden">
+<main
+    id="conteudo"
+    class="hidden"
+>
 
     <div class="tag-container">
 
-      <div class="tag-card">
+        <div class="tag-card">
 
-        <img
-          id="petFoto"
-          class="tag-photo"
-          src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=900&q=85"
-          alt="Foto do pet"
-        >
+            <img
+                id="petFoto"
+                class="tag-photo"
+                src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=900&q=85"
+                alt="Foto do pet"
+            >
 
-        <h1
-          id="petNome"
-          class="tag-name"
-        >
-          Pet
-        </h1>
+            <h1
+                id="petNome"
+                class="tag-name"
+            >
+                Pet
+            </h1>
+
+            <div
+                id="petSub"
+                class="tag-sub"
+            >
+                Raça • Sexo
+            </div>
+
+            <div class="badges">
+
+                <span class="badge">
+                    🟢 TAG ATIVA
+                </span>
+
+                <span
+                    id="badgePerdido"
+                    class="badge badge-danger hidden"
+                >
+                    🚨 PET PERDIDO
+                </span>
+
+            </div>
+
+        </div>
+
 
         <div
-          id="petSub"
-          class="tag-sub"
+            id="cardPerdido"
+            class="tag-card lost-card hidden"
         >
-          Raça • Sexo
-        </div>
 
-        <div class="badges">
+            <div class="lost-title">
+                🚨 ESTE PET ESTÁ PERDIDO
+            </div>
 
-          <span class="badge">
-            🟢 TAG ATIVA
-          </span>
+            <p id="perdidoMensagem">
+                Se você encontrou este pet,
+                entre em contato com o tutor.
+            </p>
 
-          <span
-            id="badgePerdido"
-            class="badge badge-danger hidden"
-          >
-            🚨 PET PERDIDO
-          </span>
+            <p>
+                <strong>📍 Último local:</strong>
+                <span id="perdidoLocal">
+                    Não informado
+                </span>
+            </p>
 
-        </div>
+            <p>
+                <strong>📅 Data:</strong>
+                <span id="perdidoData">
+                    Não informado
+                </span>
+            </p>
 
-      </div>
-
-
-      <div
-        id="cardPerdido"
-        class="tag-card lost-card hidden"
-      >
-
-        <div class="lost-title">
-          🚨 ESTE PET ESTÁ PERDIDO
-        </div>
-
-        <p id="perdidoMensagem">
-          Se você encontrou este pet,
-          entre em contato com o tutor.
-        </p>
-
-        <p>
-          <strong>📍 Último local:</strong>
-          <span id="perdidoLocal">
-            Não informado
-          </span>
-        </p>
-
-        <p>
-          <strong>📅 Data:</strong>
-          <span id="perdidoData">
-            Não informado
-          </span>
-        </p>
-
-        <p>
-          <strong>🕐 Horário:</strong>
-          <span id="perdidoHora">
-            Não informado
-          </span>
-        </p>
-
-      </div>
-
-
-      <div class="tag-card">
-
-        <h2 class="tag-section-title">
-          🐾 Informações do pet
-        </h2>
-
-        <div class="info-grid">
-
-          <div class="info-item">
-            <div class="info-label">Nome</div>
-            <div id="infoNome" class="info-value">-</div>
-          </div>
-
-          <div class="info-item">
-            <div class="info-label">Espécie</div>
-            <div id="infoEspecie" class="info-value">-</div>
-          </div>
-
-          <div class="info-item">
-            <div class="info-label">Raça</div>
-            <div id="infoRaca" class="info-value">-</div>
-          </div>
-
-          <div class="info-item">
-            <div class="info-label">Sexo</div>
-            <div id="infoSexo" class="info-value">-</div>
-          </div>
-
-          <div class="info-item">
-            <div class="info-label">Nascimento</div>
-            <div id="infoNascimento" class="info-value">-</div>
-          </div>
-
-          <div class="info-item">
-            <div class="info-label">Cidade</div>
-            <div id="infoCidade" class="info-value">-</div>
-          </div>
+            <p>
+                <strong>🕐 Horário:</strong>
+                <span id="perdidoHora">
+                    Não informado
+                </span>
+            </p>
 
         </div>
 
-      </div>
 
+        <div class="tag-card">
 
-      <div class="tag-card">
+            <h2 class="tag-section-title">
+                🐾 Informações do pet
+            </h2>
 
-        <h2 class="tag-section-title">
-          🩺 Saúde
-        </h2>
+            <div class="info-grid">
 
-        <div class="info-item">
+                <div class="info-item">
+                    <div class="info-label">
+                        Nome
+                    </div>
+                    <div
+                        id="infoNome"
+                        class="info-value"
+                    >
+                        -
+                    </div>
+                </div>
 
-          <div class="info-label">
-            Alergias
-          </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        Espécie
+                    </div>
+                    <div
+                        id="infoEspecie"
+                        class="info-value"
+                    >
+                        -
+                    </div>
+                </div>
 
-          <div
-            id="infoAlergias"
-            class="info-value"
-          >
-            Nenhuma informada
-          </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        Raça
+                    </div>
+                    <div
+                        id="infoRaca"
+                        class="info-value"
+                    >
+                        -
+                    </div>
+                </div>
 
-        </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        Sexo
+                    </div>
+                    <div
+                        id="infoSexo"
+                        class="info-value"
+                    >
+                        -
+                    </div>
+                </div>
 
-        <br>
+                <div class="info-item">
+                    <div class="info-label">
+                        Nascimento
+                    </div>
+                    <div
+                        id="infoNascimento"
+                        class="info-value"
+                    >
+                        -
+                    </div>
+                </div>
 
-        <div class="info-item">
+                <div class="info-item">
+                    <div class="info-label">
+                        Cidade
+                    </div>
+                    <div
+                        id="infoCidade"
+                        class="info-value"
+                    >
+                        -
+                    </div>
+                </div>
 
-          <div class="info-label">
-            Medicamentos
-          </div>
-
-          <div
-            id="infoMedicamentos"
-            class="info-value"
-          >
-            Nenhum informado
-          </div>
-
-        </div>
-
-        <br>
-
-        <div class="info-item">
-
-          <div class="info-label">
-            Observações
-          </div>
-
-          <div
-            id="infoObservacoes"
-            class="info-value"
-          >
-            Nenhuma observação cadastrada.
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="tag-card contact-card">
-
-        <h2>
-          📞 Entre em contato
-        </h2>
-
-        <p>
-          Se você encontrou este pet,
-          entre em contato com o tutor
-          através dos canais disponíveis.
-        </p>
-
-        <div class="contact-buttons">
-
-          <a
-            id="btnWhatsApp"
-            class="contact-btn whatsapp-btn"
-            href="#"
-            target="_blank"
-          >
-            💬 WhatsApp
-          </a>
-
-          <a
-            id="btnTelefone"
-            class="contact-btn call-btn"
-            href="#"
-          >
-            📞 Ligar
-          </a>
+            </div>
 
         </div>
 
-      </div>
 
+        <div class="tag-card">
 
-      <div class="tag-footer">
+            <h2 class="tag-section-title">
+                🩺 Saúde
+            </h2>
 
-        <div>
-          Save Tag Pet 🐾
+            <div class="info-item">
+
+                <div class="info-label">
+                    Alergias
+                </div>
+
+                <div
+                    id="infoAlergias"
+                    class="info-value"
+                >
+                    Nenhuma informada
+                </div>
+
+            </div>
+
+            <br>
+
+            <div class="info-item">
+
+                <div class="info-label">
+                    Medicamentos
+                </div>
+
+                <div
+                    id="infoMedicamentos"
+                    class="info-value"
+                >
+                    Nenhum informado
+                </div>
+
+            </div>
+
+            <br>
+
+            <div class="info-item">
+
+                <div class="info-label">
+                    Observações
+                </div>
+
+                <div
+                    id="infoObservacoes"
+                    class="info-value"
+                >
+                    Nenhuma observação cadastrada.
+                </div>
+
+            </div>
+
         </div>
 
-        <div>
-          Identificação inteligente para o seu pet.
+
+        <div class="tag-card contact-card">
+
+            <h2>
+                📞 Entre em contato
+            </h2>
+
+            <p>
+                Se você encontrou este pet,
+                entre em contato com o tutor
+                através dos canais disponíveis.
+            </p>
+
+            <div class="contact-buttons">
+
+                <a
+                    id="btnWhatsApp"
+                    class="contact-btn whatsapp-btn"
+                    href="#"
+                    target="_blank"
+                >
+                    💬 WhatsApp
+                </a>
+
+                <a
+                    id="btnTelefone"
+                    class="contact-btn call-btn"
+                    href="#"
+                >
+                    📞 Ligar
+                </a>
+
+            </div>
+
         </div>
 
-        <a
-          href="login.html"
-          class="tutor-link"
-        >
-          🔐 Área do Tutor
-        </a>
 
-      </div>
+        <div class="tag-footer">
+
+            <div>
+                Save Tag Pet 🐾
+            </div>
+
+            <div>
+                Identificação inteligente para o seu pet.
+            </div>
+
+            <a
+                href="login.html"
+                class="tutor-link"
+            >
+                🔐 Área do Tutor
+            </a>
+
+        </div>
 
     </div>
 
-  </main>
+</main>
 
 
-  <!-- =========================================================
-       HOME
-  ========================================================= -->
+<!-- =========================================================
+     HOME
+========================================================= -->
 
-  <div
+<div
     id="home"
     class="home hidden"
-  >
+>
 
 
-    <!-- =======================================================
-         HEADER
-    ======================================================= -->
+<header class="home-header">
 
-    <header class="home-header">
 
-      <a
+    <a
         href="/"
         class="home-brand"
-      >
+    >
 
         <div class="home-brand-icon">
-          🐾
+            🐾
         </div>
 
         <div class="home-brand-text">
 
-          <strong>
-            Save <span>Tag</span> Pet
-          </strong>
+            <strong>
+                Save <span>Tag</span> Pet
+            </strong>
 
-          <small>
-            Identificação inteligente para o seu pet
-          </small>
+            <small>
+                Identificação inteligente para o seu pet
+            </small>
 
         </div>
 
-      </a>
+    </a>
 
 
-      <nav class="home-nav">
+    <nav class="home-nav">
 
         <a href="#inicio">
-          Início
+            Início
         </a>
 
         <a href="#como-funciona">
-          Como funciona
+            Como funciona
         </a>
 
         <a href="#beneficios">
-          Benefícios
+            Benefícios
         </a>
 
         <a href="#perfil">
-          Perfil Digital
+            Perfil Digital
         </a>
 
         <a href="#faq">
-          FAQ
+            FAQ
         </a>
 
-      </nav>
+    </nav>
 
 
-      <a
+    <a
         href="login.html"
         class="btn-login"
-      >
+    >
         🔐 Área do Tutor
-      </a>
+    </a>
 
 
-      <button
+    <button
         id="mobileMenuButton"
         class="mobile-menu"
         type="button"
-      >
+    >
         ☰
-      </button>
+    </button>
 
 
-      <div
+    <div
         id="mobileMenuPanel"
         class="mobile-menu-panel"
-      >
+    >
 
         <a href="#inicio">
-          Início
+            Início
         </a>
 
         <a href="#como-funciona">
-          Como funciona
+            Como funciona
         </a>
 
         <a href="#beneficios">
-          Benefícios
+            Benefícios
         </a>
 
         <a href="#perfil">
-          Perfil Digital
+            Perfil Digital
         </a>
 
         <a href="#faq">
-          FAQ
+            FAQ
         </a>
 
         <a href="login.html">
-          🔐 Área do Tutor
+            🔐 Área do Tutor
         </a>
 
-      </div>
+    </div>
 
-    </header>
-
-
-    <!-- =======================================================
-         HERO
-    ======================================================= -->
-
-    <section
-      id="inicio"
-      class="hero-home"
-    >
-
-      <div class="hero-inner">
+</header>
 
 
-        <!-- TEXTO -->
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section
+    id="inicio"
+    class="hero-home"
+>
+
+    <div class="hero-inner">
+
 
         <div class="hero-copy">
 
 
-          <div class="hero-pill">
-            🐾 Mais segurança para quem você ama
-          </div>
-
-
-          <h1>
-
-            Seu pet
-            <br>
-            identificado.
-
-            <span>
-              Você tranquilo. 🐾
-            </span>
-
-          </h1>
-
-
-          <p>
-            A Save Tag Pet cria um perfil digital
-            para o seu pet através de uma TAG
-            inteligente. Uma forma simples,
-            rápida e segura de ajudar seu
-            melhor amigo a voltar para casa.
-          </p>
-
-
-          <a
-            href="#perfil"
-            class="btn-main"
-          >
-
-            <span class="btn-main-cart">
-              🛒
-            </span>
-
-            <span>
-              Quero minha TAG
-            </span>
-
-            <span class="btn-main-arrow">
-              →
-            </span>
-
-          </a>
-
-
-          <!-- BENEFÍCIOS -->
-
-          <div class="quick-benefits">
-
-
-            <div class="quick-benefit">
-
-              <div class="quick-icon quick-green">
-                🛡️
-              </div>
-
-              <strong>
-                Mais<br>
-                segurança
-              </strong>
-
+            <div class="hero-pill">
+                🐾 Mais segurança para quem você ama
             </div>
 
 
-            <div class="quick-benefit">
+            <h1>
 
-              <div class="quick-icon quick-blue">
-                ⚡
-              </div>
+                Seu pet
+                <br>
+                identificado.
 
-              <strong>
-                Identificação<br>
-                rápida
-              </strong>
+                <span>
+                    Você tranquilo. 🐾
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                A Save Tag Pet cria um perfil digital
+                para o seu pet através de uma TAG
+                inteligente. Uma forma simples,
+                rápida e segura de ajudar seu
+                melhor amigo a voltar para casa.
+
+            </p>
+
+
+            <a
+                href="#perfil"
+                class="btn-main"
+            >
+
+                <span class="btn-main-cart">
+                    🛒
+                </span>
+
+                <span>
+                    Quero minha TAG
+                </span>
+
+                <span class="btn-main-arrow">
+                    →
+                </span>
+
+            </a>
+
+
+            <div class="quick-benefits">
+
+
+                <div class="quick-benefit">
+
+                    <div
+                        class="quick-icon quick-green"
+                    >
+                        🛡️
+                    </div>
+
+                    <strong>
+                        Mais<br>
+                        segurança
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-benefit">
+
+                    <div
+                        class="quick-icon quick-blue"
+                    >
+                        ⚡
+                    </div>
+
+                    <strong>
+                        Identificação<br>
+                        rápida
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-benefit">
+
+                    <div
+                        class="quick-icon quick-pink"
+                    >
+                        ❤️
+                    </div>
+
+                    <strong>
+                        Seu pet<br>
+                        sempre com você
+                    </strong>
+
+                </div>
+
 
             </div>
-
-
-            <div class="quick-benefit">
-
-              <div class="quick-icon quick-pink">
-                ❤️
-              </div>
-
-              <strong>
-                Seu pet<br>
-                sempre com você
-              </strong>
-
-            </div>
-
-
-          </div>
 
         </div>
 
 
-        <!-- ===================================================
-             CACHORRO
-        =================================================== -->
+        <!-- CACHORRO -->
 
         <div class="hero-visual">
 
 
-          <img
-            class="hero-dog-image"
-            src="hero-dog-clean2.png"
-            alt="Cachorro usando coleira e TAG Save Tag Pet"
-          >
+            <img
+                class="hero-dog-image"
+                src="hero-dog-clean2.png"
+                alt="Cachorro usando coleira e TAG Save Tag Pet"
+                onerror="
+                    this.onerror=null;
+                    this.src='https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1200&q=90';
+                "
+            >
 
 
-          <!-- FRASE -->
+            <div class="story-note">
 
-          <div class="story-note">
+                <span class="heart">
+                    ♡
+                </span>
 
-            <span class="heart">
-              ♡
-            </span>
+                Mais que<br>
+                uma TAG,<br>
+                uma história!
 
-            Mais que<br>
-            uma TAG,<br>
-            uma história!
-
-          </div>
-
-
-          <!-- TAG -->
-
-          <div class="physical-tag">
-
-            <div class="paw">
-              🐾
             </div>
 
-            <div class="nfc">
-              NFC
+
+            <div class="physical-tag">
+
+                <div class="paw">
+                    🐾
+                </div>
+
+                <div class="nfc">
+                    NFC
+                </div>
+
             </div>
 
-          </div>
 
+            <div class="tag-note">
 
-          <!-- BALÃO TAG -->
+                Nossa TAG<br>
+                em ação! 🐾
 
-          <div class="tag-note">
-
-            Nossa TAG<br>
-            em ação! 🐾
-
-          </div>
-
-
-          <!-- BALÃO CELULAR -->
-
-          <div class="phone-note">
-
-            <div class="phone-note-icon">
-              📱
             </div>
 
-            Aproxime o celular<br>
-            e acesse o<br>
-            perfil do seu pet!
 
-          </div>
+            <div class="phone-note">
+
+                <div class="phone-note-icon">
+                    📱
+                </div>
+
+                Aproxime o celular<br>
+                e acesse o<br>
+                perfil do seu pet!
+
+            </div>
 
 
         </div>
 
-      </div>
+    </div>
 
-    </section>
+</section>
 
 
-    <!-- =======================================================
-         PERFIL DIGITAL
-    ======================================================= -->
+<!-- =========================================================
+     PERFIL DIGITAL
+========================================================= -->
 
-    <section
-      id="perfil"
-      class="profile-section"
-    >
+<section
+    id="perfil"
+    class="profile-section"
+>
 
-      <div class="profile-card">
+    <div class="profile-card">
 
 
         <h2>
-          Perfil Digital do Pet
+            Perfil Digital do Pet
         </h2>
 
 
         <div class="profile-subtitle">
 
-          Mais que uma TAG, uma história.
+            Mais que uma TAG, uma história.
 
-          <span style="color:#fa5d78;">
-            ❤️
-          </span>
+            <span style="color:#fa5d78;">
+                ❤️
+            </span>
 
         </div>
 
-
-        <!-- FOTOS -->
 
         <div class="photo-collage">
 
 
-          <img
-            class="collage-left"
-            src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=85"
-            alt="Cachorro"
-          >
-
-
-          <img
-            class="collage-center"
-            src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=85"
-            alt="Gato"
-          >
-
-
-          <div class="collage-right">
-
             <img
-              src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=700&q=85"
-              alt="Cachorro"
+                class="collage-left"
+                src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=85"
+                alt="Cachorro"
             >
 
+
             <img
-              src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=700&q=85"
-              alt="Gato"
+                class="collage-center"
+                src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=85"
+                alt="Gato"
             >
 
-          </div>
+
+            <div class="collage-right">
+
+                <img
+                    src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=700&q=85"
+                    alt="Cachorro"
+                >
+
+                <img
+                    src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=700&q=85"
+                    alt="Gato"
+                >
+
+            </div>
+
 
         </div>
 
 
-        <!-- BENEFÍCIOS -->
-
         <div
-          id="beneficios"
-          class="feature-grid"
+            id="beneficios"
+            class="feature-grid"
         >
 
 
-          <div class="feature">
+            <div class="feature">
 
-            <div class="feature-icon">
-              📷
+                <div class="feature-icon">
+                    📷
+                </div>
+
+                <strong>
+                    Fotos<br>
+                    do seu pet
+                </strong>
+
             </div>
 
-            <strong>
-              Fotos<br>
-              do seu pet
-            </strong>
 
-          </div>
+            <div class="feature">
 
+                <div class="feature-icon">
+                    👤
+                </div>
 
-          <div class="feature">
+                <strong>
+                    Informações<br>
+                    importantes
+                </strong>
 
-            <div class="feature-icon">
-              👤
             </div>
 
-            <strong>
-              Informações<br>
-              importantes
-            </strong>
 
-          </div>
+            <div class="feature">
 
+                <div class="feature-icon">
+                    ❤️
+                </div>
 
-          <div class="feature">
+                <strong>
+                    Saúde e<br>
+                    vacinas
+                </strong>
 
-            <div class="feature-icon">
-              ❤️
             </div>
 
-            <strong>
-              Saúde e<br>
-              vacinas
-            </strong>
 
-          </div>
+            <div class="feature">
 
+                <div class="feature-icon">
+                    📞
+                </div>
 
-          <div class="feature">
+                <strong>
+                    Contato<br>
+                    do tutor
+                </strong>
 
-            <div class="feature-icon">
-              📞
             </div>
-
-            <strong>
-              Contato<br>
-              do tutor
-            </strong>
-
-          </div>
 
 
         </div>
 
-      </div>
+    </div>
 
-    </section>
+</section>
 
 
-    <!-- =======================================================
-         COMO FUNCIONA
-    ======================================================= -->
+<!-- =========================================================
+     COMO FUNCIONA
+========================================================= -->
 
-    <section
-      id="como-funciona"
-      class="how-section"
-    >
+<section
+    id="como-funciona"
+    class="how-section"
+>
 
-      <h2 class="how-title">
+    <h2 class="how-title">
         Como funciona?
-      </h2>
+    </h2>
 
-      <p class="how-sub">
+    <p class="how-sub">
         É simples, rápido e seguro!
-      </p>
+    </p>
 
 
-      <div class="steps">
+    <div class="steps">
 
 
         <div class="step">
 
-          <div class="step-top">
+            <div class="step-top">
 
-            <div class="step-icon">
-              🛒
+                <div class="step-icon">
+                    🛒
+                </div>
+
+                <div class="step-number">
+                    1
+                </div>
+
             </div>
 
-            <div class="step-number">
-              1
-            </div>
+            <h3>
+                Compre sua TAG
+            </h3>
 
-          </div>
-
-          <h3>
-            Compre sua TAG
-          </h3>
-
-          <p>
-            Receba sua TAG Save Tag Pet
-            e aproxime o celular.
-          </p>
+            <p>
+                Receba sua TAG Save Tag Pet
+                e aproxime o celular.
+            </p>
 
         </div>
 
 
         <div class="step">
 
-          <div class="step-top">
+            <div class="step-top">
 
-            <div class="step-icon">
-              📱
+                <div class="step-icon">
+                    📱
+                </div>
+
+                <div class="step-number">
+                    2
+                </div>
+
             </div>
 
-            <div class="step-number">
-              2
-            </div>
+            <h3>
+                Cadastre seu pet
+            </h3>
 
-          </div>
-
-          <h3>
-            Cadastre seu pet
-          </h3>
-
-          <p>
-            Crie sua conta e preencha
-            as informações do seu pet.
-          </p>
+            <p>
+                Crie sua conta e preencha
+                as informações do seu pet.
+            </p>
 
         </div>
 
 
         <div class="step">
 
-          <div class="step-top">
+            <div class="step-top">
 
-            <div class="step-icon">
-              🐾
+                <div class="step-icon">
+                    🐾
+                </div>
+
+                <div class="step-number">
+                    3
+                </div>
+
             </div>
 
-            <div class="step-number">
-              3
-            </div>
+            <h3>
+                Pet protegido
+            </h3>
 
-          </div>
-
-          <h3>
-            Pet protegido
-          </h3>
-
-          <p>
-            Quem encontrar seu pet poderá
-            acessar o perfil através da TAG.
-          </p>
+            <p>
+                Quem encontrar seu pet poderá
+                acessar o perfil através da TAG.
+            </p>
 
         </div>
 
 
-      </div>
+    </div>
 
-    </section>
+</section>
 
 
-    <!-- =======================================================
-         FAQ
-    ======================================================= -->
+<!-- =========================================================
+     FAQ
+========================================================= -->
 
-    <section
-      id="faq"
-      class="how-section"
-    >
+<section
+    id="faq"
+    class="how-section"
+>
 
-      <h2 class="how-title">
+    <h2 class="how-title">
         Por que usar a Save Tag Pet?
-      </h2>
+    </h2>
 
-      <p class="how-sub">
+    <p class="how-sub">
         Uma identificação simples para cães e gatos.
-      </p>
+    </p>
 
 
-      <div class="faq-box">
+    <div class="faq-box">
 
 
         <div class="faq-item">
 
-          <h3>
-            🐾 A TAG usa tecnologia NFC
-          </h3>
+            <h3>
+                🐾 A TAG usa tecnologia NFC
+            </h3>
 
-          <p>
-            Basta aproximar um celular compatível
-            para acessar o perfil digital do pet.
-          </p>
+            <p>
+                Basta aproximar um celular compatível
+                para acessar o perfil digital do pet.
+            </p>
 
         </div>
 
 
         <div class="faq-item">
 
-          <h3>
-            📱 Não precisa instalar aplicativo
-          </h3>
+            <h3>
+                📱 Não precisa instalar aplicativo
+            </h3>
 
-          <p>
-            O perfil é acessado diretamente pelo
-            navegador do celular.
-          </p>
+            <p>
+                O perfil é acessado diretamente pelo
+                navegador do celular.
+            </p>
 
         </div>
 
 
         <div class="faq-item">
 
-          <h3>
-            🐶🐱 Para cães e gatos
-          </h3>
+            <h3>
+                🐶🐱 Para cães e gatos
+            </h3>
 
-          <p>
-            O sistema foi desenvolvido para facilitar
-            a identificação e localização do seu pet.
-          </p>
+            <p>
+                O sistema foi desenvolvido para facilitar
+                a identificação e localização do seu pet.
+            </p>
 
         </div>
 
 
-      </div>
+    </div>
 
-    </section>
-
-
-    <!-- =======================================================
-         RODAPÉ
-    ======================================================= -->
-
-    <footer class="home-footer">
+</section>
 
 
-      <div class="footer-brand">
+<!-- =========================================================
+     RODAPÉ
+========================================================= -->
+
+<footer class="home-footer">
+
+
+    <div class="footer-brand">
 
         <strong>
-          🐾 Save
-          <span style="color:#1fb0a7;">
-            Tag
-          </span>
-          Pet
+            🐾 Save
+            <span style="color:#1fb0a7;">
+                Tag
+            </span>
+            Pet
         </strong>
 
         <small>
-          Identificação inteligente para o seu pet.
+            Identificação inteligente para o seu pet.
         </small>
 
-      </div>
+    </div>
 
 
-      <div class="footer-message">
+    <div class="footer-message">
 
         Seu pet sempre seguro.
 
         <br>
 
         <strong>
-          Em qualquer lugar. ❤️
+            Em qualquer lugar. ❤️
         </strong>
 
-      </div>
+    </div>
 
 
-      <a
+    <a
         href="#perfil"
         class="footer-cta"
-      >
+    >
         🛒 Quero minha TAG →
-      </a>
+    </a>
 
 
-    </footer>
+</footer>
 
 
-  </div>
+</div>
 
 
-  <!-- =========================================================
-       JAVASCRIPT
-  ========================================================= -->
+<script>
 
-  <script>
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-    /* =========================================================
-       SUPABASE
-    ========================================================= */
+const SUPABASE_URL =
+    "https://mqiwoubhivutavpnpeax.supabase.co";
 
-    const SUPABASE_URL =
-      "https://mqiwoubhivutavpnpeax.supabase.co";
-
-    const SUPABASE_KEY =
-      "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+const SUPABASE_KEY =
+    "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
 
-    /* =========================================================
-       FORMATAR DATA
-    ========================================================= */
+/* =========================================================
+   DATA
+========================================================= */
 
-    function formatarData(data) {
+function formatarData(data) {
 
-      if (!data) {
+    if (!data) {
         return "-";
-      }
+    }
 
-      try {
+    try {
 
         const partes =
-          String(data).split("-");
+            String(data).split("-");
 
         if (partes.length === 3) {
 
-          return (
-            partes[2] +
-            "/" +
-            partes[1] +
-            "/" +
-            partes[0]
-          );
+            return (
+                partes[2] +
+                "/" +
+                partes[1] +
+                "/" +
+                partes[0]
+            );
 
         }
 
         return data;
 
-      } catch (e) {
+    } catch (e) {
 
         return data;
 
-      }
-
     }
 
+}
 
-    /* =========================================================
-       FORMATAR HORA
-    ========================================================= */
 
-    function formatarHora(hora) {
+/* =========================================================
+   HORA
+========================================================= */
 
-      if (!hora) {
+function formatarHora(hora) {
+
+    if (!hora) {
         return "-";
-      }
-
-      return String(hora).substring(0, 5);
-
     }
 
+    return String(hora).substring(0,5);
 
-    /* =========================================================
-       MOSTRAR HOME
-    ========================================================= */
+}
 
-    function mostrarHome() {
 
-      document
+/* =========================================================
+   HOME
+========================================================= */
+
+function mostrarHome() {
+
+    document
         .getElementById("loading")
         .classList.add("hidden");
 
-      document
+    document
         .getElementById("erro")
         .classList.add("hidden");
 
-      document
+    document
         .getElementById("ativacao")
         .classList.add("hidden");
 
-      document
+    document
         .getElementById("conteudo")
         .classList.add("hidden");
 
-      document
+    document
         .getElementById("home")
         .classList.remove("hidden");
 
-      configurarMenu();
+    configurarMenu();
 
-    }
+}
 
 
-    /* =========================================================
-       CONSULTAR TAG
-    ========================================================= */
+/* =========================================================
+   CONSULTAR TAG
+========================================================= */
 
-    async function carregarPet() {
+async function carregarPet() {
 
-      const parametros =
+    const parametros =
         new URLSearchParams(
-          window.location.search
+            window.location.search
         );
 
-      const codigo =
+    const codigo =
         parametros.get("tag");
 
 
-      /*
-        Se não existir ?tag=
-        abre a Home.
-      */
-
-      if (!codigo) {
+    if (!codigo) {
 
         mostrarHome();
 
         return;
 
-      }
+    }
 
 
-      document
+    document
         .getElementById("loading")
         .classList.remove("hidden");
 
 
-      try {
+    try {
 
         const resposta =
-          await fetch(
-            SUPABASE_URL +
-            "/rest/v1/rpc/get_pet_public",
-            {
+            await fetch(
 
-              method: "POST",
+                SUPABASE_URL +
+                "/rest/v1/rpc/get_pet_public",
 
-              headers: {
+                {
 
-                "Content-Type":
-                  "application/json",
+                    method: "POST",
 
-                "apikey":
-                  SUPABASE_KEY,
+                    headers: {
 
-                "Authorization":
-                  "Bearer " +
-                  SUPABASE_KEY
+                        "Content-Type":
+                            "application/json",
 
-              },
+                        "apikey":
+                            SUPABASE_KEY,
 
-              body: JSON.stringify({
+                        "Authorization":
+                            "Bearer " +
+                            SUPABASE_KEY
 
-                p_codigo:
-                  codigo
+                    },
 
-              })
+                    body: JSON.stringify({
 
-            }
-          );
+                        p_codigo:
+                            codigo
+
+                    })
+
+                }
+
+            );
 
 
         if (!resposta.ok) {
 
-          throw new Error(
-            "Erro ao consultar a TAG."
-          );
+            throw new Error(
+                "Erro ao consultar a TAG."
+            );
 
         }
 
 
         const dados =
-          await resposta.json();
+            await resposta.json();
 
 
         if (
-          !dados ||
-          !dados.length
+            !dados ||
+            !dados.length
         ) {
 
-          document
-            .getElementById("loading")
-            .classList.add("hidden");
+            document
+                .getElementById("loading")
+                .classList.add("hidden");
 
-          document
-            .getElementById("erro")
-            .classList.remove("hidden");
+            document
+                .getElementById("erro")
+                .classList.remove("hidden");
 
-          return;
+            return;
 
         }
 
 
         const pet =
-          dados[0];
+            dados[0];
 
-
-        /*
-          TAG ainda não ativada.
-        */
 
         if (
-          pet.tag_disponivel === true
+            pet.tag_disponivel === true
         ) {
 
-          document
-            .getElementById("loading")
-            .classList.add("hidden");
+            document
+                .getElementById("loading")
+                .classList.add("hidden");
 
-          document
-            .getElementById("ativacao")
-            .classList.remove("hidden");
-
-
-          const codigoTag =
-            pet.tag_codigo ||
-            codigo;
+            document
+                .getElementById("ativacao")
+                .classList.remove("hidden");
 
 
-          document
-            .getElementById(
-              "codigoTagAtivacao"
-            )
-            .textContent =
-              codigoTag;
+            const codigoTag =
+                pet.tag_codigo ||
+                codigo;
 
 
-          document
-            .getElementById("btnAtivar")
-            .href =
-              "login.html?tag=" +
-              encodeURIComponent(
-                codigoTag
-              );
+            document
+                .getElementById(
+                    "codigoTagAtivacao"
+                )
+                .textContent =
+                    codigoTag;
 
 
-          return;
+            document
+                .getElementById(
+                    "btnAtivar"
+                )
+                .href =
+                    "login.html?tag=" +
+                    encodeURIComponent(
+                        codigoTag
+                    );
+
+
+            return;
 
         }
 
 
         preencherPagina(pet);
 
-      } catch (erro) {
+
+    } catch (erro) {
 
         console.error(
-          "Erro:",
-          erro
+            "Erro:",
+            erro
         );
 
 
         document
-          .getElementById("loading")
-          .classList.add("hidden");
+            .getElementById("loading")
+            .classList.add("hidden");
 
         document
-          .getElementById("erro")
-          .classList.remove("hidden");
-
-      }
+            .getElementById("erro")
+            .classList.remove("hidden");
 
     }
 
+}
 
-    /* =========================================================
-       PREENCHER PERFIL
-    ========================================================= */
 
-    function preencherPagina(pet) {
+/* =========================================================
+   PERFIL PÚBLICO
+========================================================= */
 
-      document
+function preencherPagina(pet) {
+
+    document
         .getElementById("loading")
         .classList.add("hidden");
 
-
-      document
+    document
         .getElementById("conteudo")
         .classList.remove("hidden");
 
 
-      document
+    document
         .getElementById("petNome")
         .textContent =
-          pet.nome ||
-          "Pet";
+            pet.nome ||
+            "Pet";
 
 
-      document
+    document
         .getElementById("petSub")
         .textContent =
-          (
-            pet.raca ||
-            "Raça não informada"
-          ) +
-          " • " +
-          (
-            pet.sexo ||
-            "Sexo não informado"
-          );
+            (
+                pet.raca ||
+                "Raça não informada"
+            ) +
+            " • " +
+            (
+                pet.sexo ||
+                "Sexo não informado"
+            );
 
 
-      document
+    document
         .getElementById("infoNome")
         .textContent =
-          pet.nome || "-";
+            pet.nome || "-";
 
 
-      document
+    document
         .getElementById("infoEspecie")
         .textContent =
-          pet.especie || "-";
+            pet.especie || "-";
 
 
-      document
+    document
         .getElementById("infoRaca")
         .textContent =
-          pet.raca || "-";
+            pet.raca || "-";
 
 
-      document
+    document
         .getElementById("infoSexo")
         .textContent =
-          pet.sexo || "-";
+            pet.sexo || "-";
 
 
-      document
+    document
         .getElementById("infoNascimento")
         .textContent =
-          formatarData(
-            pet.data_nascimento
-          );
+            formatarData(
+                pet.data_nascimento
+            );
 
 
-      document
+    document
         .getElementById("infoCidade")
         .textContent =
-          pet.cidade || "-";
+            pet.cidade || "-";
 
 
-      /* FOTO */
-
-      if (pet.foto_url) {
+    if (pet.foto_url) {
 
         document
-          .getElementById("petFoto")
-          .src =
-            pet.foto_url;
+            .getElementById("petFoto")
+            .src =
+                pet.foto_url;
 
-      }
+    }
 
 
-      /* SAÚDE */
-
-      document
+    document
         .getElementById("infoAlergias")
         .textContent =
-          pet.alergias ||
-          "Nenhuma informada";
+            pet.alergias ||
+            "Nenhuma informada";
 
 
-      document
+    document
         .getElementById("infoMedicamentos")
         .textContent =
-          pet.medicamentos ||
-          "Nenhum informado";
+            pet.medicamentos ||
+            "Nenhum informado";
 
 
-      document
+    document
         .getElementById("infoObservacoes")
         .textContent =
-          pet.observacoes ||
-          "Nenhuma observação cadastrada.";
+            pet.observacoes ||
+            "Nenhuma observação cadastrada.";
 
 
-      /* TELEFONE */
-
-      if (pet.telefone) {
+    if (pet.telefone) {
 
         const telefone =
-          String(
-            pet.telefone
-          ).replace(
-            /\D/g,
-            ""
-          );
+            String(
+                pet.telefone
+            ).replace(
+                /\D/g,
+                ""
+            );
 
 
         document
-          .getElementById("btnTelefone")
-          .href =
-            "tel:" +
-            telefone;
+            .getElementById("btnTelefone")
+            .href =
+                "tel:" +
+                telefone;
 
-      } else {
+    } else {
 
         document
-          .getElementById("btnTelefone")
-          .classList.add(
-            "hidden"
-          );
+            .getElementById("btnTelefone")
+            .classList.add("hidden");
 
-      }
+    }
 
 
-      /* WHATSAPP */
-
-      if (pet.whatsapp) {
+    if (pet.whatsapp) {
 
         let whatsapp =
-          String(
-            pet.whatsapp
-          ).replace(
-            /\D/g,
-            ""
-          );
+            String(
+                pet.whatsapp
+            ).replace(
+                /\D/g,
+                ""
+            );
 
 
         if (
-          whatsapp.length === 10 ||
-          whatsapp.length === 11
+            whatsapp.length === 10 ||
+            whatsapp.length === 11
         ) {
 
-          whatsapp =
-            "55" +
-            whatsapp;
+            whatsapp =
+                "55" +
+                whatsapp;
 
         }
 
 
         document
-          .getElementById("btnWhatsApp")
-          .href =
-            "https://wa.me/" +
-            whatsapp;
+            .getElementById("btnWhatsApp")
+            .href =
+                "https://wa.me/" +
+                whatsapp;
 
-      } else {
-
-        document
-          .getElementById("btnWhatsApp")
-          .classList.add(
-            "hidden"
-          );
-
-      }
-
-
-      /* PET PERDIDO */
-
-      if (
-        pet.perdido === true
-      ) {
+    } else {
 
         document
-          .getElementById(
-            "cardPerdido"
-          )
-          .classList.remove(
-            "hidden"
-          );
-
-
-        document
-          .getElementById(
-            "badgePerdido"
-          )
-          .classList.remove(
-            "hidden"
-          );
-
-
-        document
-          .getElementById(
-            "perdidoMensagem"
-          )
-          .textContent =
-            pet.mensagem_perdido ||
-            "Este pet está desaparecido. Se você o encontrou, entre em contato com o tutor.";
-
-
-        document
-          .getElementById(
-            "perdidoLocal"
-          )
-          .textContent =
-            pet.ultimo_local_perdido ||
-            "Não informado";
-
-
-        document
-          .getElementById(
-            "perdidoData"
-          )
-          .textContent =
-            formatarData(
-              pet.data_perdido
-            );
-
-
-        document
-          .getElementById(
-            "perdidoHora"
-          )
-          .textContent =
-            formatarHora(
-              pet.hora_perdido
-            );
-
-      }
+            .getElementById("btnWhatsApp")
+            .classList.add("hidden");
 
     }
 
 
-    /* =========================================================
-       MENU MOBILE
-    ========================================================= */
+    if (
+        pet.perdido === true
+    ) {
 
-    function configurarMenu() {
-
-      const botao =
-        document.getElementById(
-          "mobileMenuButton"
-        );
-
-      const painel =
-        document.getElementById(
-          "mobileMenuPanel"
-        );
+        document
+            .getElementById("cardPerdido")
+            .classList.remove("hidden");
 
 
-      if (
-        !botao ||
-        !painel
-      ) {
-        return;
-      }
+        document
+            .getElementById("badgePerdido")
+            .classList.remove("hidden");
 
 
-      /*
-        Evita registrar vários eventos
-        caso a função seja chamada novamente.
-      */
-
-      if (
-        botao.dataset.configurado === "true"
-      ) {
-        return;
-      }
+        document
+            .getElementById("perdidoMensagem")
+            .textContent =
+                pet.mensagem_perdido ||
+                "Este pet está desaparecido. Se você o encontrou, entre em contato com o tutor.";
 
 
-      botao.dataset.configurado = "true";
+        document
+            .getElementById("perdidoLocal")
+            .textContent =
+                pet.ultimo_local_perdido ||
+                "Não informado";
 
 
-      botao.addEventListener(
-        "click",
-        function () {
-
-          painel.classList.toggle(
-            "open"
-          );
-
-
-          botao.textContent =
-            painel.classList.contains("open")
-              ? "✕"
-              : "☰";
-
-        }
-      );
-
-
-      painel
-        .querySelectorAll("a")
-        .forEach(
-          function (link) {
-
-            link.addEventListener(
-              "click",
-              function () {
-
-                painel.classList.remove(
-                  "open"
+        document
+            .getElementById("perdidoData")
+            .textContent =
+                formatarData(
+                    pet.data_perdido
                 );
 
-                botao.textContent =
-                  "☰";
 
-              }
-            );
+        document
+            .getElementById("perdidoHora")
+            .textContent =
+                formatarHora(
+                    pet.hora_perdido
+                );
 
-          }
+    }
+
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function configurarMenu() {
+
+    const botao =
+        document.getElementById(
+            "mobileMenuButton"
         );
+
+    const painel =
+        document.getElementById(
+            "mobileMenuPanel"
+        );
+
+
+    if (
+        !botao ||
+        !painel
+    ) {
+
+        return;
 
     }
 
 
-    /* =========================================================
-       INICIAR
-    ========================================================= */
+    if (
+        botao.dataset.configurado === "true"
+    ) {
 
-    carregarPet();
+        return;
 
-  </script>
+    }
+
+
+    botao.dataset.configurado =
+        "true";
+
+
+    botao.addEventListener(
+        "click",
+        function() {
+
+            painel.classList.toggle(
+                "open"
+            );
+
+
+            botao.textContent =
+                painel.classList.contains(
+                    "open"
+                )
+                ? "✕"
+                : "☰";
+
+        }
+    );
+
+
+    painel
+        .querySelectorAll("a")
+        .forEach(
+            function(link) {
+
+                link.addEventListener(
+                    "click",
+                    function() {
+
+                        painel.classList.remove(
+                            "open"
+                        );
+
+                        botao.textContent =
+                            "☰";
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+carregarPet();
+
+</script>
+
 
 </body>
-</html>
+  </html>
