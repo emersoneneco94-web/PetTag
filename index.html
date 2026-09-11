@@ -723,6 +723,7 @@
       <a
         id="btnAreaTutor"
         href="login.html"
+onclick="this.href='login.html?tag='+encodeURIComponent(new URLSearchParams(window.location.search).get('tag') || '')"
         style="
           color:#7a847e;
           font-size:12px;
