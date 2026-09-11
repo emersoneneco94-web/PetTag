@@ -1834,6 +1834,13 @@ function renderizarPets(){
                 >
                   Vacinas / Saúde
                 </button>
+                
+                <button
+  class="btn-secondary"
+  onclick="excluirPet('${pet.id}')"
+>
+  🗑️ Excluir
+</button>
 
               </div>
 
@@ -1845,7 +1852,55 @@ function renderizarPets(){
       .join("");
 
 }
+async function excluirPet(id){
 
+  const pet = pets.find(p => p.id === id);
+
+  if(!pet){
+    mostrarMensagem("Pet não encontrado.","error");
+    return;
+  }
+
+  const confirmar = confirm(
+    "⚠️ Excluir o pet " + pet.nome + "?\n\n" +
+    "Todos os dados cadastrados deste pet serão removidos.\n" +
+    "A TAG vinculada ficará disponível novamente.\n\n" +
+    "Essa ação não pode ser desfeita."
+  );
+
+  if(!confirmar){
+    return;
+  }
+
+  const resultado = await supabaseClient.rpc(
+    "excluir_pet",
+    {
+      p_pet_id: id
+    }
+  );
+
+  if(resultado.error){
+
+    console.error(resultado.error);
+
+    mostrarMensagem(
+      "Não foi possível excluir o pet: " +
+      resultado.error.message,
+      "error"
+    );
+
+    return;
+  }
+
+  mostrarMensagem(
+    "Pet excluído com sucesso. A TAG está disponível novamente.",
+    "success"
+  );
+
+  petSelecionado = null;
+
+  await carregarPets();
+}
 
 /* =====================================================
    NOVO PET
