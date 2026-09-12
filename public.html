@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Save Tag Pet | Perfil do Pet</title>
+
+  <meta
+    name="description"
+    content="Perfil digital do pet Save Tag Pet."
+  >
+
+  <meta
+    name="robots"
+    content="noindex,nofollow"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+
+    :root {
+      --blue: #073b50;
+      --blue2: #0a465c;
+      --green: #0caf7c;
+      --green2: #12b985;
+      --light: #f1f8f6;
+      --light2: #e6f6f1;
+      --text: #103e52;
+      --muted: #71858d;
+      --border: #dce9e7;
+      --danger: #e64d55;
+      --danger-bg: #fff0f1;
+      --white: #ffffff;
+    }
+
+
+    body {
+      min-height: 100vh;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 10% 10%,
+          rgba(18,185,133,.10),
+          transparent 28%
+        ),
+        linear-gradient(
+          180deg,
+          #f7fbfa 0%,
+          #edf7f5 100%
+        );
+
+      color: var(--text);
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    header {
+      height: 68px;
+
+      background: rgba(255,255,255,.96);
+
+      border-bottom:
+        1px solid #e1ecea;
+
+      display: flex;
+      align-items: center;
+
+      position: sticky;
+      top: 0;
+
+      z-index: 20;
+
+      backdrop-filter: blur(10px);
+    }
+
+
+    .header-inner {
+      width: 100%;
+      max-width: 900px;
+
+      margin: auto;
+
+      padding: 0 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+
+      border-radius: 10px;
+
+      background: var(--blue);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: white;
+
+      font-size: 18px;
+    }
+
+
+    .logo-name {
+      font-size: 17px;
+      font-weight: 800;
+
+      color: var(--blue);
+    }
+
+
+    .logo-name span {
+      color: var(--green);
+    }
+
+
+    .logo-sub {
+      font-size: 6px;
+      font-weight: 700;
+
+      color: #7a8e96;
+
+      margin-top: -2px;
+      letter-spacing: .25px;
+    }
+
+
+    .nfc-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      font-size: 9px;
+      font-weight: 700;
+
+      color: #0a9e71;
+
+      background: #e5f8f2;
+
+      padding: 7px 11px;
+
+      border-radius: 20px;
+    }
+
+
+    /* =====================================================
+       CONTAINER
+    ===================================================== */
+
+    .page {
+      min-height:
+        calc(100vh - 68px);
+
+      padding:
+        45px 20px 60px;
+    }
+
+
+    .container {
+      max-width: 530px;
+      margin: auto;
+    }
+
+
+    /* =====================================================
+       LOADING
+    ===================================================== */
+
+    .loading {
+      min-height: 500px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      flex-direction: column;
+
+      gap: 15px;
+
+      color: var(--muted);
+
+      text-align: center;
+    }
+
+
+    .loader {
+      width: 42px;
+      height: 42px;
+
+      border-radius: 50%;
+
+      border:
+        4px solid #dceeea;
+
+      border-top-color:
+        var(--green);
+
+      animation:
+        spin .8s linear infinite;
+    }
+
+
+    @keyframes spin {
+
+      to {
+        transform:
+          rotate(360deg);
+      }
+
+    }
+
+
+    /* =====================================================
+       ERROR
+    ===================================================== */
+
+    .error-card {
+      background: white;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 22px;
+
+      padding: 40px 28px;
+
+      text-align: center;
+
+      box-shadow:
+        0 15px 45px
+        rgba(10,56,77,.07);
+    }
+
+
+    .error-icon {
+      width: 70px;
+      height: 70px;
+
+      border-radius: 22px;
+
+      background: #edf5f4;
+
+      margin:
+        0 auto 18px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 32px;
+    }
+
+
+    .error-card h1 {
+      font-size: 23px;
+
+      margin-bottom: 9px;
+    }
+
+
+    .error-card p {
+      color: var(--muted);
+
+      font-size: 12px;
+
+      line-height: 1.7;
+    }
+
+
+    /* =====================================================
+       PET CARD
+    ===================================================== */
+
+    .pet-card {
+      background: white;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 25px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 18px 55px
+        rgba(10,56,77,.09);
+    }
+
+
+    .pet-cover {
+      height: 120px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #dff6ef,
+          #eef9f7
+        );
+
+      position: relative;
+    }
+
+
+    .pet-cover::before {
+      content: "";
+
+      position: absolute;
+
+      width: 170px;
+      height: 170px;
+
+      border-radius: 50%;
+
+      background:
+        rgba(255,255,255,.40);
+
+      top: -90px;
+      right: -35px;
+    }
+
+
+    .pet-cover-label {
+      position: absolute;
+
+      left: 20px;
+      top: 18px;
+
+      padding: 7px 11px;
+
+      background:
+        rgba(255,255,255,.78);
+
+      border-radius: 20px;
+
+      font-size: 9px;
+
+      font-weight: 800;
+
+      color: var(--blue);
+    }
+
+
+    /* =====================================================
+       FOTO
+    ===================================================== */
+
+    .pet-photo-wrapper {
+      margin-top: -58px;
+
+      position: relative;
+
+      display: flex;
+      justify-content: center;
+    }
+
+
+    .pet-photo {
+      width: 116px;
+      height: 116px;
+
+      border-radius: 50%;
+
+      background: #e4f3ef;
+
+      border:
+        6px solid white;
+
+      box-shadow:
+        0 8px 25px
+        rgba(10,56,77,.12);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow: hidden;
+
+      font-size: 58px;
+    }
+
+
+    .pet-photo img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+    }
+
+
+    /* =====================================================
+       INFORMAÇÕES
+    ===================================================== */
+
+    .pet-info {
+      padding: 18px 30px 30px;
+
+      text-align: center;
+    }
+
+
+    .pet-name {
+      font-size: 31px;
+
+      font-weight: 800;
+
+      color: var(--blue);
+
+      margin-bottom: 5px;
+    }
+
+
+    .pet-description {
+      color: var(--muted);
+
+      font-size: 12px;
+
+      margin-bottom: 15px;
+    }
+
+
+    .active-badge {
+      display: inline-flex;
+
+      align-items: center;
+      gap: 6px;
+
+      background: #e2f8f0;
+
+      color: #07976b;
+
+      border-radius: 20px;
+
+      padding: 7px 12px;
+
+      font-size: 9px;
+
+      font-weight: 800;
+
+      margin-bottom: 22px;
+    }
+
+
+    .active-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+    }
+
+
+    /* =====================================================
+       DADOS DO PET
+    ===================================================== */
+
+    .pet-data {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2,1fr);
+
+      gap: 9px;
+
+      text-align: left;
+
+      margin-bottom: 20px;
+    }
+
+
+    .data-item {
+      background: #f7fbfa;
+
+      border:
+        1px solid #e4efed;
+
+      border-radius: 12px;
+
+      padding: 12px;
+    }
+
+
+    .data-label {
+      font-size: 8px;
+
+      color: #8a9aa0;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing: .4px;
+
+      font-weight: 700;
+
+      margin-bottom: 4px;
+    }
+
+
+    .data-value {
+      font-size: 11px;
+
+      color: var(--blue);
+
+      font-weight: 800;
+    }
+
+
+    /* =====================================================
+       PET PERDIDO
+    ===================================================== */
+
+    .lost-box {
+      display: none;
+
+      background:
+        var(--danger-bg);
+
+      border:
+        1px solid #ffd5d8;
+
+      border-radius: 17px;
+
+      padding: 18px;
+
+      text-align: left;
+
+      margin-bottom: 20px;
+    }
+
+
+    .lost-box.show {
+      display: block;
+    }
+
+
+    .lost-title {
+      display: flex;
+      align-items: center;
+
+      gap: 9px;
+
+      color: var(--danger);
+
+      font-size: 14px;
+
+      font-weight: 900;
+
+      margin-bottom: 8px;
+    }
+
+
+    .lost-icon {
+      width: 31px;
+      height: 31px;
+
+      border-radius: 9px;
+
+      background: white;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 16px;
+    }
+
+
+    .lost-message {
+      font-size: 11px;
+
+      line-height: 1.6;
+
+      color: #8d565b;
+    }
+
+
+    .lost-location {
+      margin-top: 10px;
+
+      padding-top: 10px;
+
+      border-top:
+        1px solid #f6d4d7;
+
+      font-size: 10px;
+
+      color: #8d565b;
+
+      font-weight: 700;
+    }
+
+
+    /* =====================================================
+       CONTACT
+    ===================================================== */
+
+    .contact-title {
+      font-size: 12px;
+
+      font-weight: 800;
+
+      color: var(--blue);
+
+      margin-bottom: 10px;
+    }
+
+
+    .contact-description {
+      font-size: 10px;
+
+      line-height: 1.6;
+
+      color: var(--muted);
+
+      margin-bottom: 13px;
+    }
+
+
+    .contact-buttons {
+      display: grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap: 9px;
+    }
+
+
+    .contact-button {
+      height: 47px;
+
+      border: 0;
+
+      border-radius: 12px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 7px;
+
+      font-size: 11px;
+
+      font-weight: 800;
+    }
+
+
+    .whatsapp {
+      background: #dff8ee;
+
+      color: #07966b;
+    }
+
+
+    .phone-button {
+      background: #eaf1f5;
+
+      color: var(--blue);
+    }
+
+
+    .contact-button:hover {
+      transform:
+        translateY(-1px);
+    }
+
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    .footer {
+      text-align: center;
+
+      margin-top: 22px;
+    }
+
+
+    .footer p {
+      font-size: 9px;
+
+      color: #8b9aa0;
+
+      line-height: 1.6;
+    }
+
+
+    .footer strong {
+      color: var(--blue);
+    }
+
+
+    /* =====================================================
+       PRIVACIDADE
+    ===================================================== */
+
+    .privacy-note {
+      margin-top: 18px;
+
+      padding: 12px 15px;
+
+      border-radius: 11px;
+
+      background:
+        rgba(255,255,255,.70);
+
+      border:
+        1px solid #e0ecea;
+
+      display: flex;
+
+      align-items: flex-start;
+
+      gap: 8px;
+
+      text-align: left;
+    }
+
+
+    .privacy-note-icon {
+      font-size: 13px;
+    }
+
+
+    .privacy-note p {
+      font-size: 8px;
+
+      line-height: 1.5;
+
+      color: #788b92;
+    }
+
+
+    /* =====================================================
+       RESPONSIVO
+    ===================================================== */
+
+    @media(max-width:550px) {
+
+      header {
+        height: 62px;
+      }
+
+      .page {
+        padding:
+          28px 13px 45px;
+      }
+
+      .logo-sub {
+        display: none;
+      }
+
+      .logo-name {
+        font-size: 15px;
+      }
+
+      .nfc-status {
+        font-size: 8px;
+        padding: 6px 9px;
+      }
+
+      .pet-cover {
+        height: 105px;
+      }
+
+      .pet-info {
+        padding:
+          17px 18px 25px;
+      }
+
+      .pet-name {
+        font-size: 27px;
+      }
+
+      .pet-data {
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+    }
+
+
+    @media(max-width:360px) {
+
+      .pet-data {
+        grid-template-columns:
+          1fr;
+      }
+
+      .contact-buttons {
+        grid-template-columns:
+          1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header>
+
+  <div class="header-inner">
+
+
+    <div class="logo">
+
+      <div class="logo-icon">
+        🐾
+      </div>
+
+      <div>
+
+        <div class="logo-name">
+          Save <span>Tag</span> Pet
+        </div>
+
+        <div class="logo-sub">
+          IDENTIFICAÇÃO INTELIGENTE
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="nfc-status">
+      📡 TAG NFC
+    </div>
+
+
+  </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     PÁGINA
+========================================================= -->
+
+<main class="page">
+
+  <div
+    class="container"
+    id="content"
+  >
+
+
+    <!-- LOADING -->
+
+    <div
+      class="loading"
+      id="loading"
+    >
+
+      <div class="loader"></div>
+
+      <div>
+        Carregando informações do pet...
+      </div>
+
+    </div>
+
+
+  </div>
+
+</main>
+
+
+
+<script>
+
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
+
+  const SUPABASE_URL =
+    "https://mqiwoubhivutavpnpeax.supabase.co";
+
+
+  const SUPABASE_KEY =
+    "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+  /* =========================================================
+     ELEMENTOS
+  ========================================================= */
+
+  const content =
+    document.getElementById("content");
+
+
+  /* =========================================================
+     ESCAPAR HTML
+     Proteção contra conteúdo malicioso
+  ========================================================= */
+
+  function escapeHTML(value) {
+
+    if (
+      value === null ||
+      value === undefined
+    ) {
+      return "";
+    }
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  /* =========================================================
+     PEGAR CÓDIGO DA TAG
+  ========================================================= */
+
+  function getTagCode() {
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+    return (
+      params.get("tag") ||
+      params.get("TAG") ||
+      ""
+    ).trim();
+
+  }
+
+
+  /* =========================================================
+     NORMALIZAR TELEFONE
+  ========================================================= */
+
+  function normalizePhone(phone) {
+
+    if (!phone) {
+      return "";
+    }
+
+    return String(phone)
+      .replace(/\D/g, "");
+
+  }
+
+
+  /* =========================================================
+     GERAR WHATSAPP
+  ========================================================= */
+
+  function openWhatsApp(phone) {
+
+    const number =
+      normalizePhone(phone);
+
+    if (!number) {
+
+      alert(
+        "O WhatsApp do tutor não está disponível."
+      );
+
+      return;
+    }
+
+
+    let whatsappNumber =
+      number;
+
+
+    /*
+      Caso o número brasileiro venha sem
+      o código 55, acrescentamos.
+    */
+
+    if (
+      whatsappNumber.length === 10 ||
+      whatsappNumber.length === 11
+    ) {
+
+      whatsappNumber =
+        "55" + whatsappNumber;
+
+    }
+
+
+    window.open(
+      "https://wa.me/" +
+      whatsappNumber,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+  }
+
+
+  /* =========================================================
+     LIGAR
+  ========================================================= */
+
+  function callTutor(phone) {
+
+    const number =
+      normalizePhone(phone);
+
+    if (!number) {
+
+      alert(
+        "O telefone do tutor não está disponível."
+      );
+
+      return;
+    }
+
+
+    window.location.href =
+      "tel:" + number;
+
+  }
+
+
+  /* =========================================================
+     FOTO PADRÃO
+  ========================================================= */
+
+  function getPetEmoji(species) {
+
+    const value =
+      String(species || "")
+        .toLowerCase();
+
+
+    if (
+      value.includes("gato") ||
+      value.includes("cat")
+    ) {
+
+      return "🐱";
+
+    }
+
+
+    return "🐶";
+
+  }
+
+
+  /* =========================================================
+     ERRO
+  ========================================================= */
+
+  function showError(
+    title,
+    text
+  ) {
+
+    content.innerHTML = `
+
+      <div class="error-card">
+
+        <div class="error-icon">
+          🐾
+        </div>
+
+        <h1>
+          ${escapeHTML(title)}
+        </h1>
+
+        <p>
+          ${escapeHTML(text)}
+        </p>
+
+      </div>
+
+      <div class="footer">
+
+        <p>
+          <strong>Save Tag Pet</strong><br>
+          Identificação inteligente para pets.
+        </p>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     CARREGAR PET
+  ========================================================= */
+
+  async function loadPet() {
+
+    const tagCode =
+      getTagCode();
+
+
+    /*
+      Sem código da TAG
+    */
+
+    if (!tagCode) {
+
+      showError(
+        "TAG não identificada",
+        "A identificação desta TAG NFC não foi encontrada. Aproxime novamente o celular da TAG do pet."
+      );
+
+      return;
+
+    }
+
+
+    try {
+
+      /*
+        Usa o RPC já existente no projeto.
+      */
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .rpc(
+            "get_pet_public",
+            {
+              p_tag_codigo:
+                tagCode
+            }
+          );
+
+
+      if (error) {
+
+        console.error(
+          "Erro RPC:",
+          error
+        );
+
+        throw error;
+
+      }
+
+
+      /*
+        O RPC pode retornar:
+        objeto
+        array
+        ou nenhum resultado.
+      */
+
+      let pet = null;
+
+
+      if (
+        Array.isArray(data)
+      ) {
+
+        pet =
+          data.length
+            ? data[0]
+            : null;
+
+      } else {
+
+        pet = data;
+
+      }
+
+
+      if (!pet) {
+
+        showError(
+          "Pet não encontrado",
+          "Não encontramos um pet vinculado a esta TAG NFC. Verifique se a TAG foi ativada corretamente."
+        );
+
+        return;
+
+      }
+
+
+      renderPet(pet);
+
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao carregar pet:",
+        error
+      );
+
+
+      showError(
+        "Não foi possível carregar",
+        "Ocorreu um problema ao acessar o perfil deste pet. Tente novamente em alguns instantes."
+      );
+
+    }
+
+  }
+
+
+  /* =========================================================
+     RENDERIZAR PET
+  ========================================================= */
+
+  function renderPet(pet) {
+
+    /*
+      Compatibilidade com diferentes nomes
+      que podem existir no banco.
+    */
+
+    const name =
+      pet.nome ||
+      pet.name ||
+      "Pet";
+
+
+    const species =
+      pet.especie ||
+      pet.species ||
+      "";
+
+
+    const breed =
+      pet.raca ||
+      pet.breed ||
+      "";
+
+
+    const sex =
+      pet.sexo ||
+      pet.sex ||
+      "";
+
+
+    const city =
+      pet.cidade ||
+      pet.city ||
+      "";
+
+
+    const photo =
+      pet.foto_url ||
+      pet.photo_url ||
+      pet.foto ||
+      "";
+
+
+    /*
+      Contato.
+    */
+
+    const whatsapp =
+      pet.whatsapp ||
+      pet.telefone ||
+      pet.telefone_whatsapp ||
+      pet.phone ||
+      "";
+
+
+    const phone =
+      pet.telefone ||
+      pet.phone ||
+      whatsapp ||
+      "";
+
+
+    /*
+      Status perdido.
+    */
+
+    const lost =
+      pet.perdido === true ||
+      pet.perdido === "true" ||
+      pet.lost === true ||
+      pet.lost === "true";
+
+
+    const lostLocation =
+      pet.ultimo_local_perdido ||
+      pet.local_perdido ||
+      pet.lost_location ||
+      "";
+
+
+    const lostDate =
+      pet.data_perdido ||
+      pet.lost_date ||
+      "";
+
+
+    const lostTime =
+      pet.hora_perdido ||
+      pet.lost_time ||
+      "";
+
+
+    const lostMessage =
+      pet.mensagem_perdido ||
+      pet.lost_message ||
+      "Este pet está sendo procurado. Se você encontrou este animal, entre em contato com o tutor."
+
+
+    /*
+      Privacidade.
+    */
+
+    const showBreed =
+      pet.mostrar_raca !== false &&
+      pet.mostrar_raca !== "false";
+
+
+    const showSex =
+      pet.mostrar_sexo !== false &&
+      pet.mostrar_sexo !== "false";
+
+
+    const showCity =
+      pet.mostrar_cidade !== false &&
+      pet.mostrar_cidade !== "false";
+
+
+    /*
+      Descrição.
+    */
+
+    const descriptionParts = [];
+
+
+    if (species) {
+
+      descriptionParts.push(
+        species
+      );
+
+    }
+
+
+    if (
+      breed &&
+      showBreed
+    ) {
+
+      descriptionParts.push(
+        breed
+      );
+
+    }
+
+
+    if (
+      sex &&
+      showSex
+    ) {
+
+      descriptionParts.push(
+        sex
+      );
+
+    }
+
+
+    const description =
+      descriptionParts.join(
+        " • "
+      );
+
+
+    /*
+      Data do pet.
+    */
+
+    const birth =
+      pet.data_nascimento ||
+      pet.nascimento ||
+      pet.birth_date ||
+      "";
+
+
+    /*
+      Montar dados públicos.
+    */
+
+    let dataHTML = "";
+
+
+    if (
+      breed &&
+      showBreed
+    ) {
+
+      dataHTML += `
+
+        <div class="data-item">
+
+          <div class="data-label">
+            Raça
+          </div>
+
+          <div class="data-value">
+            ${escapeHTML(breed)}
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    if (
+      sex &&
+      showSex
+    ) {
+
+      dataHTML += `
+
+        <div class="data-item">
+
+          <div class="data-label">
+            Sexo
+          </div>
+
+          <div class="data-value">
+            ${escapeHTML(sex)}
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    if (
+      city &&
+      showCity
+    ) {
+
+      dataHTML += `
+
+        <div class="data-item">
+
+          <div class="data-label">
+            Cidade
+          </div>
+
+          <div class="data-value">
+            📍 ${escapeHTML(city)}
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    if (birth) {
+
+      dataHTML += `
+
+        <div class="data-item">
+
+          <div class="data-label">
+            Nascimento
+          </div>
+
+          <div class="data-value">
+            ${escapeHTML(formatDate(birth))}
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
+
+    /*
+      HTML PET PERDIDO.
+    */
+
+    let lostHTML = "";
+
+
+    if (lost) {
+
+      let locationHTML = "";
+
+
+      if (lostLocation) {
+
+        locationHTML = `
+
+          <div class="lost-location">
+
+            📍 Último local informado:
+            ${escapeHTML(lostLocation)}
+
+          </div>
+
+        `;
+
+      }
+
+
+      lostHTML = `
+
+        <div class="lost-box show">
+
+          <div class="lost-title">
+
+            <div class="lost-icon">
+              🚨
+            </div>
+
+            PET PERDIDO
+
+          </div>
+
+
+          <div class="lost-message">
+
+            ${escapeHTML(lostMessage)}
+
+          </div>
+
+
+          ${locationHTML}
+
+        </div>
+
+      `;
+
+    }
+
+
+    /*
+      FOTO.
+    */
+
+    let photoHTML = "";
+
+
+    if (photo) {
+
+      photoHTML = `
+
+        <img
+          src="${escapeHTML(photo)}"
+          alt="Foto de ${escapeHTML(name)}"
+          onerror="this.parentElement.innerHTML='${getPetEmoji(species)}';"
+        >
+
+      `;
+
+    } else {
+
+      photoHTML =
+        getPetEmoji(species);
+
+    }
+
+
+    /*
+      CONTATO.
+    */
+
+    const hasWhatsApp =
+      Boolean(
+        normalizePhone(whatsapp)
+      );
+
+
+    const hasPhone =
+      Boolean(
+        normalizePhone(phone)
+      );
+
+
+    let contactButtons = "";
+
+
+    if (hasWhatsApp) {
+
+      contactButtons += `
+
+        <button
+          class="contact-button whatsapp"
+          onclick="openWhatsApp('${escapeHTML(whatsapp)}')"
+        >
+
+          💬 WhatsApp
+
+        </button>
+
+      `;
+
+    }
+
+
+    if (hasPhone) {
+
+      contactButtons += `
+
+        <button
+          class="contact-button phone-button"
+          onclick="callTutor('${escapeHTML(phone)}')"
+        >
+
+          📞 Ligar
+
+        </button>
+
+      `;
+
+    }
+
+
+    /*
+      Se não houver contato.
+    */
+
+    if (!contactButtons) {
+
+      contactButtons = `
+
+        <div
+          style="
+            grid-column:1/-1;
+            padding:13px;
+            background:#f5f9f8;
+            border-radius:11px;
+            font-size:10px;
+            color:#74878e;
+          "
+        >
+
+          O tutor ainda não disponibilizou
+          um contato público.
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =====================================================
+       RENDER
+    ===================================================== */
+
+    content.innerHTML = `
+
+      <article class="pet-card">
+
+
+        <div class="pet-cover">
+
+          <div class="pet-cover-label">
+            📡 Identificação NFC
+          </div>
+
+        </div>
+
+
+        <div class="pet-photo-wrapper">
+
+          <div class="pet-photo">
+            ${photoHTML}
+          </div>
+
+        </div>
+
+
+        <div class="pet-info">
+
+
+          <h1 class="pet-name">
+            ${escapeHTML(name)}
+          </h1>
+
+
+          <div class="pet-description">
+            ${escapeHTML(description)}
+          </div>
+
+
+          <div class="active-badge">
+
+            <span class="active-dot"></span>
+
+            TAG ATIVA
+
+          </div>
+
+
+          ${lostHTML}
+
+
+          <div class="pet-data">
+
+            ${dataHTML}
+
+          </div>
+
+
+          <div class="contact-title">
+            Encontrou este pet?
+          </div>
+
+
+          <div class="contact-description">
+
+            Você pode ajudar a família dele.
+            Entre em contato com o tutor
+            através de uma das opções abaixo.
+
+          </div>
+
+
+          <div class="contact-buttons">
+
+            ${contactButtons}
+
+          </div>
+
+
+          <div class="privacy-note">
+
+            <div class="privacy-note-icon">
+              🔐
+            </div>
+
+            <p>
+              Para proteger a privacidade do tutor,
+              o Save Tag Pet não exibe endereço,
+              documentos ou outras informações
+              pessoais nesta página.
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </article>
+
+
+      <div class="footer">
+
+        <p>
+
+          Identificação inteligente por
+
+          <strong>
+            Save Tag Pet
+          </strong>
+
+          <br>
+
+          Aproxime. Identifique. Proteja.
+
+        </p>
+
+      </div>
+
+    `;
+
+  }
+
+
+  /* =========================================================
+     FORMATAR DATA
+  ========================================================= */
+
+  function formatDate(value) {
+
+    if (!value) {
+      return "";
+    }
+
+
+    try {
+
+      const date =
+        new Date(value);
+
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return value;
+
+      }
+
+
+      return date.toLocaleDateString(
+        "pt-BR"
+      );
+
+    } catch {
+
+      return value;
+
+    }
+
+  }
+
+
+  /* =========================================================
+     INICIAR
+  ========================================================= */
+
+  loadPet();
+
+</script>
+
+
+</body>
+</html>
