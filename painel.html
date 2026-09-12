@@ -1965,6 +1965,55 @@ textarea:focus{
 
 </style>
 
+
+<style id="save-tag-photo-lightbox">
+  .stp-photo-lightbox{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    background:rgba(0,0,0,.82);
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    box-sizing:border-box;
+  }
+  .stp-photo-lightbox.is-open{display:flex;}
+  .stp-photo-lightbox img{
+    max-width:min(92vw,1100px);
+    max-height:88vh;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+    border-radius:14px;
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+    background:#fff;
+  }
+  .stp-photo-lightbox-close{
+    position:absolute;
+    top:18px;
+    right:22px;
+    width:44px;
+    height:44px;
+    border:0;
+    border-radius:50%;
+    background:rgba(255,255,255,.94);
+    color:#173b4d;
+    font-size:28px;
+    line-height:44px;
+    cursor:pointer;
+    box-shadow:0 5px 20px rgba(0,0,0,.25);
+  }
+  .stp-photo-lightbox-close:hover{transform:scale(1.04);}
+  .stp-photo-clickable{
+    cursor:zoom-in !important;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .stp-photo-clickable:hover{
+    transform:scale(1.025);
+  }
+</style>
+
 </head>
 
 
@@ -8026,6 +8075,102 @@ iniciarSupabase();
 
 </script>
 
+
+
+<!-- Visualizador de fotos ampliadas -->
+<div id="stpPhotoLightbox" class="stp-photo-lightbox" aria-hidden="true">
+  <button type="button" class="stp-photo-lightbox-close" id="stpPhotoLightboxClose" aria-label="Fechar">×</button>
+  <img id="stpPhotoLightboxImage" src="" alt="Foto ampliada do pet">
+</div>
+
+
+<script id="save-tag-photo-lightbox-script">
+(function(){
+  function abrirFotoAmpliada(url, alt){
+    if(!url) return;
+    var box = document.getElementById("stpPhotoLightbox");
+    var img = document.getElementById("stpPhotoLightboxImage");
+    if(!box || !img) return;
+
+    img.src = url;
+    img.alt = alt || "Foto ampliada do pet";
+    box.classList.add("is-open");
+    box.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function fecharFotoAmpliada(){
+    var box = document.getElementById("stpPhotoLightbox");
+    var img = document.getElementById("stpPhotoLightboxImage");
+    if(!box) return;
+
+    box.classList.remove("is-open");
+    box.setAttribute("aria-hidden","true");
+    if(img) img.src = "";
+    document.body.style.overflow = "";
+  }
+
+  function prepararFotos(){
+    document.querySelectorAll("img").forEach(function(img){
+      if(img.dataset.stpLightbox === "1") return;
+
+      var src = img.currentSrc || img.src;
+      if(!src) return;
+
+      // Não tornar logos/ícones pequenos clicáveis.
+      var w = img.naturalWidth || img.width || 0;
+      var h = img.naturalHeight || img.height || 0;
+      if(w < 100 && h < 100) return;
+
+      // Fotos do pet: imagens dentro da área de cards/listagens,
+      // além das miniaturas do bloco "Fotos do pet".
+      var texto = "";
+      var p = img.parentElement;
+      for(var i=0; i<4 && p; i++, p=p.parentElement){
+        texto += " " + (p.innerText || "");
+      }
+
+      var pareceFotoPet =
+        /Fotos do pet|pet protegido|pet perdido|Editar|Athena/i.test(texto) ||
+        img.classList.contains("pet-photo") ||
+        img.closest(".pet-card,.pet-item,.pet-profile,.pet-card-photo,.foto-pet");
+
+      if(!pareceFotoPet) return;
+
+      img.dataset.stpLightbox = "1";
+      img.classList.add("stp-photo-clickable");
+      img.title = "Clique para ampliar";
+      img.addEventListener("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        abrirFotoAmpliada(img.currentSrc || img.src, img.alt);
+      });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    prepararFotos();
+
+    var observer = new MutationObserver(function(){
+      prepararFotos();
+    });
+    observer.observe(document.body, {childList:true, subtree:true});
+
+    var close = document.getElementById("stpPhotoLightboxClose");
+    var box = document.getElementById("stpPhotoLightbox");
+
+    if(close) close.addEventListener("click", fecharFotoAmpliada);
+
+    if(box) box.addEventListener("click", function(e){
+      if(e.target === box) fecharFotoAmpliada();
+    });
+
+    document.addEventListener("keydown", function(e){
+      if(e.key === "Escape") fecharFotoAmpliada();
+    });
+  });
+})();
+</script>
 
 </body>
 
