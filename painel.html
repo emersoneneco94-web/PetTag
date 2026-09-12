@@ -5,362 +5,1925 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-<title>Save Tag Pet | Minha Conta</title>
+<title>Save Tag Pet | Área do Tutor</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+>
+
+<link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+>
+
+
 <style>
 
+/* =========================================================
+   RESET
+========================================================= */
+
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#f4f7f5;
-  color:#172b2f;
+    margin:0;
+    font-family:"Nunito",Arial,sans-serif;
+    background:#f5f9f8;
+    color:#183944;
 }
 
-header{
-  background:#071b2b;
-  color:white;
-  padding:18px 20px;
+button,
+input,
+select,
+textarea{
+    font-family:inherit;
 }
 
-.header-inner{
-  max-width:1100px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
+button{
+    cursor:pointer;
 }
 
-.logo{
-  font-size:24px;
-  font-weight:800;
+a{
+    text-decoration:none;
+    color:inherit;
 }
 
-.logo span{
-  color:#48c98b;
+.hidden{
+    display:none !important;
 }
 
-.header-user{
-  font-size:14px;
-  opacity:.9;
+
+/* =========================================================
+   CORES
+========================================================= */
+
+:root{
+
+    --azul:#092f45;
+    --azul2:#123f59;
+
+    --verde:#0ca875;
+    --verde2:#18b987;
+
+    --verde-claro:#e5f8f1;
+
+    --azul-claro:#eaf4fa;
+
+    --fundo:#f5f9f8;
+
+    --branco:#ffffff;
+
+    --texto:#183944;
+
+    --texto2:#667b82;
+
+    --borda:#e2ebe8;
+
+    --vermelho:#e05252;
+
+    --amarelo:#f2ae28;
 }
 
-.container{
-  max-width:1100px;
-  margin:30px auto;
-  padding:0 16px;
+
+/* =========================================================
+   LAYOUT PRINCIPAL
+========================================================= */
+
+.app{
+
+    min-height:100vh;
+
+    display:flex;
 }
 
-h1{
-  margin:0 0 8px;
-  font-size:30px;
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar{
+
+    width:255px;
+
+    background:#082f43;
+
+    color:white;
+
+    min-height:100vh;
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    bottom:0;
+
+    z-index:100;
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:22px 15px;
 }
 
-.subtitle{
-  color:#66777b;
-  margin-bottom:25px;
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:5px 10px 27px;
+
+    border-bottom:1px solid rgba(255,255,255,.1);
 }
+
+.brand-icon{
+
+    width:43px;
+
+    height:43px;
+
+    background:white;
+
+    color:#0ca875;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+}
+
+.brand-name{
+
+    font-size:21px;
+
+    line-height:1;
+
+    font-weight:900;
+}
+
+.brand-name span{
+
+    color:#39c99e;
+}
+
+.brand-sub{
+
+    margin-top:4px;
+
+    font-size:9px;
+
+    color:#b8d0d5;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+}
+
+
+/* MENU */
+
+.sidebar-menu{
+
+    margin-top:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+}
+
+.menu-item{
+
+    border:0;
+
+    width:100%;
+
+    background:transparent;
+
+    color:#b8ccd1;
+
+    padding:12px 13px;
+
+    border-radius:12px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    transition:.2s;
+}
+
+.menu-item:hover{
+
+    background:rgba(255,255,255,.08);
+
+    color:white;
+}
+
+.menu-item.active{
+
+    background:#0ca875;
+
+    color:white;
+
+    box-shadow:0 7px 18px rgba(12,168,117,.2);
+}
+
+.menu-icon{
+
+    width:23px;
+
+    text-align:center;
+
+    font-size:18px;
+}
+
+
+/* SIDEBAR BOTTOM */
+
+.sidebar-bottom{
+
+    margin-top:auto;
+}
+
+.plan-mini{
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.1);
+
+    border-radius:15px;
+
+    padding:15px;
+
+    margin-bottom:12px;
+}
+
+.plan-mini-title{
+
+    font-size:11px;
+
+    color:#a8c4ca;
+
+    font-weight:700;
+}
+
+.plan-mini-name{
+
+    font-size:15px;
+
+    font-weight:900;
+
+    margin-top:3px;
+}
+
+.plan-mini a{
+
+    display:block;
+
+    margin-top:10px;
+
+    background:#fff;
+
+    color:#0a604f;
+
+    padding:8px;
+
+    text-align:center;
+
+    border-radius:9px;
+
+    font-size:11px;
+
+    font-weight:900;
+}
+
+.sidebar-link{
+
+    display:block;
+
+    padding:9px 12px;
+
+    color:#a8c4ca;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.sidebar-link:hover{
+
+    color:white;
+}
+
+
+/* =========================================================
+   CONTEÚDO
+========================================================= */
+
+.main{
+
+    margin-left:255px;
+
+    width:calc(100% - 255px);
+
+    min-height:100vh;
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.topbar{
+
+    height:76px;
+
+    background:white;
+
+    border-bottom:1px solid var(--borda);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:50;
+}
+
+.mobile-menu{
+
+    display:none;
+
+    width:42px;
+
+    height:42px;
+
+    border:1px solid var(--borda);
+
+    background:white;
+
+    border-radius:11px;
+
+    font-size:21px;
+
+    color:var(--azul);
+}
+
+.topbar-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.topbar-title strong{
+
+    font-size:18px;
+
+    color:var(--azul);
+}
+
+.topbar-title span{
+
+    color:#70858b;
+
+    font-size:13px;
+}
+
+.user-area{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+}
+
+.user-avatar{
+
+    width:39px;
+
+    height:39px;
+
+    border-radius:50%;
+
+    background:#e1f6ef;
+
+    color:#078c61;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:900;
+}
+
+.user-info{
+
+    text-align:right;
+}
+
+.user-info strong{
+
+    display:block;
+
+    color:var(--azul);
+
+    font-size:13px;
+}
+
+.user-info span{
+
+    color:#789096;
+
+    font-size:10px;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.content{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:30px;
+}
+
+
+/* =========================================================
+   SEÇÕES
+========================================================= */
+
+.page-section{
+
+    display:none;
+}
+
+.page-section.active{
+
+    display:block;
+}
+
+
+/* =========================================================
+   TÍTULOS
+========================================================= */
+
+.page-title{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    margin-bottom:25px;
+}
+
+.page-title h1{
+
+    margin:0;
+
+    color:var(--azul);
+
+    font-size:31px;
+
+    line-height:1;
+
+    font-weight:900;
+}
+
+.page-title p{
+
+    margin:8px 0 0;
+
+    color:var(--texto2);
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   ALERTA
+========================================================= */
+
+.message{
+
+    display:none;
+
+    padding:13px 16px;
+
+    border-radius:12px;
+
+    margin-bottom:20px;
+
+    font-size:13px;
+
+    font-weight:700;
+}
+
+.message.success{
+
+    display:block;
+
+    background:#e6f8f0;
+
+    color:#14784e;
+}
+
+.message.error{
+
+    display:block;
+
+    background:#ffebeb;
+
+    color:#b52f2f;
+}
+
+.message.info{
+
+    display:block;
+
+    background:#edf6fa;
+
+    color:#2a5968;
+}
+
+
+/* =========================================================
+   DASHBOARD CARDS
+========================================================= */
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:16px;
+
+    margin-bottom:22px;
+}
+
+.stat-card{
+
+    background:white;
+
+    border:1px solid var(--borda);
+
+    border-radius:17px;
+
+    padding:19px;
+
+    box-shadow:0 5px 18px rgba(9,47,69,.04);
+}
+
+.stat-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+}
+
+.stat-icon{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:13px;
+
+    background:#e6f7f1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:20px;
+}
+
+.stat-label{
+
+    color:#75898e;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    margin-top:13px;
+}
+
+.stat-value{
+
+    color:var(--azul);
+
+    font-size:24px;
+
+    font-weight:900;
+
+    margin-top:2px;
+}
+
+
+/* =========================================================
+   CARD PADRÃO
+========================================================= */
 
 .card{
-  background:white;
-  border-radius:18px;
-  padding:24px;
-  margin-bottom:20px;
-  box-shadow:0 5px 20px rgba(0,0,0,.06);
+
+    background:white;
+
+    border:1px solid var(--borda);
+
+    border-radius:19px;
+
+    padding:23px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 6px 20px rgba(9,47,69,.04);
 }
 
-.card h2{
-  margin-top:0;
-  color:#071b2b;
+.card-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin-bottom:18px;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
+.card-header h2{
+
+    margin:0;
+
+    color:var(--azul);
+
+    font-size:19px;
+
+    font-weight:900;
 }
 
-.grid-3{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
+.card-header p{
+
+    margin:3px 0 0;
+
+    color:#74888e;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.btn{
+
+    border:0;
+
+    border-radius:10px;
+
+    padding:11px 16px;
+
+    font-size:13px;
+
+    font-weight:900;
+
+    transition:.2s;
+}
+
+.btn-primary{
+
+    background:var(--verde);
+
+    color:white;
+
+    box-shadow:0 6px 15px rgba(12,168,117,.17);
+}
+
+.btn-primary:hover{
+
+    background:#078d63;
+
+    transform:translateY(-1px);
+}
+
+.btn-secondary{
+
+    background:#eaf2f1;
+
+    color:#244652;
+}
+
+.btn-secondary:hover{
+
+    background:#dfeae7;
+}
+
+.btn-danger{
+
+    background:#ffe9e9;
+
+    color:#b52f2f;
+}
+
+.btn-dark{
+
+    background:var(--azul);
+
+    color:white;
+}
+
+.btn-small{
+
+    padding:8px 11px;
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   PET DESTAQUE
+========================================================= */
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:1.35fr .65fr;
+
+    gap:20px;
+}
+
+.pet-main{
+
+    background:white;
+
+    border:1px solid var(--borda);
+
+    border-radius:21px;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 25px rgba(9,47,69,.05);
+}
+
+.pet-main-top{
+
+    padding:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+}
+
+.pet-avatar{
+
+    width:100px;
+
+    height:100px;
+
+    border-radius:24px;
+
+    object-fit:cover;
+
+    background:#e7f4f0;
+
+    border:4px solid #edf8f5;
+
+}
+
+.pet-avatar-placeholder{
+
+    width:100px;
+
+    height:100px;
+
+    border-radius:24px;
+
+    background:#e7f4f0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:43px;
+}
+
+.pet-main-name{
+
+    font-size:27px;
+
+    color:var(--azul);
+
+    font-weight:900;
+}
+
+.pet-main-meta{
+
+    color:#667b82;
+
+    font-size:13px;
+
+    margin-top:3px;
+}
+
+.pet-status{
+
+    display:inline-flex;
+
+    margin-top:10px;
+
+    padding:6px 10px;
+
+    border-radius:20px;
+
+    background:#e5f8f0;
+
+    color:#147b50;
+
+    font-size:10px;
+
+    font-weight:900;
+}
+
+.pet-status.lost{
+
+    background:#ffe8e8;
+
+    color:#b72f2f;
+}
+
+.pet-main-actions{
+
+    display:flex;
+
+    gap:9px;
+
+    flex-wrap:wrap;
+
+    padding:0 22px 22px;
+}
+
+.pet-main-actions .btn{
+
+    flex:1;
+}
+
+
+/* =========================================================
+   RESUMO LATERAL
+========================================================= */
+
+.quick-card{
+
+    background:white;
+
+    border:1px solid var(--borda);
+
+    border-radius:21px;
+
+    padding:23px;
+
+    box-shadow:0 8px 25px rgba(9,47,69,.05);
+}
+
+.quick-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:13px 0;
+
+    border-bottom:1px solid #edf1f0;
+}
+
+.quick-item:last-child{
+
+    border-bottom:0;
+}
+
+.quick-item-icon{
+
+    width:39px;
+
+    height:39px;
+
+    border-radius:12px;
+
+    background:#edf7f5;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:18px;
+}
+
+.quick-item strong{
+
+    display:block;
+
+    color:var(--azul);
+
+    font-size:13px;
+}
+
+.quick-item span{
+
+    display:block;
+
+    color:#788b91;
+
+    font-size:11px;
+
+    margin-top:2px;
+}
+
+
+/* =========================================================
+   PET LIST
+========================================================= */
+
+.pet-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:17px;
+}
+
+.pet-card{
+
+    border:1px solid var(--borda);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    background:#fff;
+
+    transition:.2s;
+}
+
+.pet-card:hover{
+
+    box-shadow:0 10px 25px rgba(9,47,69,.08);
+
+    transform:translateY(-2px);
+}
+
+.pet-card-head{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+}
+
+.pet-card-photo{
+
+    width:67px;
+
+    height:67px;
+
+    object-fit:cover;
+
+    border-radius:17px;
+
+    background:#e8f5f1;
+}
+
+.pet-card-photo-placeholder{
+
+    width:67px;
+
+    height:67px;
+
+    border-radius:17px;
+
+    background:#e8f5f1;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:29px;
+}
+
+.pet-card h3{
+
+    margin:0;
+
+    color:var(--azul);
+
+    font-size:19px;
+
+    font-weight:900;
+}
+
+.pet-card-meta{
+
+    color:#74878d;
+
+    font-size:11px;
+
+    margin-top:3px;
+}
+
+.pet-card-tag{
+
+    margin-top:13px;
+
+    background:#edf8f4;
+
+    color:#157950;
+
+    padding:8px 10px;
+
+    border-radius:10px;
+
+    font-size:10px;
+
+    font-weight:900;
+}
+
+.pet-card-tag.lost{
+
+    background:#fff0f0;
+
+    color:#b52f2f;
+}
+
+.pet-card-actions{
+
+    display:flex;
+
+    gap:7px;
+
+    margin-top:13px;
+
+    flex-wrap:wrap;
+}
+
+
+/* =========================================================
+   FORMULÁRIOS
+========================================================= */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:15px;
+}
+
+.form-grid-3{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:15px;
 }
 
 .field{
-  margin-bottom:15px;
+
+    margin-bottom:4px;
 }
 
 .field label{
-  display:block;
-  font-weight:700;
-  margin-bottom:7px;
-  font-size:14px;
+
+    display:block;
+
+    color:#36545f;
+
+    font-size:12px;
+
+    font-weight:900;
+
+    margin-bottom:6px;
 }
 
 input,
 select,
 textarea{
-  width:100%;
-  padding:13px;
-  border:1px solid #d8e0df;
-  border-radius:10px;
-  font-size:15px;
-  outline:none;
-  background:white;
+
+    width:100%;
+
+    border:1px solid #dbe5e2;
+
+    border-radius:10px;
+
+    padding:11px 12px;
+
+    font-size:13px;
+
+    color:#193944;
+
+    background:white;
+
+    outline:none;
 }
 
 textarea{
-  min-height:100px;
-  resize:vertical;
+
+    min-height:105px;
+
+    resize:vertical;
 }
 
 input:focus,
 select:focus,
 textarea:focus{
-  border-color:#48c98b;
+
+    border-color:#45c698;
+
+    box-shadow:0 0 0 3px rgba(12,168,117,.08);
 }
 
-button{
-  border:0;
-  border-radius:10px;
-  padding:13px 18px;
-  font-weight:700;
-  cursor:pointer;
-  font-size:14px;
-}
+.form-actions{
 
-button:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
+    display:flex;
 
-.btn-primary{
-  background:#18a86b;
-  color:white;
-}
+    gap:10px;
 
-.btn-primary:hover{
-  background:#128b59;
-}
-
-.btn-secondary{
-  background:#e9f1ef;
-  color:#173337;
-}
-
-.btn-danger{
-  background:#e05252;
-  color:white;
-}
-
-.btn-dark{
-  background:#071b2b;
-  color:white;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-
-.pet-list{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:15px;
-}
-
-.pet-item{
-  border:1px solid #e0e8e6;
-  border-radius:14px;
-  padding:18px;
-}
-
-.pet-item h3{
-  margin:0 0 7px;
-}
-
-.pet-meta{
-  color:#66777b;
-  font-size:14px;
-  line-height:1.6;
-}
-
-.status{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#e7f7ef;
-  color:#118557;
-  font-size:12px;
-  font-weight:700;
-  margin-top:8px;
-}
-
-.status-lost{
-  background:#ffe8e8;
-  color:#c52f2f;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.message{
-  padding:13px 15px;
-  border-radius:10px;
-  margin-bottom:18px;
-  display:none;
-}
-
-.message.success{
-  display:block;
-  background:#e8f8ef;
-  color:#137548;
-}
-
-.message.error{
-  display:block;
-  background:#ffe8e8;
-  color:#b92c2c;
-}
-
-.message.info{
-  display:block;
-  background:#eef5f7;
-  color:#28545d;
-}
-
-.vaccine-row,
-.health-row{
-  border:1px solid #e1e8e6;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:10px;
-}
-
-.row-title{
-  font-weight:700;
-  margin-bottom:5px;
-}
-
-.small{
-  font-size:13px;
-  color:#66777b;
-}
-
-hr{
-  border:0;
-  border-top:1px solid #e5ebe9;
-  margin:25px 0;
-}
-
-.loading{
-  text-align:center;
-  padding:40px;
-  color:#66777b;
-}
-
-.top-actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-bottom:20px;
+    margin-top:20px;
 }
 
 
-/* =========================================
-   ATIVAÇÃO DA TAG
-========================================= */
+/* =========================================================
+   TAG
+========================================================= */
 
-.tag-activation{
-  background:#e8f8ef;
-  border:2px solid #48c98b;
-  border-radius:16px;
-  padding:18px 20px;
-  margin-bottom:20px;
+.tag-box{
+
+    background:linear-gradient(120deg,#e7f8f1,#f4fbf9);
+
+    border:1px solid #cfeee3;
+
+    border-radius:18px;
+
+    padding:19px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
 }
 
-.tag-activation-title{
-  color:#137548;
-  font-size:19px;
-  font-weight:800;
-  margin-bottom:7px;
+.tag-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
 }
 
-.tag-activation-text{
-  color:#3f5d50;
-  line-height:1.5;
-  font-size:14px;
+.tag-icon{
+
+    width:58px;
+
+    height:58px;
+
+    border-radius:18px;
+
+    background:#0b5574;
+
+    border:4px solid #d8f0e9;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:25px;
 }
 
 .tag-code{
-  display:inline-block;
-  background:white;
-  color:#071b2b;
-  font-weight:800;
-  padding:7px 12px;
-  border-radius:8px;
-  margin-top:9px;
-  letter-spacing:1px;
+
+    font-size:16px;
+
+    color:var(--azul);
+
+    font-weight:900;
+
+    letter-spacing:1px;
 }
 
+.tag-label{
 
-/* =========================================
-   TAG ATIVADA
-========================================= */
+    color:#6c8288;
+
+    font-size:11px;
+
+    margin-top:3px;
+}
 
 .tag-active{
-  background:#e8f8ef;
-  border:2px solid #48c98b;
-  border-radius:16px;
-  padding:18px 20px;
-  margin-bottom:20px;
-}
 
-.tag-active-title{
-  color:#137548;
-  font-size:19px;
-  font-weight:800;
-  margin-bottom:6px;
-}
+    background:#d9f5e9;
 
-.tag-active-text{
-  color:#3f5d50;
-  line-height:1.5;
-  font-size:14px;
+    color:#147a4f;
+
+    border-radius:20px;
+
+    padding:7px 11px;
+
+    font-size:10px;
+
+    font-weight:900;
 }
 
 
-@media(max-width:700px){
+/* =========================================================
+   TABELAS
+========================================================= */
 
-  .grid,
-  .grid-3,
-  .pet-list{
-    grid-template-columns:1fr;
-  }
+.data-row{
 
-  .header-inner{
+    border:1px solid var(--borda);
+
+    border-radius:14px;
+
+    padding:14px;
+
+    margin-bottom:10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+}
+
+.data-main strong{
+
+    display:block;
+
+    color:var(--azul);
+
+    font-size:13px;
+}
+
+.data-main span{
+
+    display:block;
+
+    color:#72868c;
+
+    font-size:11px;
+
+    margin-top:3px;
+}
+
+.data-actions{
+
+    display:flex;
+
+    gap:6px;
+
+    flex-shrink:0;
+}
+
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+.alert-list{
+
+    display:grid;
+
+    gap:10px;
+}
+
+.alert-item{
+
+    display:flex;
+
     align-items:flex-start;
-    flex-direction:column;
-  }
 
-  h1{
-    font-size:25px;
-  }
+    gap:13px;
 
-  .card{
-    padding:18px;
-  }
+    padding:15px;
+
+    border-radius:14px;
+
+    border:1px solid var(--borda);
+
+    background:white;
+}
+
+.alert-item.warn{
+
+    background:#fffaf0;
+
+    border-color:#f5dfaa;
+}
+
+.alert-item.bad{
+
+    background:#fff1f1;
+
+    border-color:#f1caca;
+}
+
+.alert-item.good{
+
+    background:#effaf5;
+
+    border-color:#d3eee1;
+}
+
+.alert-icon{
+
+    width:37px;
+
+    height:37px;
+
+    border-radius:11px;
+
+    background:#edf5f3;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:18px;
+
+    flex-shrink:0;
+}
+
+.alert-item strong{
+
+    display:block;
+
+    color:var(--azul);
+
+    font-size:13px;
+}
+
+.alert-item span{
+
+    display:block;
+
+    color:#6d8187;
+
+    font-size:11px;
+
+    margin-top:3px;
+}
+
+
+/* =========================================================
+   PRIVACIDADE
+========================================================= */
+
+.privacy-list{
+
+    display:grid;
+
+    gap:12px;
+}
+
+.privacy-row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    padding:15px;
+
+    border:1px solid var(--borda);
+
+    border-radius:14px;
+}
+
+.privacy-row strong{
+
+    display:block;
+
+    color:var(--azul);
+
+    font-size:13px;
+}
+
+.privacy-row span{
+
+    display:block;
+
+    color:#73878c;
+
+    font-size:11px;
+
+    margin-top:3px;
+}
+
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
+.switch{
+
+    width:46px;
+
+    height:26px;
+
+    border-radius:20px;
+
+    background:#ccd9d6;
+
+    border:0;
+
+    position:relative;
+
+    flex-shrink:0;
+}
+
+.switch::after{
+
+    content:"";
+
+    width:20px;
+
+    height:20px;
+
+    border-radius:50%;
+
+    background:white;
+
+    position:absolute;
+
+    top:3px;
+
+    left:3px;
+
+    transition:.2s;
+
+    box-shadow:0 2px 5px rgba(0,0,0,.15);
+}
+
+.switch.on{
+
+    background:var(--verde);
+}
+
+.switch.on::after{
+
+    left:23px;
+}
+
+
+/* =========================================================
+   PERDIDO
+========================================================= */
+
+.lost-box{
+
+    background:#fff3f3;
+
+    border:1px solid #f2cccc;
+
+    border-radius:18px;
+
+    padding:21px;
+}
+
+.lost-box h3{
+
+    margin:0;
+
+    color:#a72c2c;
+
+    font-size:19px;
+
+    font-weight:900;
+}
+
+.lost-box p{
+
+    color:#7e6262;
+
+    font-size:12px;
+
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(4,26,36,.65);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:500;
+
+    padding:20px;
+}
+
+.modal.show{
+
+    display:flex;
+}
+
+.modal-box{
+
+    background:white;
+
+    width:100%;
+
+    max-width:760px;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    border-radius:22px;
+
+    padding:25px;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
+
+.modal-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+
+    margin:0;
+
+    color:var(--azul);
+
+    font-size:22px;
+
+    font-weight:900;
+}
+
+.close{
+
+    border:0;
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:10px;
+
+    background:#eef3f2;
+
+    font-size:19px;
+
+    color:#34515c;
+}
+
+
+/* =========================================================
+   FOTOS
+========================================================= */
+
+.photo-preview{
+
+    width:110px;
+
+    height:110px;
+
+    border-radius:17px;
+
+    object-fit:cover;
+
+    margin-top:10px;
+
+    border:4px solid #edf7f4;
+}
+
+.photo-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:9px;
+
+    margin-top:12px;
+}
+
+.photo-grid img{
+
+    width:100%;
+
+    aspect-ratio:1;
+
+    object-fit:cover;
+
+    border-radius:12px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+
+    text-align:center;
+
+    padding:45px 20px;
+
+    color:#71858b;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+========================================================= */
+
+@media(max-width:1100px){
+
+    .sidebar{
+
+        width:225px;
+    }
+
+    .main{
+
+        margin-left:225px;
+
+        width:calc(100% - 225px);
+    }
+
+    .stats{
+
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .dashboard-grid{
+
+        grid-template-columns:1fr;
+    }
+}
+
+
+@media(max-width:850px){
+
+    .sidebar{
+
+        transform:translateX(-100%);
+
+        transition:.25s;
+    }
+
+    .sidebar.open{
+
+        transform:translateX(0);
+    }
+
+    .main{
+
+        margin-left:0;
+
+        width:100%;
+    }
+
+    .mobile-menu{
+
+        display:block;
+    }
+
+    .topbar{
+
+        padding:0 17px;
+    }
+
+    .content{
+
+        padding:20px 15px;
+    }
+
+    .user-info{
+
+        display:none;
+    }
+
+    .form-grid-3{
+
+        grid-template-columns:1fr 1fr;
+    }
+
+    .pet-grid{
+
+        grid-template-columns:1fr;
+    }
+}
+
+
+@media(max-width:600px){
+
+    .topbar-title span{
+
+        display:none;
+    }
+
+    .page-title{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .page-title h1{
+
+        font-size:26px;
+    }
+
+    .stats{
+
+        grid-template-columns:1fr 1fr;
+
+        gap:10px;
+    }
+
+    .stat-card{
+
+        padding:15px;
+    }
+
+    .stat-value{
+
+        font-size:21px;
+    }
+
+    .card{
+
+        padding:17px;
+    }
+
+    .form-grid,
+    .form-grid-3{
+
+        grid-template-columns:1fr;
+    }
+
+    .pet-main-top{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .pet-main-actions{
+
+        flex-direction:column;
+    }
+
+    .tag-box{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .data-row{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .data-actions{
+
+        width:100%;
+    }
+
+    .data-actions .btn{
+
+        flex:1;
+    }
+
+    .photo-grid{
+
+        grid-template-columns:repeat(3,1fr);
+    }
 
 }
 
@@ -372,857 +1935,1937 @@ hr{
 <body>
 
 
-<header>
+<div class="app">
 
-  <div class="header-inner">
 
-    <div class="logo">
-      Save <span>Tag</span> Pet
-    </div>
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
 
-    <div
-      class="header-user"
-      id="usuarioHeader"
-    >
-      Carregando...
-    </div>
-
-  </div>
-
-</header>
-
-
-<div class="container">
-
-
-  <div class="top-actions">
-
-    <button
-      class="btn-secondary"
-      onclick="voltarSite()"
-    >
-      ← Voltar ao site
-    </button>
-
-    <button
-      class="btn-danger"
-      onclick="sair()"
-    >
-      Sair
-    </button>
-
-  </div>
-
-
-  <h1>
-    Minha conta
-  </h1>
-
-
-  <div class="subtitle">
-    Gerencie seus dados e as informações dos seus pets.
-  </div>
-
-
-  <div
-    id="mensagem"
-    class="message"
-  ></div>
-
-
-  <!-- =====================================
-       ATIVAÇÃO DA TAG
-  ====================================== -->
-
-  <div
-    id="tagActivation"
-    class="tag-activation hidden"
-  >
-
-    <div class="tag-activation-title">
-      🐾 Ative sua TAG
-    </div>
-
-    <div class="tag-activation-text">
-
-      Encontramos uma TAG pronta para ser vinculada
-      ao seu pet.
-
-      <br>
-
-      Cadastre seu pet abaixo e, ao salvar,
-      a TAG será vinculada automaticamente.
-
-      <div
-        id="tagCode"
-        class="tag-code"
-      >
-        TAG
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================
-       TAG ATIVADA
-  ====================================== -->
-
-  <div
-    id="tagActive"
-    class="tag-active hidden"
-  >
-
-    <div class="tag-active-title">
-      ✅ TAG ativada com sucesso!
-    </div>
-
-    <div class="tag-active-text">
-      Sua TAG está vinculada ao pet e já pode ser utilizada
-      para identificação.
-    </div>
-
-  </div>
-
-
-  <!-- =====================================
-       DADOS DO TUTOR
-  ====================================== -->
-
-  <div class="card">
-
-    <h2>
-      👤 Meus dados
-    </h2>
-
-
-    <div class="grid">
-
-
-      <div class="field">
-
-        <label>
-          Nome
-        </label>
-
-        <input
-          id="tutorNome"
-          type="text"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          E-mail
-        </label>
-
-        <input
-          id="tutorEmail"
-          type="email"
-          disabled
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Telefone / WhatsApp
-        </label>
-
-        <input
-          id="tutorTelefone"
-          type="text"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Cidade
-        </label>
-
-        <input
-          id="tutorCidade"
-          type="text"
-        >
-
-      </div>
-
-
-    </div>
-
-
-    <button
-      class="btn-primary"
-      onclick="salvarTutor()"
-    >
-      Salvar meus dados
-    </button>
-
-  </div>
-
-
-  <!-- =====================================
-       PETS
-  ====================================== -->
-
-  <div class="card">
-
-    <h2>
-      🐶 Meus pets
-    </h2>
-
-
-    <div
-      id="listaPets"
-      class="pet-list"
-    >
-
-      <div class="loading">
-        Carregando seus pets...
-      </div>
-
-    </div>
-
-
-    <hr>
-
-
-    <button
-      class="btn-primary"
-      onclick="novoPet()"
-    >
-      + Cadastrar novo pet
-    </button>
-
-  </div>
-
-
-  <!-- =====================================
-       EDITOR PET
-  ====================================== -->
-
-  <div
-    id="editorPet"
-    class="card hidden"
-  >
-
-    <h2 id="tituloEditor">
-      🐾 Cadastrar pet
-    </h2>
-
-
-    <input
-     <input
-  type="hidden"
-  id="petId"
+<aside
+    id="sidebar"
+    class="sidebar"
 >
 
-<div class="field">
 
-  <label>
-    Foto do pet
-  </label>
+    <div class="brand">
 
-  <input
-    type="file"
-    id="petFoto"
-    accept="image/jpeg,image/png,image/webp"
-  >
+        <div class="brand-icon">
+            🐾
+        </div>
 
-  <small
-    style="
-      display:block;
-      margin-top:6px;
-      color:#66777b;
-    "
-  >
-    Escolha uma foto do seu pet.
-  </small>
+        <div>
 
-  <img
-    id="previewPetFoto"
-    src=""
-    alt="Prévia da foto"
-    style="
-      display:none;
-      width:140px;
-      height:140px;
-      object-fit:cover;
-      border-radius:16px;
-      margin-top:10px;
-    "
-  >
+            <div class="brand-name">
+                Save <span>Tag</span> Pet
+            </div>
+
+            <div class="brand-sub">
+                IDENTIFICAÇÃO INTELIGENTE
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-menu">
+
+
+        <button
+            class="menu-item active"
+            data-section="inicio"
+            onclick="mostrarSecao('inicio',this)"
+        >
+
+            <span class="menu-icon">🏠</span>
+
+            Visão geral
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="pets"
+            onclick="mostrarSecao('pets',this)"
+        >
+
+            <span class="menu-icon">🐾</span>
+
+            Meus pets
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="vacinas"
+            onclick="mostrarSecao('vacinas',this)"
+        >
+
+            <span class="menu-icon">💉</span>
+
+            Vacinas
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="saude"
+            onclick="mostrarSecao('saude',this)"
+        >
+
+            <span class="menu-icon">🩺</span>
+
+            Registro de saúde
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="eventos"
+            onclick="mostrarSecao('eventos',this)"
+        >
+
+            <span class="menu-icon">📅</span>
+
+            Consultas e exames
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="alertas"
+            onclick="mostrarSecao('alertas',this)"
+        >
+
+            <span class="menu-icon">🔔</span>
+
+            Central de alertas
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="privacidade"
+            onclick="mostrarSecao('privacidade',this)"
+        >
+
+            <span class="menu-icon">🔐</span>
+
+            Privacidade
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            data-section="conta"
+            onclick="mostrarSecao('conta',this)"
+        >
+
+            <span class="menu-icon">👤</span>
+
+            Minha conta
+
+        </button>
+
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+
+        <div class="plan-mini">
+
+            <div class="plan-mini-title">
+                PLANO ATUAL
+            </div>
+
+            <div
+                id="planoAtual"
+                class="plan-mini-name"
+            >
+                TAG Avulsa
+            </div>
+
+            <a href="index.html#planos">
+                Ver planos
+            </a>
+
+        </div>
+
+
+        <a
+            href="index.html"
+            class="sidebar-link"
+        >
+            ← Voltar ao site
+        </a>
+
+
+        <a
+            href="#"
+            onclick="sair();return false;"
+            class="sidebar-link"
+        >
+            ↪ Sair da conta
+        </a>
+
+
+    </div>
+
+
+</aside>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+
+        <div class="topbar-title">
+
+            <button
+                class="mobile-menu"
+                onclick="abrirSidebar()"
+            >
+                ☰
+            </button>
+
+            <div>
+
+                <strong>
+                    Área do Tutor
+                </strong>
+
+                <span>
+                    / Save Tag Pet
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="user-area">
+
+            <div class="user-info">
+
+                <strong id="nomeTopbar">
+                    Carregando...
+                </strong>
+
+                <span>
+                    Tutor
+                </span>
+
+            </div>
+
+            <div
+                id="avatarTopbar"
+                class="user-avatar"
+            >
+                👤
+            </div>
+
+        </div>
+
+
+    </header>
+
+
+    <div class="content">
+
+
+        <div
+            id="mensagem"
+            class="message"
+        ></div>
+
+
+        <!-- =================================================
+             INÍCIO
+        ================================================== -->
+
+        <section
+            id="section-inicio"
+            class="page-section active"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Olá, <span id="nomeSaudacao">Tutor</span>! 👋
+                    </h1>
+
+                    <p>
+                        Aqui você acompanha tudo sobre seus pets.
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="novoPet()"
+                >
+                    + Cadastrar pet
+                </button>
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            🐾
+                        </div>
+
+                    </div>
+
+                    <div class="stat-label">
+                        PETS CADASTRADOS
+                    </div>
+
+                    <div
+                        id="statPets"
+                        class="stat-value"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            🏷️
+                        </div>
+
+                    </div>
+
+                    <div class="stat-label">
+                        TAGS ATIVAS
+                    </div>
+
+                    <div
+                        id="statTags"
+                        class="stat-value"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            💉
+                        </div>
+
+                    </div>
+
+                    <div class="stat-label">
+                        VACINAS CADASTRADAS
+                    </div>
+
+                    <div
+                        id="statVacinas"
+                        class="stat-value"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+
+                        <div class="stat-icon">
+                            🔔
+                        </div>
+
+                    </div>
+
+                    <div class="stat-label">
+                        ALERTAS
+                    </div>
+
+                    <div
+                        id="statAlertas"
+                        class="stat-value"
+                    >
+                        0
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+
+                <!-- PET PRINCIPAL -->
+
+                <div
+                    id="petPrincipal"
+                    class="pet-main"
+                >
+
+                    <div class="loading">
+                        Carregando seus pets...
+                    </div>
+
+                </div>
+
+
+                <!-- RESUMO -->
+
+                <div class="quick-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <h2>
+                                Resumo
+                            </h2>
+
+                            <p>
+                                Acompanhe os principais cuidados.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-item">
+
+                        <div class="quick-item-icon">
+                            💉
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Vacinação
+                            </strong>
+
+                            <span id="resumoVacina">
+                                Carregando...
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-item">
+
+                        <div class="quick-item-icon">
+                            🩺
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Histórico de saúde
+                            </strong>
+
+                            <span id="resumoSaude">
+                                Carregando...
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-item">
+
+                        <div class="quick-item-icon">
+                            🏷️
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                TAG
+                            </strong>
+
+                            <span id="resumoTag">
+                                Carregando...
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-item">
+
+                        <div class="quick-item-icon">
+                            🔐
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Privacidade
+                            </strong>
+
+                            <span>
+                                Controle suas informações.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- TAG -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            🏷️ Minha TAG
+                        </h2>
+
+                        <p>
+                            Identificação do seu pet.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="btn btn-secondary btn-small"
+                        onclick="mostrarSecao('pets')"
+                    >
+                        Gerenciar
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="tagDashboard"
+                    class="tag-box"
+                >
+
+                    <div class="tag-left">
+
+                        <div class="tag-icon">
+                            🐾
+                        </div>
+
+                        <div>
+
+                            <div
+                                id="tagDashboardCode"
+                                class="tag-code"
+                            >
+                                Nenhuma TAG
+                            </div>
+
+                            <div class="tag-label">
+                                TAG Save Tag Pet
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="tag-active">
+                        ✓ ATIVA
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             PETS
+        ================================================== -->
+
+        <section
+            id="section-pets"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Meus pets
+                    </h1>
+
+                    <p>
+                        Gerencie os perfis e as TAGs dos seus pets.
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    onclick="novoPet()"
+                >
+                    + Novo pet
+                </button>
+
+            </div>
+
+
+            <div
+                id="listaPets"
+                class="pet-grid"
+            >
+
+                <div class="loading">
+                    Carregando...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             VACINAS
+        ================================================== -->
+
+        <section
+            id="section-vacinas"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Vacinas
+                    </h1>
+
+                    <p>
+                        Mantenha a carteira de vacinação organizada.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Selecione um pet
+                        </h2>
+
+                    </div>
+
+                    <select
+                        id="vacinaPetSelect"
+                        onchange="selecionarPetPorSelect('vacina')"
+                        style="max-width:250px;"
+                    >
+
+                        <option value="">
+                            Selecione...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="listaVacinas"
+                >
+
+                    <div class="loading">
+                        Selecione um pet para visualizar as vacinas.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="formVacina"
+                class="card hidden"
+            >
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            + Adicionar vacina
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid-3">
+
+
+                    <div class="field">
+
+                        <label>
+                            Vacina *
+                        </label>
+
+                        <input
+                            id="vacinaNome"
+                            placeholder="Ex.: V10"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Data da aplicação
+                        </label>
+
+                        <input
+                            id="vacinaData"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Próxima dose
+                        </label>
+
+                        <input
+                            id="vacinaProxima"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Veterinário
+                        </label>
+
+                        <input
+                            id="vacinaVeterinario"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Observações
+                        </label>
+
+                        <input
+                            id="vacinaObservacoes"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="adicionarVacina()"
+                    >
+                        Salvar vacina
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             SAÚDE
+        ================================================== -->
+
+        <section
+            id="section-saude"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Registro de saúde
+                    </h1>
+
+                    <p>
+                        Histórico veterinário organizado em um só lugar.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Selecione um pet
+                        </h2>
+
+                    </div>
+
+                    <select
+                        id="saudePetSelect"
+                        onchange="selecionarPetPorSelect('saude')"
+                        style="max-width:250px;"
+                    >
+
+                        <option value="">
+                            Selecione...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="listaSaude"
+                >
+
+                    <div class="loading">
+                        Selecione um pet.
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="formSaude"
+                class="card hidden"
+            >
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            + Novo registro
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Tipo
+                        </label>
+
+                        <select id="saudeTipo">
+
+                            <option value="Consulta">
+                                Consulta
+                            </option>
+
+                            <option value="Doença">
+                                Doença
+                            </option>
+
+                            <option value="Cirurgia">
+                                Cirurgia
+                            </option>
+
+                            <option value="Exame">
+                                Exame
+                            </option>
+
+                            <option value="Outro">
+                                Outro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Título *
+                        </label>
+
+                        <input
+                            id="saudeTitulo"
+                            placeholder="Ex.: Consulta veterinária"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Data do evento
+                        </label>
+
+                        <input
+                            id="saudeData"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Veterinário / clínica
+                        </label>
+
+                        <input
+                            id="saudeVeterinario"
+                            placeholder="Opcional"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Descrição
+                    </label>
+
+                    <textarea
+                        id="saudeDescricao"
+                        placeholder="Descreva o atendimento, exame ou informação importante."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="adicionarSaude()"
+                    >
+                        Salvar registro
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             EVENTOS
+        ================================================== -->
+
+        <section
+            id="section-eventos"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Consultas e exames
+                    </h1>
+
+                    <p>
+                        Acompanhe os próximos compromissos do seu pet.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Próximos cuidados
+                        </h2>
+
+                        <p>
+                            Consultas e exames registrados no histórico.
+                        </p>
+
+                    </div>
+
+                    <select
+                        id="eventosPetSelect"
+                        onchange="carregarEventosSelecionados()"
+                        style="max-width:250px;"
+                    >
+
+                        <option value="">
+                            Selecione...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div id="listaEventos">
+
+                    <div class="loading">
+                        Selecione um pet.
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             ALERTAS
+        ================================================== -->
+
+        <section
+            id="section-alertas"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Central de alertas
+                    </h1>
+
+                    <p>
+                        Veja cuidados que merecem sua atenção.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            🔔 Seus alertas
+                        </h2>
+
+                        <p>
+                            Baseados nas vacinas e registros cadastrados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="listaAlertas"
+                    class="alert-list"
+                >
+
+                    <div class="loading">
+                        Analisando informações...
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             PRIVACIDADE
+        ================================================== -->
+
+        <section
+            id="section-privacidade"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Privacidade
+                    </h1>
+
+                    <p>
+                        Você decide o que fica visível no perfil público.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            🔐 Controle do perfil público
+                        </h2>
+
+                        <p>
+                            Informações públicas devem ser apenas as necessárias
+                            para ajudar seu pet a voltar para casa.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="privacy-list">
+
+
+                    <div class="privacy-row">
+
+                        <div>
+
+                            <strong>
+                                Nome do pet
+                            </strong>
+
+                            <span>
+                                Identificação básica.
+                            </span>
+
+                        </div>
+
+                        <button
+                            id="toggleNome"
+                            class="switch on"
+                            onclick="toggleVisual(this)"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="privacy-row">
+
+                        <div>
+
+                            <strong>
+                                Raça
+                            </strong>
+
+                            <span>
+                                Pode ajudar na identificação.
+                            </span>
+
+                        </div>
+
+                        <button
+                            id="toggleRaca"
+                            class="switch on"
+                            onclick="toggleVisual(this)"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="privacy-row">
+
+                        <div>
+
+                            <strong>
+                                Sexo
+                            </strong>
+
+                            <span>
+                                Informação opcional.
+                            </span>
+
+                        </div>
+
+                        <button
+                            id="toggleSexo"
+                            class="switch on"
+                            onclick="toggleVisual(this)"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="privacy-row">
+
+                        <div>
+
+                            <strong>
+                                Cidade
+                            </strong>
+
+                            <span>
+                                Mostra apenas a cidade.
+                            </span>
+
+                        </div>
+
+                        <button
+                            id="toggleCidade"
+                            class="switch on"
+                            onclick="toggleVisual(this)"
+                        ></button>
+
+                    </div>
+
+
+                    <div class="privacy-row">
+
+                        <div>
+
+                            <strong>
+                                Informações de saúde
+                            </strong>
+
+                            <span>
+                                Nunca devem ser expostas no perfil público.
+                            </span>
+
+                        </div>
+
+                        <span
+                            style="
+                                color:#168052;
+                                font-weight:900;
+                                font-size:12px;
+                            "
+                        >
+                            🔒 PRIVADO
+                        </span>
+
+                    </div>
+
+
+                    <div class="privacy-row">
+
+                        <div>
+
+                            <strong>
+                                Vacinas
+                            </strong>
+
+                            <span>
+                                Mantidas somente na Área do Tutor.
+                            </span>
+
+                        </div>
+
+                        <span
+                            style="
+                                color:#168052;
+                                font-weight:900;
+                                font-size:12px;
+                            "
+                        >
+                            🔒 PRIVADO
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="salvarPrivacidade()"
+                    >
+                        Salvar privacidade
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             CONTA
+        ================================================== -->
+
+        <section
+            id="section-conta"
+            class="page-section"
+        >
+
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>
+                        Minha conta
+                    </h1>
+
+                    <p>
+                        Gerencie seus dados pessoais.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            👤 Dados do tutor
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-grid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Nome
+                        </label>
+
+                        <input
+                            id="tutorNome"
+                            type="text"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            E-mail
+                        </label>
+
+                        <input
+                            id="tutorEmail"
+                            type="email"
+                            disabled
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Telefone / WhatsApp
+                        </label>
+
+                        <input
+                            id="tutorTelefone"
+                            type="text"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Cidade
+                        </label>
+
+                        <input
+                            id="tutorCidade"
+                            type="text"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="salvarTutor()"
+                    >
+                        Salvar meus dados
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="sair()"
+                    >
+                        Sair da conta
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+</main>
 
 </div>
-<!-- FOTOS ADICIONAIS DO PET -->
-<div class="field" style="margin-top:18px;">
-
-  <label>📸 Fotos adicionais do pet</label>
-
-  <input
-    type="file"
-    id="petFotos"
-    accept="image/jpeg,image/png,image/webp"
-    multiple
-  >
-
-  <small
-    style="
-      display:block;
-      margin-top:6px;
-      color:#667777;
-    "
-  >
-    Adicione até 5 fotos adicionais do seu pet.
-    Total de até 6 fotos contando a foto principal.
-  </small>
-
-  <div
-    id="previewPetFotos"
-    style="
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
-      gap:10px;
-      margin-top:12px;
-    "
-  ></div>
-
-</div>
-
-<div class="grid">
 
 
-      <div class="field">
+<!-- =====================================================
+     MODAL PET
+===================================================== -->
 
-        <label>
-          Nome do pet *
-        </label>
+<div
+    id="modalPet"
+    class="modal"
+>
+
+
+    <div class="modal-box">
+
+
+        <div class="modal-header">
+
+            <h2 id="tituloEditor">
+                🐾 Cadastrar pet
+            </h2>
+
+            <button
+                class="close"
+                onclick="fecharModalPet()"
+            >
+                ×
+            </button>
+
+        </div>
+
 
         <input
-          id="petNome"
-          type="text"
+            type="hidden"
+            id="petId"
         >
 
-      </div>
+
+        <!-- FOTO PRINCIPAL -->
+
+        <div class="field">
+
+            <label>
+                Foto principal do pet
+            </label>
+
+            <input
+                type="file"
+                id="petFoto"
+                accept="image/jpeg,image/png,image/webp"
+            >
+
+            <img
+                id="previewPetFoto"
+                class="photo-preview"
+                style="display:none;"
+                alt="Prévia"
+            >
+
+        </div>
 
 
-      <div class="field">
+        <!-- FOTOS ADICIONAIS -->
 
-        <label>
-          Espécie
-        </label>
-
-        <select id="petEspecie">
-
-          <option value="Cão">
-            Cão
-          </option>
-
-          <option value="Gato">
-            Gato
-          </option>
-
-          <option value="Outro">
-            Outro
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Raça
-        </label>
-
-        <input
-          id="petRaca"
-          type="text"
+        <div
+            class="field"
+            style="margin-top:15px;"
         >
 
-      </div>
+            <label>
+                📸 Fotos adicionais
+            </label>
+
+            <input
+                type="file"
+                id="petFotos"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+            >
+
+            <div
+                id="previewPetFotos"
+                class="photo-grid"
+            ></div>
+
+            <small
+                style="
+                    color:#74888e;
+                    font-size:10px;
+                    display:block;
+                    margin-top:6px;
+                "
+            >
+                Até 5 fotos adicionais.
+            </small>
+
+        </div>
 
 
-      <div class="field">
-
-        <label>
-          Sexo
-        </label>
-
-        <select id="petSexo">
-
-          <option value="">
-            Selecione
-          </option>
-
-          <option value="Macho">
-            Macho
-          </option>
-
-          <option value="Fêmea">
-            Fêmea
-          </option>
-
-        </select>
-
-      </div>
+        <div class="form-grid">
 
 
-      <div class="field">
+            <div class="field">
 
-        <label>
-          Data de nascimento
-        </label>
+                <label>
+                    Nome do pet *
+                </label>
 
-        <input
-          id="petNascimento"
-          type="date"
+                <input
+                    id="petNome"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Espécie
+                </label>
+
+                <select id="petEspecie">
+
+                    <option value="Cão">
+                        Cão
+                    </option>
+
+                    <option value="Gato">
+                        Gato
+                    </option>
+
+                    <option value="Outro">
+                        Outro
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Raça
+                </label>
+
+                <input
+                    id="petRaca"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Sexo
+                </label>
+
+                <select id="petSexo">
+
+                    <option value="">
+                        Selecione
+                    </option>
+
+                    <option value="Macho">
+                        Macho
+                    </option>
+
+                    <option value="Fêmea">
+                        Fêmea
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Data de nascimento
+                </label>
+
+                <input
+                    id="petNascimento"
+                    type="date"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Cidade
+                </label>
+
+                <input
+                    id="petCidade"
+                    type="text"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+            <div class="field">
+
+                <label>
+                    Alergias
+                </label>
+
+                <textarea
+                    id="petAlergias"
+                    placeholder="Alergias conhecidas..."
+                ></textarea>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Medicamentos
+                </label>
+
+                <textarea
+                    id="petMedicamentos"
+                    placeholder="Medicamentos utilizados..."
+                ></textarea>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Observações
+            </label>
+
+            <textarea
+                id="petObservacoes"
+                placeholder="Informações importantes sobre o pet..."
+            ></textarea>
+
+        </div>
+
+
+        <!-- PET PERDIDO -->
+
+        <div
+            class="lost-box"
+            style="margin-top:18px;"
         >
 
-      </div>
+            <h3>
+                🚨 Modo PET PERDIDO
+            </h3>
+
+            <p>
+                Ative somente se o pet estiver desaparecido.
+                Essa informação poderá aparecer no perfil público.
+            </p>
 
 
-      <div class="field">
+            <div class="field">
 
-        <label>
-          Cidade
-        </label>
+                <label>
 
-        <input
-          id="petCidade"
-          type="text"
-        >
+                    <input
+                        id="petPerdido"
+                        type="checkbox"
+                        style="width:auto;"
+                        onchange="mostrarCamposPerdido()"
+                    >
 
-      </div>
+                    Meu pet está perdido
+
+                </label>
+
+            </div>
+
+
+            <div
+                id="camposPerdido"
+                class="hidden"
+            >
+
+
+                <div class="form-grid">
+
+
+                    <div class="field">
+
+                        <label>
+                            Último local onde foi visto
+                        </label>
+
+                        <input
+                            id="petUltimoLocal"
+                            placeholder="Ex.: bairro / cidade"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Data do desaparecimento
+                        </label>
+
+                        <input
+                            id="petDataPerdido"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Horário aproximado
+                        </label>
+
+                        <input
+                            id="petHoraPerdido"
+                            type="time"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Mensagem para quem encontrar
+                    </label>
+
+                    <textarea
+                        id="petMensagemPerdido"
+                        placeholder="Por favor, entre em contato..."
+                    ></textarea>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="form-actions">
+
+
+            <button
+                id="btnSalvarPet"
+                class="btn btn-primary"
+                onclick="salvarPet()"
+            >
+                Salvar pet
+            </button>
+
+
+            <button
+                class="btn btn-secondary"
+                onclick="fecharModalPet()"
+            >
+                Cancelar
+            </button>
+
+
+        </div>
 
 
     </div>
-
-
-    <div class="grid">
-
-
-      <div class="field">
-
-        <label>
-          Alergias
-        </label>
-
-        <textarea
-          id="petAlergias"
-          placeholder="Ex.: alergia a determinado medicamento..."
-        ></textarea>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Medicamentos
-        </label>
-
-        <textarea
-          id="petMedicamentos"
-          placeholder="Medicamentos utilizados atualmente..."
-        ></textarea>
-
-      </div>
-
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Observações
-      </label>
-
-      <textarea
-        id="petObservacoes"
-        placeholder="Outras informações importantes sobre o pet..."
-      ></textarea>
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-
-        <input
-          id="petPerdido"
-          type="checkbox"
-          style="width:auto;margin-right:8px;"
-        >
-
-        Meu pet está perdido
-
-      </label>
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Último local onde foi visto
-      </label>
-
-      <input
-        id="petUltimoLocal"
-        type="text"
-        placeholder="Ex.: Vila Antártica, Praia Grande - SP"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Data em que desapareceu
-      </label>
-
-      <input
-        id="petDataPerdido"
-        type="date"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Horário aproximado
-      </label>
-
-      <input
-        id="petHoraPerdido"
-        type="time"
-      >
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Mensagem caso o pet esteja perdido
-      </label>
-
-      <textarea
-        id="petMensagemPerdido"
-        placeholder="Ex.: Por favor, entre em contato comigo."
-      ></textarea>
-
-    </div>
-
-
-    <div class="actions">
-
-      <button
-        id="btnSalvarPet"
-        class="btn-primary"
-        onclick="salvarPet()"
-      >
-        Salvar pet
-      </button>
-
-
-      <button
-        class="btn-secondary"
-        onclick="cancelarPet()"
-      >
-        Cancelar
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- =====================================
-       VACINAS
-  ====================================== -->
-
-  <div
-    id="secaoVacinas"
-    class="card hidden"
-  >
-
-    <h2>
-      💉 Vacinas
-    </h2>
-
-
-    <div id="listaVacinas">
-
-      <div class="small">
-        Selecione um pet para visualizar as vacinas.
-      </div>
-
-    </div>
-
-
-    <hr>
-
-
-    <h3>
-      Adicionar vacina
-    </h3>
-
-
-    <div class="grid-3">
-
-
-      <div class="field">
-
-        <label>
-          Vacina *
-        </label>
-
-        <input
-          id="vacinaNome"
-          type="text"
-          placeholder="Ex.: V10"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Data da aplicação
-        </label>
-
-        <input
-          id="vacinaData"
-          type="date"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Próxima dose
-        </label>
-
-        <input
-          id="vacinaProxima"
-          type="date"
-        >
-
-      </div>
-
-
-    </div>
-
-
-    <div class="grid">
-
-
-      <div class="field">
-
-        <label>
-          Veterinário
-        </label>
-
-        <input
-          id="vacinaVeterinario"
-          type="text"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Observações
-        </label>
-
-        <input
-          id="vacinaObservacoes"
-          type="text"
-        >
-
-      </div>
-
-
-    </div>
-
-
-    <button
-      class="btn-primary"
-      onclick="adicionarVacina()"
-    >
-      + Adicionar vacina
-    </button>
-
-  </div>
-
-
-  <!-- =====================================
-       SAÚDE
-  ====================================== -->
-
-  <div
-    id="secaoSaude"
-    class="card hidden"
-  >
-
-    <h2>
-      🏥 Histórico de saúde
-    </h2>
-
-
-    <div id="listaSaude">
-
-      <div class="small">
-        Selecione um pet para visualizar o histórico.
-      </div>
-
-    </div>
-
-
-    <hr>
-
-
-    <h3>
-      Adicionar registro
-    </h3>
-
-
-    <div class="grid">
-
-
-      <div class="field">
-
-        <label>
-          Tipo
-        </label>
-
-        <select id="saudeTipo">
-
-          <option value="Consulta">
-            Consulta
-          </option>
-
-          <option value="Doença">
-            Doença
-          </option>
-
-          <option value="Cirurgia">
-            Cirurgia
-          </option>
-
-          <option value="Exame">
-            Exame
-          </option>
-
-          <option value="Outro">
-            Outro
-          </option>
-
-        </select>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Título *
-        </label>
-
-        <input
-          id="saudeTitulo"
-          placeholder="Ex.: Consulta veterinária"
-        >
-
-      </div>
-
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Descrição
-      </label>
-
-      <textarea
-        id="saudeDescricao"
-      ></textarea>
-
-    </div>
-
-
-    <div class="field">
-
-      <label>
-        Data do evento
-      </label>
-
-      <input
-        id="saudeData"
-        type="date"
-      >
-
-    </div>
-
-
-    <button
-      class="btn-primary"
-      onclick="adicionarSaude()"
-    >
-      + Adicionar registro
-    </button>
-
-  </div>
-
 
 </div>
 
 
 <script>
 
-
-/* =====================================================
+/* =========================================================
    SUPABASE
-===================================================== */
+========================================================= */
 
 const SUPABASE_URL =
-  "https://mqiwoubhivutavpnpeax.supabase.co";
-
-
-/*
-  IMPORTANTE:
-  Mantenha aqui a mesma Publishable Key
-  que já estava no seu painel.html atual.
-*/
+    "https://mqiwoubhivutavpnpeax.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
-
+    "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
 let supabaseClient = null;
 
@@ -1232,1246 +3875,1468 @@ let pets = [];
 
 let petSelecionado = null;
 
+let tagCodigo = null;
 
-/*
-  Código da TAG recebido pela URL.
 
-  Exemplo:
-
-  painel.html?tag=TESTE001
-*/
+/* =========================================================
+   URL
+========================================================= */
 
 const parametros =
-  new URLSearchParams(
-    window.location.search
-  );
+    new URLSearchParams(
+        window.location.search
+    );
 
-
-let tagCodigo =
-  parametros.get("tag");
-
+tagCodigo =
+    parametros.get("tag");
 
 if(tagCodigo){
 
-  tagCodigo =
-    tagCodigo
-      .trim()
-      .toUpperCase();
+    tagCodigo =
+        tagCodigo
+            .trim()
+            .toUpperCase();
 
 }
 
 
-/* =====================================================
-   INICIALIZAÇÃO
-===================================================== */
+/* =========================================================
+   INICIAR
+========================================================= */
 
 function iniciarSupabase(){
 
-  if(!window.supabase){
+    if(!window.supabase){
 
-    mostrarMensagem(
-      "Não foi possível carregar o sistema. Atualize a página.",
-      "error"
-    );
+        mostrarMensagem(
+            "Não foi possível carregar o sistema.",
+            "error"
+        );
 
-    return;
-  }
+        return;
+    }
 
+    supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
-  supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  verificarLogin();
-
+    verificarLogin();
 }
 
 
-/* =====================================================
+/* =========================================================
    LOGIN
-===================================================== */
+========================================================= */
 
 async function verificarLogin(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .auth
-      .getSession();
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
 
 
-  if(error){
+    if(error || !data.session){
 
-    console.error(error);
+        window.location.href =
+            tagCodigo
+                ? "login.html?tag=" +
+                  encodeURIComponent(tagCodigo)
+                : "login.html";
 
-    window.location.href =
-      tagCodigo
-        ? "login.html?tag=" +
-          encodeURIComponent(tagCodigo)
-        : "login.html";
-
-    return;
-  }
+        return;
+    }
 
 
-  if(!data.session){
-
-    window.location.href =
-      tagCodigo
-        ? "login.html?tag=" +
-          encodeURIComponent(tagCodigo)
-        : "login.html";
-
-    return;
-  }
+    usuarioAtual =
+        data.session.user;
 
 
-  usuarioAtual =
-    data.session.user;
+    document.getElementById(
+        "tutorEmail"
+    ).value =
+        usuarioAtual.email || "";
 
 
-  document
-    .getElementById(
-      "usuarioHeader"
-    )
-    .textContent =
-      usuarioAtual.email;
+    await carregarTutor();
 
-
-  await carregarTutor();
-
-  await carregarPets();
-
-
-  /*
-    Se chegou aqui com uma TAG,
-    verifica a situação dela através
-    da função segura do Supabase.
-  */
-
-  if(tagCodigo){
+    await carregarPets();
 
     await prepararAtivacaoTag();
-
-  }
 
 }
 
 
-/* =====================================================
-   PREPARAR ATIVAÇÃO DA TAG
-===================================================== */
+/* =========================================================
+   TUTOR
+========================================================= */
 
-async function prepararAtivacaoTag(){
-
-  try{
-
-    /*
-      IMPORTANTE:
-
-      Não consultamos mais a tabela "tags"
-      diretamente.
-
-      Usamos a função segura:
-      verificar_tag_ativacao
-    */
+async function carregarTutor(){
 
     const {
-      data,
-      error
+        data,
+        error
     } =
-      await supabaseClient
-        .rpc(
-          "verificar_tag_ativacao",
-          {
-            p_codigo:
-              tagCodigo
-          }
-        );
+        await supabaseClient
+            .from("tutores")
+            .select("*")
+            .eq(
+                "id",
+                usuarioAtual.id
+            )
+            .maybeSingle();
 
 
     if(error){
 
-      console.error(
-        "Erro ao verificar TAG:",
-        error
-      );
+        console.error(error);
 
-      mostrarMensagem(
-        "Não foi possível verificar a TAG.",
-        "error"
-      );
-
-      return;
+        return;
     }
 
 
     if(!data){
 
-      mostrarMensagem(
-        "Não foi possível verificar a TAG.",
-        "error"
-      );
-
-      return;
+        return;
     }
 
 
-    /* =========================================
-       TAG NÃO ENCONTRADA
-    ========================================= */
-
-    if(data.encontrada === false){
-
-      mostrarMensagem(
-        "TAG não encontrada.",
-        "error"
-      );
-
-      return;
-    }
+    document.getElementById(
+        "tutorNome"
+    ).value =
+        data.nome || "";
 
 
-    /* =========================================
-       TAG DESATIVADA
-    ========================================= */
-
-    if(data.ativa === false){
-
-      mostrarMensagem(
-        "Esta TAG está desativada.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    /* =========================================
-       TAG DISPONÍVEL
-    ========================================= */
-
-    if(data.disponivel === true){
-
-      mostrarTagDisponivel();
-
-      return;
-    }
-
-
-    /* =========================================
-       TAG JÁ VINCULADA
-    ========================================= */
-
-    mostrarMensagem(
-      "Esta TAG já está vinculada a um pet.",
-      "info"
-    );
-
-  }catch(erro){
-
-    console.error(
-      "Erro na ativação:",
-      erro
-    );
-
-    mostrarMensagem(
-      "Erro ao verificar a TAG.",
-      "error"
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   MOSTRAR TAG DISPONÍVEL
-===================================================== */
-
-function mostrarTagDisponivel(){
-
-  document
-    .getElementById(
-      "tagActivation"
-    )
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById(
-      "tagActive"
-    )
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById(
-      "tagCode"
-    )
-    .textContent =
-      "TAG: " + tagCodigo;
-
-}
-
-
-/* =====================================================
-   MOSTRAR TAG ATIVADA
-===================================================== */
-
-function mostrarTagAtivada(){
-
-  document
-    .getElementById(
-      "tagActivation"
-    )
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById(
-      "tagActive"
-    )
-    .classList
-    .remove("hidden");
-
-}
-
-
-/* =====================================================
-   TUTOR
-===================================================== */
-
-async function carregarTutor(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("tutores")
-      .select("*")
-      .eq(
-        "id",
-        usuarioAtual.id
-      )
-      .maybeSingle();
-
-
-  if(error){
-
-    console.error(error);
-
-    mostrarMensagem(
-      "Erro ao carregar seus dados.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if(!data){
-
-    document
-      .getElementById(
+    document.getElementById(
         "tutorEmail"
-      )
-      .value =
-        usuarioAtual.email || "";
-
-    return;
-  }
+    ).value =
+        data.email ||
+        usuarioAtual.email ||
+        "";
 
 
-  document
-    .getElementById(
-      "tutorNome"
-    )
-    .value =
-      data.nome || "";
+    document.getElementById(
+        "tutorTelefone"
+    ).value =
+        data.telefone || "";
 
 
-  document
-    .getElementById(
-      "tutorEmail"
-    )
-    .value =
-      data.email ||
-      usuarioAtual.email ||
-      "";
+    document.getElementById(
+        "tutorCidade"
+    ).value =
+        data.cidade || "";
 
 
-  document
-    .getElementById(
-      "tutorTelefone"
-    )
-    .value =
-      data.telefone || "";
-
-
-  document
-    .getElementById(
-      "tutorCidade"
-    )
-    .value =
-      data.cidade || "";
+    atualizarNomeUsuario(
+        data.nome ||
+        usuarioAtual.email
+    );
 
 }
 
 
-/* =====================================================
+function atualizarNomeUsuario(nome){
+
+    const primeiroNome =
+        String(nome || "Tutor")
+            .split(" ")[0];
+
+
+    document.getElementById(
+        "nomeSaudacao"
+    ).textContent =
+        primeiroNome;
+
+
+    document.getElementById(
+        "nomeTopbar"
+    ).textContent =
+        nome || "Tutor";
+
+
+    const inicial =
+        primeiroNome
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        "avatarTopbar"
+    ).textContent =
+        inicial;
+}
+
+
+/* =========================================================
    SALVAR TUTOR
-===================================================== */
+========================================================= */
 
 async function salvarTutor(){
 
-  const nome =
-    document
-      .getElementById(
-        "tutorNome"
-      )
-      .value
-      .trim();
+    const nome =
+        document.getElementById(
+            "tutorNome"
+        ).value.trim();
 
 
-  const telefone =
-    document
-      .getElementById(
-        "tutorTelefone"
-      )
-      .value
-      .trim();
+    const telefone =
+        document.getElementById(
+            "tutorTelefone"
+        ).value.trim();
 
 
-  const cidade =
-    document
-      .getElementById(
-        "tutorCidade"
-      )
-      .value
-      .trim();
+    const cidade =
+        document.getElementById(
+            "tutorCidade"
+        ).value.trim();
 
 
-  const email =
-    usuarioAtual.email || "";
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("tutores")
+            .upsert({
+
+                id:
+                    usuarioAtual.id,
+
+                nome:
+                    nome,
+
+                telefone:
+                    telefone,
+
+                email:
+                    usuarioAtual.email,
+
+                cidade:
+                    cidade
+
+            });
 
 
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("tutores")
-      .upsert({
+    if(error){
 
-        id:
-          usuarioAtual.id,
+        mostrarMensagem(
+            "Não foi possível salvar: " +
+            error.message,
+            "error"
+        );
 
-        nome:
-          nome,
-
-        telefone:
-          telefone,
-
-        email:
-          email,
-
-        cidade:
-          cidade
-
-      });
+        return;
+    }
 
 
-  if(error){
-
-    console.error(error);
-
-    mostrarMensagem(
-      "Não foi possível salvar seus dados: " +
-      error.message,
-      "error"
+    atualizarNomeUsuario(
+        nome ||
+        usuarioAtual.email
     );
 
-    return;
-  }
 
-
-  mostrarMensagem(
-    "Seus dados foram salvos com sucesso!",
-    "success"
-  );
+    mostrarMensagem(
+        "Seus dados foram salvos!",
+        "success"
+    );
 
 }
 
 
-/* =====================================================
+/* =========================================================
    PETS
-===================================================== */
+========================================================= */
 
 async function carregarPets(){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("pets")
-      .select("*")
-      .eq(
-        "tutor_id",
-        usuarioAtual.id
-      )
-      .order("nome");
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("pets")
+            .select("*")
+            .eq(
+                "tutor_id",
+                usuarioAtual.id
+            )
+            .order("nome");
 
 
-  if(error){
+    if(error){
 
-    console.error(error);
+        console.error(error);
 
-    mostrarMensagem(
-      "Erro ao carregar seus pets.",
-      "error"
-    );
+        mostrarMensagem(
+            "Erro ao carregar seus pets.",
+            "error"
+        );
 
-    return;
-  }
-
-
-  pets =
-    data || [];
+        return;
+    }
 
 
-  renderizarPets();
+    pets =
+        data || [];
+
+
+    renderizarPets();
+
+    atualizarDashboard();
+
+    preencherSelects();
+
+    gerarAlertas();
 
 }
 
 
-/* =====================================================
-   RENDERIZAR PETS
-===================================================== */
+/* =========================================================
+   RENDER PETS
+========================================================= */
 
 function renderizarPets(){
 
-  const lista =
-    document.getElementById(
-      "listaPets"
-    );
+    const lista =
+        document.getElementById(
+            "listaPets"
+        );
 
 
-  if(!pets.length){
+    if(!pets.length){
 
-    lista.innerHTML = `
-      <div class="pet-item">
+        lista.innerHTML = `
 
-        <h3>
-          Nenhum pet cadastrado
-        </h3>
+            <div class="card">
 
-        <div class="pet-meta">
-          Cadastre seu primeiro pet para começar.
-        </div>
+                <div class="loading">
 
-      </div>
-    `;
+                    🐾
 
-    return;
-  }
+                    <br><br>
 
+                    Você ainda não cadastrou nenhum pet.
 
-  lista.innerHTML =
-    pets
-      .map(
-        pet => {
+                    <br><br>
 
-          const perdido =
-            pet.perdido === true;
+                    <button
+                        class="btn btn-primary"
+                        onclick="novoPet()"
+                    >
+                        + Cadastrar meu primeiro pet
+                    </button>
 
-
-          return `
-            <div class="pet-item">
-
-              <h3>
-                ${escapeHtml(
-                  pet.nome ||
-                  "Sem nome"
-                )}
-              </h3>
-
-
-              <div class="pet-meta">
-
-                ${escapeHtml(
-                  pet.especie ||
-                  ""
-                )}
-
-                ${
-                  pet.raca
-                    ? " • " +
-                      escapeHtml(
-                        pet.raca
-                      )
-                    : ""
-                }
-
-                ${
-                  pet.sexo
-                    ? " • " +
-                      escapeHtml(
-                        pet.sexo
-                      )
-                    : ""
-                }
-
-              </div>
-
-
-              <span
-                class="status ${
-                  perdido
-                    ? "status-lost"
-                    : ""
-                }"
-              >
-
-                ${
-                  perdido
-                    ? "🚨 PET PERDIDO"
-                    : "✓ Cadastro ativo"
-                }
-
-              </span>
-
-
-              <div class="actions">
-
-                <button
-                  class="btn-primary"
-                  onclick="editarPet('${pet.id}')"
-                >
-                  Editar
-                </button>
-
-
-                <button
-                  class="btn-secondary"
-                  onclick="abrirDadosPet('${pet.id}')"
-                >
-                  Vacinas / Saúde
-                </button>
-                
-                <button
-  class="btn-secondary"
-  onclick="excluirPet('${pet.id}')"
->
-  🗑️ Excluir
-</button>
-
-              </div>
+                </div>
 
             </div>
-          `;
 
-        }
-      )
-      .join("");
+        `;
 
-}
-async function excluirPet(id){
-
-  const pet = pets.find(p => p.id === id);
-
-  if(!pet){
-    mostrarMensagem("Pet não encontrado.","error");
-    return;
-  }
-
-  const confirmar = confirm(
-    "⚠️ Excluir o pet " + pet.nome + "?\n\n" +
-    "Todos os dados cadastrados deste pet serão removidos.\n" +
-    "A TAG vinculada ficará disponível novamente.\n\n" +
-    "Essa ação não pode ser desfeita."
-  );
-
-  if(!confirmar){
-    return;
-  }
-
-  const resultado = await supabaseClient.rpc(
-    "excluir_pet",
-    {
-      p_pet_id: id
+        return;
     }
-  );
 
-  if(resultado.error){
 
-    console.error(resultado.error);
+    lista.innerHTML =
+        pets.map(
+            pet => {
 
-    mostrarMensagem(
-      "Não foi possível excluir o pet: " +
-      resultado.error.message,
-      "error"
-    );
+                const foto =
+                    pet.foto_url;
 
-    return;
-  }
 
-  mostrarMensagem(
-    "Pet excluído com sucesso. A TAG está disponível novamente.",
-    "success"
-  );
+                const perdido =
+                    pet.perdido === true;
 
-  petSelecionado = null;
 
-  await carregarPets();
+                return `
+
+                    <div class="pet-card">
+
+                        <div class="pet-card-head">
+
+                            ${
+                                foto
+
+                                ?
+
+                                `
+
+                                <img
+                                    src="${escapeHtml(foto)}"
+                                    class="pet-card-photo"
+                                    alt="${escapeHtml(pet.nome)}"
+                                >
+
+                                `
+
+                                :
+
+                                `
+
+                                <div class="pet-card-photo-placeholder">
+
+                                    ${
+                                        pet.especie === "Gato"
+                                            ? "🐱"
+                                            : "🐶"
+                                    }
+
+                                </div>
+
+                                `
+                            }
+
+
+                            <div>
+
+                                <h3>
+                                    ${escapeHtml(
+                                        pet.nome ||
+                                        "Sem nome"
+                                    )}
+                                </h3>
+
+                                <div class="pet-card-meta">
+
+                                    ${escapeHtml(
+                                        pet.especie ||
+                                        ""
+                                    )}
+
+                                    ${
+                                        pet.raca
+                                            ? " • " +
+                                              escapeHtml(
+                                                  pet.raca
+                                              )
+                                            : ""
+                                    }
+
+                                    ${
+                                        pet.sexo
+                                            ? " • " +
+                                              escapeHtml(
+                                                  pet.sexo
+                                              )
+                                            : ""
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="pet-card-tag ${
+                                perdido
+                                    ? "lost"
+                                    : ""
+                            }"
+                        >
+
+                            ${
+                                perdido
+                                    ? "🚨 PET PERDIDO"
+                                    : "✓ Cadastro ativo"
+                            }
+
+                        </div>
+
+
+                        <div class="pet-card-actions">
+
+                            <button
+                                class="btn btn-primary btn-small"
+                                onclick="editarPet('${pet.id}')"
+                            >
+                                Editar
+                            </button>
+
+
+                            <button
+                                class="btn btn-secondary btn-small"
+                                onclick="abrirVacinasPet('${pet.id}')"
+                            >
+                                💉 Vacinas
+                            </button>
+
+
+                            <button
+                                class="btn btn-secondary btn-small"
+                                onclick="abrirSaudePet('${pet.id}')"
+                            >
+                                🩺 Saúde
+                            </button>
+
+
+                            <button
+                                class="btn btn-danger btn-small"
+                                onclick="excluirPet('${pet.id}')"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
 }
 
-/* =====================================================
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+async function atualizarDashboard(){
+
+    document.getElementById(
+        "statPets"
+    ).textContent =
+        pets.length;
+
+
+    const tagsAtivas =
+        pets.filter(
+            p => p.tag_codigo
+        ).length;
+
+
+    document.getElementById(
+        "statTags"
+    ).textContent =
+        tagsAtivas;
+
+
+    if(!pets.length){
+
+        document.getElementById(
+            "petPrincipal"
+        ).innerHTML = `
+
+            <div class="loading">
+
+                🐾
+
+                <br><br>
+
+                Cadastre seu primeiro pet
+                para começar.
+
+            </div>
+
+        `;
+
+        document.getElementById(
+            "tagDashboardCode"
+        ).textContent =
+            "Nenhuma TAG";
+
+
+        return;
+    }
+
+
+    const pet =
+        petSelecionado &&
+        pets.find(
+            p => p.id === petSelecionado.id
+        )
+            ? petSelecionado
+            : pets[0];
+
+
+    petSelecionado =
+        pet;
+
+
+    const foto =
+        pet.foto_url;
+
+
+    const perdido =
+        pet.perdido === true;
+
+
+    document.getElementById(
+        "petPrincipal"
+    ).innerHTML = `
+
+        <div class="pet-main-top">
+
+            ${
+                foto
+
+                    ?
+
+                    `<img
+                        src="${escapeHtml(foto)}"
+                        class="pet-avatar"
+                        alt="${escapeHtml(pet.nome)}"
+                    >`
+
+                    :
+
+                    `<div class="pet-avatar-placeholder">
+                        ${
+                            pet.especie === "Gato"
+                                ? "🐱"
+                                : "🐶"
+                        }
+                    </div>`
+            }
+
+
+            <div>
+
+                <div class="pet-main-name">
+
+                    ${escapeHtml(
+                        pet.nome ||
+                        "Sem nome"
+                    )}
+
+                </div>
+
+
+                <div class="pet-main-meta">
+
+                    ${escapeHtml(
+                        pet.especie ||
+                        ""
+                    )}
+
+                    ${
+                        pet.raca
+                            ? " • " +
+                              escapeHtml(
+                                  pet.raca
+                              )
+                            : ""
+                    }
+
+                    ${
+                        pet.sexo
+                            ? " • " +
+                              escapeHtml(
+                                  pet.sexo
+                              )
+                            : ""
+                    }
+
+                </div>
+
+
+                <div
+                    class="pet-status ${
+                        perdido
+                            ? "lost"
+                            : ""
+                    }"
+                >
+
+                    ${
+                        perdido
+                            ? "🚨 PET PERDIDO"
+                            : "✓ PET PROTEGIDO"
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="pet-main-actions">
+
+            <button
+                class="btn btn-primary"
+                onclick="editarPet('${pet.id}')"
+            >
+                ✏️ Editar pet
+            </button>
+
+
+            <button
+                class="btn btn-secondary"
+                onclick="abrirVacinasPet('${pet.id}')"
+            >
+                💉 Vacinas
+            </button>
+
+
+            <button
+                class="btn btn-secondary"
+                onclick="abrirSaudePet('${pet.id}')"
+            >
+                🩺 Saúde
+            </button>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "tagDashboardCode"
+    ).textContent =
+        pet.tag_codigo
+            ? "TAG: " + pet.tag_codigo
+            : "TAG ainda não vinculada";
+
+
+    await atualizarContadores();
+
+}
+
+
+/* =========================================================
+   CONTADORES
+========================================================= */
+
+async function atualizarContadores(){
+
+    if(!pets.length){
+
+        document.getElementById(
+            "statVacinas"
+        ).textContent = "0";
+
+        document.getElementById(
+            "resumoVacina"
+        ).textContent =
+            "Nenhuma vacina cadastrada";
+
+        document.getElementById(
+            "resumoSaude"
+        ).textContent =
+            "Nenhum registro";
+
+        return;
+    }
+
+
+    const ids =
+        pets.map(
+            p => p.id
+        );
+
+
+    const {
+        data: vacinas
+    } =
+        await supabaseClient
+            .from("vacinas")
+            .select("*")
+            .in(
+                "pet_id",
+                ids
+            );
+
+
+    const {
+        data: saude
+    } =
+        await supabaseClient
+            .from("saude_pet")
+            .select("*")
+            .in(
+                "pet_id",
+                ids
+            );
+
+
+    document.getElementById(
+        "statVacinas"
+    ).textContent =
+        vacinas?.length || 0;
+
+
+    document.getElementById(
+        "resumoVacina"
+    ).textContent =
+        vacinas?.length
+            ? vacinas.length +
+              " registro(s)"
+            : "Nenhuma vacina cadastrada";
+
+
+    document.getElementById(
+        "resumoSaude"
+    ).textContent =
+        saude?.length
+            ? saude.length +
+              " registro(s)"
+            : "Nenhum registro";
+
+
+    document.getElementById(
+        "resumoTag"
+    ).textContent =
+        pets.some(
+            p => p.tag_codigo
+        )
+            ? "TAG ativa"
+            : "Nenhuma TAG vinculada";
+
+}
+
+
+/* =========================================================
    NOVO PET
-===================================================== */
+========================================================= */
 
 function novoPet(){
 
-  petSelecionado = null;
+    petSelecionado = null;
+
+    limparFormularioPet();
+
+    document.getElementById(
+        "tituloEditor"
+    ).textContent =
+        "🐾 Cadastrar novo pet";
 
 
-  limparFormularioPet();
-
-
-  document
-    .getElementById(
-      "tituloEditor"
-    )
-    .textContent =
-      tagCodigo
-        ? "🐾 Cadastre o pet da sua TAG"
-        : "🐾 Cadastrar pet";
-
-
-  document
-    .getElementById(
-      "editorPet"
-    )
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById(
-      "secaoVacinas"
-    )
-    .classList
-    .add("hidden");
-
-
-  document
-    .getElementById(
-      "secaoSaude"
-    )
-    .classList
-    .add("hidden");
-
-
-  window.scrollTo({
-
-    top:
-      document
-        .getElementById(
-          "editorPet"
-        )
-        .offsetTop - 20,
-
-    behavior:
-      "smooth"
-
-  });
+    document.getElementById(
+        "modalPet"
+    ).classList.add("show");
 
 }
 
 
-/* =====================================================
+/* =========================================================
    EDITAR PET
-===================================================== */
+========================================================= */
 
 function editarPet(id){
 
-  const pet =
-    pets.find(
-      p => p.id === id
-    );
+    const pet =
+        pets.find(
+            p => p.id === id
+        );
 
 
-  if(!pet)
-    return;
+    if(!pet)
+        return;
 
 
-  petSelecionado =
-    pet;
+    petSelecionado =
+        pet;
 
 
-  document
-    .getElementById(
-      "petId"
-    )
-    .value =
-      pet.id;
+    document.getElementById(
+        "petId"
+    ).value =
+        pet.id;
 
 
-  document
-    .getElementById(
-      "petNome"
-    )
-    .value =
-      pet.nome || "";
+    document.getElementById(
+        "petNome"
+    ).value =
+        pet.nome || "";
 
 
-  document
-    .getElementById(
-      "petEspecie"
-    )
-    .value =
-      pet.especie || "Cão";
+    document.getElementById(
+        "petEspecie"
+    ).value =
+        pet.especie || "Cão";
 
 
-  document
-    .getElementById(
-      "petRaca"
-    )
-    .value =
-      pet.raca || "";
+    document.getElementById(
+        "petRaca"
+    ).value =
+        pet.raca || "";
 
 
-  document
-    .getElementById(
-      "petSexo"
-    )
-    .value =
-      pet.sexo || "";
+    document.getElementById(
+        "petSexo"
+    ).value =
+        pet.sexo || "";
 
 
-  document
-    .getElementById(
-      "petNascimento"
-    )
-    .value =
-      pet.data_nascimento || "";
+    document.getElementById(
+        "petNascimento"
+    ).value =
+        pet.data_nascimento || "";
 
 
-  document
-    .getElementById(
-      "petCidade"
-    )
-    .value =
-      pet.cidade || "";
+    document.getElementById(
+        "petCidade"
+    ).value =
+        pet.cidade || "";
 
 
-  document
-    .getElementById(
-      "petAlergias"
-    )
-    .value =
-      pet.alergias || "";
+    document.getElementById(
+        "petAlergias"
+    ).value =
+        pet.alergias || "";
 
 
-  document
-    .getElementById(
-      "petMedicamentos"
-    )
-    .value =
-      pet.medicamentos || "";
+    document.getElementById(
+        "petMedicamentos"
+    ).value =
+        pet.medicamentos || "";
 
 
-  document
-    .getElementById(
-      "petObservacoes"
-    )
-    .value =
-      pet.observacoes || "";
+    document.getElementById(
+        "petObservacoes"
+    ).value =
+        pet.observacoes || "";
 
 
-  document
-    .getElementById(
-      "petPerdido"
-    )
-    .checked =
-      pet.perdido === true;
+    document.getElementById(
+        "petPerdido"
+    ).checked =
+        pet.perdido === true;
 
 
-  document
-    .getElementById(
-      "petMensagemPerdido"
-    )
-    .value =
-      pet.mensagem_perdido || "";
+    document.getElementById(
+        "petUltimoLocal"
+    ).value =
+        pet.ultimo_local_perdido || "";
 
 
-  document
-    .getElementById(
-      "petUltimoLocal"
-    )
-    .value =
-      pet.ultimo_local_perdido || "";
+    document.getElementById(
+        "petDataPerdido"
+    ).value =
+        pet.data_perdido || "";
 
 
-  document
-    .getElementById(
-      "petDataPerdido"
-    )
-    .value =
-      pet.data_perdido || "";
+    document.getElementById(
+        "petHoraPerdido"
+    ).value =
+        pet.hora_perdido || "";
 
 
-  document
-    .getElementById(
-      "petHoraPerdido"
-    )
-    .value =
-      pet.hora_perdido || "";
+    document.getElementById(
+        "petMensagemPerdido"
+    ).value =
+        pet.mensagem_perdido || "";
 
 
-  document
-    .getElementById(
-      "tituloEditor"
-    )
-    .textContent =
-      "✏️ Editar " +
-      (
-        pet.nome ||
-        "pet"
-      );
+    document.getElementById(
+        "tituloEditor"
+    ).textContent =
+        "✏️ Editar " +
+        (pet.nome || "pet");
 
 
-  document
-    .getElementById(
-      "editorPet"
-    )
-    .classList
-    .remove("hidden");
+    mostrarCamposPerdido();
 
 
-  window.scrollTo({
+    const preview =
+        document.getElementById(
+            "previewPetFoto"
+        );
 
-    top:
-      document
-        .getElementById(
-          "editorPet"
-        )
-        .offsetTop - 20,
 
-    behavior:
-      "smooth"
+    if(pet.foto_url){
 
-  });
+        preview.src =
+            pet.foto_url;
+
+        preview.style.display =
+            "block";
+
+    }else{
+
+        preview.style.display =
+            "none";
+
+    }
+
+
+    document.getElementById(
+        "modalPet"
+    ).classList.add("show");
 
 }
 
 
-/* =====================================================
+/* =========================================================
+   FECHAR MODAL
+========================================================= */
+
+function fecharModalPet(){
+
+    document.getElementById(
+        "modalPet"
+    ).classList.remove("show");
+
+}
+
+
+/* =========================================================
+   LIMPAR FORM
+========================================================= */
+
+function limparFormularioPet(){
+
+    const ids = [
+
+        "petId",
+        "petNome",
+        "petRaca",
+        "petNascimento",
+        "petCidade",
+        "petAlergias",
+        "petMedicamentos",
+        "petObservacoes",
+        "petUltimoLocal",
+        "petDataPerdido",
+        "petHoraPerdido",
+        "petMensagemPerdido"
+
+    ];
+
+
+    ids.forEach(
+        id => {
+
+            const el =
+                document.getElementById(id);
+
+            if(el)
+                el.value = "";
+
+        }
+    );
+
+
+    document.getElementById(
+        "petEspecie"
+    ).value =
+        "Cão";
+
+
+    document.getElementById(
+        "petSexo"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "petPerdido"
+    ).checked =
+        false;
+
+
+    document.getElementById(
+        "camposPerdido"
+    ).classList.add(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "previewPetFoto"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "previewPetFotos"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "petFoto"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "petFotos"
+    ).value =
+        "";
+
+}
+
+
+/* =========================================================
+   PERDIDO
+========================================================= */
+
+function mostrarCamposPerdido(){
+
+    const ativo =
+        document.getElementById(
+            "petPerdido"
+        ).checked;
+
+
+    document.getElementById(
+        "camposPerdido"
+    ).classList.toggle(
+        "hidden",
+        !ativo
+    );
+
+}
+
+
+/* =========================================================
    SALVAR PET
-===================================================== */
+========================================================= */
 
 async function salvarPet(){
 
-  const nome =
-    document
-      .getElementById(
-        "petNome"
-      )
-      .value
-      .trim();
+    const nome =
+        document.getElementById(
+            "petNome"
+        ).value.trim();
 
 
-  if(!nome){
+    if(!nome){
 
-    mostrarMensagem(
-      "Informe o nome do pet.",
-      "error"
-    );
+        mostrarMensagem(
+            "Informe o nome do pet.",
+            "error"
+        );
 
-    return;
-
-  }
-
-
-  const botao =
-    document.getElementById(
-      "btnSalvarPet"
-    );
+        return;
+    }
 
 
-  botao.disabled = true;
-
-  botao.textContent =
-    "Salvando...";
-
-
-  try{
-
-    /* =========================================
-       FOTO
-    ========================================= */
-
-    const campoFoto =
-      document.getElementById(
-        "petFoto"
-      );
-
-    const arquivoFoto =
-      campoFoto &&
-      campoFoto.files &&
-      campoFoto.files.length
-        ? campoFoto.files[0]
-        : null;
+    const botao =
+        document.getElementById(
+            "btnSalvarPet"
+        );
 
 
-    if(arquivoFoto){
+    botao.disabled =
+        true;
 
-      const tiposPermitidos = [
+    botao.textContent =
+        "Salvando...";
+
+
+    try{
+
+        const dados = {
+
+            tutor_id:
+                usuarioAtual.id,
+
+            nome:
+                nome,
+
+            especie:
+                document.getElementById(
+                    "petEspecie"
+                ).value,
+
+            raca:
+                document.getElementById(
+                    "petRaca"
+                ).value.trim(),
+
+            sexo:
+                document.getElementById(
+                    "petSexo"
+                ).value || null,
+
+            data_nascimento:
+                document.getElementById(
+                    "petNascimento"
+                ).value || null,
+
+            cidade:
+                document.getElementById(
+                    "petCidade"
+                ).value.trim(),
+
+            alergias:
+                document.getElementById(
+                    "petAlergias"
+                ).value.trim(),
+
+            medicamentos:
+                document.getElementById(
+                    "petMedicamentos"
+                ).value.trim(),
+
+            observacoes:
+                document.getElementById(
+                    "petObservacoes"
+                ).value.trim(),
+
+            perdido:
+                document.getElementById(
+                    "petPerdido"
+                ).checked,
+
+            ultimo_local_perdido:
+                document.getElementById(
+                    "petUltimoLocal"
+                ).value.trim() || null,
+
+            data_perdido:
+                document.getElementById(
+                    "petDataPerdido"
+                ).value || null,
+
+            hora_perdido:
+                document.getElementById(
+                    "petHoraPerdido"
+                ).value || null,
+
+            mensagem_perdido:
+                document.getElementById(
+                    "petMensagemPerdido"
+                ).value.trim()
+
+        };
+
+
+        let petId;
+
+
+        if(petSelecionado){
+
+            const resultado =
+                await supabaseClient
+                    .from("pets")
+                    .update(dados)
+                    .eq(
+                        "id",
+                        petSelecionado.id
+                    )
+                    .eq(
+                        "tutor_id",
+                        usuarioAtual.id
+                    )
+                    .select("id")
+                    .single();
+
+
+            if(resultado.error)
+                throw resultado.error;
+
+
+            petId =
+                resultado.data.id;
+
+        }else{
+
+            const resultado =
+                await supabaseClient
+                    .from("pets")
+                    .insert(dados)
+                    .select("id")
+                    .single();
+
+
+            if(resultado.error)
+                throw resultado.error;
+
+
+            petId =
+                resultado.data.id;
+
+        }
+
+
+        /* FOTO PRINCIPAL */
+
+        const campoFoto =
+            document.getElementById(
+                "petFoto"
+            );
+
+
+        const arquivoFoto =
+            campoFoto.files?.[0] ||
+            null;
+
+
+        if(arquivoFoto){
+
+            await enviarFotoPrincipal(
+                arquivoFoto,
+                petId
+            );
+
+        }
+
+
+        /* FOTOS ADICIONAIS */
+
+        const campoFotos =
+            document.getElementById(
+                "petFotos"
+            );
+
+
+        const arquivos =
+            Array.from(
+                campoFotos.files || []
+            );
+
+
+        if(arquivos.length){
+
+            await enviarFotosAdicionais(
+                arquivos,
+                petId
+            );
+
+        }
+
+
+        /* TAG */
+
+        if(
+            tagCodigo &&
+            !petSelecionado
+        ){
+
+            botao.textContent =
+                "Ativando TAG...";
+
+
+            const resultadoTag =
+                await supabaseClient
+                    .rpc(
+                        "ativar_tag_pet",
+                        {
+                            p_codigo:
+                                tagCodigo,
+
+                            p_pet_id:
+                                petId
+                        }
+                    );
+
+
+            if(resultadoTag.error){
+
+                throw resultadoTag.error;
+
+            }
+
+
+            mostrarMensagem(
+                "Pet cadastrado e TAG ativada com sucesso!",
+                "success"
+            );
+
+
+            window.history.replaceState(
+                {},
+                document.title,
+                "painel.html"
+            );
+
+
+            tagCodigo =
+                null;
+
+        }else{
+
+            mostrarMensagem(
+                "Pet salvo com sucesso!",
+                "success"
+            );
+
+        }
+
+
+        fecharModalPet();
+
+        await carregarPets();
+
+
+    }catch(erro){
+
+        console.error(erro);
+
+        mostrarMensagem(
+            "Erro ao salvar pet: " +
+            erro.message,
+            "error"
+        );
+
+    }finally{
+
+        botao.disabled =
+            false;
+
+        botao.textContent =
+            "Salvar pet";
+
+    }
+
+}
+
+
+/* =========================================================
+   FOTO PRINCIPAL
+========================================================= */
+
+async function enviarFotoPrincipal(
+    arquivo,
+    petId
+){
+
+    const tipos = [
+
         "image/jpeg",
         "image/png",
         "image/webp"
-      ];
+
+    ];
 
 
-      if(
-        !tiposPermitidos.includes(
-          arquivoFoto.type
+    if(
+        !tipos.includes(
+            arquivo.type
         )
-      ){
+    ){
 
         throw new Error(
-          "A foto deve estar em JPG, PNG ou WEBP."
+            "A foto deve estar em JPG, PNG ou WEBP."
         );
 
-      }
+    }
 
 
-      /* Limite de 5 MB */
-
-      if(
-        arquivoFoto.size >
+    if(
+        arquivo.size >
         5 * 1024 * 1024
-      ){
+    ){
 
         throw new Error(
-          "A foto deve ter no máximo 5 MB."
+            "A foto deve ter no máximo 5 MB."
         );
 
-      }
-
     }
 
 
-    /* =========================================
-       DADOS DO PET
-    ========================================= */
-
-    const dados = {
-
-      tutor_id:
-        usuarioAtual.id,
-
-      nome:
-        nome,
-
-      especie:
-        document
-          .getElementById(
-            "petEspecie"
-          )
-          .value,
-
-      raca:
-        document
-          .getElementById(
-            "petRaca"
-          )
-          .value
-          .trim(),
-
-      sexo:
-        document
-          .getElementById(
-            "petSexo"
-          )
-          .value ||
-        null,
-
-      data_nascimento:
-        document
-          .getElementById(
-            "petNascimento"
-          )
-          .value ||
-        null,
-
-      cidade:
-        document
-          .getElementById(
-            "petCidade"
-          )
-          .value
-          .trim(),
-
-      alergias:
-        document
-          .getElementById(
-            "petAlergias"
-          )
-          .value
-          .trim(),
-
-      medicamentos:
-        document
-          .getElementById(
-            "petMedicamentos"
-          )
-          .value
-          .trim(),
-
-      observacoes:
-        document
-          .getElementById(
-            "petObservacoes"
-          )
-          .value
-          .trim(),
-
-      perdido:
-        document
-          .getElementById(
-            "petPerdido"
-          )
-          .checked,
-
-      mensagem_perdido:
-        document
-          .getElementById(
-            "petMensagemPerdido"
-          )
-          .value
-          .trim(),
-
-      ultimo_local_perdido:
-        document
-          .getElementById(
-            "petUltimoLocal"
-          )
-          .value
-          .trim() ||
-        null,
-
-      data_perdido:
-        document
-          .getElementById(
-            "petDataPerdido"
-          )
-          .value ||
-        null,
-
-      hora_perdido:
-        document
-          .getElementById(
-            "petHoraPerdido"
-          )
-          .value ||
-        null
-
-    };
+    const extensao =
+        arquivo.name
+            .split(".")
+            .pop()
+            .toLowerCase();
 
 
-    let petId = null;
-
-
-    /* =========================================
-       EDITAR PET EXISTENTE
-    ========================================= */
-
-    if(petSelecionado){
-
-      const resultado =
-        await supabaseClient
-          .from("pets")
-          .update(dados)
-          .eq(
-            "id",
-            petSelecionado.id
-          )
-          .eq(
-            "tutor_id",
-            usuarioAtual.id
-          )
-          .select("id")
-          .single();
-
-
-      if(resultado.error){
-
-        throw resultado.error;
-
-      }
-
-
-      petId =
-        resultado.data.id;
-
-    }
-
-
-    /* =========================================
-       CRIAR NOVO PET
-    ========================================= */
-
-    else{
-
-      const resultado =
-        await supabaseClient
-          .from("pets")
-          .insert(dados)
-          .select("id")
-          .single();
-
-
-      if(resultado.error){
-
-        throw resultado.error;
-
-      }
-
-
-      petId =
-        resultado.data.id;
-
-    }
-
-
-    /* =========================================
-       UPLOAD DA FOTO
-    ========================================= */
-
-    if(arquivoFoto){
-
-      botao.textContent =
-        "Enviando foto...";
-
-
-      const extensao =
-        arquivoFoto.name
-          .split(".")
-          .pop()
-          .toLowerCase();
-
-
-      const nomeArquivo =
+    const caminho =
+        usuarioAtual.id +
+        "/" +
         petId +
         "-" +
         Date.now() +
@@ -2479,1183 +5344,2009 @@ async function salvarPet(){
         extensao;
 
 
-      const caminho =
-        usuarioAtual.id +
-        "/" +
-        nomeArquivo;
-
-
-      const resultadoUpload =
+    const upload =
         await supabaseClient
-          .storage
-          .from("pet-fotos")
-          .upload(
-            caminho,
-            arquivoFoto,
-            {
-              cacheControl: "3600",
-              upsert: false,
-              contentType:
-                arquivoFoto.type
-            }
-          );
+            .storage
+            .from("pet-fotos")
+            .upload(
+                caminho,
+                arquivo,
+                {
+                    cacheControl:"3600",
+                    upsert:false,
+                    contentType:
+                        arquivo.type
+                }
+            );
 
 
-      if(resultadoUpload.error){
-
-        throw resultadoUpload.error;
-
-      }
+    if(upload.error)
+        throw upload.error;
 
 
-      const resultadoUrl =
+    const resultadoUrl =
         supabaseClient
-          .storage
-          .from("pet-fotos")
-          .getPublicUrl(
-            caminho
-          );
+            .storage
+            .from("pet-fotos")
+            .getPublicUrl(
+                caminho
+            );
 
-
-      const fotoUrl =
-        resultadoUrl
-          .data
-          .publicUrl;
-
-
-      /* =====================================
-         SALVAR URL DA FOTO NO PET
-      ===================================== */
-
-      const resultadoFoto =
-        await supabaseClient
-          .from("pets")
-          .update({
-            foto_url:
-              fotoUrl
-          })
-          .eq(
-            "id",
-            petId
-          )
-          .eq(
-            "tutor_id",
-            usuarioAtual.id
-          );
-
-
-      if(resultadoFoto.error){
-
-        throw resultadoFoto.error;
-
-      }
-/* ==========================================
-   FOTOS ADICIONAIS DO PET
-   ========================================== */
-
-const inputFotos =
-  document.getElementById("petFotos");
-
-const fotosAdicionais =
-  inputFotos?.files || [];
-
-if(fotosAdicionais.length > 0){
-
-  /* Verifica quantas fotos adicionais o pet já possui */
-  const { data: fotosExistentes, error: erroFotos } =
-    await supabaseClient
-      .from("pet_fotos")
-      .select("id")
-      .eq("pet_id", petId);
-
-  if(erroFotos){
-    throw erroFotos;
-  }
-
-  const quantidadeExistente =
-    fotosExistentes?.length || 0;
-
-  if(
-    quantidadeExistente + fotosAdicionais.length > 5
-  ){
-    mostrarMensagem(
-      "O pet pode ter até 6 fotos no total: 1 principal + 5 adicionais.",
-      "error"
-    );
-
-    return;
-  }
-
-  /* Envia cada foto para o Storage */
-  for(
-    let i = 0;
-    i < fotosAdicionais.length;
-    i++
-  ){
-
-    const arquivo = fotosAdicionais[i];
-
-    const extensao =
-      arquivo.name
-        .split(".")
-        .pop()
-        .toLowerCase();
-
-    const caminho =
-      `${usuarioAtual.id}/${petId}-galeria-${Date.now()}-${i}.${extensao}`;
-
-    const { error: erroUpload } =
-      await supabaseClient
-        .storage
-        .from("pet-fotos")
-        .upload(
-          caminho,
-          arquivo,
-          {
-            upsert: false,
-            contentType: arquivo.type
-          }
-        );
-
-    if(erroUpload){
-      throw erroUpload;
-    }
-
-    /* Pega a URL pública */
-    const { data: urlFoto } =
-      supabaseClient
-        .storage
-        .from("pet-fotos")
-        .getPublicUrl(caminho);
 
     const fotoUrl =
-      urlFoto.publicUrl;
+        resultadoUrl
+            .data
+            .publicUrl;
 
-    /* Salva na tabela pet_fotos */
-    const { error: erroBanco } =
-      await supabaseClient
-        .from("pet_fotos")
-        .insert({
-          pet_id: petId,
-          foto_url: fotoUrl,
-          principal: false
-        });
 
-    if(erroBanco){
-      throw erroBanco;
-    }
-  }
+    const resultado =
+        await supabaseClient
+            .from("pets")
+            .update({
+                foto_url:
+                    fotoUrl
+            })
+            .eq(
+                "id",
+                petId
+            )
+            .eq(
+                "tutor_id",
+                usuarioAtual.id
+            );
+
+
+    if(resultado.error)
+        throw resultado.error;
+
 }
+
+
+/* =========================================================
+   FOTOS ADICIONAIS
+========================================================= */
+
+async function enviarFotosAdicionais(
+    arquivos,
+    petId
+){
+
+    if(arquivos.length > 5){
+
+        throw new Error(
+            "Você pode enviar no máximo 5 fotos adicionais."
+        );
+
     }
 
 
-    /* =========================================
-       ATIVAÇÃO AUTOMÁTICA DA TAG
-    ========================================= */
-
-    if(
-      tagCodigo &&
-      petId
+    for(
+        let i = 0;
+        i < arquivos.length;
+        i++
     ){
 
-      botao.textContent =
-        "Ativando TAG...";
+        const arquivo =
+            arquivos[i];
 
 
-      const resultadoTag =
-        await supabaseClient
-          .rpc(
-            "ativar_tag_pet",
-            {
-              p_codigo:
-                tagCodigo,
+        const tipos = [
 
-              p_pet_id:
-                petId
-            }
-          );
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+
+        ];
 
 
-      if(resultadoTag.error){
+        if(
+            !tipos.includes(
+                arquivo.type
+            )
+        ){
 
-        console.error(
-          resultadoTag.error
+            throw new Error(
+                "As fotos devem estar em JPG, PNG ou WEBP."
+            );
+
+        }
+
+
+        if(
+            arquivo.size >
+            5 * 1024 * 1024
+        ){
+
+            throw new Error(
+                "Cada foto deve ter no máximo 5 MB."
+            );
+
+        }
+
+
+        const extensao =
+            arquivo.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+
+        const caminho =
+            usuarioAtual.id +
+            "/" +
+            petId +
+            "-galeria-" +
+            Date.now() +
+            "-" +
+            i +
+            "." +
+            extensao;
+
+
+        const upload =
+            await supabaseClient
+                .storage
+                .from("pet-fotos")
+                .upload(
+                    caminho,
+                    arquivo,
+                    {
+                        upsert:false,
+                        contentType:
+                            arquivo.type
+                    }
+                );
+
+
+        if(upload.error)
+            throw upload.error;
+
+
+        const resultadoUrl =
+            supabaseClient
+                .storage
+                .from("pet-fotos")
+                .getPublicUrl(
+                    caminho
+                );
+
+
+        const fotoUrl =
+            resultadoUrl
+                .data
+                .publicUrl;
+
+
+        const banco =
+            await supabaseClient
+                .from("pet_fotos")
+                .insert({
+
+                    pet_id:
+                        petId,
+
+                    foto_url:
+                        fotoUrl,
+
+                    principal:
+                        false
+
+                });
+
+
+        if(banco.error)
+            throw banco.error;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXCLUIR PET
+========================================================= */
+
+async function excluirPet(id){
+
+    const pet =
+        pets.find(
+            p => p.id === id
         );
 
 
-        mostrarMensagem(
-          "O pet foi cadastrado, mas não foi possível ativar a TAG: " +
-          resultadoTag.error.message,
-          "error"
-        );
-
-
-        await carregarPets();
-
-        cancelarPet();
-
+    if(!pet)
         return;
 
-      }
+
+    const confirmar =
+        confirm(
+            "Excluir o pet " +
+            pet.nome +
+            "?\n\n" +
+            "Todos os dados cadastrados deste pet serão removidos."
+        );
 
 
-      /* =====================================
-         TAG ATIVADA
-      ===================================== */
-
-      mostrarTagAtivada();
+    if(!confirmar)
+        return;
 
 
-      mostrarMensagem(
-        "Pet cadastrado e TAG ativada com sucesso!",
-        "success"
-      );
+    const resultado =
+        await supabaseClient
+            .rpc(
+                "excluir_pet",
+                {
+                    p_pet_id:
+                        id
+                }
+            );
 
 
-      /*
-        Remove o código da URL para evitar
-        tentar ativar novamente ao recarregar.
-      */
+    if(resultado.error){
 
-      window.history.replaceState(
-        {},
-        document.title,
-        "painel.html"
-      );
+        mostrarMensagem(
+            "Não foi possível excluir: " +
+            resultado.error.message,
+            "error"
+        );
+
+        return;
+    }
 
 
-      tagCodigo =
+    petSelecionado =
         null;
 
-    }
 
-
-    else{
-
-      mostrarMensagem(
-        arquivoFoto
-          ? "Pet e foto salvos com sucesso!"
-          : "Pet salvo com sucesso!",
+    mostrarMensagem(
+        "Pet excluído com sucesso.",
         "success"
-      );
-
-    }
+    );
 
 
     await carregarPets();
 
+}
 
-    cancelarPet();
+
+/* =========================================================
+   SELECTS
+========================================================= */
+
+function preencherSelects(){
+
+    const selects = [
+
+        "vacinaPetSelect",
+        "saudePetSelect",
+        "eventosPetSelect"
+
+    ];
 
 
-  }catch(erro){
+    selects.forEach(
+        id => {
 
-    console.error(
-      erro
+            const select =
+                document.getElementById(id);
+
+
+            if(!select)
+                return;
+
+
+            const valorAtual =
+                select.value;
+
+
+            select.innerHTML = `
+
+                <option value="">
+                    Selecione...
+                </option>
+
+                ${
+                    pets.map(
+                        p => `
+
+                            <option
+                                value="${p.id}"
+                            >
+                                ${escapeHtml(
+                                    p.nome
+                                )}
+                            </option>
+
+                        `
+                    ).join("")
+                }
+
+            `;
+
+
+            if(
+                pets.some(
+                    p => p.id === valorAtual
+                )
+            ){
+
+                select.value =
+                    valorAtual;
+
+            }
+
+        }
     );
 
-
-    mostrarMensagem(
-      "Erro ao salvar pet: " +
-      erro.message,
-      "error"
-    );
-
-
-  }finally{
-
-    botao.disabled = false;
-
-    botao.textContent =
-      "Salvar pet";
-
-  }
 }
 
 
-/* =====================================================
-   CANCELAR PET
-===================================================== */
+/* =========================================================
+   SELECT PET
+========================================================= */
 
-function cancelarPet(){
+async function selecionarPetPorSelect(tipo){
 
-  document
-    .getElementById(
-      "editorPet"
-    )
-    .classList
-    .add("hidden");
-
-
-  petSelecionado =
-    null;
+    const id =
+        document.getElementById(
+            tipo === "vacina"
+                ? "vacinaPetSelect"
+                : "saudePetSelect"
+        ).value;
 
 
-  limparFormularioPet();
+    if(!id){
 
-}
+        petSelecionado =
+            null;
 
+        if(tipo === "vacina"){
 
-/* =====================================================
-   LIMPAR FORMULÁRIO
-===================================================== */
+            document.getElementById(
+                "listaVacinas"
+            ).innerHTML = `
 
-function limparFormularioPet(){
+                <div class="loading">
+                    Selecione um pet.
+                </div>
 
-  document
-    .getElementById(
-      "petId"
-    )
-    .value = "";
+            `;
 
+            document.getElementById(
+                "formVacina"
+            ).classList.add(
+                "hidden"
+            );
 
-  document
-    .getElementById(
-      "petNome"
-    )
-    .value = "";
+        }else{
 
+            document.getElementById(
+                "listaSaude"
+            ).innerHTML = `
 
-  document
-    .getElementById(
-      "petEspecie"
-    )
-    .value =
-      "Cão";
+                <div class="loading">
+                    Selecione um pet.
+                </div>
 
+            `;
 
-  document
-    .getElementById(
-      "petRaca"
-    )
-    .value = "";
+            document.getElementById(
+                "formSaude"
+            ).classList.add(
+                "hidden"
+            );
 
+        }
 
-  document
-    .getElementById(
-      "petSexo"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "petNascimento"
-    )
-    .value = "";
+        return;
+    }
 
 
-  document
-    .getElementById(
-      "petCidade"
-    )
-    .value = "";
+    petSelecionado =
+        pets.find(
+            p => p.id === id
+        );
 
 
-  document
-    .getElementById(
-      "petAlergias"
-    )
-    .value = "";
+    if(tipo === "vacina"){
 
+        document.getElementById(
+            "formVacina"
+        ).classList.remove(
+            "hidden"
+        );
 
-  document
-    .getElementById(
-      "petMedicamentos"
-    )
-    .value = "";
+        await carregarVacinas(id);
 
+    }else{
 
-  document
-    .getElementById(
-      "petObservacoes"
-    )
-    .value = "";
+        document.getElementById(
+            "formSaude"
+        ).classList.remove(
+            "hidden"
+        );
 
+        await carregarSaude(id);
 
-  document
-    .getElementById(
-      "petPerdido"
-    )
-    .checked = false;
-
-
-  document
-    .getElementById(
-      "petMensagemPerdido"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "petUltimoLocal"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "petDataPerdido"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "petHoraPerdido"
-    )
-    .value = "";
+    }
 
 }
 
 
-/* =====================================================
-   VACINAS / SAÚDE
-===================================================== */
-
-async function abrirDadosPet(id){
-
-  const pet =
-    pets.find(
-      p => p.id === id
-    );
-
-
-  if(!pet)
-    return;
-
-
-  petSelecionado =
-    pet;
-
-
-  document
-    .getElementById(
-      "secaoVacinas"
-    )
-    .classList
-    .remove("hidden");
-
-
-  document
-    .getElementById(
-      "secaoSaude"
-    )
-    .classList
-    .remove("hidden");
-
-
-  await carregarVacinas(id);
-
-  await carregarSaude(id);
-
-
-  window.scrollTo({
-
-    top:
-      document
-        .getElementById(
-          "secaoVacinas"
-        )
-        .offsetTop - 20,
-
-    behavior:
-      "smooth"
-
-  });
-
-}
-
-
-/* =====================================================
+/* =========================================================
    VACINAS
-===================================================== */
+========================================================= */
 
 async function carregarVacinas(petId){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("vacinas")
-      .select("*")
-      .eq(
-        "pet_id",
-        petId
-      )
-      .order(
-        "data_aplicacao",
-        {
-          ascending:false
-        }
-      );
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("vacinas")
+            .select("*")
+            .eq(
+                "pet_id",
+                petId
+            )
+            .order(
+                "data_aplicacao",
+                {
+                    ascending:false
+                }
+            );
 
 
-  if(error){
+    if(error){
 
-    console.error(error);
+        console.error(error);
 
-    return;
-  }
-
-
-  const lista =
-    document.getElementById(
-      "listaVacinas"
-    );
+        return;
+    }
 
 
-  if(!data || !data.length){
-
-    lista.innerHTML = `
-      <div class="small">
-        Nenhuma vacina cadastrada.
-      </div>
-    `;
-
-    return;
-  }
+    const lista =
+        document.getElementById(
+            "listaVacinas"
+        );
 
 
-  lista.innerHTML =
-    data
-      .map(
-        v => `
+    if(!data?.length){
 
-          <div class="vaccine-row">
+        lista.innerHTML = `
 
-            <div class="row-title">
-              💉 ${escapeHtml(
-                v.nome || ""
-              )}
+            <div class="loading">
+
+                💉
+
+                <br><br>
+
+                Nenhuma vacina cadastrada.
+
             </div>
 
-            <div class="small">
-              Aplicação:
-              ${formatarData(
-                v.data_aplicacao
-              )}
-            </div>
+        `;
 
-            ${
-              v.proxima_dose
-                ? `
-                  <div class="small">
-                    Próxima dose:
-                    ${formatarData(
-                      v.proxima_dose
-                    )}
-                  </div>
-                `
-                : ""
-            }
+        return;
+    }
 
-            ${
-              v.veterinario
-                ? `
-                  <div class="small">
-                    Veterinário:
-                    ${escapeHtml(
-                      v.veterinario
-                    )}
-                  </div>
-                `
-                : ""
-            }
 
-          </div>
+    lista.innerHTML =
+        data.map(
+            v => `
 
-        `
-      )
-      .join("");
+                <div class="data-row">
+
+                    <div class="data-main">
+
+                        <strong>
+                            💉 ${escapeHtml(
+                                v.nome || ""
+                            )}
+                        </strong>
+
+                        <span>
+
+                            Aplicação:
+                            ${formatarData(
+                                v.data_aplicacao
+                            )}
+
+                            ${
+                                v.proxima_dose
+                                    ? " • Próxima dose: " +
+                                      formatarData(
+                                          v.proxima_dose
+                                      )
+                                    : ""
+                            }
+
+                        </span>
+
+
+                        ${
+                            v.veterinario
+                                ? `
+                                    <span>
+                                        Veterinário:
+                                        ${escapeHtml(
+                                            v.veterinario
+                                        )}
+                                    </span>
+                                  `
+                                : ""
+                        }
+
+                    </div>
+
+
+                    <div class="data-actions">
+
+                        <button
+                            class="btn btn-danger btn-small"
+                            onclick="excluirVacina('${v.id}')"
+                        >
+                            Excluir
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
 
 }
 
 
-/* =====================================================
+/* =========================================================
    ADICIONAR VACINA
-===================================================== */
+========================================================= */
 
 async function adicionarVacina(){
 
-  if(!petSelecionado){
+    if(!petSelecionado){
+
+        mostrarMensagem(
+            "Selecione um pet.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const nome =
+        document.getElementById(
+            "vacinaNome"
+        ).value.trim();
+
+
+    if(!nome){
+
+        mostrarMensagem(
+            "Informe o nome da vacina.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const resultado =
+        await supabaseClient
+            .from("vacinas")
+            .insert({
+
+                pet_id:
+                    petSelecionado.id,
+
+                nome:
+                    nome,
+
+                data_aplicacao:
+                    document.getElementById(
+                        "vacinaData"
+                    ).value || null,
+
+                proxima_dose:
+                    document.getElementById(
+                        "vacinaProxima"
+                    ).value || null,
+
+                veterinario:
+                    document.getElementById(
+                        "vacinaVeterinario"
+                    ).value.trim(),
+
+                observacoes:
+                    document.getElementById(
+                        "vacinaObservacoes"
+                    ).value.trim()
+
+            });
+
+
+    if(resultado.error){
+
+        mostrarMensagem(
+            "Erro: " +
+            resultado.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    limparFormularioVacina();
+
 
     mostrarMensagem(
-      "Selecione um pet primeiro.",
-      "error"
+        "Vacina adicionada!",
+        "success"
     );
 
-    return;
-  }
 
-
-  const nome =
-    document
-      .getElementById(
-        "vacinaNome"
-      )
-      .value
-      .trim();
-
-
-  if(!nome){
-
-    mostrarMensagem(
-      "Informe o nome da vacina.",
-      "error"
+    await carregarVacinas(
+        petSelecionado.id
     );
 
-    return;
-  }
 
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("vacinas")
-      .insert({
-
-        pet_id:
-          petSelecionado.id,
-
-        nome:
-          nome,
-
-        data_aplicacao:
-          document
-            .getElementById(
-              "vacinaData"
-            )
-            .value ||
-          null,
-
-        proxima_dose:
-          document
-            .getElementById(
-              "vacinaProxima"
-            )
-            .value ||
-          null,
-
-        veterinario:
-          document
-            .getElementById(
-              "vacinaVeterinario"
-            )
-            .value
-            .trim(),
-
-        observacoes:
-          document
-            .getElementById(
-              "vacinaObservacoes"
-            )
-            .value
-            .trim()
-
-      });
-
-
-  if(error){
-
-    console.error(error);
-
-    mostrarMensagem(
-      "Erro ao adicionar vacina: " +
-      error.message,
-      "error"
-    );
-
-    return;
-  }
-
-
-  document
-    .getElementById(
-      "vacinaNome"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "vacinaData"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "vacinaProxima"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "vacinaVeterinario"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "vacinaObservacoes"
-    )
-    .value = "";
-
-
-  mostrarMensagem(
-    "Vacina adicionada!",
-    "success"
-  );
-
-
-  await carregarVacinas(
-    petSelecionado.id
-  );
+    await gerarAlertas();
 
 }
 
 
-/* =====================================================
+/* =========================================================
+   EXCLUIR VACINA
+========================================================= */
+
+async function excluirVacina(id){
+
+    if(
+        !confirm(
+            "Excluir esta vacina?"
+        )
+    )
+        return;
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("vacinas")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if(error){
+
+        mostrarMensagem(
+            "Não foi possível excluir.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    mostrarMensagem(
+        "Vacina excluída.",
+        "success"
+    );
+
+
+    if(petSelecionado){
+
+        await carregarVacinas(
+            petSelecionado.id
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    SAÚDE
-===================================================== */
+========================================================= */
 
 async function carregarSaude(petId){
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("saude_pet")
-      .select("*")
-      .eq(
-        "pet_id",
-        petId
-      )
-      .order(
-        "data_evento",
-        {
-          ascending:false
-        }
-      );
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("saude_pet")
+            .select("*")
+            .eq(
+                "pet_id",
+                petId
+            )
+            .order(
+                "data_evento",
+                {
+                    ascending:false
+                }
+            );
 
 
-  if(error){
+    if(error){
 
-    console.error(error);
+        console.error(error);
 
-    return;
-  }
-
-
-  const lista =
-    document.getElementById(
-      "listaSaude"
-    );
+        return;
+    }
 
 
-  if(!data || !data.length){
-
-    lista.innerHTML = `
-      <div class="small">
-        Nenhum registro de saúde cadastrado.
-      </div>
-    `;
-
-    return;
-  }
+    const lista =
+        document.getElementById(
+            "listaSaude"
+        );
 
 
-  lista.innerHTML =
-    data
-      .map(
-        s => `
+    if(!data?.length){
 
-          <div class="health-row">
+        lista.innerHTML = `
 
-            <div class="row-title">
-              🏥 ${escapeHtml(
-                s.titulo || ""
-              )}
+            <div class="loading">
+
+                🩺
+
+                <br><br>
+
+                Nenhum registro de saúde.
+
             </div>
 
-            <div class="small">
-              Tipo:
-              ${escapeHtml(
-                s.tipo || ""
-              )}
-            </div>
+        `;
 
-            ${
-              s.data_evento
-                ? `
-                  <div class="small">
-                    Data:
-                    ${formatarData(
-                      s.data_evento
-                    )}
-                  </div>
-                `
-                : ""
-            }
+        return;
+    }
 
-            ${
-              s.descricao
-                ? `
-                  <div style="margin-top:8px;">
-                    ${escapeHtml(
-                      s.descricao
-                    )}
-                  </div>
-                `
-                : ""
-            }
 
-          </div>
+    lista.innerHTML =
+        data.map(
+            s => `
 
-        `
-      )
-      .join("");
+                <div class="data-row">
+
+                    <div class="data-main">
+
+                        <strong>
+
+                            🩺 ${escapeHtml(
+                                s.titulo || ""
+                            )}
+
+                        </strong>
+
+                        <span>
+
+                            ${escapeHtml(
+                                s.tipo || ""
+                            )}
+
+                            ${
+                                s.data_evento
+                                    ? " • " +
+                                      formatarData(
+                                          s.data_evento
+                                      )
+                                    : ""
+                            }
+
+                        </span>
+
+
+                        ${
+                            s.descricao
+                                ? `
+                                    <span>
+                                        ${escapeHtml(
+                                            s.descricao
+                                        )}
+                                    </span>
+                                  `
+                                : ""
+                        }
+
+                    </div>
+
+
+                    <div class="data-actions">
+
+                        <button
+                            class="btn btn-danger btn-small"
+                            onclick="excluirSaude('${s.id}')"
+                        >
+                            Excluir
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
 
 }
 
 
-/* =====================================================
+/* =========================================================
    ADICIONAR SAÚDE
-===================================================== */
+========================================================= */
 
 async function adicionarSaude(){
 
-  if(!petSelecionado){
+    if(!petSelecionado){
 
-    mostrarMensagem(
-      "Selecione um pet primeiro.",
-      "error"
-    );
+        mostrarMensagem(
+            "Selecione um pet.",
+            "error"
+        );
 
-    return;
-  }
+        return;
+    }
 
 
-  const titulo =
-    document
-      .getElementById(
+    const titulo =
+        document.getElementById(
+            "saudeTitulo"
+        ).value.trim();
+
+
+    if(!titulo){
+
+        mostrarMensagem(
+            "Informe um título.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const resultado =
+        await supabaseClient
+            .from("saude_pet")
+            .insert({
+
+                pet_id:
+                    petSelecionado.id,
+
+                tipo:
+                    document.getElementById(
+                        "saudeTipo"
+                    ).value,
+
+                titulo:
+                    titulo,
+
+                descricao:
+                    document.getElementById(
+                        "saudeDescricao"
+                    ).value.trim(),
+
+                data_evento:
+                    document.getElementById(
+                        "saudeData"
+                    ).value || null
+
+            });
+
+
+    if(resultado.error){
+
+        mostrarMensagem(
+            "Erro: " +
+            resultado.error.message,
+            "error"
+        );
+
+        return;
+    }
+
+
+    document.getElementById(
         "saudeTitulo"
-      )
-      .value
-      .trim();
+    ).value = "";
 
 
-  if(!titulo){
+    document.getElementById(
+        "saudeDescricao"
+    ).value = "";
+
+
+    document.getElementById(
+        "saudeData"
+    ).value = "";
+
 
     mostrarMensagem(
-      "Informe um título.",
-      "error"
+        "Registro de saúde adicionado!",
+        "success"
     );
 
-    return;
-  }
 
-
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("saude_pet")
-      .insert({
-
-        pet_id:
-          petSelecionado.id,
-
-        tipo:
-          document
-            .getElementById(
-              "saudeTipo"
-            )
-            .value,
-
-        titulo:
-          titulo,
-
-        descricao:
-          document
-            .getElementById(
-              "saudeDescricao"
-            )
-            .value
-            .trim(),
-
-        data_evento:
-          document
-            .getElementById(
-              "saudeData"
-            )
-            .value ||
-          null
-
-      });
-
-
-  if(error){
-
-    console.error(error);
-
-    mostrarMensagem(
-      "Erro ao adicionar registro: " +
-      error.message,
-      "error"
+    await carregarSaude(
+        petSelecionado.id
     );
 
-    return;
-  }
 
-
-  document
-    .getElementById(
-      "saudeTitulo"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "saudeDescricao"
-    )
-    .value = "";
-
-
-  document
-    .getElementById(
-      "saudeData"
-    )
-    .value = "";
-
-
-  mostrarMensagem(
-    "Registro de saúde adicionado!",
-    "success"
-  );
-
-
-  await carregarSaude(
-    petSelecionado.id
-  );
+    await gerarAlertas();
 
 }
 
 
-/* =====================================================
+/* =========================================================
+   EXCLUIR SAÚDE
+========================================================= */
+
+async function excluirSaude(id){
+
+    if(
+        !confirm(
+            "Excluir este registro?"
+        )
+    )
+        return;
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("saude_pet")
+            .delete()
+            .eq(
+                "id",
+                id
+            );
+
+
+    if(error){
+
+        mostrarMensagem(
+            "Não foi possível excluir.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    mostrarMensagem(
+        "Registro excluído.",
+        "success"
+    );
+
+
+    if(petSelecionado){
+
+        await carregarSaude(
+            petSelecionado.id
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ABRIR PET / VACINAS
+========================================================= */
+
+function abrirVacinasPet(id){
+
+    petSelecionado =
+        pets.find(
+            p => p.id === id
+        );
+
+
+    mostrarSecao(
+        "vacinas"
+    );
+
+
+    document.getElementById(
+        "vacinaPetSelect"
+    ).value =
+        id;
+
+
+    document.getElementById(
+        "formVacina"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    carregarVacinas(id);
+
+}
+
+
+/* =========================================================
+   ABRIR PET / SAÚDE
+========================================================= */
+
+function abrirSaudePet(id){
+
+    petSelecionado =
+        pets.find(
+            p => p.id === id
+        );
+
+
+    mostrarSecao(
+        "saude"
+    );
+
+
+    document.getElementById(
+        "saudePetSelect"
+    ).value =
+        id;
+
+
+    document.getElementById(
+        "formSaude"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    carregarSaude(id);
+
+}
+
+
+/* =========================================================
+   EVENTOS
+========================================================= */
+
+async function carregarEventosSelecionados(){
+
+    const id =
+        document.getElementById(
+            "eventosPetSelect"
+        ).value;
+
+
+    const lista =
+        document.getElementById(
+            "listaEventos"
+        );
+
+
+    if(!id){
+
+        lista.innerHTML = `
+
+            <div class="loading">
+                Selecione um pet.
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("saude_pet")
+            .select("*")
+            .eq(
+                "pet_id",
+                id
+            )
+            .in(
+                "tipo",
+                [
+                    "Consulta",
+                    "Exame"
+                ]
+            )
+            .order(
+                "data_evento",
+                {
+                    ascending:true
+                }
+            );
+
+
+    if(error){
+
+        console.error(error);
+
+        return;
+    }
+
+
+    if(!data?.length){
+
+        lista.innerHTML = `
+
+            <div class="loading">
+
+                📅
+
+                <br><br>
+
+                Nenhuma consulta ou exame cadastrado.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    lista.innerHTML =
+        data.map(
+            item => `
+
+                <div class="data-row">
+
+                    <div class="data-main">
+
+                        <strong>
+
+                            ${
+                                item.tipo === "Exame"
+                                    ? "🧪"
+                                    : "🩺"
+                            }
+
+                            ${escapeHtml(
+                                item.titulo || ""
+                            )}
+
+                        </strong>
+
+                        <span>
+
+                            ${escapeHtml(
+                                item.tipo || ""
+                            )}
+
+                            ${
+                                item.data_evento
+                                    ? " • " +
+                                      formatarData(
+                                          item.data_evento
+                                      )
+                                    : ""
+                            }
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `
+        )
+        .join("");
+
+}
+
+
+/* =========================================================
+   ALERTAS
+========================================================= */
+
+async function gerarAlertas(){
+
+    const lista =
+        document.getElementById(
+            "listaAlertas"
+        );
+
+
+    if(!pets.length){
+
+        lista.innerHTML = `
+
+            <div class="alert-item good">
+
+                <div class="alert-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <strong>
+                        Tudo certo por enquanto
+                    </strong>
+
+                    <span>
+                        Cadastre um pet para começar.
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+        document.getElementById(
+            "statAlertas"
+        ).textContent =
+            "0";
+
+        return;
+    }
+
+
+    const ids =
+        pets.map(
+            p => p.id
+        );
+
+
+    const {
+        data: vacinas
+    } =
+        await supabaseClient
+            .from("vacinas")
+            .select("*")
+            .in(
+                "pet_id",
+                ids
+            );
+
+
+    const hoje =
+        new Date();
+
+
+    hoje.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    const alertas = [];
+
+
+    (vacinas || [])
+        .forEach(
+            vacina => {
+
+                if(!vacina.proxima_dose)
+                    return;
+
+
+                const data =
+                    new Date(
+                        vacina.proxima_dose +
+                        "T00:00:00"
+                    );
+
+
+                const diff =
+                    Math.round(
+                        (
+                            data - hoje
+                        ) /
+                        86400000
+                    );
+
+
+                const pet =
+                    pets.find(
+                        p =>
+                            p.id ===
+                            vacina.pet_id
+                    );
+
+
+                const nomePet =
+                    pet?.nome ||
+                    "Seu pet";
+
+
+                if(diff < 0){
+
+                    alertas.push({
+
+                        tipo:"bad",
+
+                        icone:"🚨",
+
+                        titulo:
+                            vacina.nome +
+                            " atrasada",
+
+                        texto:
+                            nomePet +
+                            " está com a próxima dose atrasada."
+
+                    });
+
+                }
+
+                else if(diff === 0){
+
+                    alertas.push({
+
+                        tipo:"warn",
+
+                        icone:"💉",
+
+                        titulo:
+                            vacina.nome +
+                            " vence hoje",
+
+                        texto:
+                            nomePet +
+                            " precisa da próxima dose hoje."
+
+                    });
+
+                }
+
+                else if(diff <= 7){
+
+                    alertas.push({
+
+                        tipo:"warn",
+
+                        icone:"🔔",
+
+                        titulo:
+                            vacina.nome +
+                            " próxima da data",
+
+                        texto:
+                            nomePet +
+                            " terá a próxima dose em " +
+                            diff +
+                            " dia(s)."
+
+                    });
+
+                }
+
+                else if(diff <= 30){
+
+                    alertas.push({
+
+                        tipo:"good",
+
+                        icone:"📅",
+
+                        titulo:
+                            vacina.nome,
+
+                        texto:
+                            "Próxima dose em " +
+                            diff +
+                            " dia(s)."
+
+                    });
+
+                }
+
+            }
+        );
+
+
+    if(!alertas.length){
+
+        lista.innerHTML = `
+
+            <div class="alert-item good">
+
+                <div class="alert-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <strong>
+                        Tudo em dia!
+                    </strong>
+
+                    <span>
+                        Não encontramos nenhum alerta de vacinação próximo.
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }else{
+
+        lista.innerHTML =
+            alertas.map(
+                a => `
+
+                    <div
+                        class="alert-item ${a.tipo}"
+                    >
+
+                        <div class="alert-icon">
+                            ${a.icone}
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                ${escapeHtml(
+                                    a.titulo
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    a.texto
+                                )}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                `
+            )
+            .join("");
+
+    }
+
+
+    document.getElementById(
+        "statAlertas"
+    ).textContent =
+        alertas.filter(
+            a =>
+                a.tipo === "warn" ||
+                a.tipo === "bad"
+        ).length;
+
+}
+
+
+/* =========================================================
+   PRIVACIDADE
+========================================================= */
+
+function toggleVisual(botao){
+
+    botao.classList.toggle(
+        "on"
+    );
+
+}
+
+
+function salvarPrivacidade(){
+
+    /*
+       Esta versão visual prepara
+       a interface para os campos
+       de privacidade do perfil.
+
+       A aplicação efetiva dos campos
+       públicos deverá ser ligada aos
+       respectivos campos do banco.
+    */
+
+    mostrarMensagem(
+        "Preferências de privacidade salvas nesta sessão.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   ATIVAÇÃO TAG
+========================================================= */
+
+async function prepararAtivacaoTag(){
+
+    if(!tagCodigo)
+        return;
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .rpc(
+                    "verificar_tag_ativacao",
+                    {
+                        p_codigo:
+                            tagCodigo
+                    }
+                );
+
+
+        if(error){
+
+            console.error(error);
+
+            return;
+        }
+
+
+        if(
+            data &&
+            data.encontrada === true &&
+            data.ativa === true &&
+            data.disponivel === true
+        ){
+
+            mostrarMensagem(
+                "TAG " +
+                tagCodigo +
+                " encontrada. Cadastre o pet para ativá-la.",
+                "info"
+            );
+
+
+            novoPet();
+
+        }
+
+    }catch(e){
+
+        console.error(e);
+
+    }
+
+}
+
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function mostrarSecao(
+    nome,
+    botao
+){
+
+    document
+        .querySelectorAll(
+            ".page-section"
+        )
+        .forEach(
+            secao => {
+
+                secao.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    const alvo =
+        document.getElementById(
+            "section-" +
+            nome
+        );
+
+
+    if(alvo){
+
+        alvo.classList.add(
+            "active"
+        );
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".menu-item"
+        )
+        .forEach(
+            item => {
+
+                item.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    if(botao){
+
+        botao.classList.add(
+            "active"
+        );
+
+    }else{
+
+        const item =
+            document.querySelector(
+                `.menu-item[data-section="${nome}"]`
+            );
+
+
+        if(item){
+
+            item.classList.add(
+                "active"
+            );
+
+        }
+
+    }
+
+
+    document
+        .getElementById(
+            "sidebar"
+        )
+        .classList.remove(
+            "open"
+        );
+
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+
+    if(nome === "alertas"){
+
+        gerarAlertas();
+
+    }
+
+}
+
+
+/* =========================================================
+   SIDEBAR MOBILE
+========================================================= */
+
+function abrirSidebar(){
+
+    document
+        .getElementById(
+            "sidebar"
+        )
+        .classList.toggle(
+            "open"
+        );
+
+}
+
+
+/* =========================================================
+   PREVIEW FOTO
+========================================================= */
+
+document.addEventListener(
+    "change",
+    function(event){
+
+        if(
+            event.target.id ===
+            "petFoto"
+        ){
+
+            const arquivo =
+                event.target.files?.[0];
+
+
+            if(!arquivo)
+                return;
+
+
+            const leitor =
+                new FileReader();
+
+
+            leitor.onload =
+                function(e){
+
+                    const preview =
+                        document.getElementById(
+                            "previewPetFoto"
+                        );
+
+
+                    preview.src =
+                        e.target.result;
+
+
+                    preview.style.display =
+                        "block";
+
+                };
+
+
+            leitor.readAsDataURL(
+                arquivo
+            );
+
+        }
+
+
+        if(
+            event.target.id ===
+            "petFotos"
+        ){
+
+            const area =
+                document.getElementById(
+                    "previewPetFotos"
+                );
+
+
+            area.innerHTML =
+                "";
+
+
+            const arquivos =
+                Array.from(
+                    event.target.files || []
+                );
+
+
+            if(
+                arquivos.length > 5
+            ){
+
+                alert(
+                    "Selecione no máximo 5 fotos adicionais."
+                );
+
+
+                event.target.value =
+                    "";
+
+
+                return;
+            }
+
+
+            arquivos.forEach(
+                arquivo => {
+
+                    const leitor =
+                        new FileReader();
+
+
+                    leitor.onload =
+                        function(e){
+
+                            const img =
+                                document.createElement(
+                                    "img"
+                                );
+
+
+                            img.src =
+                                e.target.result;
+
+
+                            img.alt =
+                                "Foto do pet";
+
+
+                            area.appendChild(
+                                img
+                            );
+
+                        };
+
+
+                    leitor.readAsDataURL(
+                        arquivo
+                    );
+
+                }
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
    UTILIDADES
-===================================================== */
+========================================================= */
 
 function formatarData(data){
 
-  if(!data)
-    return "Não informado";
+    if(!data)
+        return "Não informado";
 
 
-  const partes =
-    String(data).split("-");
+    const partes =
+        String(data)
+            .split("-");
 
 
-  if(partes.length !== 3)
-    return data;
+    if(
+        partes.length !== 3
+    )
+        return data;
 
 
-  return (
-    partes[2] +
-    "/" +
-    partes[1] +
-    "/" +
-    partes[0]
-  );
+    return (
+
+        partes[2] +
+        "/" +
+        partes[1] +
+        "/" +
+        partes[0]
+
+    );
 
 }
 
 
 function escapeHtml(text){
 
-  return String(
-    text ?? ""
-  )
-  .replaceAll(
-    "&",
-    "&amp;"
-  )
-  .replaceAll(
-    "<",
-    "&lt;"
-  )
-  .replaceAll(
-    ">",
-    "&gt;"
-  )
-  .replaceAll(
-    '"',
-    "&quot;"
-  )
-  .replaceAll(
-    "'",
-    "&#039;"
-  );
-
-}
-
-
-/* =====================================================
-   MENSAGEM
-===================================================== */
-
-function mostrarMensagem(
-  texto,
-  tipo
-){
-
-  const box =
-    document.getElementById(
-      "mensagem"
+    return String(
+        text ?? ""
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
     );
 
-
-  box.textContent =
-    texto;
+}
 
 
-  box.className =
-    "message " + tipo;
+/* =========================================================
+   MENSAGEM
+========================================================= */
+
+function mostrarMensagem(
+    texto,
+    tipo
+){
+
+    const box =
+        document.getElementById(
+            "mensagem"
+        );
 
 
-  box.style.display =
-    "block";
+    box.textContent =
+        texto;
 
 
-  setTimeout(
-    () => {
+    box.className =
+        "message " +
+        tipo;
 
-      box.style.display =
-        "none";
 
-    },
-    6000
-  );
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            box.style.display =
+                "none";
+
+        },
+        5000
+    );
 
 }
 
 
-/* =====================================================
-   VOLTAR
-===================================================== */
+/* =========================================================
+   LIMPAR VACINA
+========================================================= */
 
-function voltarSite(){
+function limparFormularioVacina(){
 
-  window.location.href =
-    "index.html";
+    document.getElementById(
+        "vacinaNome"
+    ).value = "";
+
+
+    document.getElementById(
+        "vacinaData"
+    ).value = "";
+
+
+    document.getElementById(
+        "vacinaProxima"
+    ).value = "";
+
+
+    document.getElementById(
+        "vacinaVeterinario"
+    ).value = "";
+
+
+    document.getElementById(
+        "vacinaObservacoes"
+    ).value = "";
 
 }
 
 
-/* =====================================================
+/* =========================================================
    SAIR
-===================================================== */
+========================================================= */
 
 async function sair(){
 
-  if(supabaseClient){
+    if(supabaseClient){
 
-    await supabaseClient
-      .auth
-      .signOut();
+        await supabaseClient
+            .auth
+            .signOut();
 
-  }
-
-
-  window.location.href =
-    "login.html";
-
-}
-
-
-/* =====================================================
-   START
-===================================================== */
-
-iniciarSupabase();
-/* ==========================================
-   PRÉ-VISUALIZAÇÃO DAS FOTOS ADICIONAIS
-   ========================================== */
-
-const campoFotos =
-  document.getElementById("petFotos");
-
-const areaPreviewFotos =
-  document.getElementById("previewPetFotos");
-
-if(campoFotos && areaPreviewFotos){
-
-  campoFotos.addEventListener("change", function(){
-
-    areaPreviewFotos.innerHTML = "";
-
-    const arquivos =
-      Array.from(this.files);
-
-    if(arquivos.length > 5){
-
-      alert(
-        "Você pode selecionar no máximo 5 fotos adicionais."
-      );
-
-      this.value = "";
-      return;
     }
 
-    arquivos.forEach((arquivo, indice) => {
 
-      const leitor =
-        new FileReader();
-
-      leitor.onload = function(e){
-
-        const div =
-          document.createElement("div");
-
-        div.style.position = "relative";
-
-        div.innerHTML = `
-          <img
-            src="${e.target.result}"
-            alt="Foto adicional ${indice + 1}"
-            style="
-              width:90px;
-              height:90px;
-              object-fit:cover;
-              border-radius:12px;
-              display:block;
-              box-shadow:0 2px 8px rgba(0,0,0,.12);
-            "
-          >
-        `;
-
-        areaPreviewFotos.appendChild(div);
-
-      };
-
-      leitor.readAsDataURL(arquivo);
-
-    });
-
-  });
+    window.location.href =
+        "login.html";
 
 }
+
+
+/* =========================================================
+   START
+========================================================= */
+
+iniciarSupabase();
+
 </script>
 
 
 </body>
 
-  </html>
+</html>
