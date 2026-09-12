@@ -3877,6 +3877,8 @@ let petSelecionado = null;
 
 let tagCodigo = null;
 
+let fotosAdicionaisExistentes = [];
+
 
 /* =========================================================
    URL
@@ -4748,6 +4750,7 @@ async function atualizarContadores(){
 function novoPet(){
 
     petSelecionado = null;
+    fotosAdicionaisExistentes = [];
 
     limparFormularioPet();
 
@@ -4768,7 +4771,7 @@ function novoPet(){
    EDITAR PET
 ========================================================= */
 
-function editarPet(id){
+async function editarPet(id){
 
     const pet =
         pets.find(
@@ -4782,6 +4785,9 @@ function editarPet(id){
 
     petSelecionado =
         pet;
+
+
+    fotosAdicionaisExistentes = [];
 
 
     document.getElementById(
@@ -4906,12 +4912,142 @@ function editarPet(id){
     }
 
 
+    const areaFotos =
+        document.getElementById(
+            "previewPetFotos"
+        );
+
+
+    areaFotos.innerHTML =
+        "<div style='grid-column:1/-1;color:#74888e;font-size:11px;'>Carregando fotos adicionais...</div>";
+
+
+    try{
+
+        const resultadoFotos =
+            await supabaseClient
+                .from("pet_fotos")
+                .select(
+                    "id,foto_url,principal,created_at"
+                )
+                .eq(
+                    "pet_id",
+                    pet.id
+                )
+                .eq(
+                    "principal",
+                    false
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending:false
+                    }
+                );
+
+
+        if(resultadoFotos.error)
+            throw resultadoFotos.error;
+
+
+        fotosAdicionaisExistentes =
+            resultadoFotos.data || [];
+
+
+        renderizarFotosAdicionaisExistentes();
+
+
+    }catch(erroFotos){
+
+        console.error(
+            "Erro ao carregar fotos adicionais:",
+            erroFotos
+        );
+
+
+        fotosAdicionaisExistentes =
+            [];
+
+
+        areaFotos.innerHTML =
+            "<div style='grid-column:1/-1;color:#b52f2f;font-size:11px;'>Não foi possível carregar as fotos adicionais.</div>";
+
+    }
+
+
+    document.getElementById(
+        "petFoto"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "petFotos"
+    ).value =
+        "";
+
+
     document.getElementById(
         "modalPet"
     ).classList.add("show");
 
 }
 
+
+/* =========================================================
+   FOTOS ADICIONAIS SALVAS
+========================================================= */
+
+function renderizarFotosAdicionaisExistentes(){
+
+    const area =
+        document.getElementById(
+            "previewPetFotos"
+        );
+
+
+    area.innerHTML =
+        "";
+
+
+    if(!fotosAdicionaisExistentes.length){
+
+        area.innerHTML =
+            "<div style='grid-column:1/-1;color:#74888e;font-size:11px;'>Nenhuma foto adicional cadastrada.</div>";
+
+        return;
+    }
+
+
+    fotosAdicionaisExistentes.forEach(
+        foto => {
+
+            const img =
+                document.createElement(
+                    "img"
+                );
+
+
+            img.src =
+                foto.foto_url;
+
+
+            img.alt =
+                "Foto adicional do pet";
+
+
+            img.title =
+                "Foto já cadastrada";
+
+
+            area.appendChild(
+                img
+            );
+
+        }
+    );
+
+}
 
 /* =========================================================
    FECHAR MODAL
@@ -4931,6 +5067,8 @@ function fecharModalPet(){
 ========================================================= */
 
 function limparFormularioPet(){
+
+    fotosAdicionaisExistentes = [];
 
     const ids = [
 
@@ -7666,12 +7804,17 @@ document.addEventListener(
                 );
 
 
+            const totalFotos =
+                fotosAdicionaisExistentes.length +
+                arquivos.length;
+
+
             if(
-                arquivos.length > 5
+                totalFotos > 5
             ){
 
                 alert(
-                    "Selecione no máximo 5 fotos adicionais."
+                    "O pet pode ter no máximo 5 fotos adicionais."
                 );
 
 
@@ -7679,8 +7822,14 @@ document.addEventListener(
                     "";
 
 
+                renderizarFotosAdicionaisExistentes();
+
+
                 return;
             }
+
+
+            renderizarFotosAdicionaisExistentes();
 
 
             arquivos.forEach(
@@ -7704,7 +7853,11 @@ document.addEventListener(
 
 
                             img.alt =
-                                "Foto do pet";
+                                "Nova foto do pet";
+
+
+                            img.title =
+                                "Nova foto selecionada";
 
 
                             area.appendChild(
