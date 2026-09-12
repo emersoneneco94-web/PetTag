@@ -1,1367 +1,1654 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Save Tag Pet | Entrar</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    min-height:100vh;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
-    background:#f3f7f5;
-
-    color:#172b2f;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:20px;
-}
-
-.container{
-    width:100%;
-    max-width:430px;
-}
-
-.logo{
-    text-align:center;
-    margin-bottom:25px;
-}
-
-.logo h1{
-    margin:0;
-    font-size:34px;
-    font-weight:800;
-}
-
-.logo h1 span{
-    color:#21a366;
-}
-
-.logo p{
-    margin:8px 0 0;
-
-    font-size:12px;
-    letter-spacing:2px;
-
-    color:#687779;
-}
-
-.card{
-    background:#fff;
-
-    border-radius:22px;
-
-    padding:30px 25px;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.08);
-}
-
-.ativacao{
-    background:#e8f6ee;
-
-    border:1px solid #c7e9d5;
-
-    border-radius:16px;
-
-    padding:18px;
-
-    margin-bottom:16px;
-
-    text-align:center;
-}
-
-.ativacao.hidden{
-    display:none;
-}
-
-.ativacao .icone{
-    font-size:30px;
-    margin-bottom:6px;
-}
-
-.ativacao h3{
-    margin:0 0 7px;
-
-    color:#17643e;
-
-    font-size:19px;
-}
-
-.ativacao p{
-    margin:5px 0;
-
-    color:#4d6258;
-
-    font-size:14px;
-
-    line-height:1.5;
-}
-
-.codigo{
-    display:inline-block;
-
-    margin-top:7px;
-
-    padding:8px 14px;
-
-    background:white;
-
-    border-radius:9px;
-
-    color:#173d2d;
-
-    font-size:17px;
-
-    font-weight:800;
-
-    letter-spacing:1px;
-}
-
-h2{
-    text-align:center;
-
-    margin:0 0 25px;
-
-    font-size:24px;
-}
-
-label{
-    display:block;
-
-    margin:15px 0 7px;
-
-    font-size:14px;
-
-    font-weight:bold;
-}
-
-input{
-    width:100%;
-
-    padding:14px;
-
-    border:1px solid #d7dfdc;
-
-    border-radius:10px;
-
-    font-size:16px;
-
-    outline:none;
-}
-
-input:focus{
-    border-color:#21a366;
-}
-
-button{
-    width:100%;
-
-    margin-top:22px;
-
-    padding:15px;
-
-    border:0;
-
-    border-radius:11px;
-
-    background:#21a366;
-
-    color:white;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-}
-
-button:hover{
-    background:#198b55;
-}
-
-button:disabled{
-    opacity:.6;
-
-    cursor:not-allowed;
-}
-
-.btn-secundario{
-    background:none;
-
-    color:#19a765;
-
-    margin-top:12px;
-
-    padding:10px;
-}
-
-.btn-secundario:hover{
-    background:#f1faf5;
-}
-
-.link{
-    text-align:center;
-
-    margin-top:18px;
-
-    color:#21a366;
-
-    font-weight:bold;
-
-    font-size:14px;
-
-    cursor:pointer;
-}
-
-.link:hover{
-    text-decoration:underline;
-}
-
-.voltar{
-    display:block;
-
-    text-align:center;
-
-    margin-top:22px;
-
-    color:#687779;
-
-    text-decoration:none;
-
-    font-size:14px;
-}
-
-.hidden{
-    display:none !important;
-}
-
-.mensagem{
-    display:none;
-
-    margin-top:15px;
-
-    padding:12px;
-
-    border-radius:10px;
-
-    text-align:center;
-
-    font-size:14px;
-
-    line-height:1.4;
-}
-
-.mensagem.sucesso{
-    display:block;
-
-    background:#e8f7ef;
-
-    color:#187443;
-}
-
-.mensagem.erro{
-    display:block;
-
-    background:#fdecec;
-
-    color:#a52b2b;
-}
-
-.mensagem.info{
-    display:block;
-
-    background:#eef5f7;
-
-    color:#28545d;
-}
-
-</style>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Entrar | Save Tag Pet</title>
+
+  <meta name="description" content="Acesse sua Área do Tutor Save Tag Pet.">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(19, 180, 130, 0.12), transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(11, 56, 77, 0.12), transparent 30%),
+        #f3f8f7;
+      color: #0b3850;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* =========================================================
+       LADO ESQUERDO
+    ========================================================= */
+
+    .left {
+      width: 48%;
+      min-height: 100vh;
+      background: linear-gradient(145deg, #07384d, #0a465d);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left::before {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      background: rgba(16, 181, 132, 0.10);
+      top: -180px;
+      left: -180px;
+    }
+
+    .left::after {
+      content: "";
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      bottom: -150px;
+      right: -130px;
+    }
+
+    .left-content {
+      max-width: 510px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 65px;
+    }
+
+    .brand-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 29px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    }
+
+    .brand-name {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-name span {
+      color: #16bb88;
+    }
+
+    .brand-sub {
+      margin-top: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      color: rgba(255,255,255,.75);
+    }
+
+    .left h1 {
+      font-size: 48px;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 22px;
+    }
+
+    .left h1 span {
+      color: #17bd8a;
+    }
+
+    .left-description {
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(255,255,255,.80);
+      max-width: 450px;
+      margin-bottom: 38px;
+    }
+
+    .benefits {
+      display: grid;
+      gap: 16px;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-size: 14px;
+      color: rgba(255,255,255,.88);
+    }
+
+    .benefit-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255,255,255,.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================
+       LADO DIREITO
+    ========================================================= */
+
+    .right {
+      width: 52%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .mobile-brand {
+      display: none;
+    }
+
+    .login-header {
+      margin-bottom: 30px;
+    }
+
+    .login-header h2 {
+      font-size: 31px;
+      letter-spacing: -.7px;
+      margin-bottom: 8px;
+      color: #0b3850;
+    }
+
+    .login-header p {
+      color: #71828a;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e1ebe9;
+      border-radius: 22px;
+      padding: 32px;
+      box-shadow: 0 15px 50px rgba(10, 56, 77, .08);
+    }
+
+    .field {
+      margin-bottom: 19px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #274b5b;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 17px;
+      opacity: .75;
+      pointer-events: none;
+    }
+
+    .field input {
+      width: 100%;
+      height: 50px;
+      border: 1px solid #d9e6e4;
+      border-radius: 12px;
+      padding: 0 45px;
+      font-size: 14px;
+      color: #173f51;
+      background: #fbfdfd;
+      outline: none;
+      transition: .2s;
+    }
+
+    .field input:focus {
+      border-color: #10ad7d;
+      box-shadow: 0 0 0 3px rgba(16, 173, 125, .10);
+      background: white;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 17px;
+      opacity: .65;
+      padding: 5px;
+    }
+
+    .password-toggle:hover {
+      opacity: 1;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 5px 0 23px;
+      gap: 10px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #687c85;
+      cursor: pointer;
+    }
+
+    .remember input {
+      accent-color: #0eae7e;
+      cursor: pointer;
+    }
+
+    .forgot {
+      border: 0;
+      background: transparent;
+      color: #0e9d73;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      width: 100%;
+      height: 52px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b181, #0ba776);
+      color: white;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(12, 170, 123, .22);
+      transition: .2s;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 11px 25px rgba(12, 170, 123, .28);
+    }
+
+    .btn-login:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 27px 0;
+      color: #9aa9ae;
+      font-size: 11px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      background: #e6eeee;
+      flex: 1;
+    }
+
+    .signup-box {
+      text-align: center;
+      font-size: 13px;
+      color: #71828a;
+    }
+
+    .signup-box button {
+      border: 0;
+      background: transparent;
+      color: #0c9e74;
+      font-weight: 800;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .signup-box button:hover {
+      text-decoration: underline;
+    }
+
+    .security {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: #87979c;
+      font-size: 11px;
+    }
+
+    /* =========================================================
+       ALERTAS
+    ========================================================= */
+
+    .message {
+      display: none;
+      padding: 13px 14px;
+      border-radius: 11px;
+      margin-bottom: 18px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.error {
+      background: #fff1f1;
+      border: 1px solid #ffd5d5;
+      color: #b33d3d;
+    }
+
+    .message.success {
+      background: #edfaf5;
+      border: 1px solid #ccefe1;
+      color: #16815e;
+    }
+
+    .message.info {
+      background: #eef7fb;
+      border: 1px solid #d3eaf3;
+      color: #17617b;
+    }
+
+    /* =========================================================
+       MODAL CADASTRO
+    ========================================================= */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 30, 42, .62);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      background: white;
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.22);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 25px;
+    }
+
+    .modal-header h3 {
+      color: #0b3850;
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .modal-header p {
+      color: #7b8d94;
+      font-size: 12px;
+    }
+
+    .close-modal {
+      border: 0;
+      background: #edf4f3;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 17px;
+      color: #49636d;
+    }
+
+    .close-modal:hover {
+      background: #e3edeb;
+    }
+
+    .modal .field input {
+      padding-left: 14px;
+    }
+
+    .btn-register {
+      width: 100%;
+      height: 50px;
+      border: 0;
+      border-radius: 11px;
+      background: #0daf7d;
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .btn-register:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    /* =========================================================
+       RESPONSIVO
+    ========================================================= */
+
+    @media (max-width: 900px) {
+
+      .left {
+        display: none;
+      }
+
+      .right {
+        width: 100%;
+        padding: 25px;
+      }
+
+      .mobile-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 35px;
+      }
+
+      .mobile-brand-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 13px;
+        background: #0b3850;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+
+      .mobile-brand-name {
+        font-size: 21px;
+        font-weight: 800;
+        color: #0b3850;
+      }
+
+      .mobile-brand-name span {
+        color: #0daf7d;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      .right {
+        padding: 18px;
+      }
+
+      .login-header h2 {
+        font-size: 27px;
+      }
+
+      .card {
+        padding: 23px 19px;
+        border-radius: 18px;
+      }
+
+      .form-options {
+        align-items: flex-start;
+      }
+
+      .modal {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
-
 
 <body>
 
+<div class="page">
 
-<div class="container">
+  <!-- =======================================================
+       LADO ESQUERDO
+  ======================================================== -->
 
+  <section class="left">
 
-    <!-- LOGO -->
+    <div class="left-content">
 
-    <div class="logo">
+      <div class="brand">
 
-        <h1>
-            Save Tag <span>Pet</span>
-        </h1>
+        <div class="brand-icon">
+          🐾
+        </div>
 
-        <p>
+        <div>
+          <div class="brand-name">
+            Save <span>Tag</span> Pet
+          </div>
+
+          <div class="brand-sub">
             IDENTIFICAÇÃO INTELIGENTE
-        </p>
+          </div>
+        </div>
+
+      </div>
+
+      <h1>
+        Cuide de quem<br>
+        <span>faz parte da família.</span>
+      </h1>
+
+      <p class="left-description">
+        Tenha todas as informações do seu pet organizadas
+        em um só lugar e mantenha sua TAG sempre conectada
+        ao perfil dele.
+      </p>
+
+      <div class="benefits">
+
+        <div class="benefit">
+          <div class="benefit-icon">🐾</div>
+          <span>Perfil digital exclusivo para cada pet</span>
+        </div>
+
+        <div class="benefit">
+          <div class="benefit-icon">💉</div>
+          <span>Controle de vacinas e histórico de saúde</span>
+        </div>
+
+        <div class="benefit">
+          <div class="benefit-icon">🔔</div>
+          <span>Alertas para os principais cuidados</span>
+        </div>
+
+        <div class="benefit">
+          <div class="benefit-icon">📱</div>
+          <span>Identificação inteligente através da TAG NFC</span>
+        </div>
+
+      </div>
 
     </div>
 
+  </section>
 
-    <!-- ATIVAÇÃO DA TAG -->
+
+  <!-- =======================================================
+       LADO DIREITO
+  ======================================================== -->
+
+  <main class="right">
+
+    <div class="login-box">
+
+      <!-- Marca para celular -->
+
+      <div class="mobile-brand">
+
+        <div class="mobile-brand-icon">
+          🐾
+        </div>
+
+        <div class="mobile-brand-name">
+          Save <span>Tag</span> Pet
+        </div>
+
+      </div>
+
+
+      <div class="login-header">
+
+        <h2>Bem-vindo de volta! 👋</h2>
+
+        <p>
+          Entre na sua Área do Tutor para gerenciar
+          seus pets e suas TAGs.
+        </p>
+
+      </div>
+
+
+      <div class="card">
+
+        <div id="message" class="message"></div>
+
+
+        <!-- =================================================
+             FORM LOGIN
+        ================================================== -->
+
+        <form id="loginForm">
+
+          <div class="field">
+
+            <label for="email">
+              E-mail
+            </label>
+
+            <div class="input-wrap">
+
+              <span class="input-icon">✉️</span>
+
+              <input
+                type="email"
+                id="email"
+                placeholder="seu@email.com"
+                autocomplete="email"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="password">
+              Senha
+            </label>
+
+            <div class="input-wrap">
+
+              <span class="input-icon">🔒</span>
+
+              <input
+                type="password"
+                id="password"
+                placeholder="Digite sua senha"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                type="button"
+                class="password-toggle"
+                id="togglePassword"
+                title="Mostrar senha"
+              >
+                👁️
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="form-options">
+
+            <label class="remember">
+
+              <input
+                type="checkbox"
+                id="remember"
+              >
+
+              Lembrar de mim
+
+            </label>
+
+
+            <button
+              type="button"
+              class="forgot"
+              id="forgotPassword"
+            >
+              Esqueci minha senha
+            </button>
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="btn-login"
+            id="loginButton"
+          >
+            Entrar na minha conta
+          </button>
+
+        </form>
+
+
+        <div class="divider">
+          ou
+        </div>
+
+
+        <div class="signup-box">
+
+          Ainda não possui uma conta?
+
+          <button
+            type="button"
+            id="openRegister"
+          >
+            Criar minha conta
+          </button>
+
+        </div>
+
+
+      </div>
+
+
+      <div class="security">
+        🔒 Seus dados são protegidos pelo sistema Save Tag Pet
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL CADASTRO
+========================================================= -->
+
+<div
+  class="modal-overlay"
+  id="registerModal"
+>
+
+  <div class="modal">
+
+    <div class="modal-header">
+
+      <div>
+
+        <h3>Criar conta</h3>
+
+        <p>
+          Crie sua conta de tutor no Save Tag Pet.
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="close-modal"
+        id="closeRegister"
+      >
+        ✕
+      </button>
+
+    </div>
+
 
     <div
-        id="ativacaoBox"
-        class="ativacao hidden"
-    >
-
-        <div class="icone">
-            🐾
-        </div>
-
-        <h3>
-            Ativação da sua TAG
-        </h3>
-
-        <p>
-            Você está ativando uma TAG Save Tag Pet.
-        </p>
-
-        <p>
-            Depois do login, vamos continuar a ativação.
-        </p>
-
-        <div
-            id="codigoTag"
-            class="codigo"
-        >
-            TAG
-        </div>
-
-    </div>
+      id="registerMessage"
+      class="message"
+    ></div>
 
 
-    <!-- CARD -->
+    <form id="registerForm">
 
-    <div class="card">
+      <div class="field">
 
+        <label for="registerName">
+          Nome completo
+        </label>
 
-        <!-- LOGIN -->
+        <div class="input-wrap">
 
-        <div id="loginBox">
-
-            <h2>
-                Entrar na sua conta
-            </h2>
-
-
-            <label>
-                E-mail
-            </label>
-
-            <input
-                id="loginEmail"
-                type="email"
-                placeholder="seu@email.com"
-                autocomplete="email"
-            >
-
-
-            <label>
-                Senha
-            </label>
-
-            <input
-                id="loginSenha"
-                type="password"
-                placeholder="Sua senha"
-                autocomplete="current-password"
-            >
-
-
-            <button
-                id="btnEntrar"
-                type="button"
-                onclick="entrar()"
-            >
-                Entrar
-            </button>
-
-
-            <button
-                id="btnRecuperar"
-                type="button"
-                class="btn-secundario"
-                onclick="recuperarSenha()"
-            >
-                🔑 Esqueci minha senha
-            </button>
-
-
-            <div
-                id="mensagemLogin"
-                class="mensagem"
-            >
-            </div>
-
-
-            <div
-                class="link"
-                onclick="mostrarCadastro()"
-            >
-                Ainda não tenho uma conta
-            </div>
+          <input
+            type="text"
+            id="registerName"
+            placeholder="Seu nome completo"
+            autocomplete="name"
+            required
+          >
 
         </div>
 
-
-        <!-- CADASTRO -->
-
-        <div
-            id="cadastroBox"
-            class="hidden"
-        >
-
-            <h2>
-                Criar minha conta
-            </h2>
+      </div>
 
 
-            <label>
-                Nome
-            </label>
+      <div class="field">
 
-            <input
-                id="nome"
-                type="text"
-                placeholder="Seu nome"
-                autocomplete="name"
-            >
+        <label for="registerEmail">
+          E-mail
+        </label>
 
+        <div class="input-wrap">
 
-            <label>
-                E-mail
-            </label>
-
-            <input
-                id="cadastroEmail"
-                type="email"
-                placeholder="seu@email.com"
-                autocomplete="email"
-            >
-
-
-            <label>
-                WhatsApp / Telefone
-            </label>
-
-            <input
-                id="telefone"
-                type="tel"
-                placeholder="(13) 99999-9999"
-                autocomplete="tel"
-            >
-
-
-            <label>
-                Cidade
-            </label>
-
-            <input
-                id="cidade"
-                type="text"
-                placeholder="Sua cidade"
-                autocomplete="address-level2"
-            >
-
-
-            <label>
-                Senha
-            </label>
-
-            <input
-                id="cadastroSenha"
-                type="password"
-                placeholder="Mínimo de 6 caracteres"
-                autocomplete="new-password"
-            >
-
-
-            <button
-                id="btnCadastrar"
-                type="button"
-                onclick="cadastrar()"
-            >
-                Criar conta
-            </button>
-
-
-            <div
-                id="mensagemCadastro"
-                class="mensagem"
-            >
-            </div>
-
-
-            <div
-                class="link"
-                onclick="mostrarLogin()"
-            >
-                ← Já tenho uma conta
-            </div>
+          <input
+            type="email"
+            id="registerEmail"
+            placeholder="seu@email.com"
+            autocomplete="email"
+            required
+          >
 
         </div>
 
+      </div>
 
-    </div>
+
+      <div class="field">
+
+        <label for="registerPhone">
+          WhatsApp / Telefone
+        </label>
+
+        <div class="input-wrap">
+
+          <input
+            type="tel"
+            id="registerPhone"
+            placeholder="(13) 99999-9999"
+            autocomplete="tel"
+          >
+
+        </div>
+
+      </div>
 
 
-    <a
-        class="voltar"
-        href="index.html"
-    >
-        ← Voltar para o site
-    </a>
+      <div class="field">
 
+        <label for="registerPassword">
+          Senha
+        </label>
+
+        <div class="input-wrap">
+
+          <input
+            type="password"
+            id="registerPassword"
+            placeholder="Mínimo de 6 caracteres"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="registerPassword2">
+          Confirmar senha
+        </label>
+
+        <div class="input-wrap">
+
+          <input
+            type="password"
+            id="registerPassword2"
+            placeholder="Digite a senha novamente"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="submit"
+        class="btn-register"
+        id="registerButton"
+      >
+        Criar minha conta
+      </button>
+
+    </form>
+
+  </div>
 
 </div>
 
 
 <script>
 
+  /* =========================================================
+     SUPABASE
+  ========================================================= */
 
-/* =====================================================
-   SUPABASE
-===================================================== */
-
-const SUPABASE_URL =
+  const SUPABASE_URL =
     "https://mqiwoubhivutavpnpeax.supabase.co";
 
-
-/*
-   IMPORTANTE:
-
-   Coloque aqui a MESMA PUBLISHABLE KEY
-   que já estava no seu login.html.
-
-   NÃO coloque Service Role Key.
-*/
-
-const SUPABASE_KEY =
+  const SUPABASE_KEY =
     "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
-
-let supabaseClient = null;
-
-
-/* =====================================================
-   IDENTIFICAR TAG
-===================================================== */
-
-const parametros =
-    new URLSearchParams(
-        window.location.search
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
     );
 
 
-const codigoTag =
-    parametros.get("tag");
+  /* =========================================================
+     ELEMENTOS
+  ========================================================= */
+
+  const loginForm =
+    document.getElementById("loginForm");
+
+  const loginButton =
+    document.getElementById("loginButton");
+
+  const emailInput =
+    document.getElementById("email");
+
+  const passwordInput =
+    document.getElementById("password");
+
+  const message =
+    document.getElementById("message");
+
+  const togglePassword =
+    document.getElementById("togglePassword");
+
+  const forgotPassword =
+    document.getElementById("forgotPassword");
+
+  const registerModal =
+    document.getElementById("registerModal");
+
+  const openRegister =
+    document.getElementById("openRegister");
+
+  const closeRegister =
+    document.getElementById("closeRegister");
+
+  const registerForm =
+    document.getElementById("registerForm");
+
+  const registerButton =
+    document.getElementById("registerButton");
+
+  const registerMessage =
+    document.getElementById("registerMessage");
 
 
-/* =====================================================
-   MOSTRAR TAG
-===================================================== */
+  /* =========================================================
+     MENSAGENS
+  ========================================================= */
 
-function mostrarInformacaoTag(){
+  function showMessage(text, type = "error") {
 
-    if(!codigoTag){
-        return;
+    message.textContent = text;
+
+    message.className =
+      "message show " + type;
+
+  }
+
+
+  function showRegisterMessage(text, type = "error") {
+
+    registerMessage.textContent = text;
+
+    registerMessage.className =
+      "message show " + type;
+
+  }
+
+
+  /* =========================================================
+     TRADUZIR ERROS DO SUPABASE
+  ========================================================= */
+
+  function translateError(error) {
+
+    const msg =
+      String(error?.message || "").toLowerCase();
+
+    if (msg.includes("invalid login credentials")) {
+      return "E-mail ou senha incorretos.";
     }
 
-
-    const box =
-        document.getElementById(
-            "ativacaoBox"
-        );
-
-
-    const codigo =
-        document.getElementById(
-            "codigoTag"
-        );
-
-
-    box.classList.remove("hidden");
-
-    codigo.textContent =
-        codigoTag.toUpperCase();
-
-}
-
-
-/* =====================================================
-   LIMPAR MENSAGENS
-===================================================== */
-
-function limparMensagens(){
-
-    const login =
-        document.getElementById(
-            "mensagemLogin"
-        );
-
-
-    const cadastro =
-        document.getElementById(
-            "mensagemCadastro"
-        );
-
-
-    login.textContent = "";
-
-    login.className =
-        "mensagem";
-
-
-    cadastro.textContent = "";
-
-    cadastro.className =
-        "mensagem";
-
-}
-
-
-/* =====================================================
-   MOSTRAR MENSAGEM
-===================================================== */
-
-function mensagem(
-    id,
-    texto,
-    tipo
-){
-
-    const elemento =
-        document.getElementById(id);
-
-
-    elemento.textContent =
-        texto;
-
-
-    elemento.className =
-        "mensagem " + tipo;
-
-}
-
-
-/* =====================================================
-   MOSTRAR CADASTRO
-===================================================== */
-
-function mostrarCadastro(){
-
-    document
-        .getElementById("loginBox")
-        .classList
-        .add("hidden");
-
-
-    document
-        .getElementById("cadastroBox")
-        .classList
-        .remove("hidden");
-
-
-    limparMensagens();
-
-}
-
-
-/* =====================================================
-   MOSTRAR LOGIN
-===================================================== */
-
-function mostrarLogin(){
-
-    document
-        .getElementById("cadastroBox")
-        .classList
-        .add("hidden");
-
-
-    document
-        .getElementById("loginBox")
-        .classList
-        .remove("hidden");
-
-
-    limparMensagens();
-
-}
-
-
-/* =====================================================
-   INICIAR SUPABASE
-===================================================== */
-
-function iniciarSupabase(){
-
-    try{
-
-        if(
-            window.supabase &&
-            typeof window.supabase.createClient ===
-            "function"
-        ){
-
-            supabaseClient =
-                window.supabase.createClient(
-                    SUPABASE_URL,
-                    SUPABASE_KEY
-                );
-
-
-            console.log(
-                "Supabase conectado."
-            );
-
-        }else{
-
-            console.error(
-                "Biblioteca Supabase não carregou."
-            );
-
-        }
-
-    }catch(erro){
-
-        console.error(
-            "Erro ao iniciar Supabase:",
-            erro
-        );
-
+    if (msg.includes("email not confirmed")) {
+      return "Seu e-mail ainda não foi confirmado. Verifique sua caixa de entrada.";
     }
 
-}
-
-
-/* =====================================================
-   DESTINO APÓS LOGIN
-===================================================== */
-
-function continuarAposLogin(){
-
-    if(codigoTag){
-
-        window.location.href =
-            "painel.html?tag=" +
-            encodeURIComponent(
-                codigoTag
-            );
-
-        return;
-
+    if (msg.includes("user already registered")) {
+      return "Este e-mail já possui uma conta.";
     }
 
+    if (msg.includes("password should be at least")) {
+      return "A senha precisa ter pelo menos 6 caracteres.";
+    }
 
-    window.location.href =
-        "painel.html";
+    if (msg.includes("invalid email")) {
+      return "Digite um e-mail válido.";
+    }
 
-}
+    if (msg.includes("rate limit")) {
+      return "Muitas tentativas. Aguarde alguns minutos e tente novamente.";
+    }
+
+    return error?.message ||
+      "Não foi possível concluir a operação.";
+
+  }
 
 
-/* =====================================================
-   LOGIN
-===================================================== */
+  /* =========================================================
+     MOSTRAR / OCULTAR SENHA
+  ========================================================= */
 
-async function entrar(){
+  togglePassword.addEventListener(
+    "click",
+    () => {
 
-    limparMensagens();
+      const isPassword =
+        passwordInput.type === "password";
+
+      passwordInput.type =
+        isPassword ? "text" : "password";
+
+      togglePassword.textContent =
+        isPassword ? "🙈" : "👁️";
+
+    }
+  );
 
 
-    if(!supabaseClient){
+  /* =========================================================
+     LOGIN
+  ========================================================= */
 
-        mensagem(
-            "mensagemLogin",
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-            "erro"
+  loginForm.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+      const email =
+        emailInput.value.trim();
+
+      const password =
+        passwordInput.value;
+
+      if (!email || !password) {
+
+        showMessage(
+          "Preencha seu e-mail e sua senha."
         );
 
         return;
-
-    }
-
-
-    const email =
-        document
-            .getElementById(
-                "loginEmail"
-            )
-            .value
-            .trim();
+      }
 
 
-    const senha =
-        document
-            .getElementById(
-                "loginSenha"
-            )
-            .value;
+      loginButton.disabled = true;
 
-
-    if(!email || !senha){
-
-        mensagem(
-            "mensagemLogin",
-            "Digite seu e-mail e sua senha.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const botao =
-        document.getElementById(
-            "btnEntrar"
-        );
-
-
-    botao.disabled = true;
-
-    botao.textContent =
+      loginButton.textContent =
         "Entrando...";
 
-
-    try{
-
-        const resultado =
-            await supabaseClient
-                .auth
-                .signInWithPassword({
-
-                    email:
-                        email,
-
-                    password:
-                        senha
-
-                });
+      message.className =
+        "message";
 
 
-        if(resultado.error){
+      try {
 
-            mensagem(
-                "mensagemLogin",
-                resultado.error.message,
-                "erro"
-            );
+        const {
+          data,
+          error
+        } = await supabaseClient.auth.signInWithPassword({
 
-            return;
+          email: email,
+
+          password: password
+
+        });
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        if (!data?.user) {
+
+          throw new Error(
+            "Não foi possível identificar sua conta."
+          );
 
         }
 
 
-        mensagem(
-            "mensagemLogin",
-            "Login realizado com sucesso!",
-            "sucesso"
+        showMessage(
+          "Login realizado com sucesso! Redirecionando...",
+          "success"
         );
 
 
-        setTimeout(
-            function(){
+        /*
+          O Supabase mantém a sessão automaticamente.
+          O painel.html poderá recuperar o usuário
+          através de auth.getUser().
+        */
 
-                continuarAposLogin();
+        setTimeout(() => {
 
-            },
-            700
-        );
+          window.location.href =
+            "painel.html";
+
+        }, 500);
 
 
-    }catch(erro){
+      } catch (error) {
 
         console.error(
-            erro
+          "Erro no login:",
+          error
         );
 
-
-        mensagem(
-            "mensagemLogin",
-            "Erro ao entrar. Tente novamente.",
-            "erro"
+        showMessage(
+          translateError(error),
+          "error"
         );
 
+        loginButton.disabled = false;
 
-    }finally{
+        loginButton.textContent =
+          "Entrar na minha conta";
 
-        botao.disabled = false;
-
-        botao.textContent =
-            "Entrar";
+      }
 
     }
-
-}
-
-
-/* =====================================================
-   CADASTRO
-===================================================== */
-
-async function cadastrar(){
-
-    limparMensagens();
+  );
 
 
-    if(!supabaseClient){
+  /* =========================================================
+     ESQUECI MINHA SENHA
+  ========================================================= */
 
-        mensagem(
-            "mensagemCadastro",
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-            "erro"
+  forgotPassword.addEventListener(
+    "click",
+    async () => {
+
+      const email =
+        emailInput.value.trim();
+
+
+      if (!email) {
+
+        showMessage(
+          "Digite seu e-mail acima para receber o link de recuperação."
+        );
+
+        emailInput.focus();
+
+        return;
+      }
+
+
+      forgotPassword.disabled = true;
+
+      forgotPassword.textContent =
+        "Enviando...";
+
+
+      try {
+
+        const {
+          error
+        } =
+          await supabaseClient.auth
+            .resetPasswordForEmail(
+              email,
+              {
+                redirectTo:
+                  window.location.origin +
+                  "/login.html"
+              }
+            );
+
+
+        if (error) {
+          throw error;
+        }
+
+
+        showMessage(
+          "Enviamos as instruções de recuperação para seu e-mail.",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro recuperação:",
+          error
+        );
+
+        showMessage(
+          translateError(error)
+        );
+
+      }
+
+
+      forgotPassword.disabled = false;
+
+      forgotPassword.textContent =
+        "Esqueci minha senha";
+
+    }
+  );
+
+
+  /* =========================================================
+     ABRIR CADASTRO
+  ========================================================= */
+
+  openRegister.addEventListener(
+    "click",
+    () => {
+
+      registerModal.classList.add("show");
+
+      registerMessage.className =
+        "message";
+
+      registerForm.reset();
+
+      setTimeout(() => {
+
+        document
+          .getElementById("registerName")
+          .focus();
+
+      }, 100);
+
+    }
+  );
+
+
+  /* =========================================================
+     FECHAR CADASTRO
+  ========================================================= */
+
+  closeRegister.addEventListener(
+    "click",
+    () => {
+
+      registerModal.classList.remove("show");
+
+    }
+  );
+
+
+  registerModal.addEventListener(
+    "click",
+    (event) => {
+
+      if (
+        event.target === registerModal
+      ) {
+
+        registerModal.classList.remove("show");
+
+      }
+
+    }
+  );
+
+
+  /* =========================================================
+     CADASTRO DE NOVO TUTOR
+  ========================================================= */
+
+  registerForm.addEventListener(
+    "submit",
+    async (event) => {
+
+      event.preventDefault();
+
+
+      const name =
+        document
+          .getElementById("registerName")
+          .value
+          .trim();
+
+      const email =
+        document
+          .getElementById("registerEmail")
+          .value
+          .trim();
+
+      const phone =
+        document
+          .getElementById("registerPhone")
+          .value
+          .trim();
+
+      const password =
+        document
+          .getElementById("registerPassword")
+          .value;
+
+      const password2 =
+        document
+          .getElementById("registerPassword2")
+          .value;
+
+
+      if (password !== password2) {
+
+        showRegisterMessage(
+          "As senhas não são iguais."
         );
 
         return;
-
-    }
-
-
-    const nome =
-        document
-            .getElementById("nome")
-            .value
-            .trim();
+      }
 
 
-    const email =
-        document
-            .getElementById("cadastroEmail")
-            .value
-            .trim();
+      if (password.length < 6) {
 
-
-    const telefone =
-        document
-            .getElementById("telefone")
-            .value
-            .trim();
-
-
-    const cidade =
-        document
-            .getElementById("cidade")
-            .value
-            .trim();
-
-
-    const senha =
-        document
-            .getElementById("cadastroSenha")
-            .value;
-
-
-    if(
-        !nome ||
-        !email ||
-        !telefone ||
-        !cidade ||
-        !senha
-    ){
-
-        mensagem(
-            "mensagemCadastro",
-            "Preencha todos os campos.",
-            "erro"
+        showRegisterMessage(
+          "A senha precisa ter pelo menos 6 caracteres."
         );
 
         return;
-
-    }
-
-
-    if(senha.length < 6){
-
-        mensagem(
-            "mensagemCadastro",
-            "A senha precisa ter pelo menos 6 caracteres.",
-            "erro"
-        );
-
-        return;
-
-    }
+      }
 
 
-    const botao =
-        document.getElementById(
-            "btnCadastrar"
-        );
+      registerButton.disabled = true;
 
-
-    botao.disabled = true;
-
-    botao.textContent =
+      registerButton.textContent =
         "Criando conta...";
 
 
-    try{
+      try {
 
-        const urlConfirmacao =
-            new URL(
-                "https://save-tag-pet.vercel.app/login.html"
-            );
+        /*
+          Cria o usuário no Supabase Auth.
+        */
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+
+              data: {
+
+                nome:
+                  name,
+
+                telefone:
+                  phone
+
+              }
+
+            }
+
+          });
 
 
-        if(codigoTag){
-
-            urlConfirmacao.searchParams.set(
-                "tag",
-                codigoTag
-            );
-
+        if (error) {
+          throw error;
         }
 
 
-        const resultado =
+        /*
+          Tentamos criar/atualizar o cadastro
+          do tutor na tabela existente.
+
+          Se a tabela ou algum campo ainda não
+          estiver preparado, o Auth continua sendo
+          criado e o erro é registrado no console.
+        */
+
+        if (data?.user) {
+
+          try {
+
             await supabaseClient
-                .auth
-                .signUp({
+              .from("tutores")
+              .upsert({
 
-                    email:
-                        email,
+                id:
+                  data.user.id,
 
-                    password:
-                        senha,
+                nome:
+                  name,
 
-                    options:{
+                email:
+                  email,
 
-                        emailRedirectTo:
-                            urlConfirmacao.toString()
+                telefone:
+                  phone
 
-                    }
+              }, {
 
-                });
+                onConflict: "id"
 
+              });
 
-        if(resultado.error){
+          } catch (tutorError) {
 
-            mensagem(
-                "mensagemCadastro",
-                resultado.error.message,
-                "erro"
+            console.warn(
+              "Cadastro do tutor na tabela:",
+              tutorError
             );
 
-            return;
-
-        }
-
-
-        const usuario =
-            resultado.data.user;
-
-
-        if(!usuario){
-
-            mensagem(
-                "mensagemCadastro",
-                "Não foi possível criar a conta.",
-                "erro"
-            );
-
-            return;
+          }
 
         }
 
 
         /*
-           Se o Supabase criou a sessão imediatamente,
-           salvamos os dados do tutor.
+          Se o projeto exigir confirmação de e-mail,
+          o usuário recebe a mensagem apropriada.
         */
 
-        if(resultado.data.session){
+        if (
+          data?.user &&
+          !data.session
+        ) {
 
-            const tutor =
-                await supabaseClient
-                    .from("tutores")
-                    .insert({
+          showRegisterMessage(
+            "Conta criada! Verifique seu e-mail para confirmar o cadastro.",
+            "success"
+          );
 
-                        id:
-                            usuario.id,
+          setTimeout(() => {
 
-                        nome:
-                            nome,
-
-                        telefone:
-                            telefone,
-
-                        email:
-                            email,
-
-                        cidade:
-                            cidade
-
-                    });
-
-
-            if(tutor.error){
-
-                console.error(
-                    "Erro ao salvar tutor:",
-                    tutor.error
-                );
-
-
-                mensagem(
-                    "mensagemCadastro",
-                    "A conta foi criada, mas os dados do tutor não foram salvos.",
-                    "erro"
-                );
-
-                return;
-
-            }
-
-
-            mensagem(
-                "mensagemCadastro",
-                "Conta criada com sucesso!",
-                "sucesso"
+            registerModal.classList.remove(
+              "show"
             );
 
+          }, 2500);
 
-            setTimeout(
-                function(){
+        } else {
 
-                    continuarAposLogin();
-
-                },
-                1000
-            );
+          showRegisterMessage(
+            "Conta criada com sucesso! Abrindo sua Área do Tutor...",
+            "success"
+          );
 
 
-        }else{
+          setTimeout(() => {
 
-            /*
-               Caso seja necessária confirmação
-               do e-mail.
-            */
+            window.location.href =
+              "painel.html";
 
-            if(codigoTag){
-
-                mensagem(
-                    "mensagemCadastro",
-
-                    "Conta criada! Confirme seu e-mail. Depois, entre novamente para continuar a ativação da TAG " +
-                    codigoTag +
-                    ".",
-
-                    "sucesso"
-                );
-
-            }else{
-
-                mensagem(
-                    "mensagemCadastro",
-
-                    "Conta criada! Verifique seu e-mail para confirmar o cadastro.",
-
-                    "sucesso"
-                );
-
-            }
+          }, 1000);
 
         }
 
 
-    }catch(erro){
+      } catch (error) {
 
         console.error(
-            erro
+          "Erro no cadastro:",
+          error
         );
 
-
-        mensagem(
-            "mensagemCadastro",
-            "Erro ao criar a conta. Tente novamente.",
-            "erro"
+        showRegisterMessage(
+          translateError(error)
         );
 
+        registerButton.disabled = false;
 
-    }finally{
+        registerButton.textContent =
+          "Criar minha conta";
 
-        botao.disabled = false;
-
-        botao.textContent =
-            "Criar conta";
+      }
 
     }
-
-}
-
-
-/* =====================================================
-   RECUPERAR SENHA
-===================================================== */
-
-async function recuperarSenha(){
-
-    limparMensagens();
+  );
 
 
-    const email =
-        document
-            .getElementById(
-                "loginEmail"
-            )
-            .value
-            .trim();
+  /* =========================================================
+     VERIFICAR SESSÃO EXISTENTE
+  ========================================================= */
+
+  async function checkExistingSession() {
+
+    try {
+
+      const {
+        data
+      } =
+        await supabaseClient.auth.getSession();
 
 
-    if(!email){
+      if (
+        data?.session?.user
+      ) {
 
-        mensagem(
-            "mensagemLogin",
+        /*
+          Se o usuário já estiver logado,
+          não precisa preencher o login novamente.
+        */
 
-            "Digite seu e-mail para receber o link de recuperação.",
+        const params =
+          new URLSearchParams(
+            window.location.search
+          );
 
-            "erro"
-        );
+        if (
+          params.get("force") !== "login"
+        ) {
 
-        return;
-
-    }
-
-
-    if(!supabaseClient){
-
-        mensagem(
-            "mensagemLogin",
-
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const botao =
-        document.getElementById(
-            "btnRecuperar"
-        );
-
-
-    botao.disabled = true;
-
-    botao.textContent =
-        "Enviando...";
-
-
-    try{
-
-        const resultado =
-            await supabaseClient
-                .auth
-                .resetPasswordForEmail(
-
-                    email,
-
-                    {
-
-                        redirectTo:
-                            "https://save-tag-pet.vercel.app/alterar-senha.html"
-
-                    }
-
-                );
-
-
-        if(resultado.error){
-
-            mensagem(
-                "mensagemLogin",
-
-                resultado.error.message,
-
-                "erro"
-            );
-
-            return;
+          window.location.href =
+            "painel.html";
 
         }
 
+      }
 
-        mensagem(
-            "mensagemLogin",
+    } catch (error) {
 
-            "Enviamos um link para seu e-mail. Verifique sua caixa de entrada.",
-
-            "sucesso"
-        );
-
-
-    }catch(erro){
-
-        console.error(
-            erro
-        );
-
-
-        mensagem(
-            "mensagemLogin",
-
-            "Não foi possível enviar o e-mail de recuperação.",
-
-            "erro"
-        );
-
-
-    }finally{
-
-        botao.disabled = false;
-
-        botao.textContent =
-            "🔑 Esqueci minha senha";
+      console.warn(
+        "Não foi possível verificar a sessão.",
+        error
+      );
 
     }
 
-}
+  }
 
 
-/* =====================================================
-   INICIAR SISTEMA
-===================================================== */
+  checkExistingSession();
 
-iniciarSupabase();
 
-mostrarInformacaoTag();
+  /* =========================================================
+     ENTER / ESC
+  ========================================================= */
 
+  document.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (
+        event.key === "Escape" &&
+        registerModal.classList.contains("show")
+      ) {
+
+        registerModal.classList.remove(
+          "show"
+        );
+
+      }
+
+    }
+  );
 
 </script>
 
-
 </body>
-
 </html>
