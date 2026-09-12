@@ -4184,6 +4184,53 @@ async function carregarPets(){
         data || [];
 
 
+    /* ---------------------------------------------------------
+       TAGS
+       As TAGs ficam na tabela public.tags e não dentro de pets.
+       Carregamos as TAGs vinculadas aos pets do tutor e
+       adicionamos temporariamente tag_codigo ao objeto do pet
+       para que todo o painel possa exibir a informação.
+       --------------------------------------------------------- */
+    pets.forEach(function(pet){
+        pet.tag_codigo = null;
+        pet.tag_ativa = false;
+    });
+
+    if(pets.length > 0){
+
+        const petIds = pets.map(function(pet){
+            return pet.id;
+        });
+
+        const { data: tagsData, error: tagsError } =
+            await supabaseClient
+                .from("tags")
+                .select("pet_id,codigo,ativa")
+                .in("pet_id", petIds);
+
+        if(tagsError){
+
+            console.error("Erro ao carregar TAGs:", tagsError);
+
+        }else{
+
+            (tagsData || []).forEach(function(tag){
+
+                const pet = pets.find(function(item){
+                    return item.id === tag.pet_id;
+                });
+
+                if(pet){
+                    pet.tag_codigo = tag.codigo || null;
+                    pet.tag_ativa = tag.ativa === true;
+                }
+
+            });
+
+        }
+    }
+
+
     renderizarPets();
 
     atualizarDashboard();
@@ -4409,7 +4456,7 @@ async function atualizarDashboard(){
 
     const tagsAtivas =
         pets.filter(
-            p => p.tag_codigo
+            p => p.tag_codigo && p.tag_ativa === true
         ).length;
 
 
@@ -4686,7 +4733,7 @@ async function atualizarContadores(){
         "resumoTag"
     ).textContent =
         pets.some(
-            p => p.tag_codigo
+            p => p.tag_codigo && p.tag_ativa === true
         )
             ? "TAG ativa"
             : "Nenhuma TAG vinculada";
@@ -7401,7 +7448,7 @@ async function vincularTagAoPet(){
         await carregarPets();
 
 
-        atualizarDashboard();
+        await atualizarDashboard();
 
 
         mostrarMensagem(
