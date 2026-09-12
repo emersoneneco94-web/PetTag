@@ -1737,6 +1737,69 @@ textarea:focus{
     border-radius:12px;
 }
 
+.photo-tile{
+
+    position:relative;
+
+    min-width:0;
+}
+
+.photo-tile img{
+
+    display:block;
+
+    width:100%;
+
+    aspect-ratio:1;
+
+    object-fit:cover;
+
+    border-radius:12px;
+    background:#edf7f4;
+}
+
+.photo-tile-remove{
+
+    position:absolute;
+
+    top:5px;
+    right:5px;
+    width:25px;
+    height:25px;
+    border:0;
+    border-radius:50%;
+    background:rgba(0,0,0,.68);
+    color:#fff;
+    font-size:15px;
+    line-height:25px;
+    padding:0;
+    cursor:pointer;
+}
+
+.photo-tile-label{
+
+    font-size:9px;
+    text-align:center;
+    margin-top:3px;
+    color:#74888e;
+}
+
+.photo-tile-broken{
+
+    width:100%;
+    aspect-ratio:1;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:5px;
+    box-sizing:border-box;
+    background:#f4f7f7;
+    color:#7a898d;
+    font-size:10px;
+}
+
 
 /* =========================================================
    LOADING
@@ -3875,9 +3938,12 @@ let pets = [];
 
 let petSelecionado = null;
 
-let tagCodigo = null;
+// Controle da galeria de fotos adicionais
+let fotosAdicionaisSalvas = [];
+let fotosAdicionaisRemovidas = [];
+let fotosAdicionaisNovas = [];
 
-let fotosAdicionaisExistentes = [];
+let tagCodigo = null;
 
 
 /* =========================================================
@@ -4186,53 +4252,6 @@ async function carregarPets(){
         data || [];
 
 
-    /* ---------------------------------------------------------
-       TAGS
-       As TAGs ficam na tabela public.tags e não dentro de pets.
-       Carregamos as TAGs vinculadas aos pets do tutor e
-       adicionamos temporariamente tag_codigo ao objeto do pet
-       para que todo o painel possa exibir a informação.
-       --------------------------------------------------------- */
-    pets.forEach(function(pet){
-        pet.tag_codigo = null;
-        pet.tag_ativa = false;
-    });
-
-    if(pets.length > 0){
-
-        const petIds = pets.map(function(pet){
-            return pet.id;
-        });
-
-        const { data: tagsData, error: tagsError } =
-            await supabaseClient
-                .from("tags")
-                .select("pet_id,codigo,ativa")
-                .in("pet_id", petIds);
-
-        if(tagsError){
-
-            console.error("Erro ao carregar TAGs:", tagsError);
-
-        }else{
-
-            (tagsData || []).forEach(function(tag){
-
-                const pet = pets.find(function(item){
-                    return item.id === tag.pet_id;
-                });
-
-                if(pet){
-                    pet.tag_codigo = tag.codigo || null;
-                    pet.tag_ativa = tag.ativa === true;
-                }
-
-            });
-
-        }
-    }
-
-
     renderizarPets();
 
     atualizarDashboard();
@@ -4458,7 +4477,7 @@ async function atualizarDashboard(){
 
     const tagsAtivas =
         pets.filter(
-            p => p.tag_codigo && p.tag_ativa === true
+            p => p.tag_codigo
         ).length;
 
 
@@ -4735,7 +4754,7 @@ async function atualizarContadores(){
         "resumoTag"
     ).textContent =
         pets.some(
-            p => p.tag_codigo && p.tag_ativa === true
+            p => p.tag_codigo
         )
             ? "TAG ativa"
             : "Nenhuma TAG vinculada";
@@ -4750,7 +4769,10 @@ async function atualizarContadores(){
 function novoPet(){
 
     petSelecionado = null;
-    fotosAdicionaisExistentes = [];
+
+    fotosAdicionaisSalvas = [];
+    fotosAdicionaisRemovidas = [];
+    fotosAdicionaisNovas = [];
 
     limparFormularioPet();
 
@@ -4785,9 +4807,6 @@ async function editarPet(id){
 
     petSelecionado =
         pet;
-
-
-    fotosAdicionaisExistentes = [];
 
 
     document.getElementById(
@@ -4912,79 +4931,11 @@ async function editarPet(id){
     }
 
 
-    const areaFotos =
-        document.getElementById(
-            "previewPetFotos"
-        );
+    // Carrega as fotos adicionais que já estão salvas para este pet.
+    fotosAdicionaisNovas = [];
+    fotosAdicionaisRemovidas = [];
 
-
-    areaFotos.innerHTML =
-        "<div style='grid-column:1/-1;color:#74888e;font-size:11px;'>Carregando fotos adicionais...</div>";
-
-
-    try{
-
-        const resultadoFotos =
-            await supabaseClient
-                .from("pet_fotos")
-                .select(
-                    "id,foto_url,principal,created_at"
-                )
-                .eq(
-                    "pet_id",
-                    pet.id
-                )
-                .eq(
-                    "principal",
-                    false
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending:false
-                    }
-                );
-
-
-        if(resultadoFotos.error)
-            throw resultadoFotos.error;
-
-
-        fotosAdicionaisExistentes =
-            resultadoFotos.data || [];
-
-
-        renderizarFotosAdicionaisExistentes();
-
-
-    }catch(erroFotos){
-
-        console.error(
-            "Erro ao carregar fotos adicionais:",
-            erroFotos
-        );
-
-
-        fotosAdicionaisExistentes =
-            [];
-
-
-        areaFotos.innerHTML =
-            "<div style='grid-column:1/-1;color:#b52f2f;font-size:11px;'>Não foi possível carregar as fotos adicionais.</div>";
-
-    }
-
-
-    document.getElementById(
-        "petFoto"
-    ).value =
-        "";
-
-
-    document.getElementById(
-        "petFotos"
-    ).value =
-        "";
+    await carregarFotosAdicionais(pet.id);
 
 
     document.getElementById(
@@ -4993,61 +4944,6 @@ async function editarPet(id){
 
 }
 
-
-/* =========================================================
-   FOTOS ADICIONAIS SALVAS
-========================================================= */
-
-function renderizarFotosAdicionaisExistentes(){
-
-    const area =
-        document.getElementById(
-            "previewPetFotos"
-        );
-
-
-    area.innerHTML =
-        "";
-
-
-    if(!fotosAdicionaisExistentes.length){
-
-        area.innerHTML =
-            "<div style='grid-column:1/-1;color:#74888e;font-size:11px;'>Nenhuma foto adicional cadastrada.</div>";
-
-        return;
-    }
-
-
-    fotosAdicionaisExistentes.forEach(
-        foto => {
-
-            const img =
-                document.createElement(
-                    "img"
-                );
-
-
-            img.src =
-                foto.foto_url;
-
-
-            img.alt =
-                "Foto adicional do pet";
-
-
-            img.title =
-                "Foto já cadastrada";
-
-
-            area.appendChild(
-                img
-            );
-
-        }
-    );
-
-}
 
 /* =========================================================
    FECHAR MODAL
@@ -5068,7 +4964,9 @@ function fecharModalPet(){
 
 function limparFormularioPet(){
 
-    fotosAdicionaisExistentes = [];
+    fotosAdicionaisSalvas = [];
+    fotosAdicionaisRemovidas = [];
+    fotosAdicionaisNovas = [];
 
     const ids = [
 
@@ -5373,6 +5271,10 @@ async function salvarPet(){
             );
 
 
+        // Primeiro remove os registros que o tutor marcou para exclusão.
+        await excluirFotosAdicionaisMarcadas();
+
+
         if(arquivos.length){
 
             await enviarFotosAdicionais(
@@ -5440,6 +5342,9 @@ async function salvarPet(){
 
         }
 
+
+        fotosAdicionaisNovas = [];
+        fotosAdicionaisRemovidas = [];
 
         fecharModalPet();
 
@@ -5591,18 +5496,361 @@ async function enviarFotoPrincipal(
    FOTOS ADICIONAIS
 ========================================================= */
 
+async function carregarFotosAdicionais(petId){
+
+    if(!petId){
+
+        fotosAdicionaisSalvas = [];
+        renderizarFotosAdicionais();
+        return;
+
+    }
+
+
+    const resultado =
+        await supabaseClient
+            .from("pet_fotos")
+            .select("id, pet_id, foto_url, principal, created_at")
+            .eq("pet_id", petId)
+            .eq("principal", false)
+            .order("created_at", { ascending:true });
+
+
+    if(resultado.error){
+
+        console.error(
+            "Erro ao carregar fotos adicionais:",
+            resultado.error
+        );
+
+        fotosAdicionaisSalvas = [];
+
+        mostrarMensagem(
+            "Não foi possível carregar as fotos adicionais.",
+            "error"
+        );
+
+        renderizarFotosAdicionais();
+        return;
+
+    }
+
+
+    fotosAdicionaisSalvas =
+        resultado.data || [];
+
+
+    renderizarFotosAdicionais();
+
+}
+
+
+function renderizarFotosAdicionais(){
+
+    const area =
+        document.getElementById("previewPetFotos");
+
+
+    if(!area)
+        return;
+
+
+    area.innerHTML = "";
+
+
+    const fotosSalvas =
+        fotosAdicionaisSalvas.filter(
+            foto =>
+                !fotosAdicionaisRemovidas.includes(
+                    foto.id
+                )
+        );
+
+
+    fotosSalvas.forEach(
+        foto => {
+
+            const tile =
+                document.createElement("div");
+
+            tile.className =
+                "photo-tile";
+
+
+            const img =
+                document.createElement("img");
+
+            img.src =
+                foto.foto_url;
+
+            img.alt =
+                "Foto adicional do pet";
+
+            img.loading =
+                "lazy";
+
+            img.onerror =
+                function(){
+
+                    this.style.display = "none";
+
+                    const aviso =
+                        document.createElement("div");
+
+                    aviso.className =
+                        "photo-tile-broken";
+
+                    aviso.textContent =
+                        "Foto indisponível";
+
+                    this.parentElement.insertBefore(
+                        aviso,
+                        this.nextSibling
+                    );
+
+                };
+
+
+            const remover =
+                document.createElement("button");
+
+            remover.type =
+                "button";
+
+            remover.className =
+                "photo-tile-remove";
+
+            remover.title =
+                "Remover foto";
+
+            remover.textContent =
+                "×";
+
+            remover.onclick =
+                function(){
+
+                    if(!fotosAdicionaisRemovidas.includes(foto.id)){
+
+                        fotosAdicionaisRemovidas.push(
+                            foto.id
+                        );
+
+                    }
+
+                    renderizarFotosAdicionais();
+
+                };
+
+
+            const label =
+                document.createElement("div");
+
+            label.className =
+                "photo-tile-label";
+
+            label.textContent =
+                "Salva";
+
+
+            tile.appendChild(img);
+            tile.appendChild(remover);
+            tile.appendChild(label);
+
+            area.appendChild(tile);
+
+        }
+    );
+
+
+    fotosAdicionaisNovas.forEach(
+        arquivo => {
+
+            const tile =
+                document.createElement("div");
+
+            tile.className =
+                "photo-tile";
+
+
+            const img =
+                document.createElement("img");
+
+            img.alt =
+                "Nova foto do pet";
+
+            img.src =
+                URL.createObjectURL(arquivo);
+
+
+            const remover =
+                document.createElement("button");
+
+            remover.type =
+                "button";
+
+            remover.className =
+                "photo-tile-remove";
+
+            remover.title =
+                "Remover foto selecionada";
+
+            remover.textContent =
+                "×";
+
+            remover.onclick =
+                function(){
+
+                    const indice =
+                        fotosAdicionaisNovas.indexOf(
+                            arquivo
+                        );
+
+                    if(indice >= 0){
+
+                        fotosAdicionaisNovas.splice(
+                            indice,
+                            1
+                        );
+
+                    }
+
+                    atualizarInputFotosNovas();
+                    renderizarFotosAdicionais();
+
+                };
+
+
+            const label =
+                document.createElement("div");
+
+            label.className =
+                "photo-tile-label";
+
+            label.textContent =
+                "Nova";
+
+
+            tile.appendChild(img);
+            tile.appendChild(remover);
+            tile.appendChild(label);
+
+            area.appendChild(tile);
+
+        }
+    );
+
+
+    if(!area.children.length){
+
+        area.innerHTML =
+            '<div style="grid-column:1/-1;color:#74888e;font-size:11px;">Nenhuma foto adicional cadastrada.</div>';
+
+    }
+
+}
+
+
+function atualizarInputFotosNovas(){
+
+    const input =
+        document.getElementById("petFotos");
+
+
+    if(!input)
+        return;
+
+
+    try{
+
+        const dataTransfer =
+            new DataTransfer();
+
+
+        fotosAdicionaisNovas.forEach(
+            arquivo =>
+                dataTransfer.items.add(arquivo)
+        );
+
+
+        input.files =
+            dataTransfer.files;
+
+    }catch(erro){
+
+        console.warn(
+            "Não foi possível atualizar a seleção de arquivos:",
+            erro
+        );
+
+    }
+
+}
+
+
+async function excluirFotosAdicionaisMarcadas(){
+
+    if(!fotosAdicionaisRemovidas.length)
+        return;
+
+
+    const ids = [
+        ...fotosAdicionaisRemovidas
+    ];
+
+
+    const resultado =
+        await supabaseClient
+            .from("pet_fotos")
+            .delete()
+            .in("id", ids);
+
+
+    if(resultado.error)
+        throw resultado.error;
+
+
+    fotosAdicionaisSalvas =
+        fotosAdicionaisSalvas.filter(
+            foto =>
+                !ids.includes(foto.id)
+        );
+
+
+    fotosAdicionaisRemovidas = [];
+
+}
+
+
 async function enviarFotosAdicionais(
     arquivos,
     petId
 ){
 
-    if(arquivos.length > 5){
+    const existentes =
+        fotosAdicionaisSalvas.filter(
+            foto =>
+                !fotosAdicionaisRemovidas.includes(
+                    foto.id
+                )
+        ).length;
+
+
+    if(
+        existentes + arquivos.length > 5
+    ){
 
         throw new Error(
-            "Você pode enviar no máximo 5 fotos adicionais."
+            "O pet pode ter no máximo 5 fotos adicionais."
         );
 
     }
+
+
+    const tipos = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
 
 
     for(
@@ -5615,20 +5863,7 @@ async function enviarFotosAdicionais(
             arquivos[i];
 
 
-        const tipos = [
-
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-
-        ];
-
-
-        if(
-            !tipos.includes(
-                arquivo.type
-            )
-        ){
+        if(!tipos.includes(arquivo.type)){
 
             throw new Error(
                 "As fotos devem estar em JPG, PNG ou WEBP."
@@ -5637,10 +5872,7 @@ async function enviarFotosAdicionais(
         }
 
 
-        if(
-            arquivo.size >
-            5 * 1024 * 1024
-        ){
+        if(arquivo.size > 5 * 1024 * 1024){
 
             throw new Error(
                 "Cada foto deve ter no máximo 5 MB."
@@ -5663,7 +5895,7 @@ async function enviarFotosAdicionais(
             "-galeria-" +
             Date.now() +
             "-" +
-            i +
+            crypto.randomUUID() +
             "." +
             extensao;
 
@@ -5676,51 +5908,93 @@ async function enviarFotosAdicionais(
                     caminho,
                     arquivo,
                     {
+                        cacheControl:"3600",
                         upsert:false,
-                        contentType:
-                            arquivo.type
+                        contentType:arquivo.type
                     }
                 );
 
 
-        if(upload.error)
-            throw upload.error;
+        if(upload.error){
+
+            throw new Error(
+                "Falha ao enviar a foto " +
+                (i + 1) +
+                ": " +
+                upload.error.message
+            );
+
+        }
 
 
         const resultadoUrl =
             supabaseClient
                 .storage
                 .from("pet-fotos")
-                .getPublicUrl(
-                    caminho
-                );
+                .getPublicUrl(caminho);
 
 
         const fotoUrl =
-            resultadoUrl
-                .data
-                .publicUrl;
+            resultadoUrl?.data?.publicUrl;
+
+
+        if(!fotoUrl){
+
+            try{
+
+                await supabaseClient
+                    .storage
+                    .from("pet-fotos")
+                    .remove([caminho]);
+
+            }catch(_){ }
+
+            throw new Error(
+                "Não foi possível gerar a URL pública da foto " +
+                (i + 1) + "."
+            );
+
+        }
 
 
         const banco =
             await supabaseClient
                 .from("pet_fotos")
                 .insert({
-
-                    pet_id:
-                        petId,
-
-                    foto_url:
-                        fotoUrl,
-
-                    principal:
-                        false
-
+                    pet_id:petId,
+                    foto_url:fotoUrl,
+                    principal:false
                 });
 
 
-        if(banco.error)
-            throw banco.error;
+        if(banco.error){
+
+            // Evita deixar um arquivo sem registro no banco quando o INSERT falhar.
+            try{
+
+                await supabaseClient
+                    .storage
+                    .from("pet-fotos")
+                    .remove([caminho]);
+
+            }catch(_){ }
+
+
+            throw new Error(
+                "A foto foi enviada, mas não pôde ser registrada no banco: " +
+                banco.error.message
+            );
+
+        }
+
+
+        fotosAdicionaisSalvas.push({
+            id:banco.data?.[0]?.id || crypto.randomUUID(),
+            pet_id:petId,
+            foto_url:fotoUrl,
+            principal:false,
+            created_at:new Date().toISOString()
+        });
 
     }
 
@@ -7586,7 +7860,7 @@ async function vincularTagAoPet(){
         await carregarPets();
 
 
-        await atualizarDashboard();
+        atualizarDashboard();
 
 
         mostrarMensagem(
@@ -7788,91 +8062,42 @@ document.addEventListener(
             "petFotos"
         ){
 
-            const area =
-                document.getElementById(
-                    "previewPetFotos"
-                );
-
-
-            area.innerHTML =
-                "";
-
-
             const arquivos =
                 Array.from(
                     event.target.files || []
                 );
 
 
-            const totalFotos =
-                fotosAdicionaisExistentes.length +
-                arquivos.length;
+            const existentes =
+                fotosAdicionaisSalvas.filter(
+                    foto =>
+                        !fotosAdicionaisRemovidas.includes(
+                            foto.id
+                        )
+                ).length;
 
 
             if(
-                totalFotos > 5
+                existentes + arquivos.length > 5
             ){
 
                 alert(
-                    "O pet pode ter no máximo 5 fotos adicionais."
+                    "O pet pode ter no máximo 5 fotos adicionais. Remova alguma foto salva ou selecione menos arquivos."
                 );
 
-
-                event.target.value =
-                    "";
-
-
-                renderizarFotosAdicionaisExistentes();
-
-
+                event.target.value = "";
+                fotosAdicionaisNovas = [];
+                renderizarFotosAdicionais();
                 return;
+
             }
 
 
-            renderizarFotosAdicionaisExistentes();
+            fotosAdicionaisNovas =
+                arquivos;
 
 
-            arquivos.forEach(
-                arquivo => {
-
-                    const leitor =
-                        new FileReader();
-
-
-                    leitor.onload =
-                        function(e){
-
-                            const img =
-                                document.createElement(
-                                    "img"
-                                );
-
-
-                            img.src =
-                                e.target.result;
-
-
-                            img.alt =
-                                "Nova foto do pet";
-
-
-                            img.title =
-                                "Nova foto selecionada";
-
-
-                            area.appendChild(
-                                img
-                            );
-
-                        };
-
-
-                    leitor.readAsDataURL(
-                        arquivo
-                    );
-
-                }
-            );
+            renderizarFotosAdicionais();
 
         }
 
