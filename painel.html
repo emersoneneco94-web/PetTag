@@ -1965,55 +1965,6 @@ textarea:focus{
 
 </style>
 
-
-<style id="save-tag-photo-lightbox">
-  .stp-photo-lightbox{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    background:rgba(0,0,0,.82);
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-    box-sizing:border-box;
-  }
-  .stp-photo-lightbox.is-open{display:flex;}
-  .stp-photo-lightbox img{
-    max-width:min(92vw,1100px);
-    max-height:88vh;
-    width:auto;
-    height:auto;
-    object-fit:contain;
-    border-radius:14px;
-    box-shadow:0 20px 70px rgba(0,0,0,.45);
-    background:#fff;
-  }
-  .stp-photo-lightbox-close{
-    position:absolute;
-    top:18px;
-    right:22px;
-    width:44px;
-    height:44px;
-    border:0;
-    border-radius:50%;
-    background:rgba(255,255,255,.94);
-    color:#173b4d;
-    font-size:28px;
-    line-height:44px;
-    cursor:pointer;
-    box-shadow:0 5px 20px rgba(0,0,0,.25);
-  }
-  .stp-photo-lightbox-close:hover{transform:scale(1.04);}
-  .stp-photo-clickable{
-    cursor:zoom-in !important;
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .stp-photo-clickable:hover{
-    transform:scale(1.025);
-  }
-</style>
-
 </head>
 
 
@@ -3165,10 +3116,20 @@ textarea:focus{
                         </h2>
 
                         <p>
-                            Baseados nas vacinas e registros cadastrados.
+                            Baseados nas vacinas, consultas e exames cadastrados.
                         </p>
 
                     </div>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-small"
+                        onclick="ativarNotificacoesTutor()"
+                        id="btnAtivarNotificacoes"
+                    >
+                        🔔 Ativar avisos
+                    </button>
 
                 </div>
 
@@ -6755,6 +6716,10 @@ async function gerarAlertas(){
         );
 
 
+    if(!lista)
+        return;
+
+
     if(!pets.length){
 
         lista.innerHTML = `
@@ -6781,10 +6746,15 @@ async function gerarAlertas(){
 
         `;
 
-        document.getElementById(
-            "statAlertas"
-        ).textContent =
-            "0";
+
+        const stat =
+            document.getElementById(
+                "statAlertas"
+            );
+
+        if(stat)
+            stat.textContent = "0";
+
 
         return;
     }
@@ -6796,9 +6766,7 @@ async function gerarAlertas(){
         );
 
 
-    const {
-        data: vacinas
-    } =
+    const resultadoVacinas =
         await supabaseClient
             .from("vacinas")
             .select("*")
@@ -6806,6 +6774,43 @@ async function gerarAlertas(){
                 "pet_id",
                 ids
             );
+
+
+    if(resultadoVacinas.error){
+
+        console.error(
+            "Erro ao carregar vacinas para alertas:",
+            resultadoVacinas.error
+        );
+
+    }
+
+
+    const resultadoSaude =
+        await supabaseClient
+            .from("saude_pet")
+            .select("*")
+            .in(
+                "pet_id",
+                ids
+            )
+            .in(
+                "tipo",
+                [
+                    "Consulta",
+                    "Exame"
+                ]
+            );
+
+
+    if(resultadoSaude.error){
+
+        console.error(
+            "Erro ao carregar consultas/exames para alertas:",
+            resultadoSaude.error
+        );
+
+    }
 
 
     const hoje =
@@ -6823,7 +6828,11 @@ async function gerarAlertas(){
     const alertas = [];
 
 
-    (vacinas || [])
+    /* =====================================================
+       ALERTAS DE VACINAS
+    ===================================================== */
+
+    (resultadoVacinas.data || [])
         .forEach(
             vacina => {
 
@@ -6864,6 +6873,8 @@ async function gerarAlertas(){
 
                     alertas.push({
 
+                        categoria:"vacina",
+
                         tipo:"bad",
 
                         icone:"🚨",
@@ -6874,7 +6885,11 @@ async function gerarAlertas(){
 
                         texto:
                             nomePet +
-                            " está com a próxima dose atrasada."
+                            " está com a próxima dose atrasada desde " +
+                            formatarData(
+                                vacina.proxima_dose
+                            ) +
+                            "."
 
                     });
 
@@ -6884,7 +6899,9 @@ async function gerarAlertas(){
 
                     alertas.push({
 
-                        tipo:"warn",
+                        categoria:"vacina",
+
+                        tipo:"bad",
 
                         icone:"💉",
 
@@ -6904,6 +6921,8 @@ async function gerarAlertas(){
 
                     alertas.push({
 
+                        categoria:"vacina",
+
                         tipo:"warn",
 
                         icone:"🔔",
@@ -6916,7 +6935,11 @@ async function gerarAlertas(){
                             nomePet +
                             " terá a próxima dose em " +
                             diff +
-                            " dia(s)."
+                            " dia(s), em " +
+                            formatarData(
+                                vacina.proxima_dose
+                            ) +
+                            "."
 
                     });
 
@@ -6926,6 +6949,8 @@ async function gerarAlertas(){
 
                     alertas.push({
 
+                        categoria:"vacina",
+
                         tipo:"good",
 
                         icone:"📅",
@@ -6934,9 +6959,14 @@ async function gerarAlertas(){
                             vacina.nome,
 
                         texto:
-                            "Próxima dose em " +
+                            nomePet +
+                            " terá a próxima dose em " +
                             diff +
-                            " dia(s)."
+                            " dia(s), em " +
+                            formatarData(
+                                vacina.proxima_dose
+                            ) +
+                            "."
 
                     });
 
@@ -6944,6 +6974,194 @@ async function gerarAlertas(){
 
             }
         );
+
+
+    /* =====================================================
+       ALERTAS DE CONSULTAS E EXAMES
+    ===================================================== */
+
+    (resultadoSaude.data || [])
+        .forEach(
+            item => {
+
+                if(!item.data_evento)
+                    return;
+
+
+                const data =
+                    new Date(
+                        item.data_evento +
+                        "T00:00:00"
+                    );
+
+
+                const diff =
+                    Math.round(
+                        (
+                            data - hoje
+                        ) /
+                        86400000
+                    );
+
+
+                const pet =
+                    pets.find(
+                        p =>
+                            p.id ===
+                            item.pet_id
+                    );
+
+
+                const nomePet =
+                    pet?.nome ||
+                    "Seu pet";
+
+
+                const tipo =
+                    item.tipo === "Exame"
+                        ? "Exame"
+                        : "Consulta";
+
+
+                const icone =
+                    tipo === "Exame"
+                        ? "🧪"
+                        : "🩺";
+
+
+                if(diff < 0){
+
+                    alertas.push({
+
+                        categoria:
+                            tipo.toLowerCase(),
+
+                        tipo:"bad",
+
+                        icone:"🚨",
+
+                        titulo:
+                            tipo +
+                            " atrasado",
+
+                        texto:
+                            nomePet +
+                            " tinha " +
+                            tipo.toLowerCase() +
+                            " registrado para " +
+                            formatarData(
+                                item.data_evento
+                            ) +
+                            "."
+
+                    });
+
+                }
+
+                else if(diff === 0){
+
+                    alertas.push({
+
+                        categoria:
+                            tipo.toLowerCase(),
+
+                        tipo:"bad",
+
+                        icone:icone,
+
+                        titulo:
+                            tipo +
+                            " hoje",
+
+                        texto:
+                            nomePet +
+                            " tem " +
+                            tipo.toLowerCase() +
+                            " hoje."
+
+                    });
+
+                }
+
+                else if(diff <= 7){
+
+                    alertas.push({
+
+                        categoria:
+                            tipo.toLowerCase(),
+
+                        tipo:"warn",
+
+                        icone:"🔔",
+
+                        titulo:
+                            tipo +
+                            " próxima",
+
+                        texto:
+                            nomePet +
+                            " tem " +
+                            tipo.toLowerCase() +
+                            " em " +
+                            diff +
+                            " dia(s), em " +
+                            formatarData(
+                                item.data_evento
+                            ) +
+                            "."
+
+                    });
+
+                }
+
+                else if(diff <= 30){
+
+                    alertas.push({
+
+                        categoria:
+                            tipo.toLowerCase(),
+
+                        tipo:"good",
+
+                        icone:"📅",
+
+                        titulo:
+                            tipo +
+                            " agendado",
+
+                        texto:
+                            nomePet +
+                            " tem " +
+                            tipo.toLowerCase() +
+                            " em " +
+                            diff +
+                            " dia(s), em " +
+                            formatarData(
+                                item.data_evento
+                            ) +
+                            "."
+
+                    });
+
+                }
+
+            }
+        );
+
+
+    /* Mais urgentes primeiro */
+    const peso = {
+        bad:0,
+        warn:1,
+        good:2
+    };
+
+
+    alertas.sort(
+        (a,b) =>
+            peso[a.tipo] -
+            peso[b.tipo]
+    );
 
 
     if(!alertas.length){
@@ -6963,7 +7181,7 @@ async function gerarAlertas(){
                     </strong>
 
                     <span>
-                        Não encontramos nenhum alerta de vacinação próximo.
+                        Não encontramos vacinas, consultas ou exames próximos nos próximos 30 dias.
                     </span>
 
                 </div>
@@ -7011,17 +7229,265 @@ async function gerarAlertas(){
     }
 
 
-    document.getElementById(
-        "statAlertas"
-    ).textContent =
-        alertas.filter(
-            a =>
-                a.tipo === "warn" ||
-                a.tipo === "bad"
-        ).length;
+    const stat =
+        document.getElementById(
+            "statAlertas"
+        );
+
+
+    if(stat){
+
+        stat.textContent =
+            alertas.filter(
+                a =>
+                    a.tipo === "warn" ||
+                    a.tipo === "bad"
+            ).length;
+
+    }
+
+
+    atualizarBotaoNotificacoes();
+
+
+    /* Se o tutor já autorizou notificações, avisa
+       apenas os itens urgentes (hoje ou próximos 7 dias). */
+    enviarNotificacoesUrgentes(
+        alertas
+    );
 
 }
 
+
+/* =========================================================
+   NOTIFICAÇÕES DO NAVEGADOR
+========================================================= */
+
+function atualizarBotaoNotificacoes(){
+
+    const botao =
+        document.getElementById(
+            "btnAtivarNotificacoes"
+        );
+
+
+    if(!botao)
+        return;
+
+
+    if(
+        !("Notification" in window)
+    ){
+
+        botao.textContent =
+            "🔔 Avisos do painel";
+
+        botao.disabled =
+            true;
+
+        return;
+    }
+
+
+    if(
+        Notification.permission ===
+        "granted"
+    ){
+
+        botao.textContent =
+            "✓ Avisos ativados";
+
+        botao.disabled =
+            true;
+
+    }else{
+
+        botao.textContent =
+            "🔔 Ativar avisos";
+
+        botao.disabled =
+            false;
+
+    }
+
+}
+
+
+async function ativarNotificacoesTutor(){
+
+    if(
+        !("Notification" in window)
+    ){
+
+        alert(
+            "Seu navegador não oferece notificações."
+        );
+
+        return;
+    }
+
+
+    try{
+
+        const permissao =
+            await Notification.requestPermission();
+
+
+        atualizarBotaoNotificacoes();
+
+
+        if(
+            permissao === "granted"
+        ){
+
+            new Notification(
+                "Save Tag Pet",
+                {
+                    body:
+                        "Avisos de vacinas, consultas e exames estão ativados."
+                }
+            );
+
+
+            const lista =
+                document.getElementById(
+                    "listaAlertas"
+                );
+
+
+            if(lista){
+
+                const aviso =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                aviso.className =
+                    "alert-item good";
+
+
+                aviso.innerHTML = `
+
+                    <div class="alert-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Avisos ativados
+                        </strong>
+
+                        <span>
+                            Este navegador poderá avisar quando houver cuidados próximos.
+                        </span>
+
+                    </div>
+
+                `;
+
+
+                lista.prepend(
+                    aviso
+                );
+
+            }
+
+        }else{
+
+            alert(
+                "As notificações não foram autorizadas. Você pode permitir nas configurações do navegador."
+            );
+
+        }
+
+    }catch(erro){
+
+        console.error(
+            "Erro ao ativar notificações:",
+            erro
+        );
+
+    }
+
+}
+
+
+function enviarNotificacoesUrgentes(
+    alertas
+){
+
+    if(
+        !("Notification" in window)
+    )
+        return;
+
+
+    if(
+        Notification.permission !==
+        "granted"
+    )
+        return;
+
+
+    const urgentes =
+        alertas.filter(
+            a =>
+                a.tipo === "bad" ||
+                a.tipo === "warn"
+        );
+
+
+    if(!urgentes.length)
+        return;
+
+
+    const hoje =
+        new Date()
+            .toISOString()
+            .slice(
+                0,
+                10
+            );
+
+
+    const chave =
+        "save_tag_pet_alertas_" +
+        hoje;
+
+
+    const ultimoEnvio =
+        localStorage.getItem(
+            chave
+        );
+
+
+    if(ultimoEnvio === "1")
+        return;
+
+
+    const primeiro =
+        urgentes[0];
+
+
+    new Notification(
+        "🔔 Save Tag Pet",
+        {
+            body:
+                primeiro.titulo +
+                ": " +
+                primeiro.texto
+        }
+    );
+
+
+    localStorage.setItem(
+        chave,
+        "1"
+    );
+
+}
 
 /* =========================================================
    PRIVACIDADE
@@ -8075,102 +8541,6 @@ iniciarSupabase();
 
 </script>
 
-
-
-<!-- Visualizador de fotos ampliadas -->
-<div id="stpPhotoLightbox" class="stp-photo-lightbox" aria-hidden="true">
-  <button type="button" class="stp-photo-lightbox-close" id="stpPhotoLightboxClose" aria-label="Fechar">×</button>
-  <img id="stpPhotoLightboxImage" src="" alt="Foto ampliada do pet">
-</div>
-
-
-<script id="save-tag-photo-lightbox-script">
-(function(){
-  function abrirFotoAmpliada(url, alt){
-    if(!url) return;
-    var box = document.getElementById("stpPhotoLightbox");
-    var img = document.getElementById("stpPhotoLightboxImage");
-    if(!box || !img) return;
-
-    img.src = url;
-    img.alt = alt || "Foto ampliada do pet";
-    box.classList.add("is-open");
-    box.setAttribute("aria-hidden","false");
-    document.body.style.overflow = "hidden";
-  }
-
-  function fecharFotoAmpliada(){
-    var box = document.getElementById("stpPhotoLightbox");
-    var img = document.getElementById("stpPhotoLightboxImage");
-    if(!box) return;
-
-    box.classList.remove("is-open");
-    box.setAttribute("aria-hidden","true");
-    if(img) img.src = "";
-    document.body.style.overflow = "";
-  }
-
-  function prepararFotos(){
-    document.querySelectorAll("img").forEach(function(img){
-      if(img.dataset.stpLightbox === "1") return;
-
-      var src = img.currentSrc || img.src;
-      if(!src) return;
-
-      // Não tornar logos/ícones pequenos clicáveis.
-      var w = img.naturalWidth || img.width || 0;
-      var h = img.naturalHeight || img.height || 0;
-      if(w < 100 && h < 100) return;
-
-      // Fotos do pet: imagens dentro da área de cards/listagens,
-      // além das miniaturas do bloco "Fotos do pet".
-      var texto = "";
-      var p = img.parentElement;
-      for(var i=0; i<4 && p; i++, p=p.parentElement){
-        texto += " " + (p.innerText || "");
-      }
-
-      var pareceFotoPet =
-        /Fotos do pet|pet protegido|pet perdido|Editar|Athena/i.test(texto) ||
-        img.classList.contains("pet-photo") ||
-        img.closest(".pet-card,.pet-item,.pet-profile,.pet-card-photo,.foto-pet");
-
-      if(!pareceFotoPet) return;
-
-      img.dataset.stpLightbox = "1";
-      img.classList.add("stp-photo-clickable");
-      img.title = "Clique para ampliar";
-      img.addEventListener("click", function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        abrirFotoAmpliada(img.currentSrc || img.src, img.alt);
-      });
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", function(){
-    prepararFotos();
-
-    var observer = new MutationObserver(function(){
-      prepararFotos();
-    });
-    observer.observe(document.body, {childList:true, subtree:true});
-
-    var close = document.getElementById("stpPhotoLightboxClose");
-    var box = document.getElementById("stpPhotoLightbox");
-
-    if(close) close.addEventListener("click", fecharFotoAmpliada);
-
-    if(box) box.addEventListener("click", function(e){
-      if(e.target === box) fecharFotoAmpliada();
-    });
-
-    document.addEventListener("keydown", function(e){
-      if(e.key === "Escape") fecharFotoAmpliada();
-    });
-  });
-})();
-</script>
 
 </body>
 
