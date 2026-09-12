@@ -1148,6 +1148,42 @@ a{
 
 
 /* =========================================================
+   GALERIA DE FOTOS NO DASHBOARD
+========================================================= */
+
+.pet-main-gallery{
+    margin-top:18px;
+    padding-top:15px;
+    border-top:1px solid var(--borda);
+}
+
+.pet-main-gallery-title{
+    color:var(--azul);
+    font-size:12px;
+    font-weight:900;
+    margin-bottom:10px;
+}
+
+.pet-main-gallery-grid{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.pet-main-gallery img{
+    width:82px;
+    height:82px;
+    object-fit:cover;
+    border-radius:13px;
+    border:1px solid var(--borda);
+    background:#edf7f5;
+}
+
+.pet-main-gallery img:hover{
+    transform:scale(1.03);
+}
+
+/* =========================================================
    FORMULÁRIOS
 ========================================================= */
 
@@ -1735,69 +1771,6 @@ textarea:focus{
     object-fit:cover;
 
     border-radius:12px;
-}
-
-.photo-tile{
-
-    position:relative;
-
-    min-width:0;
-}
-
-.photo-tile img{
-
-    display:block;
-
-    width:100%;
-
-    aspect-ratio:1;
-
-    object-fit:cover;
-
-    border-radius:12px;
-    background:#edf7f4;
-}
-
-.photo-tile-remove{
-
-    position:absolute;
-
-    top:5px;
-    right:5px;
-    width:25px;
-    height:25px;
-    border:0;
-    border-radius:50%;
-    background:rgba(0,0,0,.68);
-    color:#fff;
-    font-size:15px;
-    line-height:25px;
-    padding:0;
-    cursor:pointer;
-}
-
-.photo-tile-label{
-
-    font-size:9px;
-    text-align:center;
-    margin-top:3px;
-    color:#74888e;
-}
-
-.photo-tile-broken{
-
-    width:100%;
-    aspect-ratio:1;
-    border-radius:12px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:5px;
-    box-sizing:border-box;
-    background:#f4f7f7;
-    color:#7a898d;
-    font-size:10px;
 }
 
 
@@ -3936,12 +3909,9 @@ let usuarioAtual = null;
 
 let pets = [];
 
-let petSelecionado = null;
+let petFotosCache = {};
 
-// Controle da galeria de fotos adicionais
-let fotosAdicionaisSalvas = [];
-let fotosAdicionaisRemovidas = [];
-let fotosAdicionaisNovas = [];
+let petSelecionado = null;
 
 let tagCodigo = null;
 
@@ -4252,6 +4222,9 @@ async function carregarPets(){
         data || [];
 
 
+    await carregarFotosPets();
+
+
     renderizarPets();
 
     atualizarDashboard();
@@ -4259,6 +4232,46 @@ async function carregarPets(){
     preencherSelects();
 
     gerarAlertas();
+
+}
+
+
+/* =========================================================
+   CARREGAR FOTOS DOS PETS
+========================================================= */
+
+async function carregarFotosPets(){
+
+    petFotosCache = {};
+
+    if(!pets.length)
+        return;
+
+    const ids = pets.map(p => p.id);
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("pet_fotos")
+        .select("id,pet_id,foto_url,principal,created_at")
+        .in("pet_id", ids)
+        .order("created_at", { ascending:true });
+
+    if(error){
+        console.error("Erro ao carregar fotos dos pets:", error);
+        return;
+    }
+
+    (data || []).forEach(foto => {
+
+        if(!petFotosCache[foto.pet_id])
+            petFotosCache[foto.pet_id] = [];
+
+        if(foto.foto_url)
+            petFotosCache[foto.pet_id].push(foto);
+
+    });
 
 }
 
@@ -4627,6 +4640,43 @@ async function atualizarDashboard(){
         </div>
 
 
+        ${(() => {
+
+            const fotosAdicionais =
+                (petFotosCache[pet.id] || [])
+                    .filter(f => f.principal !== true)
+                    .slice(-5);
+
+            if(!fotosAdicionais.length)
+                return "";
+
+            return `
+
+                <div class="pet-main-gallery">
+
+                    <div class="pet-main-gallery-title">
+                        📸 Fotos do pet
+                    </div>
+
+                    <div class="pet-main-gallery-grid">
+
+                        ${fotosAdicionais.map(foto => `
+                            <img
+                                src="${escapeHtml(foto.foto_url)}"
+                                alt="Foto de ${escapeHtml(pet.nome || "pet")}"
+                                loading="lazy"
+                            >
+                        `).join("")}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        })()}
+
+
         <div class="pet-main-actions">
 
             <button
@@ -4770,10 +4820,6 @@ function novoPet(){
 
     petSelecionado = null;
 
-    fotosAdicionaisSalvas = [];
-    fotosAdicionaisRemovidas = [];
-    fotosAdicionaisNovas = [];
-
     limparFormularioPet();
 
     document.getElementById(
@@ -4793,7 +4839,7 @@ function novoPet(){
    EDITAR PET
 ========================================================= */
 
-async function editarPet(id){
+function editarPet(id){
 
     const pet =
         pets.find(
@@ -4931,11 +4977,32 @@ async function editarPet(id){
     }
 
 
-    // Carrega as fotos adicionais que já estão salvas para este pet.
-    fotosAdicionaisNovas = [];
-    fotosAdicionaisRemovidas = [];
+    const areaFotos =
+        document.getElementById("previewPetFotos");
 
-    await carregarFotosAdicionais(pet.id);
+    const fotosExistentes =
+        (petFotosCache[pet.id] || [])
+            .filter(f => f.principal !== true)
+            .slice(-5);
+
+    areaFotos.innerHTML =
+        fotosExistentes.map(foto => `
+
+            <div style="position:relative;display:inline-block;margin:4px;">
+
+                <img
+                    src="${escapeHtml(foto.foto_url)}"
+                    alt="Foto adicional do pet"
+                    style="width:105px;height:105px;object-fit:cover;border-radius:12px;display:block;"
+                >
+
+                <small style="display:block;text-align:center;color:#157950;font-size:9px;margin-top:3px;">
+                    Salva
+                </small>
+
+            </div>
+
+        `).join("");
 
 
     document.getElementById(
@@ -4963,10 +5030,6 @@ function fecharModalPet(){
 ========================================================= */
 
 function limparFormularioPet(){
-
-    fotosAdicionaisSalvas = [];
-    fotosAdicionaisRemovidas = [];
-    fotosAdicionaisNovas = [];
 
     const ids = [
 
@@ -5271,10 +5334,6 @@ async function salvarPet(){
             );
 
 
-        // Primeiro remove os registros que o tutor marcou para exclusão.
-        await excluirFotosAdicionaisMarcadas();
-
-
         if(arquivos.length){
 
             await enviarFotosAdicionais(
@@ -5342,9 +5401,6 @@ async function salvarPet(){
 
         }
 
-
-        fotosAdicionaisNovas = [];
-        fotosAdicionaisRemovidas = [];
 
         fecharModalPet();
 
@@ -5496,361 +5552,18 @@ async function enviarFotoPrincipal(
    FOTOS ADICIONAIS
 ========================================================= */
 
-async function carregarFotosAdicionais(petId){
-
-    if(!petId){
-
-        fotosAdicionaisSalvas = [];
-        renderizarFotosAdicionais();
-        return;
-
-    }
-
-
-    const resultado =
-        await supabaseClient
-            .from("pet_fotos")
-            .select("id, pet_id, foto_url, principal, created_at")
-            .eq("pet_id", petId)
-            .eq("principal", false)
-            .order("created_at", { ascending:true });
-
-
-    if(resultado.error){
-
-        console.error(
-            "Erro ao carregar fotos adicionais:",
-            resultado.error
-        );
-
-        fotosAdicionaisSalvas = [];
-
-        mostrarMensagem(
-            "Não foi possível carregar as fotos adicionais.",
-            "error"
-        );
-
-        renderizarFotosAdicionais();
-        return;
-
-    }
-
-
-    fotosAdicionaisSalvas =
-        resultado.data || [];
-
-
-    renderizarFotosAdicionais();
-
-}
-
-
-function renderizarFotosAdicionais(){
-
-    const area =
-        document.getElementById("previewPetFotos");
-
-
-    if(!area)
-        return;
-
-
-    area.innerHTML = "";
-
-
-    const fotosSalvas =
-        fotosAdicionaisSalvas.filter(
-            foto =>
-                !fotosAdicionaisRemovidas.includes(
-                    foto.id
-                )
-        );
-
-
-    fotosSalvas.forEach(
-        foto => {
-
-            const tile =
-                document.createElement("div");
-
-            tile.className =
-                "photo-tile";
-
-
-            const img =
-                document.createElement("img");
-
-            img.src =
-                foto.foto_url;
-
-            img.alt =
-                "Foto adicional do pet";
-
-            img.loading =
-                "lazy";
-
-            img.onerror =
-                function(){
-
-                    this.style.display = "none";
-
-                    const aviso =
-                        document.createElement("div");
-
-                    aviso.className =
-                        "photo-tile-broken";
-
-                    aviso.textContent =
-                        "Foto indisponível";
-
-                    this.parentElement.insertBefore(
-                        aviso,
-                        this.nextSibling
-                    );
-
-                };
-
-
-            const remover =
-                document.createElement("button");
-
-            remover.type =
-                "button";
-
-            remover.className =
-                "photo-tile-remove";
-
-            remover.title =
-                "Remover foto";
-
-            remover.textContent =
-                "×";
-
-            remover.onclick =
-                function(){
-
-                    if(!fotosAdicionaisRemovidas.includes(foto.id)){
-
-                        fotosAdicionaisRemovidas.push(
-                            foto.id
-                        );
-
-                    }
-
-                    renderizarFotosAdicionais();
-
-                };
-
-
-            const label =
-                document.createElement("div");
-
-            label.className =
-                "photo-tile-label";
-
-            label.textContent =
-                "Salva";
-
-
-            tile.appendChild(img);
-            tile.appendChild(remover);
-            tile.appendChild(label);
-
-            area.appendChild(tile);
-
-        }
-    );
-
-
-    fotosAdicionaisNovas.forEach(
-        arquivo => {
-
-            const tile =
-                document.createElement("div");
-
-            tile.className =
-                "photo-tile";
-
-
-            const img =
-                document.createElement("img");
-
-            img.alt =
-                "Nova foto do pet";
-
-            img.src =
-                URL.createObjectURL(arquivo);
-
-
-            const remover =
-                document.createElement("button");
-
-            remover.type =
-                "button";
-
-            remover.className =
-                "photo-tile-remove";
-
-            remover.title =
-                "Remover foto selecionada";
-
-            remover.textContent =
-                "×";
-
-            remover.onclick =
-                function(){
-
-                    const indice =
-                        fotosAdicionaisNovas.indexOf(
-                            arquivo
-                        );
-
-                    if(indice >= 0){
-
-                        fotosAdicionaisNovas.splice(
-                            indice,
-                            1
-                        );
-
-                    }
-
-                    atualizarInputFotosNovas();
-                    renderizarFotosAdicionais();
-
-                };
-
-
-            const label =
-                document.createElement("div");
-
-            label.className =
-                "photo-tile-label";
-
-            label.textContent =
-                "Nova";
-
-
-            tile.appendChild(img);
-            tile.appendChild(remover);
-            tile.appendChild(label);
-
-            area.appendChild(tile);
-
-        }
-    );
-
-
-    if(!area.children.length){
-
-        area.innerHTML =
-            '<div style="grid-column:1/-1;color:#74888e;font-size:11px;">Nenhuma foto adicional cadastrada.</div>';
-
-    }
-
-}
-
-
-function atualizarInputFotosNovas(){
-
-    const input =
-        document.getElementById("petFotos");
-
-
-    if(!input)
-        return;
-
-
-    try{
-
-        const dataTransfer =
-            new DataTransfer();
-
-
-        fotosAdicionaisNovas.forEach(
-            arquivo =>
-                dataTransfer.items.add(arquivo)
-        );
-
-
-        input.files =
-            dataTransfer.files;
-
-    }catch(erro){
-
-        console.warn(
-            "Não foi possível atualizar a seleção de arquivos:",
-            erro
-        );
-
-    }
-
-}
-
-
-async function excluirFotosAdicionaisMarcadas(){
-
-    if(!fotosAdicionaisRemovidas.length)
-        return;
-
-
-    const ids = [
-        ...fotosAdicionaisRemovidas
-    ];
-
-
-    const resultado =
-        await supabaseClient
-            .from("pet_fotos")
-            .delete()
-            .in("id", ids);
-
-
-    if(resultado.error)
-        throw resultado.error;
-
-
-    fotosAdicionaisSalvas =
-        fotosAdicionaisSalvas.filter(
-            foto =>
-                !ids.includes(foto.id)
-        );
-
-
-    fotosAdicionaisRemovidas = [];
-
-}
-
-
 async function enviarFotosAdicionais(
     arquivos,
     petId
 ){
 
-    const existentes =
-        fotosAdicionaisSalvas.filter(
-            foto =>
-                !fotosAdicionaisRemovidas.includes(
-                    foto.id
-                )
-        ).length;
-
-
-    if(
-        existentes + arquivos.length > 5
-    ){
+    if(arquivos.length > 5){
 
         throw new Error(
-            "O pet pode ter no máximo 5 fotos adicionais."
+            "Você pode enviar no máximo 5 fotos adicionais."
         );
 
     }
-
-
-    const tipos = [
-        "image/jpeg",
-        "image/png",
-        "image/webp"
-    ];
 
 
     for(
@@ -5863,7 +5576,20 @@ async function enviarFotosAdicionais(
             arquivos[i];
 
 
-        if(!tipos.includes(arquivo.type)){
+        const tipos = [
+
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+
+        ];
+
+
+        if(
+            !tipos.includes(
+                arquivo.type
+            )
+        ){
 
             throw new Error(
                 "As fotos devem estar em JPG, PNG ou WEBP."
@@ -5872,7 +5598,10 @@ async function enviarFotosAdicionais(
         }
 
 
-        if(arquivo.size > 5 * 1024 * 1024){
+        if(
+            arquivo.size >
+            5 * 1024 * 1024
+        ){
 
             throw new Error(
                 "Cada foto deve ter no máximo 5 MB."
@@ -5895,7 +5624,7 @@ async function enviarFotosAdicionais(
             "-galeria-" +
             Date.now() +
             "-" +
-            crypto.randomUUID() +
+            i +
             "." +
             extensao;
 
@@ -5908,93 +5637,51 @@ async function enviarFotosAdicionais(
                     caminho,
                     arquivo,
                     {
-                        cacheControl:"3600",
                         upsert:false,
-                        contentType:arquivo.type
+                        contentType:
+                            arquivo.type
                     }
                 );
 
 
-        if(upload.error){
-
-            throw new Error(
-                "Falha ao enviar a foto " +
-                (i + 1) +
-                ": " +
-                upload.error.message
-            );
-
-        }
+        if(upload.error)
+            throw upload.error;
 
 
         const resultadoUrl =
             supabaseClient
                 .storage
                 .from("pet-fotos")
-                .getPublicUrl(caminho);
+                .getPublicUrl(
+                    caminho
+                );
 
 
         const fotoUrl =
-            resultadoUrl?.data?.publicUrl;
-
-
-        if(!fotoUrl){
-
-            try{
-
-                await supabaseClient
-                    .storage
-                    .from("pet-fotos")
-                    .remove([caminho]);
-
-            }catch(_){ }
-
-            throw new Error(
-                "Não foi possível gerar a URL pública da foto " +
-                (i + 1) + "."
-            );
-
-        }
+            resultadoUrl
+                .data
+                .publicUrl;
 
 
         const banco =
             await supabaseClient
                 .from("pet_fotos")
                 .insert({
-                    pet_id:petId,
-                    foto_url:fotoUrl,
-                    principal:false
+
+                    pet_id:
+                        petId,
+
+                    foto_url:
+                        fotoUrl,
+
+                    principal:
+                        false
+
                 });
 
 
-        if(banco.error){
-
-            // Evita deixar um arquivo sem registro no banco quando o INSERT falhar.
-            try{
-
-                await supabaseClient
-                    .storage
-                    .from("pet-fotos")
-                    .remove([caminho]);
-
-            }catch(_){ }
-
-
-            throw new Error(
-                "A foto foi enviada, mas não pôde ser registrada no banco: " +
-                banco.error.message
-            );
-
-        }
-
-
-        fotosAdicionaisSalvas.push({
-            id:banco.data?.[0]?.id || crypto.randomUUID(),
-            pet_id:petId,
-            foto_url:fotoUrl,
-            principal:false,
-            created_at:new Date().toISOString()
-        });
+        if(banco.error)
+            throw banco.error;
 
     }
 
@@ -8062,42 +7749,110 @@ document.addEventListener(
             "petFotos"
         ){
 
+            const area =
+                document.getElementById(
+                    "previewPetFotos"
+                );
+
+
+            area.innerHTML =
+                "";
+
+            const petIdAtual =
+                document.getElementById("petId")?.value;
+
+            const existentes =
+                petIdAtual
+                    ? (petFotosCache[petIdAtual] || [])
+                        .filter(f => f.principal !== true)
+                        .slice(-5)
+                    : [];
+
+            existentes.forEach(foto => {
+
+                const bloco = document.createElement("div");
+                bloco.style.cssText = "position:relative;display:inline-block;margin:4px;";
+
+                const img = document.createElement("img");
+                img.src = foto.foto_url;
+                img.alt = "Foto adicional do pet";
+                img.style.cssText = "width:105px;height:105px;object-fit:cover;border-radius:12px;display:block;";
+
+                const texto = document.createElement("small");
+                texto.textContent = "Salva";
+                texto.style.cssText = "display:block;text-align:center;color:#157950;font-size:9px;margin-top:3px;";
+
+                bloco.appendChild(img);
+                bloco.appendChild(texto);
+                area.appendChild(bloco);
+
+            });
+
+
             const arquivos =
                 Array.from(
                     event.target.files || []
                 );
 
 
-            const existentes =
-                fotosAdicionaisSalvas.filter(
-                    foto =>
-                        !fotosAdicionaisRemovidas.includes(
-                            foto.id
-                        )
-                ).length;
+            const limiteRestante =
+                Math.max(0, 5 - existentes.length);
 
 
             if(
-                existentes + arquivos.length > 5
+                arquivos.length > limiteRestante
             ){
 
                 alert(
-                    "O pet pode ter no máximo 5 fotos adicionais. Remova alguma foto salva ou selecione menos arquivos."
+                    `Você já possui ${existentes.length} foto(s) adicional(is). Selecione no máximo ${limiteRestante} nova(s).`
                 );
 
-                event.target.value = "";
-                fotosAdicionaisNovas = [];
-                renderizarFotosAdicionais();
-                return;
 
+                event.target.value =
+                    "";
+
+
+                return;
             }
 
 
-            fotosAdicionaisNovas =
-                arquivos;
+            arquivos.forEach(
+                arquivo => {
+
+                    const leitor =
+                        new FileReader();
 
 
-            renderizarFotosAdicionais();
+                    leitor.onload =
+                        function(e){
+
+                            const img =
+                                document.createElement(
+                                    "img"
+                                );
+
+
+                            img.src =
+                                e.target.result;
+
+
+                            img.alt =
+                                "Foto do pet";
+
+
+                            area.appendChild(
+                                img
+                            );
+
+                        };
+
+
+                    leitor.readAsDataURL(
+                        arquivo
+                    );
+
+                }
+            );
 
         }
 
