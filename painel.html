@@ -2481,12 +2481,12 @@ textarea:focus{
 
                     </div>
 
-                    <button
-                        class="btn btn-secondary btn-small"
-                        onclick="mostrarSecao('pets')"
-                    >
-                        Gerenciar
-                    </button>
+                   <button
+    class="btn btn-secondary btn-small"
+    onclick="abrirGerenciadorTag()"
+>
+    Gerenciar TAG
+</button>
 
                 </div>
 
@@ -6865,35 +6865,34 @@ function salvarPrivacidade(){
    ATIVAÇÃO TAG
 ========================================================= */
 
+<script>
+/* ============================================================
+   GERENCIAMENTO E ATIVAÇÃO DA TAG NFC
+   ============================================================ */
+
 async function prepararAtivacaoTag(){
 
-    if(!tagCodigo)
+    if(!tagCodigo){
         return;
-
+    }
 
     try{
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
-                .rpc(
-                    "verificar_tag_ativacao",
-                    {
-                        p_codigo:
-                            tagCodigo
-                    }
-                );
-
+        const { data, error } = await supabaseClient
+            .rpc("verificar_tag_ativacao", {
+                p_codigo: tagCodigo
+            });
 
         if(error){
+            console.error("Erro ao verificar TAG:", error);
 
-            console.error(error);
+            mostrarMensagem(
+                "Não foi possível verificar a TAG.",
+                "error"
+            );
 
             return;
         }
-
 
         if(
             data &&
@@ -6902,17 +6901,527 @@ async function prepararAtivacaoTag(){
             data.disponivel === true
         ){
 
-            mostrarMensagem(
-                "TAG " +
-                tagCodigo +
-                " encontrada. Cadastre o pet para ativá-la.",
-                "info"
+            abrirGerenciadorTag(tagCodigo);
+
+        }else{
+
+            if(data && data.encontrada === false){
+
+                mostrarMensagem(
+                    "TAG " + tagCodigo + " não encontrada.",
+                    "error"
+                );
+
+            }else if(data && data.ativa === false){
+
+                mostrarMensagem(
+                    "TAG " + tagCodigo + " ainda não está ativa.",
+                    "error"
+                );
+
+            }else if(data && data.disponivel === false){
+
+                mostrarMensagem(
+                    "TAG " + tagCodigo + " já está vinculada a um pet.",
+                    "error"
+                );
+
+            }else{
+
+                mostrarMensagem(
+                    "Não foi possível validar esta TAG.",
+                    "error"
+                );
+            }
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        mostrarMensagem(
+            "Ocorreu um erro ao verificar a TAG.",
+            "error"
+        );
+    }
+}
+
+
+/* ============================================================
+   ABRIR GERENCIADOR DA TAG
+   ============================================================ */
+
+function abrirGerenciadorTag(codigoInicial = ""){
+
+    const existente = document.getElementById("modalGerenciadorTag");
+
+    if(existente){
+        existente.remove();
+    }
+
+    const codigo = (
+        codigoInicial ||
+        tagCodigo ||
+        ""
+    ).trim().toUpperCase();
+
+    let petsDisponiveis = [];
+
+    if(Array.isArray(pets)){
+        petsDisponiveis = pets.filter(function(pet){
+            return !pet.tag_codigo;
+        });
+    }
+
+    let opcoesPets = "";
+
+    if(petsDisponiveis.length > 0){
+
+        opcoesPets = petsDisponiveis.map(function(pet){
+
+            return `
+                <option value="${pet.id}">
+                    ${pet.nome}
+                </option>
+            `;
+
+        }).join("");
+
+    }else{
+
+        opcoesPets = `
+            <option value="">
+                Nenhum pet disponível
+            </option>
+        `;
+    }
+
+    const modal = document.createElement("div");
+
+    modal.id = "modalGerenciadorTag";
+
+    modal.style.cssText = `
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.65);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:20px;
+        z-index:99999;
+    `;
+
+    modal.innerHTML = `
+        <div style="
+            width:100%;
+            max-width:520px;
+            background:#fff;
+            border-radius:20px;
+            padding:30px;
+            box-shadow:0 20px 60px rgba(0,0,0,.25);
+        ">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:20px;
+            ">
+
+                <div>
+                    <h2 style="
+                        margin:0;
+                        font-size:24px;
+                        color:#172033;
+                    ">
+                        Vincular TAG NFC
+                    </h2>
+
+                    <p style="
+                        margin:6px 0 0;
+                        color:#667085;
+                        font-size:14px;
+                    ">
+                        Escolha qual pet receberá esta TAG.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    onclick="fecharGerenciadorTag()"
+                    style="
+                        border:0;
+                        background:#f2f4f7;
+                        width:36px;
+                        height:36px;
+                        border-radius:50%;
+                        cursor:pointer;
+                        font-size:20px;
+                    "
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div style="margin-bottom:18px;">
+
+                <label style="
+                    display:block;
+                    font-weight:600;
+                    margin-bottom:7px;
+                    color:#344054;
+                ">
+                    Código da TAG
+                </label>
+
+                <input
+                    id="codigoTagGerenciador"
+                    type="text"
+                    value="${codigo}"
+                    placeholder="Ex.: TESTE002"
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                        padding:13px 14px;
+                        border:1px solid #d0d5dd;
+                        border-radius:10px;
+                        font-size:16px;
+                        text-transform:uppercase;
+                    "
+                >
+
+            </div>
+
+
+            <div style="margin-bottom:22px;">
+
+                <label style="
+                    display:block;
+                    font-weight:600;
+                    margin-bottom:7px;
+                    color:#344054;
+                ">
+                    Pet que receberá a TAG
+                </label>
+
+                <select
+                    id="petTagGerenciador"
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                        padding:13px 14px;
+                        border:1px solid #d0d5dd;
+                        border-radius:10px;
+                        font-size:16px;
+                        background:#fff;
+                    "
+                    ${petsDisponiveis.length === 0 ? "disabled" : ""}
+                >
+
+                    <option value="">
+                        Selecione um pet
+                    </option>
+
+                    ${opcoesPets}
+
+                </select>
+
+            </div>
+
+
+            ${
+                petsDisponiveis.length === 0
+                ?
+                `
+                <div style="
+                    background:#fff7ed;
+                    border:1px solid #fed7aa;
+                    color:#9a3412;
+                    padding:14px;
+                    border-radius:10px;
+                    margin-bottom:20px;
+                    font-size:14px;
+                    line-height:1.5;
+                ">
+                    Você não possui nenhum pet sem TAG.
+                    <br><br>
+                    Para criar um novo pet, feche esta janela e use
+                    <strong>Adicionar Pet</strong>.
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <div style="
+                display:flex;
+                gap:10px;
+                justify-content:flex-end;
+            ">
+
+                <button
+                    type="button"
+                    onclick="fecharGerenciadorTag()"
+                    style="
+                        padding:12px 18px;
+                        border:1px solid #d0d5dd;
+                        background:#fff;
+                        color:#344054;
+                        border-radius:10px;
+                        cursor:pointer;
+                        font-weight:600;
+                    "
+                >
+                    Cancelar
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="vincularTagAoPet()"
+                    ${petsDisponiveis.length === 0 ? "disabled" : ""}
+                    style="
+                        padding:12px 20px;
+                        border:0;
+                        background:#111827;
+                        color:#fff;
+                        border-radius:10px;
+                        cursor:pointer;
+                        font-weight:600;
+                    "
+                >
+                    Vincular TAG
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+
+    const input = document.getElementById(
+        "codigoTagGerenciador"
+    );
+
+    if(input){
+
+        input.addEventListener("input", function(){
+
+            this.value = this.value
+                .toUpperCase()
+                .replace(/\s/g, "");
+
+        });
+    }
+}
+
+
+/* ============================================================
+   FECHAR GERENCIADOR
+   ============================================================ */
+
+function fecharGerenciadorTag(){
+
+    const modal = document.getElementById(
+        "modalGerenciadorTag"
+    );
+
+    if(modal){
+        modal.remove();
+    }
+}
+
+
+/* ============================================================
+   VINCULAR TAG AO PET
+   ============================================================ */
+
+async function vincularTagAoPet(){
+
+    const inputCodigo = document.getElementById(
+        "codigoTagGerenciador"
+    );
+
+    const selectPet = document.getElementById(
+        "petTagGerenciador"
+    );
+
+    if(!inputCodigo || !selectPet){
+        return;
+    }
+
+    const codigo = inputCodigo.value
+        .trim()
+        .toUpperCase()
+        .replace(/\s/g, "");
+
+    const petId = selectPet.value;
+
+
+    if(!codigo){
+
+        mostrarMensagem(
+            "Informe o código da TAG.",
+            "error"
+        );
+
+        inputCodigo.focus();
+
+        return;
+    }
+
+
+    if(!petId){
+
+        mostrarMensagem(
+            "Selecione um pet.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try{
+
+        /* ----------------------------------------------------
+           PRIMEIRO: verificar se a TAG realmente está disponível
+           ---------------------------------------------------- */
+
+        const verificacao = await supabaseClient
+            .rpc("verificar_tag_ativacao", {
+                p_codigo: codigo
+            });
+
+
+        if(verificacao.error){
+
+            console.error(
+                "Erro ao verificar TAG:",
+                verificacao.error
             );
 
+            mostrarMensagem(
+                "Erro ao verificar a TAG.",
+                "error"
+            );
 
-            novoPet();
-
+            return;
         }
+
+
+        const info = verificacao.data;
+
+
+        if(!info || info.encontrada !== true){
+
+            mostrarMensagem(
+                "A TAG " + codigo + " não foi encontrada.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(info.ativa !== true){
+
+            mostrarMensagem(
+                "A TAG " + codigo + " não está ativa.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(info.disponivel !== true){
+
+            mostrarMensagem(
+                "A TAG " + codigo + " já está vinculada a outro pet.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* ----------------------------------------------------
+           SEGUNDO: vincular TAG ao pet
+           ---------------------------------------------------- */
+
+        const resultado = await supabaseClient
+            .rpc("ativar_tag_pet", {
+                p_codigo: codigo,
+                p_pet_id: petId
+            });
+
+
+        if(resultado.error){
+
+            console.error(
+                "Erro ao ativar TAG:",
+                resultado.error
+            );
+
+            mostrarMensagem(
+                "Não foi possível vincular a TAG ao pet.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        /* ----------------------------------------------------
+           SUCESSO
+           ---------------------------------------------------- */
+
+        tagCodigo = null;
+
+
+        const novaUrl =
+            window.location.origin +
+            window.location.pathname;
+
+        window.history.replaceState(
+            {},
+            document.title,
+            novaUrl
+        );
+
+
+        fecharGerenciadorTag();
+
+
+        await carregarPets();
+
+
+        atualizarDashboard();
+
+
+        mostrarMensagem(
+            "TAG " + codigo + " vinculada com sucesso ao pet!",
+            "success"
+        );
+
+
+    }catch(error){
+
+        console.error(error);
+
+        mostrarMensagem(
+            "Ocorreu um erro ao vincular a TAG.",
+            "error"
+        );
+    }
+}
+</script>
 
     }catch(e){
 
