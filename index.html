@@ -58,21 +58,7 @@
       max-width: 100%;
     }
 
-    
-/* =========================================================
-   LEITURA DA TAG + LOCALIZAÇÃO VOLUNTÁRIA
-========================================================= */
-.location-card{margin-top:16px;padding:18px;border-radius:18px;background:#eaf8f6;border:1px solid #c6ebe7}
-.location-card h2{margin:0 0 8px;color:#124b50;font-size:20px}
-.location-card p{color:#52686b;line-height:1.45;margin:0}
-.location-actions{display:flex;gap:10px;margin-top:15px}
-.location-btn{flex:1;border:0;border-radius:12px;padding:13px 10px;font-weight:900;cursor:pointer}
-.location-primary{background:#20b3aa;color:#fff}
-.location-secondary{background:#fff;color:#173d2d;border:1px solid #cfe3e0}
-.location-status{margin-top:11px;color:#527075;font-size:13px;line-height:1.4;font-weight:700}
-@media(max-width:600px){.location-actions{flex-direction:column}}
-
-.hidden {
+    .hidden {
       display: none !important;
     }
 
@@ -219,6 +205,60 @@
       font-weight: 700;
 
       font-size: 15px;
+    }
+
+
+
+    /* =======================================================
+       AVISO DE LOCALIZAÇÃO DA LEITURA NFC
+       Adicionado sem alterar o visual original
+    ======================================================== */
+
+    .location-card {
+      background: #eef7f2;
+      border: 1px solid #cfe5d9;
+    }
+
+    .location-card h2 {
+      color: #173d2d;
+      margin-bottom: 8px;
+    }
+
+    .location-card p {
+      color: #52665c;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .location-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .location-btn {
+      flex: 1;
+      border: 0;
+      border-radius: 13px;
+      padding: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .location-primary {
+      background: #173d2d;
+      color: white;
+    }
+
+    .location-secondary {
+      background: #e4ebe7;
+      color: #173d2d;
+    }
+
+    .location-status {
+      margin-top: 12px;
+      color: #52665c;
+      font-size: 14px;
+      font-weight: 600;
     }
 
     .contact-card {
@@ -2560,17 +2600,50 @@
       </div>
 
 
-      <div id="locationCard" class="tag-card location-card hidden">
-  <h2>📍 Avisar que encontrei</h2>
-  <p>Se você encontrou este pet, pode compartilhar sua localização aproximada com o tutor. A localização só será enviada se você autorizar.</p>
-  <div class="location-actions">
-    <button id="btnCompartilharLocalizacao" class="location-btn location-primary" type="button">📍 Compartilhar localização</button>
-    <button id="btnAgoraNao" class="location-btn location-secondary" type="button">Agora não</button>
-  </div>
-  <div id="locationStatus" class="location-status"></div>
-</div>
 
-<div class="tag-card contact-card">
+
+      <div
+        id="locationCard"
+        class="tag-card location-card hidden"
+      >
+
+        <h2>
+          📍 Avisar que encontrei
+        </h2>
+
+        <p>
+          Se você encontrou este pet, pode compartilhar sua localização aproximada com o tutor. A localização só será enviada se você autorizar.
+        </p>
+
+        <div class="location-actions">
+
+          <button
+            id="btnCompartilharLocalizacao"
+            class="location-btn location-primary"
+            type="button"
+          >
+            📍 Compartilhar localização
+          </button>
+
+          <button
+            id="btnAgoraNao"
+            class="location-btn location-secondary"
+            type="button"
+          >
+            Agora não
+          </button>
+
+        </div>
+
+        <div
+          id="locationStatus"
+          class="location-status"
+        ></div>
+
+      </div>
+
+
+      <div class="tag-card contact-card">
 
         <h2>
           📞 Entre em contato
@@ -3362,7 +3435,159 @@
     const SUPABASE_KEY =
       "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
+
     let leituraTagAtual = null;
+
+
+    /* =======================================================
+       REGISTRAR LEITURA DA TAG
+    ======================================================== */
+
+    async function registrarLeituraTag(codigo) {
+
+      try {
+
+        const resposta =
+          await fetch(
+            SUPABASE_URL +
+            "/rest/v1/rpc/registrar_leitura_tag",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + SUPABASE_KEY
+              },
+              body: JSON.stringify({
+                p_codigo: String(codigo)
+              })
+            }
+          );
+
+        if (!resposta.ok) {
+          console.error(
+            "Erro ao registrar leitura da TAG:",
+            await resposta.text()
+          );
+          return null;
+        }
+
+        const resultado = await resposta.json();
+        return Array.isArray(resultado) ? resultado[0] : resultado;
+
+      } catch (e) {
+        console.error("Falha ao registrar leitura da TAG:", e);
+        return null;
+      }
+    }
+
+
+    /* =======================================================
+       COMPARTILHAR LOCALIZAÇÃO SOMENTE COM AUTORIZAÇÃO
+    ======================================================== */
+
+    function compartilharLocalizacao() {
+
+      const status =
+        document.getElementById("locationStatus");
+
+      if (
+        !leituraTagAtual ||
+        !leituraTagAtual.leitura_id ||
+        !leituraTagAtual.token
+      ) {
+        status.textContent =
+          "Não foi possível identificar esta leitura. Atualize a página e tente novamente.";
+        return;
+      }
+
+      if (!navigator.geolocation) {
+        status.textContent =
+          "Este celular não permite obter localização pelo navegador.";
+        return;
+      }
+
+      status.textContent = "Obtendo sua localização...";
+
+      navigator.geolocation.getCurrentPosition(
+
+        async function (posicao) {
+
+          try {
+
+            const resposta =
+              await fetch(
+                SUPABASE_URL +
+                "/rest/v1/rpc/registrar_localizacao_leitura",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + SUPABASE_KEY
+                  },
+                  body: JSON.stringify({
+                    p_leitura_id: leituraTagAtual.leitura_id,
+                    p_token: leituraTagAtual.token,
+                    p_latitude: posicao.coords.latitude,
+                    p_longitude: posicao.coords.longitude,
+                    p_precisao_metros: posicao.coords.accuracy
+                  })
+                }
+              );
+
+            const resultado =
+              await resposta.json().catch(() => null);
+
+            if (
+              !resposta.ok ||
+              (resultado && resultado.sucesso === false)
+            ) {
+              console.error(
+                "Erro ao salvar localização:",
+                resultado
+              );
+              status.textContent =
+                "Não foi possível compartilhar a localização. Tente novamente.";
+              return;
+            }
+
+            status.textContent =
+              "✅ Localização compartilhada com o tutor. Obrigado por ajudar!";
+
+            document
+              .getElementById("btnCompartilharLocalizacao")
+              .classList.add("hidden");
+
+            document
+              .getElementById("btnAgoraNao")
+              .classList.add("hidden");
+
+          } catch (e) {
+            console.error(e);
+            status.textContent =
+              "Não foi possível enviar a localização. Tente novamente.";
+          }
+        },
+
+        function (erro) {
+
+          console.error("Geolocalização:", erro);
+
+          status.textContent =
+            erro && erro.code === 1
+              ? "Você não autorizou a localização. Nenhuma localização foi enviada."
+              : "Não foi possível obter sua localização. Nenhuma localização foi enviada.";
+        },
+
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
+        }
+      );
+    }
+
 
 
     /* =======================================================
@@ -3451,90 +3676,7 @@
        CONSULTAR TAG
     ======================================================== */
 
-    
-async function registrarLeituraTag(codigo){
-  try{
-    const resposta=await fetch(
-      SUPABASE_URL+"/rest/v1/rpc/registrar_leitura_tag",
-      {
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          "apikey":SUPABASE_KEY,
-          "Authorization":"Bearer "+SUPABASE_KEY
-        },
-        body:JSON.stringify({p_codigo:String(codigo)})
-      }
-    );
-    if(!resposta.ok){
-      console.error("Erro ao registrar leitura da TAG:",await resposta.text());
-      return null;
-    }
-    const resultado=await resposta.json();
-    return Array.isArray(resultado)?resultado[0]:resultado;
-  }catch(e){
-    console.error("Falha ao registrar leitura da TAG:",e);
-    return null;
-  }
-}
-
-function compartilharLocalizacao(){
-  const status=document.getElementById("locationStatus");
-  if(!leituraTagAtual || !leituraTagAtual.leitura_id || !leituraTagAtual.token){
-    status.textContent="Não foi possível identificar esta leitura. Atualize a página e tente novamente.";
-    return;
-  }
-  if(!navigator.geolocation){
-    status.textContent="Este celular não permite obter localização pelo navegador.";
-    return;
-  }
-  status.textContent="Obtendo sua localização...";
-  navigator.geolocation.getCurrentPosition(
-    async function(posicao){
-      try{
-        const resposta=await fetch(
-          SUPABASE_URL+"/rest/v1/rpc/registrar_localizacao_leitura",
-          {
-            method:"POST",
-            headers:{
-              "Content-Type":"application/json",
-              "apikey":SUPABASE_KEY,
-              "Authorization":"Bearer "+SUPABASE_KEY
-            },
-            body:JSON.stringify({
-              p_leitura_id:leituraTagAtual.leitura_id,
-              p_token:leituraTagAtual.token,
-              p_latitude:posicao.coords.latitude,
-              p_longitude:posicao.coords.longitude,
-              p_precisao_metros:posicao.coords.accuracy
-            })
-          }
-        );
-        const resultado=await resposta.json().catch(()=>null);
-        if(!resposta.ok || (resultado && resultado.sucesso===false)){
-          console.error("Erro ao salvar localização:",resultado);
-          status.textContent="Não foi possível compartilhar a localização. Tente novamente.";
-          return;
-        }
-        status.textContent="✅ Localização compartilhada com o tutor. Obrigado por ajudar!";
-        document.getElementById("btnCompartilharLocalizacao").classList.add("hidden");
-        document.getElementById("btnAgoraNao").classList.add("hidden");
-      }catch(e){
-        console.error("Falha ao enviar localização:",e);
-        status.textContent="Não foi possível enviar a localização. Tente novamente.";
-      }
-    },
-    function(erro){
-      console.error("Geolocalização:",erro);
-      status.textContent=erro && erro.code===1
-        ?"Você não autorizou a localização. Nenhuma localização foi enviada."
-        :"Não foi possível obter sua localização. Nenhuma localização foi enviada.";
-    },
-    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
-  );
-}
-
-async function carregarPet() {
+    async function carregarPet() {
 
 
       const parametros =
@@ -3645,12 +3787,19 @@ async function carregarPet() {
         const pet =
           dados[0];
 
-        /* Registrar a leitura da TAG. Não coleta localização automaticamente. */
-        const leitura=await registrarLeituraTag(pet.tag_codigo||codigo);
-        if(leitura && leitura.sucesso!==false){
-          leituraTagAtual=leitura;
-        }
 
+        /* Registrar a leitura sem coletar localização automaticamente. */
+        const leitura =
+          await registrarLeituraTag(
+            pet.tag_codigo || codigo
+          );
+
+        if (
+          leitura &&
+          leitura.sucesso !== false
+        ) {
+          leituraTagAtual = leitura;
+        }
 
 
         /* =================================================
@@ -3698,12 +3847,6 @@ async function carregarPet() {
 
         }
 
-
-        if(pet.perdido===true && leituraTagAtual){
-          document.getElementById("locationCard").classList.remove("hidden");
-        }else{
-          document.getElementById("locationCard").classList.add("hidden");
-        }
 
         preencherPagina(pet);
 
@@ -4010,6 +4153,25 @@ async function carregarPet() {
 
       }
 
+
+      /* =====================================================
+         AVISO PARA COMPARTILHAR LOCALIZAÇÃO
+         Aparece somente quando a TAG foi lida e o pet está perdido.
+      ====================================================== */
+
+      const locationCard =
+        document.getElementById("locationCard");
+
+      if (
+        locationCard &&
+        pet.perdido === true &&
+        leituraTagAtual
+      ) {
+        locationCard.classList.remove("hidden");
+      } else if (locationCard) {
+        locationCard.classList.add("hidden");
+      }
+
     }
 
 
@@ -4098,17 +4260,26 @@ async function carregarPet() {
        INICIAR SITE
     ======================================================== */
 
-    
-const btnCompartilhar=document.getElementById("btnCompartilharLocalizacao");
-if(btnCompartilhar) btnCompartilhar.addEventListener("click",compartilharLocalizacao);
+    document
+      .getElementById("btnCompartilharLocalizacao")
+      ?.addEventListener(
+        "click",
+        compartilharLocalizacao
+      );
 
-const btnAgoraNao=document.getElementById("btnAgoraNao");
-if(btnAgoraNao) btnAgoraNao.addEventListener("click",function(){
-  document.getElementById("locationStatus").textContent="Tudo bem. Nenhuma localização foi compartilhada.";
-  document.getElementById("locationCard").classList.add("hidden");
-});
+    document
+      .getElementById("btnAgoraNao")
+      ?.addEventListener(
+        "click",
+        function () {
+          document
+            .getElementById("locationCard")
+            .classList.add("hidden");
+        }
+      );
 
-carregarPet();
+
+    carregarPet();
 
   </script>
 
