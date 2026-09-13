@@ -331,17 +331,7 @@
 
     .hero-visual{position:absolute;right:0;top:0;width:58%;height:100%;z-index:5;overflow:hidden;border-radius:0 0 0 90px;background:#dcefeb;}
     .hero-dog-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;}
-    .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:22%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.62) 45%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
-    .story-note{position:absolute;right:32px;top:50px;z-index:9;width:185px;text-align:center;color:#145f61;font-family:"Trebuchet MS",Arial,sans-serif;font-size:21px;line-height:1.15;font-weight:900;transform:rotate(-4deg);}
-    .story-note .heart{display:block;font-size:52px;line-height:1;margin-bottom:2px;}
-    .tag-note{position:absolute;z-index:10;right:205px;bottom:265px;width:165px;background:#fff;color:#155e5e;padding:12px 14px;border-radius:18px;text-align:center;font-size:15px;line-height:1.2;font-weight:900;box-shadow:0 8px 22px rgba(0,0,0,.12);transform:rotate(-4deg);}
-    .tag-arrow{position:absolute;z-index:11;right:270px;bottom:210px;color:#fff;font-size:56px;font-weight:900;transform:rotate(12deg);text-shadow:0 2px 8px rgba(0,0,0,.25);}
-    .phone-note{position:absolute;z-index:10;right:12px;bottom:35px;width:205px;background:#fff;color:#21454a;padding:14px;border-radius:18px;text-align:center;font-size:14px;line-height:1.25;font-weight:800;box-shadow:0 8px 22px rgba(0,0,0,.12);transform:rotate(-4deg);}
-    /* Mantém a tag física exatamente como o usuário descreveu: redonda, azul, pata + NFC, sem código adicional. */
-    .physical-tag{position:absolute;z-index:12;left:52%;top:70%;width:72px;height:72px;border-radius:50%;background:#1760d2;border:4px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;transform:translate(-50%,-50%);}
-    .physical-tag .paw{font-size:25px;line-height:23px;}
-    .physical-tag .nfc{font-size:9px;letter-spacing:1.3px;margin-top:5px;}
-    .tag-ring{position:absolute;z-index:11;left:52%;top:64%;width:20px;height:20px;border:3px solid #d9d9d9;border-radius:50%;background:transparent;transform:translate(-50%,-50%);}
+    .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:25%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.7) 38%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
 
     .how-section{max-width:1400px;margin:-2px auto 0;padding:48px 55px 62px;background:#fff;border-radius:55% 55% 0 0/55px 55px 0 0;position:relative;z-index:30;}
     .how-title{text-align:center;color:#102f33;font-size:37px;font-weight:900;margin-bottom:6px;}
@@ -572,18 +562,18 @@
     }
 
     @media(max-width:1000px){
-      .home-header{padding:14px 22px}.home-nav{gap:18px;margin-right:18px}.home-nav a{font-size:13px}.hero-copy{left:4%;width:45%}.hero-copy h1{font-size:51px}.hero-copy p{font-size:16px}.hero-visual{width:58%}.story-note{right:12px}.tag-note{right:175px}.phone-note{width:175px}
+      .home-header{padding:14px 22px}.home-nav{gap:18px;margin-right:18px}.home-nav a{font-size:13px}.hero-copy{left:4%;width:45%}.hero-copy h1{font-size:51px}.hero-copy p{font-size:16px}.hero-visual{width:58%}
     }
     @media(max-width:850px){
       .home-header{height:78px;padding:12px 17px}.home-brand-icon{font-size:32px}.home-brand-text strong{font-size:24px}.home-brand-text small{font-size:11px}.home-nav{display:none}.btn-login{display:none}.mobile-menu{display:block}
       .hero-home{min-height:760px;height:760px;background:linear-gradient(90deg,#fff 0%,#fff 48%,#f4fbfa 63%,#eef9f7 100%)}
       .hero-inner{min-height:760px;height:760px}.hero-copy{left:20px;top:35px;width:53%;max-width:none}.hero-pill{font-size:11px;padding:8px 10px;margin-bottom:17px}.hero-copy h1{font-size:40px;letter-spacing:-2px;margin-bottom:18px}.hero-copy p{font-size:13px;line-height:1.42;margin-bottom:17px}.btn-principal{min-width:0;width:100%;height:52px;font-size:14px;padding:0 10px;gap:6px}.quick-benefits{grid-template-columns:repeat(3,1fr);width:57%;gap:2px;margin-top:24px}.quick-icon{width:48px;height:48px;font-size:22px}.quick-benefit strong{font-size:10px}
-      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}.story-note{right:2px;top:18px;width:105px;font-size:13px}.story-note .heart{font-size:34px}.tag-note{right:2px;bottom:190px;width:112px;padding:9px 7px;font-size:10px}.tag-arrow{right:88px;bottom:145px;font-size:32px}.phone-note{right:2px;bottom:20px;width:135px;padding:9px 7px;font-size:10px}.physical-tag{left:50%;top:69%;width:62px;height:62px}.physical-tag .paw{font-size:21px}.physical-tag .nfc{font-size:8px}.tag-ring{left:50%;top:63%;width:17px;height:17px}
+      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}
       .how-section{padding:45px 20px 55px;border-radius:45% 45% 0 0/38px 38px 0 0}.how-title{font-size:31px}.how-sub{font-size:17px;margin-bottom:27px}.steps{grid-template-columns:1fr;gap:25px}.step:not(:last-child)::after{display:none}.step-top{margin-bottom:8px}
       .profile-showcase{padding:0 10px 32px}.profile-card{padding:28px 12px;border-radius:27px}.profile-card h2{font-size:30px}.profile-subtitle{font-size:16px;margin:9px 0 22px}.photo-collage{grid-template-columns:1fr 1.35fr 1fr;gap:7px}.collage-left{height:155px}.collage-center{height:195px}.collage-right{gap:7px}.collage-right .collage-photo{height:94px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:7px}.feature{min-height:105px;padding:11px 6px}.feature-icon{font-size:29px}.feature strong{font-size:12px}
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
     }
-    @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.physical-tag{width:56px;height:56px}.tag-ring{top:63%;}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
+    @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
   </style>
 </head>
 
@@ -1057,26 +1047,6 @@ async function carregarPet(){
                    src="hero-dog-clean2.png"
                    alt="Cachorro usando coleira e TAG Save Tag Pet">
 
-              <div class="story-note">
-                <span class="heart">♡</span>
-                Mais que uma TAG,<br>uma história!
-              </div>
-
-              <div class="tag-ring"></div>
-
-              <div class="physical-tag">
-                <div class="paw">🐾</div>
-                <div class="nfc">Save Tag Pet</div>
-              </div>
-
-              <div class="tag-note">Nossa TAG<br>em ação! 🐾</div>
-
-              <div class="phone-note">
-                📱<br>
-                Aproxime o celular<br>
-                e acesse o perfil<br>
-                do seu pet!
-              </div>
             </div>
 
           </div>
@@ -1244,7 +1214,7 @@ async function carregarPet(){
               </p>
 
               <img class="family-pets"
-                   src="hero-dog-clean2.png"
+                   src="family-pets.png"
                    alt="Pets da família usando TAG Save Tag Pet">
             </aside>
 
