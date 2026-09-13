@@ -233,37 +233,33 @@
     .contact-btn{flex:1;padding:13px;border-radius:13px;text-align:center;font-weight:900}
     .whatsapp{background:#36c979}.call{background:#fff;color:#173d2d}
     .activation{max-width:520px;margin:60px auto;background:#fff;border-radius:25px;padding:30px;text-align:center}
-    .hidden{display:none!important}
 
-    /* Modo Pet Perdido / localização da leitura NFC */
     .lost-card{
-      background:linear-gradient(135deg,#fff4f4,#fff);
-      border:2px solid #ffd6d6
+      background:#fff4e5;border:2px solid #ffb84d;color:#6b4310
     }
     .lost-badge{
-      display:inline-flex;align-items:center;gap:7px;
-      background:#ffe4e4;color:#b42318;padding:8px 12px;
-      border-radius:999px;font-size:13px;font-weight:900;margin-bottom:10px
+      display:inline-flex;align-items:center;gap:8px;
+      background:#e53935;color:#fff;padding:9px 14px;border-radius:999px;
+      font-weight:900;font-size:13px;margin-bottom:12px
     }
-    .lost-title{font-size:23px;font-weight:900;color:#9f1d1d}
-    .lost-text{color:#6e4b4b;line-height:1.5;margin-top:7px}
-    .location-box{
-      margin-top:16px;padding:15px;border-radius:15px;background:#fff;
-      border:1px solid #f2dddd
+    .lost-title{font-size:23px;font-weight:900;margin-bottom:7px}
+    .lost-message{line-height:1.5}
+    .location-card{
+      background:#eaf8f6;border:1px solid #bfe9e4
     }
-    .location-box strong{display:block;color:#5d3030;margin-bottom:5px}
-    .location-box p{font-size:13px;color:#766565;line-height:1.45}
-    .location-actions{display:flex;gap:10px;margin-top:13px}
+    .location-card h2{font-size:20px;color:#124b50;margin-bottom:8px}
+    .location-card p{color:#4d676b;line-height:1.45}
+    .location-actions{display:flex;gap:10px;margin-top:15px}
     .location-btn{
-      flex:1;border:0;border-radius:13px;padding:13px 10px;
-      font-weight:900;cursor:pointer
+      flex:1;border:0;border-radius:13px;padding:13px;font-weight:900;cursor:pointer
     }
-    .location-share{background:#20b3aa;color:#fff}
-    .location-later{background:#f1f3f2;color:#294348}
+    .location-primary{background:#20b3aa;color:#fff}
+    .location-secondary{background:#fff;color:#173d2d;border:1px solid #cfe4e1}
     .location-status{
-      margin-top:12px;padding:11px;border-radius:12px;
-      background:#eaf8f6;color:#176b65;font-size:13px;font-weight:800
+      margin-top:12px;font-size:13px;font-weight:700;color:#527075;line-height:1.4
     }
+
+    .hidden{display:none!important}
 
     @media(max-width:1000px){
       .home-header{height:76px;padding:0 20px}
@@ -596,31 +592,21 @@
         <div class="info-item"><div class="info-label">Observações</div><div id="infoObservacoes" class="info-value">Nenhuma observação cadastrada.</div></div>
       </div>
 
-
-      <div id="lostModeCard" class="tag-card lost-card hidden">
+      <div id="lostCard" class="tag-card lost-card hidden">
         <div class="lost-badge">🚨 PET PERDIDO</div>
-        <div class="lost-title">Este pet está sendo procurado.</div>
-        <p class="lost-text">
-          Se você encontrou este pet, entre em contato com o tutor pelos canais acima.
-          Você também pode compartilhar sua localização para ajudar o tutor a saber onde a TAG foi lida.
-        </p>
+        <div class="lost-title">Este pet foi marcado como perdido.</div>
+        <div id="lostMessage" class="lost-message">Se você encontrou este pet, entre em contato com o tutor.</div>
+        <div id="lostLastLocation" class="location-status"></div>
+      </div>
 
-        <div class="location-box">
-          <strong>📍 Compartilhar minha localização</strong>
-          <p>
-            Sua localização só será solicitada se você tocar no botão abaixo.
-            Ela será enviada ao sistema para ajudar o tutor a localizar o ponto onde a TAG foi lida.
-          </p>
-          <div class="location-actions">
-            <button id="btnCompartilharLocalizacao" class="location-btn location-share" type="button">
-              📍 Compartilhar
-            </button>
-            <button id="btnNaoCompartilhar" class="location-btn location-later" type="button">
-              Agora não
-            </button>
-          </div>
-          <div id="locationStatus" class="location-status hidden"></div>
+      <div id="locationCard" class="tag-card location-card hidden">
+        <h2>📍 Avisar que encontrei</h2>
+        <p>Se você encontrou este pet, pode compartilhar sua localização aproximada com o tutor. A localização só será enviada se você autorizar.</p>
+        <div class="location-actions">
+          <button id="btnCompartilharLocalizacao" class="location-btn location-primary" type="button">📍 Compartilhar localização</button>
+          <button id="btnAgoraNao" class="location-btn location-secondary" type="button">Agora não</button>
         </div>
+        <div id="locationStatus" class="location-status"></div>
       </div>
 
       <div class="tag-card contact-card">
@@ -646,6 +632,8 @@
 <script>
   const SUPABASE_URL = "https://mqiwoubhivutavpnpeax.supabase.co";
   const SUPABASE_KEY = "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+  let leituraTagAtual=null;
+
 
   function formatarData(data){
     if(!data) return "-";
@@ -659,16 +647,6 @@
   }
 
 
-  let leituraTagId=null;
-  let leituraTagToken=null;
-
-  function mostrarStatusLocalizacao(mensagem){
-    const el=document.getElementById("locationStatus");
-    if(!el) return;
-    el.textContent=mensagem;
-    el.classList.remove("hidden");
-  }
-
   async function registrarLeituraTag(codigo){
     try{
       const resposta=await fetch(SUPABASE_URL+"/rest/v1/rpc/registrar_leitura_tag",{
@@ -678,121 +656,81 @@
           "apikey":SUPABASE_KEY,
           "Authorization":"Bearer "+SUPABASE_KEY
         },
-        body:JSON.stringify({p_codigo:codigo})
+        body:JSON.stringify({p_codigo:String(codigo)})
       });
 
       if(!resposta.ok){
-        console.warn("Não foi possível registrar a leitura da TAG.");
+        const erro=await resposta.text();
+        console.error("Erro ao registrar leitura da TAG:",erro);
         return null;
       }
 
       const resultado=await resposta.json();
-
-      if(!resultado || resultado.sucesso!==true){
-        console.warn("Leitura não registrada:",resultado);
-        return null;
-      }
-
-      leituraTagId=resultado.leitura_id||null;
-      leituraTagToken=resultado.token||null;
-
-      if(resultado.perdido_na_leitura===true){
-        const card=document.getElementById("lostModeCard");
-        if(card) card.classList.remove("hidden");
-        configurarCompartilhamentoLocalizacao();
-      }
-
-      return resultado;
+      return Array.isArray(resultado) ? resultado[0] : resultado;
     }catch(e){
-      console.warn("Erro ao registrar leitura da TAG:",e);
+      console.error("Falha ao registrar leitura da TAG:",e);
       return null;
     }
   }
 
-  function configurarCompartilhamentoLocalizacao(){
-    const btnCompartilhar=document.getElementById("btnCompartilharLocalizacao");
-    const btnNao=document.getElementById("btnNaoCompartilhar");
+  async function compartilharLocalizacao(leituraId, token){
+    const status=document.getElementById("locationStatus");
+    if(!navigator.geolocation){
+      status.textContent="Este celular não oferece localização pelo navegador.";
+      return;
+    }
 
-    if(btnCompartilhar){
-      btnCompartilhar.onclick=async()=>{
-        if(!leituraTagId || !leituraTagToken){
-          mostrarStatusLocalizacao("Não foi possível preparar esta leitura. Tente abrir a TAG novamente.");
-          return;
-        }
+    status.textContent="Obtendo sua localização...";
 
-        if(!navigator.geolocation){
-          mostrarStatusLocalizacao("Este celular não disponibiliza localização pelo navegador.");
-          return;
-        }
+    navigator.geolocation.getCurrentPosition(
+      async function(posicao){
+        try{
+          const resposta=await fetch(SUPABASE_URL+"/rest/v1/rpc/registrar_localizacao_leitura",{
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json",
+              "apikey":SUPABASE_KEY,
+              "Authorization":"Bearer "+SUPABASE_KEY
+            },
+            body:JSON.stringify({
+              p_leitura_id:leituraId,
+              p_token:token,
+              p_latitude:posicao.coords.latitude,
+              p_longitude:posicao.coords.longitude,
+              p_precisao_metros:posicao.coords.accuracy
+            })
+          });
 
-        btnCompartilhar.disabled=true;
-        btnCompartilhar.textContent="📍 Obtendo localização...";
+          const resultado=await resposta.json().catch(()=>null);
 
-        navigator.geolocation.getCurrentPosition(
-          async(pos)=>{
-            try{
-              const resposta=await fetch(SUPABASE_URL+"/rest/v1/rpc/registrar_localizacao_leitura",{
-                method:"POST",
-                headers:{
-                  "Content-Type":"application/json",
-                  "apikey":SUPABASE_KEY,
-                  "Authorization":"Bearer "+SUPABASE_KEY
-                },
-                body:JSON.stringify({
-                  p_leitura_id:leituraTagId,
-                  p_token:leituraTagToken,
-                  p_latitude:pos.coords.latitude,
-                  p_longitude:pos.coords.longitude,
-                  p_precisao_metros:pos.coords.accuracy
-                })
-              });
-
-              const resultado=await resposta.json();
-
-              if(!resposta.ok || !resultado || resultado.sucesso!==true){
-                throw new Error("Não foi possível salvar a localização.");
-              }
-
-              mostrarStatusLocalizacao("✅ Localização compartilhada com sucesso. Obrigado por ajudar!");
-              btnCompartilhar.textContent="✅ Compartilhada";
-              btnCompartilhar.disabled=true;
-              if(btnNao) btnNao.classList.add("hidden");
-            }catch(e){
-              console.error(e);
-              mostrarStatusLocalizacao("Não foi possível compartilhar a localização. Tente novamente.");
-              btnCompartilhar.disabled=false;
-              btnCompartilhar.textContent="📍 Compartilhar";
-            }
-          },
-          (erro)=>{
-            console.warn("Geolocalização recusada/indisponível:",erro);
-            let mensagem="Não foi possível obter sua localização.";
-            if(erro && erro.code===1){
-              mensagem="Você não autorizou o acesso à localização. Nenhuma localização foi compartilhada.";
-            }else if(erro && erro.code===2){
-              mensagem="A localização não está disponível neste momento.";
-            }else if(erro && erro.code===3){
-              mensagem="A localização demorou para responder. Tente novamente.";
-            }
-            mostrarStatusLocalizacao(mensagem);
-            btnCompartilhar.disabled=false;
-            btnCompartilhar.textContent="📍 Compartilhar";
-          },
-          {
-            enableHighAccuracy:true,
-            timeout:15000,
-            maximumAge:0
+          if(!resposta.ok || (resultado && resultado.sucesso===false)){
+            console.error("Erro ao salvar localização:",resultado);
+            status.textContent="Não foi possível compartilhar a localização. Tente novamente.";
+            return;
           }
-        );
-      };
-    }
 
-    if(btnNao){
-      btnNao.onclick=()=>{
-        mostrarStatusLocalizacao("Tudo bem. Nenhuma localização foi compartilhada.");
-        btnNao.classList.add("hidden");
-      };
-    }
+          status.textContent="✅ Localização compartilhada com o tutor. Obrigado por ajudar!";
+          document.getElementById("btnCompartilharLocalizacao").classList.add("hidden");
+          document.getElementById("btnAgoraNao").classList.add("hidden");
+        }catch(e){
+          console.error(e);
+          status.textContent="Não foi possível enviar a localização. Tente novamente.";
+        }
+      },
+      function(erro){
+        console.error("Geolocalização:",erro);
+        if(erro && erro.code===1){
+          status.textContent="Você não autorizou o acesso à localização. Nenhuma localização foi enviada.";
+        }else{
+          status.textContent="Não foi possível obter sua localização. Nenhuma localização foi enviada.";
+        }
+      },
+      {
+        enableHighAccuracy:true,
+        timeout:15000,
+        maximumAge:0
+      }
+    );
   }
 
   async function carregarPet(){
@@ -824,6 +762,12 @@
 
       const pet=dados[0];
 
+      // Registra a leitura da TAG. A localização nunca é coletada automaticamente.
+      const leitura=await registrarLeituraTag(pet.tag_codigo||codigo);
+      if(leitura && leitura.sucesso!==false){
+        leituraTagAtual=leitura;
+      }
+
       if(pet.tag_disponivel===true){
         document.getElementById("ativacao").classList.remove("hidden");
         const codigoTag=pet.tag_codigo||codigo;
@@ -845,6 +789,20 @@
 
       if(pet.foto_url) document.getElementById("petFoto").src=pet.foto_url;
 
+      // Modo Pet Perdido
+      if(pet.perdido===true){
+        document.getElementById("lostCard").classList.remove("hidden");
+        document.getElementById("locationCard").classList.remove("hidden");
+
+        if(pet.mensagem_perdido){
+          document.getElementById("lostMessage").textContent=pet.mensagem_perdido;
+        }
+
+        if(pet.ultimo_local_perdido){
+          document.getElementById("lostLastLocation").textContent="📍 Último local informado: "+pet.ultimo_local_perdido;
+        }
+      }
+
       document.getElementById("infoAlergias").textContent=pet.alergias||"Nenhuma informada";
       document.getElementById("infoMedicamentos").textContent=pet.medicamentos||"Nenhum informado";
       document.getElementById("infoObservacoes").textContent=pet.observacoes||"Nenhuma observação cadastrada.";
@@ -863,10 +821,6 @@
       }else{
         document.getElementById("btnWhatsApp").classList.add("hidden");
       }
-
-      // Registra a leitura da TAG NFC. Se o pet estiver perdido,
-      // o próprio retorno da RPC libera o bloco de localização.
-      await registrarLeituraTag(pet.tag_codigo||codigo);
 
     }catch(e){
       console.error(e);
@@ -888,6 +842,20 @@
       menuPanel.classList.remove("open");
       menuButton.textContent="☰";
     });
+  });
+
+
+  document.getElementById("btnCompartilharLocalizacao").addEventListener("click",()=>{
+    if(!leituraTagAtual || !leituraTagAtual.leitura_id || !leituraTagAtual.token){
+      document.getElementById("locationStatus").textContent="Não foi possível identificar esta leitura. Atualize a página e tente novamente.";
+      return;
+    }
+    compartilharLocalizacao(leituraTagAtual.leitura_id,leituraTagAtual.token);
+  });
+
+  document.getElementById("btnAgoraNao").addEventListener("click",()=>{
+    document.getElementById("locationStatus").textContent="Tudo bem. Nenhuma localização foi compartilhada.";
+    document.getElementById("locationCard").classList.add("hidden");
   });
 
   carregarPet();
