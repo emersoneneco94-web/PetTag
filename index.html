@@ -1,698 +1,1561 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Save Tag Pet — Identificação inteligente para o seu pet</title>
-  <meta name="description" content="Save Tag Pet — identificação inteligente para cães e gatos através de TAG NFC.">
+
+  <title>Save Tag Pet</title>
 
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
     body{
       font-family:Arial,Helvetica,sans-serif;
-      background:#effaf8;
-      color:#10363a;
-      overflow-x:hidden
+      background:#f3f7f5;
+      color:#17221d;
     }
-    a{text-decoration:none;color:inherit}
-    button{font:inherit}
 
-    .home{min-height:100vh;background:#effaf8}
-    .home-header{
-      height:84px;background:#fff;display:flex;align-items:center;
-      justify-content:space-between;padding:0 5.5%;
-      position:relative;z-index:20;border-bottom:1px solid #edf2f1
+    .container{
+      width:100%;
+      max-width:520px;
+      margin:auto;
+      padding:18px;
     }
-    .home-brand{display:flex;align-items:center;gap:12px}
-    .home-brand-icon{font-size:42px}
-    .home-brand-text strong{
-      display:block;font-size:29px;line-height:1;font-weight:900;
-      color:#0d3035;letter-spacing:-1.2px
+
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:18px;
     }
-    .home-brand-text strong span{color:#1eb0a7}
-    .home-brand-text small{display:block;margin-top:5px;color:#718284;font-size:13px}
-    .home-nav{display:flex;align-items:center;gap:30px;margin-left:auto;margin-right:28px}
-    .home-nav a{font-size:14px;font-weight:800;color:#17393e}
-    .home-nav a:hover{color:#1aa89f}
-    .btn-login{
-      background:#0c4b53;color:#fff;padding:12px 20px;border-radius:13px;
-      font-weight:900;white-space:nowrap
+
+    .logo{
+      font-size:24px;
+      font-weight:800;
+      color:#173d2d;
     }
-    .mobile-menu{display:none;border:0;background:transparent;font-size:31px;color:#123f42}
-    .mobile-menu-panel{
-      display:none;position:absolute;right:18px;top:72px;width:230px;
-      background:#fff;border-radius:16px;padding:12px;
-      box-shadow:0 15px 40px rgba(0,0,0,.16)
+
+    .logo span{
+      color:#36a269;
     }
-    .mobile-menu-panel.open{display:block}
-    .mobile-menu-panel a{display:block;padding:13px;border-radius:11px;font-weight:800}
+
+    .card{
+      background:white;
+      border-radius:22px;
+      padding:20px;
+      margin-bottom:16px;
+      box-shadow:0 5px 20px rgba(0,0,0,.07);
+    }
 
     .hero{
-      min-height:675px;position:relative;overflow:hidden;
-      background:
-        linear-gradient(90deg,#ffffff 0%,#ffffff 42%,#f2fbfa 53%,#eaf8f6 100%)
-    }
-    .hero-inner{max-width:1500px;min-height:675px;margin:auto;position:relative}
-    .hero-copy{
-      position:absolute;left:5.5%;top:48px;width:43%;max-width:590px;z-index:5
-    }
-    .hero-pill{
-      display:inline-flex;align-items:center;gap:8px;background:#dff6f2;
-      color:#14736e;padding:10px 18px;border-radius:28px;font-size:15px;
-      font-weight:900;margin-bottom:25px
-    }
-    .hero h1{
-      color:#082f39;font-size:61px;line-height:.98;letter-spacing:-3px;
-      font-weight:900;margin-bottom:24px
-    }
-    .hero h1 span{display:block;color:#19aaa2}
-    .hero-copy p{
-      max-width:520px;color:#536d73;font-size:18px;line-height:1.48;margin-bottom:27px
-    }
-    .btn-main{
-      display:flex;align-items:center;justify-content:center;gap:18px;
-      width:400px;height:61px;background:#20b3aa;color:#fff;border-radius:34px;
-      font-size:20px;font-weight:900;box-shadow:0 10px 26px rgba(32,179,170,.25)
-    }
-    .btn-main .cart{font-size:28px}
-    .btn-main .arrow{font-size:31px;margin-left:auto;margin-right:12px}
-    .quick-benefits{
-      display:grid;grid-template-columns:repeat(3,115px);gap:25px;margin-top:27px
-    }
-    .quick-benefit{text-align:center}
-    .quick-icon{
-      width:62px;height:62px;margin:auto auto 8px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;font-size:29px
-    }
-    .quick-green{background:#e0f7f4}
-    .quick-blue{background:#e7f0ff}
-    .quick-pink{background:#fff0f4}
-    .quick-benefit strong{display:block;color:#17383d;font-size:14px;line-height:1.15}
-
-    .hero-visual{
-      position:absolute;right:0;top:0;width:59%;height:100%;overflow:hidden;
-      background:#dcefeb
-    }
-    .hero-dog-image{
-      width:100%;height:100%;object-fit:cover;object-position:center top;display:block
-    }
-    .hero-visual:after{
-      content:"";position:absolute;left:0;top:0;bottom:0;width:25%;
-      background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.65) 45%,rgba(248,252,251,0) 100%);
-      pointer-events:none
-    }
-    .story-note{
-      position:absolute;right:25px;top:30px;width:175px;z-index:8;
-      text-align:center;color:#126666;font-family:"Trebuchet MS",Arial,sans-serif;
-      font-size:21px;line-height:1.15;font-weight:900;transform:rotate(-3deg)
-    }
-    .story-note .heart{display:block;font-size:48px}
-    .tag-note{
-      position:absolute;right:185px;bottom:205px;z-index:8;width:165px;
-      background:#fff;color:#155e5e;padding:13px;border-radius:17px;
-      text-align:center;font-size:15px;font-weight:900;
-      box-shadow:0 8px 22px rgba(0,0,0,.12);transform:rotate(-5deg)
-    }
-    .phone-note{
-      position:absolute;right:16px;bottom:35px;z-index:8;width:210px;
-      background:#fff;color:#21454a;padding:14px;border-radius:18px;
-      text-align:center;font-size:14px;line-height:1.25;font-weight:900;
-      box-shadow:0 8px 22px rgba(0,0,0,.12);transform:rotate(-6deg)
+      padding:0;
+      overflow:hidden;
     }
 
-    .profile-section{
-      background:#fff;max-width:1500px;margin:auto;padding:0 24px 20px
+    .pet-photo{
+      width:100%;
+      height:330px;
+      object-fit:cover;
+      display:block;
+      background:#e8eee9;
     }
-    .profile-card{
-      background:#fff;border-radius:32px;padding:22px 30px 30px;
-      box-shadow:0 -2px 20px rgba(0,0,0,.02)
-    }
-    .profile-card h2{
-      text-align:center;font-size:38px;color:#0a3441;font-weight:900
-    }
-    .profile-subtitle{
-      text-align:center;font-size:19px;color:#2e6268;margin:6px 0 25px
-    }
-    .photo-collage{
-      max-width:1000px;height:270px;margin:auto;
-      display:grid;grid-template-columns:1fr 1.1fr 1fr;gap:10px
-    }
-    .photo-collage img{
-      width:100%;height:100%;object-fit:cover;border-radius:18px;display:block
-    }
-    .collage-left{transform:rotate(-2deg)}
-    .collage-center{transform:scale(1.01)}
-    .collage-right{display:grid;grid-template-rows:1fr 1fr;gap:10px}
-    .feature-grid{
-      max-width:1000px;margin:13px auto 0;display:grid;
-      grid-template-columns:repeat(4,1fr);gap:12px
-    }
-    .feature{
-      min-height:110px;border-radius:17px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;text-align:center
-    }
-    .feature:nth-child(1){background:#dff8f5}
-    .feature:nth-child(2){background:#e8f2ff}
-    .feature:nth-child(3){background:#fff0f4}
-    .feature:nth-child(4){background:#fff7df}
-    .feature-icon{font-size:31px;margin-bottom:7px}
-    .feature strong{color:#173c43;line-height:1.2}
 
-    .how-section{
-      background:#fff;max-width:1500px;margin:auto;padding:20px 30px 55px;
-      text-align:center;border-top:1px solid #edf5f4
+    .pet-info{
+      padding:20px;
     }
-    .how-title{font-size:38px;color:#0d3550;font-weight:900}
-    .how-sub{margin-top:3px;color:#3d676d;font-size:18px}
-    .steps{
-      max-width:1050px;margin:30px auto 0;display:grid;
-      grid-template-columns:repeat(3,1fr);gap:50px
-    }
-    .step-top{display:flex;align-items:center;justify-content:center;gap:10px}
-    .step-icon{
-      width:60px;height:60px;border-radius:50%;background:#e3f8f5;
-      display:flex;align-items:center;justify-content:center;font-size:28px
-    }
-    .step-number{
-      width:35px;height:35px;border-radius:50%;background:#dff6f2;
-      display:flex;align-items:center;justify-content:center;color:#16a59e;font-weight:900
-    }
-    .step h3{margin-top:13px;font-size:18px;color:#153b43}
-    .step p{margin-top:6px;color:#667a7e;line-height:1.4}
 
-    .why{
-      background:#fff;max-width:1500px;margin:auto;padding:25px 35px 50px;
-      text-align:center
+    .pet-name{
+      font-size:34px;
+      font-weight:800;
+      margin-bottom:5px;
     }
-    .why h2{font-size:37px;color:#0d3550;font-weight:900}
-    .why>p{margin-top:5px;color:#3d676d}
-    .why-grid{
-      max-width:1000px;margin:28px auto 0;display:grid;
-      grid-template-columns:repeat(3,1fr);gap:25px;text-align:left
+
+    .pet-sub{
+      color:#66736c;
+      font-size:16px;
     }
-    .why-item{display:flex;gap:13px;align-items:flex-start}
-    .why-icon{
-      flex:0 0 54px;width:54px;height:54px;border-radius:50%;
-      background:#e1f7f4;display:flex;align-items:center;justify-content:center;font-size:25px
+
+    .badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
     }
-    .why-item h3{font-size:15px;color:#17404a;margin-bottom:5px}
-    .why-item p{font-size:13px;color:#6a7c80;line-height:1.35}
+
+    .badge{
+      background:#e8f6ee;
+      color:#26794e;
+      padding:7px 11px;
+      border-radius:20px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .badge-danger{
+      background:#ffe8e8;
+      color:#d73e3e;
+    }
+
+    .section-title{
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:16px;
+    }
+
+    .info-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .info-item{
+      background:#f6f8f7;
+      border-radius:14px;
+      padding:13px;
+    }
+
+    .info-label{
+      font-size:12px;
+      color:#758078;
+      margin-bottom:5px;
+    }
+
+    .info-value{
+      font-weight:700;
+      font-size:15px;
+    }
+
+    .contact{
+      background:#173d2d;
+      color:white;
+    }
+
+    .contact h2{
+      margin-bottom:8px;
+    }
+
+    .contact p{
+      color:#d8e8df;
+      line-height:1.5;
+      margin-bottom:16px;
+    }
+
+    .buttons{
+      display:flex;
+      gap:10px;
+    }
+
+    .btn{
+      flex:1;
+      border:none;
+      border-radius:13px;
+      padding:13px;
+      text-align:center;
+      text-decoration:none;
+      font-weight:800;
+      cursor:pointer;
+      display:block;
+    }
+
+    .btn-whatsapp{
+      background:#36c979;
+      color:white;
+    }
+
+    .btn-call{
+      background:white;
+      color:#173d2d;
+    }
+
+    .btn-primary{
+      background:#173d2d;
+      color:white;
+      width:100%;
+      margin-top:8px;
+    }
+
+    .lost{
+      border:2px solid #e85b5b;
+      background:#fff7f7;
+    }
+
+    .lost-title{
+      color:#d73e3e;
+      font-size:20px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .lost p{
+      line-height:1.5;
+      margin-bottom:8px;
+    }
+
+    .hidden{
+      display:none!important;
+    }
+
+    .text{
+      color:#59645e;
+      line-height:1.55;
+    }
 
     .footer{
-      max-width:1500px;margin:auto;background:#063f49;color:#fff;
-      padding:28px 55px;display:flex;align-items:center;justify-content:space-between;gap:25px
-    }
-    .footer-brand strong{display:block;font-size:24px}
-    .footer-brand strong span{color:#20b2a9}
-    .footer-brand small{display:block;margin-top:4px;color:#c7dddd}
-    .footer-message{text-align:center;line-height:1.4}
-    .footer-cta{
-      background:#20b3aa;padding:14px 23px;border-radius:28px;font-weight:900;white-space:nowrap
+      text-align:center;
+      padding:25px 10px 35px;
+      color:#718078;
+      font-size:13px;
     }
 
-    /* Tela de TAG pública */
-    .tag-page{
-      min-height:100vh;background:#effaf8;padding:20px
+    .loading{
+      text-align:center;
+      padding:50px 20px;
     }
-    .tag-container{max-width:520px;margin:auto}
-    .tag-card{
-      background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;
-      box-shadow:0 5px 20px rgba(0,0,0,.07)
+
+    .error{
+      text-align:center;
+      padding:40px 20px;
     }
-    .tag-photo{width:100%;height:330px;object-fit:cover;border-radius:18px}
-    .tag-name{font-size:34px;font-weight:900;color:#173d2d;margin-top:18px}
-    .tag-sub{color:#66736c;margin-top:4px}
-    .tag-title{font-size:20px;font-weight:900;color:#173d2d;margin-bottom:15px}
-    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .info-item{background:#f6f8f7;border-radius:14px;padding:13px}
-    .info-label{font-size:12px;color:#758078;margin-bottom:5px}
-    .info-value{font-weight:700;font-size:15px}
-    .contact-card{background:#173d2d;color:#fff}
-    .contact-buttons{display:flex;gap:10px;margin-top:15px}
-    .contact-btn{flex:1;padding:13px;border-radius:13px;text-align:center;font-weight:900}
-    .whatsapp{background:#36c979}.call{background:#fff;color:#173d2d}
-    .activation{max-width:520px;margin:60px auto;background:#fff;border-radius:25px;padding:30px;text-align:center}
-    .hidden{display:none!important}
+
+    .error h2{
+      margin-bottom:10px;
+    }
+
+    /* ATIVAÇÃO DA TAG */
+
+    .activation{
+      text-align:center;
+      padding:28px 20px;
+    }
+
+    .activation-icon{
+      font-size:54px;
+      margin-bottom:12px;
+    }
+
+    .activation h1{
+      font-size:28px;
+      margin-bottom:10px;
+      color:#173d2d;
+    }
+
+    .activation-subtitle{
+      color:#59645e;
+      line-height:1.55;
+      margin-bottom:20px;
+    }
+
+    .activation-info{
+      background:#f6f8f7;
+      border-radius:15px;
+      padding:14px;
+      margin-bottom:18px;
+    }
+
+    .activation-info small{
+      display:block;
+      color:#758078;
+      margin-bottom:5px;
+    }
+
+    .activation-info strong{
+      font-size:18px;
+      color:#173d2d;
+      letter-spacing:1px;
+    }
+
+    .activation-steps{
+      text-align:left;
+      margin-top:22px;
+    }
+
+    .activation-step{
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+      color:#59645e;
+      line-height:1.4;
+    }
+
+    .step-number{
+      min-width:26px;
+      height:26px;
+      border-radius:50%;
+      background:#e8f6ee;
+      color:#26794e;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:800;
+      font-size:13px;
+    }
+
+    /* =========================================================
+       HOME — SAVE TAG PET
+       Visual alinhado à referência enviada
+       ========================================================= */
+    .home{min-height:100vh;background:#effaf8;color:#10363a;overflow:hidden;font-family:Arial,Helvetica,sans-serif;}
+    .home-header{max-width:1400px;margin:0 auto;height:92px;padding:14px 48px;display:flex;align-items:center;justify-content:space-between;background:#fff;position:relative;z-index:100;border-bottom:1px solid #edf2f1;}
+    .home-brand{display:flex;align-items:center;gap:12px;min-width:290px;}
+    .home-brand-icon{font-size:42px;line-height:1;transform:rotate(-10deg);}
+    .home-brand-text strong{display:block;font-size:30px;line-height:1;font-weight:900;letter-spacing:-1.3px;color:#0d3035;}
+    .home-brand-text strong span{color:#1eb0a7;}
+    .home-brand-text small{display:block;margin-top:5px;color:#718284;font-size:13px;}
+    .home-nav{display:flex;align-items:center;gap:34px;margin-left:auto;margin-right:34px;}
+    .home-nav a{color:#17393e;text-decoration:none;font-size:15px;font-weight:700;}
+    .home-nav a:hover{color:#1aa89f;}
+    .btn-login{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#123f42;color:#fff;text-decoration:none;padding:13px 23px;border-radius:14px;font-weight:800;box-shadow:0 7px 18px rgba(18,63,66,.15);white-space:nowrap;}
+    .mobile-menu{display:none;border:0;background:transparent;color:#123f42;font-size:32px;cursor:pointer;}
+    .mobile-menu-panel{display:none;position:absolute;right:16px;top:76px;z-index:120;width:220px;padding:12px;background:#fff;border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.16);}
+    .mobile-menu-panel.open{display:block;}
+    .mobile-menu-panel a{display:block;padding:13px 14px;border-radius:12px;text-decoration:none;color:#fff;background:#123f42;font-weight:800;text-align:center;}
+
+    .hero-home{max-width:1400px;margin:0 auto;min-height:710px;position:relative;background:linear-gradient(90deg,#fff 0%,#fff 43%,#f7fcfb 54%,#effaf8 100%);overflow:hidden;}
+    .hero-inner{position:relative;min-height:710px;height:710px;}
+    .hero-copy{position:absolute;left:5%;top:52px;width:43%;max-width:600px;z-index:20;}
+    .hero-pill{display:inline-flex;align-items:center;gap:8px;background:#dff6f2;color:#146f69;padding:10px 18px;border-radius:28px;font-size:15px;font-weight:800;margin-bottom:24px;}
+    .hero-copy h1{color:#0d3337;font-size:62px;line-height:.97;letter-spacing:-3px;font-weight:900;margin:0 0 23px;}
+    .hero-copy h1 span{display:block;color:#22aca3;}
+    .hero-copy p{max-width:535px;color:#566b70;font-size:18px;line-height:1.48;margin:0 0 25px;}
+    .btn-principal{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-width:370px;height:60px;padding:0 25px;background:#25b0a7;color:#fff;text-decoration:none;border-radius:33px;font-size:20px;font-weight:900;box-shadow:0 12px 28px rgba(37,176,167,.24);}
+    .quick-benefits{display:grid;grid-template-columns:repeat(3,145px);gap:10px;margin-top:25px;}
+    .quick-benefit{text-align:center;}
+    .quick-icon{width:58px;height:58px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;}
+    .quick-icon.green{background:#e1f7f4}.quick-icon.blue{background:#eaf2ff}.quick-icon.pink{background:#fff0f4}
+    .quick-benefit strong{display:block;color:#19383d;font-size:14px;line-height:1.15;}
+
+    .hero-visual{position:absolute;right:0;top:0;width:58%;height:100%;z-index:5;overflow:hidden;border-radius:0 0 0 90px;background:#dcefeb;}
+    .hero-dog-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;}
+    .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:22%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.62) 45%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
+    .story-note{position:absolute;right:32px;top:50px;z-index:9;width:185px;text-align:center;color:#145f61;font-family:"Trebuchet MS",Arial,sans-serif;font-size:21px;line-height:1.15;font-weight:900;transform:rotate(-4deg);}
+    .story-note .heart{display:block;font-size:52px;line-height:1;margin-bottom:2px;}
+    .tag-note{position:absolute;z-index:10;right:205px;bottom:265px;width:165px;background:#fff;color:#155e5e;padding:12px 14px;border-radius:18px;text-align:center;font-size:15px;line-height:1.2;font-weight:900;box-shadow:0 8px 22px rgba(0,0,0,.12);transform:rotate(-4deg);}
+    .tag-arrow{position:absolute;z-index:11;right:270px;bottom:210px;color:#fff;font-size:56px;font-weight:900;transform:rotate(12deg);text-shadow:0 2px 8px rgba(0,0,0,.25);}
+    .phone-note{position:absolute;z-index:10;right:12px;bottom:35px;width:205px;background:#fff;color:#21454a;padding:14px;border-radius:18px;text-align:center;font-size:14px;line-height:1.25;font-weight:800;box-shadow:0 8px 22px rgba(0,0,0,.12);transform:rotate(-4deg);}
+    /* Mantém a tag física exatamente como o usuário descreveu: redonda, azul, pata + NFC, sem código adicional. */
+    .physical-tag{position:absolute;z-index:12;left:52%;top:70%;width:72px;height:72px;border-radius:50%;background:#1760d2;border:4px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:900;transform:translate(-50%,-50%);}
+    .physical-tag .paw{font-size:25px;line-height:23px;}
+    .physical-tag .nfc{font-size:9px;letter-spacing:1.3px;margin-top:5px;}
+    .tag-ring{position:absolute;z-index:11;left:52%;top:64%;width:20px;height:20px;border:3px solid #d9d9d9;border-radius:50%;background:transparent;transform:translate(-50%,-50%);}
+
+    .how-section{max-width:1400px;margin:-2px auto 0;padding:48px 55px 62px;background:#fff;border-radius:55% 55% 0 0/55px 55px 0 0;position:relative;z-index:30;}
+    .how-title{text-align:center;color:#102f33;font-size:37px;font-weight:900;margin-bottom:6px;}
+    .how-sub{text-align:center;color:#60757a;font-size:20px;margin-bottom:34px;}
+    .steps{max-width:1080px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:60px;}
+    .step{background:transparent;padding:0;text-align:center;box-shadow:none;position:relative;}
+    .step:not(:last-child)::after{content:"→";position:absolute;right:-52px;top:25px;color:#1eaaa2;font-size:40px;font-weight:400;}
+    .step-top{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:13px;}
+    .step-icon{width:66px;height:66px;border-radius:50%;background:#e4f8f5;display:flex;align-items:center;justify-content:center;font-size:34px;}
+    .step-number{width:34px;height:34px;border-radius:50%;background:#e4f8f5;color:#20a69e;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;}
+    .step h3{color:#17383d;font-size:18px;margin:8px 0 7px;}
+    .step p{color:#61767b;line-height:1.45;font-size:14px;max-width:245px;margin:auto;}
+
+    .profile-showcase{max-width:1400px;margin:0 auto;padding:0 32px 42px;background:#effaf8;position:relative;z-index:30;}
+    .profile-card{background:#fff;border-radius:34px;padding:34px 35px 35px;box-shadow:0 12px 38px rgba(20,60,55,.08);}
+    .profile-card h2{text-align:center;font-size:42px;line-height:1;color:#112d59;font-weight:900;letter-spacing:-1.5px;}
+    .profile-subtitle{text-align:center;color:#365c66;font-size:20px;margin:10px 0 27px;}
+    .photo-collage{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:10px;align-items:center;max-width:980px;margin:auto;}
+    .collage-photo{width:100%;object-fit:cover;display:block;border-radius:19px;box-shadow:0 7px 20px rgba(0,0,0,.08);}
+    .collage-left{height:230px;transform:rotate(-4deg);}
+    .collage-center{height:290px;}
+    .collage-right{display:grid;gap:10px;}
+    .collage-right .collage-photo{height:140px;}
+    .collage-right .collage-photo:first-child{transform:rotate(3deg);}
+    .collage-right .collage-photo:last-child{transform:rotate(-3deg);}
+    .feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px;max-width:980px;margin-left:auto;margin-right:auto;}
+    .feature{border-radius:18px;padding:18px 10px;text-align:center;min-height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+    .feature:nth-child(1){background:#e4f8f5}.feature:nth-child(2){background:#eaf3ff}.feature:nth-child(3){background:#fff0f3}.feature:nth-child(4){background:#fff7dd}
+    .feature-icon{font-size:34px;margin-bottom:7px}.feature strong{display:block;font-size:14px;line-height:1.2;color:#18343a;}
+
+    .home-footer{max-width:1400px;margin:0 auto;background:#064a4b;color:#fff;padding:34px 60px 38px;display:flex;align-items:center;justify-content:space-between;gap:25px;position:relative;overflow:hidden;}
+    .home-footer::before{content:"🐾   🐾   🐾   🐾   🐾   🐾";position:absolute;inset:0;display:flex;align-items:center;justify-content:space-around;opacity:.06;font-size:34px;pointer-events:none;}
+    .footer-brand,.footer-message,.footer-cta{position:relative;z-index:2}.footer-brand strong{font-size:25px}.footer-brand small{display:block;margin-top:7px;color:#d0e5e3}.footer-message{font-size:16px;line-height:1.35;text-align:center}.footer-cta{background:#1fb0a7;color:#fff;text-decoration:none;padding:14px 24px;border-radius:30px;font-weight:900;white-space:nowrap;}
+
+
+    /* =========================================================
+       PLANOS — versão com preços
+       ========================================================= */
+    .plans-section{
+      max-width:1400px;
+      margin:0 auto;
+      padding:56px 48px 54px;
+      background:#fff;
+      position:relative;
+      z-index:30;
+    }
+    .plans-title{
+      text-align:center;
+      color:#102f33;
+      font-size:40px;
+      font-weight:900;
+      letter-spacing:-1px;
+      margin-bottom:7px;
+    }
+    .plans-subtitle{
+      text-align:center;
+      color:#60757a;
+      font-size:18px;
+      margin-bottom:34px;
+    }
+    .plans-layout{
+      max-width:1260px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(3,1fr) 0.95fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    .plan-card{
+      background:#fff;
+      border:1px solid #e4ecea;
+      border-radius:20px;
+      padding:24px 20px 18px;
+      box-shadow:0 8px 25px rgba(17,55,54,.07);
+      display:flex;
+      flex-direction:column;
+      min-height:420px;
+      position:relative;
+    }
+    .plan-card.featured{
+      border:2px solid #21aa88;
+      box-shadow:0 12px 32px rgba(25,165,132,.13);
+      padding-top:31px;
+    }
+    .plan-popular{
+      position:absolute;
+      top:-14px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#20aa82;
+      color:#fff;
+      padding:6px 23px;
+      border-radius:20px;
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .plan-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .plan-icon{
+      width:48px;
+      height:48px;
+      flex:0 0 48px;
+      border-radius:50%;
+      background:#e5f7f4;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:25px;
+    }
+    .plan-card.featured .plan-icon{background:#fff3d8}
+    .plan-name{
+      color:#123a3d;
+      font-size:20px;
+      font-weight:900;
+      line-height:1.05;
+    }
+    .plan-price{
+      color:#123a3d;
+      font-size:27px;
+      font-weight:900;
+      margin:6px 0 16px 60px;
+      letter-spacing:-.5px;
+    }
+    .plan-price small{
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:0;
+    }
+    .plan-list{
+      list-style:none;
+      padding:0;
+      margin:0 0 18px;
+      display:grid;
+      gap:9px;
+      flex:1;
+    }
+    .plan-list li{
+      color:#415d61;
+      font-size:14px;
+      line-height:1.28;
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+    }
+    .plan-list li::before{
+      content:"✓";
+      color:#18a77e;
+      font-weight:900;
+      font-size:17px;
+      line-height:15px;
+      flex:0 0 auto;
+    }
+    .plan-button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:47px;
+      border-radius:12px;
+      background:#0b9f78;
+      color:#fff;
+      text-decoration:none;
+      font-weight:900;
+      font-size:15px;
+      margin-top:auto;
+    }
+    .plan-card:not(.featured) .plan-button{background:#079b78}
+    .family-highlight{
+      border-radius:20px;
+      background:#e7f6ef;
+      padding:23px 18px 0;
+      min-height:420px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .family-highlight h3{
+      color:#123b40;
+      font-size:23px;
+      line-height:1.05;
+      font-weight:900;
+      margin-bottom:13px;
+    }
+    .family-highlight h3 span{
+      color:#168f79;
+    }
+    .family-highlight p{
+      color:#416066;
+      font-size:15px;
+      line-height:1.4;
+      margin-bottom:12px;
+    }
+    .family-pets{
+      margin-top:auto;
+      width:100%;
+      height:190px;
+      object-fit:cover;
+      object-position:center;
+      border-radius:16px 16px 0 0;
+      background:#dcefe8;
+    }
+    .family-heart{
+      font-size:33px;
+      line-height:1;
+      margin-bottom:5px;
+      color:#087d72;
+    }
+    @media(max-width:1050px){
+      .plans-section{padding-left:24px;padding-right:24px}
+      .plans-layout{grid-template-columns:repeat(3,1fr);gap:15px}
+      .family-highlight{grid-column:1/-1;min-height:260px}
+      .family-pets{height:150px;max-width:420px;align-self:center}
+    }
+    @media(max-width:850px){
+      .plans-section{padding:44px 15px 42px}
+      .plans-title{font-size:31px}
+      .plans-subtitle{font-size:16px;margin-bottom:27px}
+      .plans-layout{grid-template-columns:1fr;max-width:520px}
+      .plan-card,.family-highlight{min-height:0}
+      .plan-card{padding:23px 18px 17px}
+      .plan-card.featured{padding-top:31px}
+      .family-highlight{grid-column:auto;min-height:330px}
+      .family-pets{height:160px}
+    }
 
     @media(max-width:1000px){
-      .home-header{height:76px;padding:0 20px}
-      .home-nav,.btn-login{display:none}
-      .mobile-menu{display:block}
-      .hero{min-height:650px}
-      .hero-inner{min-height:650px}
-      .hero-copy{left:5%;top:35px;width:48%}
-      .hero h1{font-size:48px}
-      .hero-copy p{font-size:16px}
-      .btn-main{width:330px;height:57px;font-size:18px}
-      .quick-benefits{grid-template-columns:repeat(3,95px);gap:12px}
-      .hero-visual{width:60%}
-      .story-note{right:8px;top:20px;font-size:17px;width:145px}
-      .tag-note{right:130px;bottom:165px;width:135px;font-size:12px}
-      .phone-note{right:8px;bottom:25px;width:160px;font-size:12px}
-      .profile-card h2,.how-title,.why h2{font-size:32px}
-      .photo-collage{height:240px}
+      .home-header{padding:14px 22px}.home-nav{gap:18px;margin-right:18px}.home-nav a{font-size:13px}.hero-copy{left:4%;width:45%}.hero-copy h1{font-size:51px}.hero-copy p{font-size:16px}.hero-visual{width:58%}.story-note{right:12px}.tag-note{right:175px}.phone-note{width:175px}
     }
-
-    @media(max-width:700px){
-      .hero{min-height:720px;background:#effaf8}
-      .hero-inner{min-height:720px}
-      .hero-copy{
-        position:relative;left:auto;top:auto;width:100%;max-width:none;
-        padding:27px 20px 0;text-align:center;z-index:10
-      }
-      .hero-pill{font-size:13px;margin-bottom:18px}
-      .hero h1{font-size:42px;letter-spacing:-2px}
-      .hero-copy p{font-size:16px;max-width:430px;margin:0 auto 20px}
-      .btn-main{width:100%;max-width:390px;margin:auto}
-      .quick-benefits{margin:20px auto 0;justify-content:center}
-      .hero-visual{
-        position:absolute;left:0;right:0;bottom:0;top:auto;
-        width:100%;height:405px;border-radius:0
-      }
-      .hero-visual:after{width:38%}
-      .story-note{right:8px;top:12px;width:135px;font-size:16px}
-      .tag-note{right:118px;bottom:100px;width:125px}
-      .phone-note{right:7px;bottom:12px;width:145px}
-      .profile-section{padding:0 10px 10px}
-      .profile-card{padding:25px 8px 20px}
-      .profile-card h2{font-size:30px}
-      .profile-subtitle{font-size:16px}
-      .photo-collage{height:330px;grid-template-columns:1fr 1fr}
-      .collage-left{grid-row:span 2}
-      .collage-center{display:none}
-      .collage-right{grid-column:2}
-      .feature-grid{grid-template-columns:1fr 1fr}
-      .feature{min-height:100px}
-      .steps{grid-template-columns:1fr;gap:30px}
-      .why-grid{grid-template-columns:1fr}
-      .footer{flex-direction:column;text-align:center;padding:30px 20px}
+    @media(max-width:850px){
+      .home-header{height:78px;padding:12px 17px}.home-brand-icon{font-size:32px}.home-brand-text strong{font-size:24px}.home-brand-text small{font-size:11px}.home-nav{display:none}.btn-login{display:none}.mobile-menu{display:block}
+      .hero-home{min-height:760px;height:760px;background:linear-gradient(90deg,#fff 0%,#fff 48%,#f4fbfa 63%,#eef9f7 100%)}
+      .hero-inner{min-height:760px;height:760px}.hero-copy{left:20px;top:35px;width:53%;max-width:none}.hero-pill{font-size:11px;padding:8px 10px;margin-bottom:17px}.hero-copy h1{font-size:40px;letter-spacing:-2px;margin-bottom:18px}.hero-copy p{font-size:13px;line-height:1.42;margin-bottom:17px}.btn-principal{min-width:0;width:100%;height:52px;font-size:14px;padding:0 10px;gap:6px}.quick-benefits{grid-template-columns:repeat(3,1fr);width:57%;gap:2px;margin-top:24px}.quick-icon{width:48px;height:48px;font-size:22px}.quick-benefit strong{font-size:10px}
+      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}.story-note{right:2px;top:18px;width:105px;font-size:13px}.story-note .heart{font-size:34px}.tag-note{right:2px;bottom:190px;width:112px;padding:9px 7px;font-size:10px}.tag-arrow{right:88px;bottom:145px;font-size:32px}.phone-note{right:2px;bottom:20px;width:135px;padding:9px 7px;font-size:10px}.physical-tag{left:50%;top:69%;width:62px;height:62px}.physical-tag .paw{font-size:21px}.physical-tag .nfc{font-size:8px}.tag-ring{left:50%;top:63%;width:17px;height:17px}
+      .how-section{padding:45px 20px 55px;border-radius:45% 45% 0 0/38px 38px 0 0}.how-title{font-size:31px}.how-sub{font-size:17px;margin-bottom:27px}.steps{grid-template-columns:1fr;gap:25px}.step:not(:last-child)::after{display:none}.step-top{margin-bottom:8px}
+      .profile-showcase{padding:0 10px 32px}.profile-card{padding:28px 12px;border-radius:27px}.profile-card h2{font-size:30px}.profile-subtitle{font-size:16px;margin:9px 0 22px}.photo-collage{grid-template-columns:1fr 1.35fr 1fr;gap:7px}.collage-left{height:155px}.collage-center{height:195px}.collage-right{gap:7px}.collage-right .collage-photo{height:94px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:7px}.feature{min-height:105px;padding:11px 6px}.feature-icon{font-size:29px}.feature strong{font-size:12px}
+      .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
     }
-
-    @media(max-width:430px){
-      .home-brand-icon{font-size:31px}
-      .home-brand-text strong{font-size:22px}
-      .home-brand-text small{font-size:9px}
-      .hero{min-height:700px}
-      .hero-inner{min-height:700px}
-      .hero h1{font-size:38px}
-      .hero-visual{height:385px}
-      .story-note{font-size:14px;width:120px}
-      .tag-note{right:105px;bottom:94px}
-      .phone-note{width:132px;font-size:11px}
-      .quick-benefits{grid-template-columns:repeat(3,88px);gap:4px}
-      .quick-benefit strong{font-size:11px}
-    }
+    @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.physical-tag{width:56px;height:56px}.tag-ring{top:63%;}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
   </style>
 </head>
 
 <body>
 
-<!-- HOME -->
-<div id="home" class="home">
+<div class="container">
 
-  <header class="home-header">
-    <a href="/" class="home-brand">
-      <div class="home-brand-icon">🐾</div>
-      <div class="home-brand-text">
-        <strong>Save <span>Tag</span> Pet</strong>
-        <small>Identificação inteligente para o seu pet</small>
-      </div>
-    </a>
-
-    <nav class="home-nav">
-      <a href="#inicio">Início</a>
-      <a href="#como-funciona">Como funciona</a>
-      <a href="#beneficios">Benefícios</a>
-      <a href="#perfil">Perfil Digital</a>
-      <a href="#faq">FAQ</a>
-    </nav>
-
-    <a href="login.html" class="btn-login">🔐 Área do Tutor</a>
-    <button id="mobileMenuButton" class="mobile-menu" type="button">☰</button>
-
-    <div id="mobileMenuPanel" class="mobile-menu-panel">
-      <a href="#inicio">Início</a>
-      <a href="#como-funciona">Como funciona</a>
-      <a href="#beneficios">Benefícios</a>
-      <a href="#perfil">Perfil Digital</a>
-      <a href="#faq">FAQ</a>
-      <a href="login.html">🔐 Área do Tutor</a>
+  <header class="header">
+    <div class="logo">
+      Save <span>Tag</span> Pet
     </div>
   </header>
 
-  <section id="inicio" class="hero">
-    <div class="hero-inner">
+  <!-- CARREGANDO -->
+  <div id="loading" class="card loading">
+    Carregando informações do pet...
+  </div>
 
-      <div class="hero-copy">
-        <div class="hero-pill">🐾 Mais segurança para quem você ama</div>
+  <!-- ERRO / TAG NÃO ENCONTRADA -->
+  <div id="erro" class="card error hidden">
+    <h2>Pet não encontrado</h2>
+    <p class="text">
+      Não conseguimos localizar uma TAG ativa para este código.
+    </p>
+  </div>
 
-        <h1>
-          Seu pet<br>
-          identificado.
-          <span>Você tranquilo. 🐾</span>
+  <!-- TAG DISPONÍVEL PARA ATIVAÇÃO -->
+  <div id="ativacao" class="card activation hidden">
+
+    <div class="activation-icon">
+      🐾
+    </div>
+
+    <h1>
+      Sua TAG está pronta!
+    </h1>
+
+    <p class="activation-subtitle">
+      Esta TAG ainda não foi ativada.
+      Ative agora e cadastre todas as informações do seu PET.
+    </p>
+
+    <div class="activation-info">
+
+      <small>
+        Código da TAG
+      </small>
+
+      <strong id="codigoTagAtivacao">
+        -
+      </strong>
+
+    </div>
+
+    <a
+      id="btnAtivar"
+      href="login.html"
+      class="btn btn-primary"
+    >
+      ATIVAR MINHA TAG
+    </a>
+
+    <div class="activation-steps">
+
+      <div class="activation-step">
+        <div class="step-number">1</div>
+        <div>
+          Crie sua conta ou entre com seu login.
+        </div>
+      </div>
+
+      <div class="activation-step">
+        <div class="step-number">2</div>
+        <div>
+          Ative sua TAG e vincule ao seu cadastro.
+        </div>
+      </div>
+
+      <div class="activation-step">
+        <div class="step-number">3</div>
+        <div>
+          Cadastre seu PET e todas as informações.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONTEÚDO DO PET -->
+  <main id="conteudo" class="hidden">
+
+    <section class="card hero">
+
+      <img
+        id="petFoto"
+        class="pet-photo"
+        src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=80"
+        alt="Foto do pet"
+      >
+
+      <div class="pet-info">
+
+        <h1 id="petNome" class="pet-name">
+          Pet
         </h1>
 
-        <p>
-          A Save Tag Pet cria um perfil digital para o seu pet através de uma TAG
-          inteligente. Uma forma simples, rápida e segura de ajudar seu melhor
-          amigo a voltar para casa.
+        <p id="petSub" class="pet-sub">
+          Carregando...
         </p>
 
-        <a href="#perfil" class="btn-main">
-          <span class="cart">🛒</span>
-          <span>Quero minha TAG</span>
-          <span class="arrow">→</span>
+        <div class="badges">
+
+          <span class="badge">
+            TAG ATIVA
+          </span>
+
+          <span id="badgePerdido" class="badge badge-danger hidden">
+            PET PERDIDO
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ENCONTROU -->
+    <section class="card contact">
+
+      <h2>
+        Encontrou meu pet?
+      </h2>
+
+      <p id="mensagemContato">
+        Entre em contato com o tutor através dos canais abaixo.
+      </p>
+
+      <div class="buttons">
+
+        <a
+          id="btnWhatsApp"
+          class="btn btn-whatsapp"
+          href="#"
+          target="_blank"
+          rel="noopener"
+        >
+          WhatsApp
         </a>
 
-        <div class="quick-benefits">
-          <div class="quick-benefit">
-            <div class="quick-icon quick-green">🛡️</div>
-            <strong>Mais<br>segurança</strong>
+        <a
+          id="btnTelefone"
+          class="btn btn-call"
+          href="#"
+        >
+          Ligar
+        </a>
+
+      </div>
+
+    </section>
+
+    <!-- INFORMAÇÕES -->
+    <section class="card">
+
+      <h2 class="section-title">
+        Informações do Pet
+      </h2>
+
+      <div class="info-grid">
+
+        <div class="info-item">
+          <div class="info-label">Nome</div>
+          <div id="infoNome" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Espécie</div>
+          <div id="infoEspecie" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Raça</div>
+          <div id="infoRaca" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Sexo</div>
+          <div id="infoSexo" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Nascimento</div>
+          <div id="infoNascimento" class="info-value">-</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Cidade</div>
+          <div id="infoCidade" class="info-value">-</div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- SAÚDE -->
+    <section class="card">
+
+      <h2 class="section-title">
+        Saúde
+      </h2>
+
+      <div class="info-grid">
+
+        <div class="info-item">
+
+          <div class="info-label">
+            Alergias
           </div>
-          <div class="quick-benefit">
-            <div class="quick-icon quick-blue">⚡</div>
-            <strong>Identificação<br>rápida</strong>
+
+          <div id="infoAlergias" class="info-value">
+            Não informado
           </div>
-          <div class="quick-benefit">
-            <div class="quick-icon quick-pink">❤️</div>
-            <strong>Seu pet<br>sempre com você</strong>
+
+        </div>
+
+        <div class="info-item">
+
+          <div class="info-label">
+            Medicamentos
           </div>
+
+          <div id="infoMedicamentos" class="info-value">
+            Não informado
+          </div>
+
         </div>
+
       </div>
 
-      <div class="hero-visual">
-        <img class="hero-dog-image"
-             src="hero-dog-with-collar-tag.png"
-             alt="Cachorro usando coleira e TAG NFC Save Tag Pet">
+      <div style="margin-top:12px">
 
-        <div class="story-note">
-          <span class="heart">♡</span>
-          Mais que uma TAG,<br>
-          uma história!
+        <div class="info-item">
+
+          <div class="info-label">
+            Observações
+          </div>
+
+          <div id="infoObservacoes" class="text">
+            Nenhuma observação cadastrada.
+          </div>
+
         </div>
 
-        <div class="tag-note">
-          Nossa TAG<br>em ação! 🐾
-        </div>
-
-        <div class="phone-note">
-          📱<br>
-          Aproxime o celular<br>
-          e acesse o perfil<br>
-          do seu pet!
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="perfil" class="profile-section">
-    <div class="profile-card">
-      <h2>Perfil Digital do Pet</h2>
-      <div class="profile-subtitle">Mais que uma TAG, uma história. <span style="color:#fa5d78">❤️</span></div>
-
-      <div class="photo-collage">
-        <img class="collage-left"
-             src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=800&q=85"
-             alt="Cachorro">
-        <img class="collage-center"
-             src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=85"
-             alt="Gato">
-        <div class="collage-right">
-          <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=700&q=85" alt="Cães">
-          <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=700&q=85" alt="Gato">
-        </div>
       </div>
 
-      <div id="beneficios" class="feature-grid">
-        <div class="feature">
-          <div class="feature-icon">📷</div>
-          <strong>Fotos<br>do seu pet</strong>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">👤</div>
-          <strong>Informações<br>importantes</strong>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">❤️</div>
-          <strong>Saúde e<br>vacinas</strong>
-        </div>
-        <div class="feature">
-          <div class="feature-icon">📞</div>
-          <strong>Contato<br>do tutor</strong>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="como-funciona" class="how-section">
-    <h2 class="how-title">Como funciona?</h2>
-    <p class="how-sub">É simples, rápido e seguro!</p>
+    <!-- PET PERDIDO -->
+    <section
+      id="cardPerdido"
+      class="card lost hidden"
+    >
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-top">
-          <div class="step-icon">🛒</div><div class="step-number">1</div>
-        </div>
-        <h3>Compre sua TAG</h3>
-        <p>Receba sua TAG Save Tag Pet e<br>aproxime o celular.</p>
+      <div class="lost-title">
+        🚨 PET PERDIDO
       </div>
 
-      <div class="step">
-        <div class="step-top">
-          <div class="step-icon">📱</div><div class="step-number">2</div>
+      <p id="perdidoMensagem"></p>
+
+      <p>
+        <strong>Último local:</strong>
+        <span id="perdidoLocal">-</span>
+      </p>
+
+      <p>
+        <strong>Data:</strong>
+        <span id="perdidoData">-</span>
+      </p>
+
+      <p>
+        <strong>Horário:</strong>
+        <span id="perdidoHora">-</span>
+      </p>
+
+    </section>
+
+    <!-- TUTOR -->
+    <section class="card">
+
+      <h2 class="section-title">
+        Tutor
+      </h2>
+
+      <div class="info-item">
+
+        <div class="info-label">
+          Responsável
         </div>
-        <h3>Cadastre seu pet</h3>
-        <p>Crie sua conta e preencha as<br>informações do seu pet.</p>
+
+        <div id="tutorNome" class="info-value">
+          -
+        </div>
+
       </div>
 
-      <div class="step">
-        <div class="step-top">
-          <div class="step-icon">🐾</div><div class="step-number">3</div>
-        </div>
-        <h3>Pet protegido</h3>
-        <p>Quem encontrar seu pet poderá<br>acessar o perfil através da TAG.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="faq" class="why">
-    <h2>Por que usar a Save Tag Pet?</h2>
-    <p>Uma identificação simples para cães e gatos.</p>
+  </main>
 
-    <div class="why-grid">
-      <div class="why-item">
-        <div class="why-icon">🐾</div>
-        <div>
-          <h3>A TAG usa tecnologia NFC</h3>
-          <p>Basta aproximar um celular compatível para acessar o perfil digital do pet.</p>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">📱</div>
-        <div>
-          <h3>Não precisa instalar aplicativo</h3>
-          <p>O perfil é acessado diretamente pelo navegador do celular.</p>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">❤️</div>
-        <div>
-          <h3>Para cães e gatos</h3>
-          <p>O sistema foi desenvolvido para facilitar a identificação e localização do seu pet.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- ÁREA DO TUTOR -->
+  <div style="text-align:center;margin:18px 0 8px;">
+
+    <a
+      id="btnAreaTutor"
+      href="login.html"
+      onclick="this.href='login.html?tag='+encodeURIComponent(new URLSearchParams(window.location.search).get('tag') || '')"
+      style="
+        color:#7a847e;
+        font-size:12px;
+        text-decoration:none;
+      "
+    >
+      🔐 Área do Tutor
+    </a>
+
+  </div>
 
   <footer class="footer">
-    <div class="footer-brand">
-      <strong>🐾 Save <span>Tag</span> Pet</strong>
-      <small>Identificação inteligente para o seu pet.</small>
-    </div>
-    <div class="footer-message">
-      Seu pet sempre seguro.<br>
-      <strong>Em qualquer lugar. ❤️</strong>
-    </div>
-    <a href="#perfil" class="footer-cta">🛒 Quero minha TAG →</a>
+
+    Save Tag Pet<br>
+
+    Um toque, muitos cuidados! 💚
+
   </footer>
 
 </div>
 
-<!-- PERFIL PÚBLICO / ATIVAÇÃO: preservado para links ?tag=CODIGO -->
-<div id="tagArea" class="hidden">
-  <div id="loading" class="tag-page"><div class="tag-container"><div class="tag-card" style="text-align:center">🐾 Carregando...</div></div></div>
-  <div id="erro" class="tag-page hidden"><div class="tag-container"><div class="tag-card" style="text-align:center"><h2>🐾 Pet não encontrado</h2><p style="margin-top:8px">Não encontramos uma TAG com esse código.</p></div></div></div>
-
-  <div id="ativacao" class="activation hidden">
-    <div style="font-size:55px">🐾</div>
-    <h1 style="color:#173d2d;margin-bottom:10px">Ative sua TAG</h1>
-    <p style="color:#59645e;line-height:1.55;margin-bottom:20px">
-      Esta TAG ainda está disponível. Cadastre sua conta e vincule esta TAG ao seu pet.
-    </p>
-    <div style="background:#f1f7f5;border-radius:15px;padding:15px;margin-bottom:20px">
-      <small style="display:block;color:#758078">Código da TAG</small>
-      <strong id="codigoTagAtivacao" style="font-size:20px;color:#173d2d">---</strong>
-    </div>
-    <a id="btnAtivar" href="#" style="display:block;background:#20afa6;color:#fff;padding:15px;border-radius:15px;font-weight:900">🔐 Ativar minha TAG</a>
-  </div>
-
-  <main id="conteudo" class="tag-page hidden">
-    <div class="tag-container">
-      <div class="tag-card">
-        <img id="petFoto" class="tag-photo" src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=900&q=85" alt="Foto do pet">
-        <h1 id="petNome" class="tag-name">Pet</h1>
-        <div id="petSub" class="tag-sub">Raça • Sexo</div>
-      </div>
-
-      <div class="tag-card">
-        <h2 class="tag-title">🐾 Informações do pet</h2>
-        <div class="info-grid">
-          <div class="info-item"><div class="info-label">Nome</div><div id="infoNome" class="info-value">-</div></div>
-          <div class="info-item"><div class="info-label">Espécie</div><div id="infoEspecie" class="info-value">-</div></div>
-          <div class="info-item"><div class="info-label">Raça</div><div id="infoRaca" class="info-value">-</div></div>
-          <div class="info-item"><div class="info-label">Sexo</div><div id="infoSexo" class="info-value">-</div></div>
-          <div class="info-item"><div class="info-label">Nascimento</div><div id="infoNascimento" class="info-value">-</div></div>
-          <div class="info-item"><div class="info-label">Cidade</div><div id="infoCidade" class="info-value">-</div></div>
-        </div>
-      </div>
-
-      <div class="tag-card">
-        <h2 class="tag-title">🩺 Saúde</h2>
-        <div class="info-item"><div class="info-label">Alergias</div><div id="infoAlergias" class="info-value">Nenhuma informada</div></div>
-        <br>
-        <div class="info-item"><div class="info-label">Medicamentos</div><div id="infoMedicamentos" class="info-value">Nenhum informado</div></div>
-        <br>
-        <div class="info-item"><div class="info-label">Observações</div><div id="infoObservacoes" class="info-value">Nenhuma observação cadastrada.</div></div>
-      </div>
-
-      <div class="tag-card contact-card">
-        <h2>📞 Entre em contato</h2>
-        <p style="color:#d8e8df;line-height:1.5;margin-top:8px">
-          Se você encontrou este pet, entre em contato com o tutor através dos canais disponíveis.
-        </p>
-        <div class="contact-buttons">
-          <a id="btnWhatsApp" class="contact-btn whatsapp" href="#" target="_blank">💬 WhatsApp</a>
-          <a id="btnTelefone" class="contact-btn call" href="#">📞 Ligar</a>
-        </div>
-      </div>
-
-      <div class="tag-card" style="text-align:center;color:#718078">
-        Save Tag Pet 🐾<br>
-        Identificação inteligente para o seu pet.<br>
-        <a href="login.html" style="display:inline-block;margin-top:10px;font-weight:900;color:#173d2d">🔐 Área do Tutor</a>
-      </div>
-    </div>
-  </main>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-  const SUPABASE_URL = "https://mqiwoubhivutavpnpeax.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
 
-  function formatarData(data){
-    if(!data) return "-";
-    const partes=String(data).split("-");
-    return partes.length===3 ? partes[2]+"/"+partes[1]+"/"+partes[0] : data;
+const SUPABASE_URL =
+  "https://mqiwoubhivutavpnpeax.supabase.co";
+
+/*
+  ==========================================================
+  COLOQUE AQUI A MESMA PUBLISHABLE KEY DO SEU ARQUIVO ATUAL
+  ==========================================================
+*/
+const SUPABASE_KEY =
+  "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+function formatarData(data){
+
+  if(!data){
+    return "-";
   }
 
-  function mostrarTagArea(){
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("tagArea").classList.remove("hidden");
+  const partes =
+    String(data).split("-");
+
+  if(partes.length !== 3){
+    return data;
   }
 
-  async function carregarPet(){
-    const codigo=new URLSearchParams(window.location.search).get("tag");
-    if(!codigo) return;
+  return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
 
-    mostrarTagArea();
+function formatarHora(hora){
 
-    try{
-      const resposta=await fetch(SUPABASE_URL+"/rest/v1/rpc/get_pet_public",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          "apikey":SUPABASE_KEY,
-          "Authorization":"Bearer "+SUPABASE_KEY
-        },
-        body:JSON.stringify({p_codigo:codigo})
+  if(!hora){
+    return "-";
+  }
+
+  return String(hora).substring(0,5);
+}
+
+async function carregarPet(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const codigo =
+    params.get("tag");
+
+  /*
+    SEM CÓDIGO DA TAG
+    MOSTRA A HOME
+  */
+
+  if(!codigo){
+
+    document.body.innerHTML = `
+      <div class="home">
+
+        <header class="home-header">
+          <a href="/" class="home-brand" style="text-decoration:none;">
+            <div class="home-brand-icon">🐾</div>
+            <div class="home-brand-text">
+              <strong>Save <span>Tag</span> Pet</strong>
+              <small>Identificação inteligente para o seu pet</small>
+            </div>
+          </a>
+
+          <nav class="home-nav" aria-label="Navegação principal">
+            <a href="#inicio">Início</a>
+            <a href="#como-funciona">Como funciona</a>
+            <a href="#perfil">Perfil Digital</a>
+            <a href="#planos">Planos</a>
+          </nav>
+
+          <a href="login.html" class="btn-login">🔐 Área do Tutor</a>
+
+          <button type="button" class="mobile-menu" id="mobileMenuButton" aria-label="Abrir menu">☰</button>
+        </header>
+
+        <div class="mobile-menu-panel" id="mobileMenuPanel">
+          <a href="#inicio">Início</a>
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#perfil">Perfil Digital</a>
+          <a href="#planos">Planos</a>
+          <a href="login.html">🔐 Área do Tutor</a>
+        </div>
+
+        <section class="hero-home" id="inicio">
+          <div class="hero-inner">
+
+            <div class="hero-copy">
+              <div class="hero-pill">🐾 &nbsp;Mais segurança para quem você ama</div>
+
+              <h1>
+                Seu pet<br>identificado.
+                <span>Você tranquilo. 🐾</span>
+              </h1>
+
+              <p>
+                A Save Tag Pet cria um perfil digital para o seu pet através de uma TAG inteligente.
+                Uma forma simples, rápida e segura de ajudar seu melhor amigo a voltar para casa.
+              </p>
+
+              <a href="#planos" class="btn-principal">
+                🛒 <span>Quero minha TAG</span> <strong>→</strong>
+              </a>
+
+              <div class="quick-benefits">
+                <div class="quick-benefit">
+                  <div class="quick-icon green">🛡️</div>
+                  <strong>Mais<br>segurança</strong>
+                </div>
+                <div class="quick-benefit">
+                  <div class="quick-icon blue">⚡</div>
+                  <strong>Identificação<br>rápida</strong>
+                </div>
+                <div class="quick-benefit">
+                  <div class="quick-icon pink">❤️</div>
+                  <strong>Seu pet<br>sempre com você</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-visual">
+              <img class="hero-dog-image"
+                   src="hero-dog-clean2.png"
+                   alt="Cachorro usando coleira e TAG Save Tag Pet">
+
+              <div class="story-note">
+                <span class="heart">♡</span>
+                Mais que uma TAG,<br>uma história!
+              </div>
+
+              <div class="tag-ring"></div>
+
+              <div class="physical-tag">
+                <div class="paw">🐾</div>
+                <div class="nfc">Save Tag Pet</div>
+              </div>
+
+              <div class="tag-note">Nossa TAG<br>em ação! 🐾</div>
+
+              <div class="phone-note">
+                📱<br>
+                Aproxime o celular<br>
+                e acesse o perfil<br>
+                do seu pet!
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <section id="como-funciona" class="how-section">
+          <h2 class="how-title">Como funciona?</h2>
+          <p class="how-sub">É simples, rápido e seguro!</p>
+
+          <div class="steps">
+            <div class="step">
+              <div class="step-top">
+                <div class="step-icon">🛒</div>
+                <div class="step-number">1</div>
+              </div>
+              <h3>Compre sua TAG</h3>
+              <p>Receba sua TAG Save Tag Pet e aproxime o celular.</p>
+            </div>
+
+            <div class="step">
+              <div class="step-top">
+                <div class="step-icon">📱</div>
+                <div class="step-number">2</div>
+              </div>
+              <h3>Cadastre seu pet</h3>
+              <p>Crie sua conta e preencha as informações do seu pet.</p>
+            </div>
+
+            <div class="step">
+              <div class="step-top">
+                <div class="step-icon">🐾</div>
+                <div class="step-number">3</div>
+              </div>
+              <h3>Pet protegido</h3>
+              <p>Quem encontrar seu pet poderá acessar o perfil através da TAG.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="profile-showcase" id="perfil">
+          <div class="profile-card">
+            <h2>Perfil Digital do Pet</h2>
+            <div class="profile-subtitle">
+              Mais que uma TAG, uma história. <span style="color:#fa5d78">❤️</span>
+            </div>
+
+            <div class="photo-collage">
+              <img class="collage-photo collage-left"
+                   src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=85"
+                   alt="Cachorro feliz usando coleira">
+
+              <img class="collage-photo collage-center"
+                   src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=85"
+                   alt="Gato no perfil digital">
+
+              <div class="collage-right">
+                <img class="collage-photo"
+                     src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=700&q=85"
+                     alt="Cachorro descansando">
+
+                <img class="collage-photo"
+                     src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=700&q=85"
+                     alt="Gato no perfil digital">
+              </div>
+            </div>
+
+            <div id="beneficios" class="feature-grid">
+              <div class="feature">
+                <div class="feature-icon">📷</div>
+                <strong>Fotos<br>do seu pet</strong>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">👤</div>
+                <strong>Informações<br>importantes</strong>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">❤️</div>
+                <strong>Saúde e<br>vacinas</strong>
+              </div>
+              <div class="feature">
+                <div class="feature-icon">📞</div>
+                <strong>Contato<br>do tutor</strong>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="planos" class="plans-section">
+          <h2 class="plans-title">Conheça nossos planos</h2>
+          <p class="plans-subtitle">
+            Escolha o plano ideal e ofereça ainda mais cuidado para o seu pet.
+          </p>
+
+          <div class="plans-layout">
+
+            <article class="plan-card">
+              <div class="plan-head">
+                <div class="plan-icon">🐾</div>
+                <div class="plan-name">TAG AVULSA</div>
+              </div>
+
+              <div class="plan-price">R$ 49,90</div>
+
+              <ul class="plan-list">
+                <li>1 TAG NFC</li>
+                <li>Perfil público básico</li>
+                <li>Contato do tutor</li>
+                <li>Modo pet perdido</li>
+                <li>Atualização dos dados</li>
+              </ul>
+
+              <a href="#planos" class="plan-button">Quero minha TAG</a>
+            </article>
+
+            <article class="plan-card featured">
+              <div class="plan-popular">MAIS ESCOLHIDO</div>
+
+              <div class="plan-head">
+                <div class="plan-icon">⭐</div>
+                <div class="plan-name">SAVE TAG</div>
+              </div>
+
+              <div class="plan-price">R$ 9,90<small>/mês</small></div>
+
+              <ul class="plan-list">
+                <li>Todos os recursos do plano avulso</li>
+                <li>Carteira de vacinação</li>
+                <li>Histórico de saúde</li>
+                <li>Consultas e exames</li>
+                <li>Alertas e lembretes</li>
+                <li>Fotos e momentos</li>
+                <li>Área exclusiva do tutor</li>
+              </ul>
+
+              <a href="login.html" class="plan-button">Assinar agora</a>
+            </article>
+
+            <article class="plan-card">
+              <div class="plan-head">
+                <div class="plan-icon">👥</div>
+                <div class="plan-name">SAVE TAG FAMÍLIA</div>
+              </div>
+
+              <div class="plan-price">R$ 15,99<small>/mês</small></div>
+
+              <ul class="plan-list">
+                <li>Até 4 pets na mesma conta</li>
+                <li>2 TAGs (1 grátis)</li>
+                <li>Todos os recursos Premium</li>
+                <li>Carteira de vacinação</li>
+                <li>Consultas e exames</li>
+                <li>Alertas e lembretes</li>
+                <li>Área exclusiva do tutor</li>
+              </ul>
+
+              <a href="login.html" class="plan-button">Assinar plano família</a>
+            </article>
+
+            <aside class="family-highlight">
+              <div class="family-heart">♥</div>
+              <h3>Proteja<br>toda a <span>família!</span></h3>
+              <p>
+                Compre 1 TAG e ganhe<br>
+                a 2ª TAG no Plano Família
+              </p>
+
+              <img class="family-pets"
+                   src="hero-dog-clean2.png"
+                   alt="Pets da família usando TAG Save Tag Pet">
+            </aside>
+
+          </div>
+        </section>
+
+        <footer class="home-footer">
+          <div class="footer-brand">
+            <strong>🐾 Save <span style="color:#1fb0a7;">Tag</span> Pet</strong>
+            <small>Identificação inteligente para o seu pet.</small>
+          </div>
+
+          <div class="footer-message">
+            Seu pet sempre seguro.<br>
+            <strong>Em qualquer lugar. ❤️</strong>
+          </div>
+
+          <a href="#planos" class="footer-cta">
+            🛒 &nbsp; Quero minha TAG &nbsp; →
+          </a>
+        </footer>
+
+      </div>
+    `;
+
+    const menuButton = document.getElementById("mobileMenuButton");
+    const menuPanel = document.getElementById("mobileMenuPanel");
+    if(menuButton && menuPanel){
+      menuButton.addEventListener("click",function(){
+        menuPanel.classList.toggle("open");
+        menuButton.textContent = menuPanel.classList.contains("open") ? "✕" : "☰";
       });
-
-      if(!resposta.ok) throw new Error("Erro ao consultar a TAG.");
-      const dados=await resposta.json();
-
-      document.getElementById("loading").classList.add("hidden");
-
-      if(!dados || !dados.length){
-        document.getElementById("erro").classList.remove("hidden");
-        return;
-      }
-
-      const pet=dados[0];
-
-      if(pet.tag_disponivel===true){
-        document.getElementById("ativacao").classList.remove("hidden");
-        const codigoTag=pet.tag_codigo||codigo;
-        document.getElementById("codigoTagAtivacao").textContent=codigoTag;
-        document.getElementById("btnAtivar").href="login.html?tag="+encodeURIComponent(codigoTag);
-        return;
-      }
-
-      document.getElementById("conteudo").classList.remove("hidden");
-
-      document.getElementById("petNome").textContent=pet.nome||"Pet";
-      document.getElementById("petSub").textContent=(pet.raca||"Raça não informada")+" • "+(pet.sexo||"Sexo não informado");
-      document.getElementById("infoNome").textContent=pet.nome||"-";
-      document.getElementById("infoEspecie").textContent=pet.especie||"-";
-      document.getElementById("infoRaca").textContent=pet.raca||"-";
-      document.getElementById("infoSexo").textContent=pet.sexo||"-";
-      document.getElementById("infoNascimento").textContent=formatarData(pet.data_nascimento);
-      document.getElementById("infoCidade").textContent=pet.cidade||"-";
-
-      if(pet.foto_url) document.getElementById("petFoto").src=pet.foto_url;
-
-      document.getElementById("infoAlergias").textContent=pet.alergias||"Nenhuma informada";
-      document.getElementById("infoMedicamentos").textContent=pet.medicamentos||"Nenhum informado";
-      document.getElementById("infoObservacoes").textContent=pet.observacoes||"Nenhuma observação cadastrada.";
-
-      if(pet.telefone){
-        const telefone=String(pet.telefone).replace(/\D/g,"");
-        document.getElementById("btnTelefone").href="tel:"+telefone;
-      }else{
-        document.getElementById("btnTelefone").classList.add("hidden");
-      }
-
-      if(pet.whatsapp){
-        let whatsapp=String(pet.whatsapp).replace(/\D/g,"");
-        if(whatsapp.length===10 || whatsapp.length===11) whatsapp="55"+whatsapp;
-        document.getElementById("btnWhatsApp").href="https://wa.me/"+whatsapp;
-      }else{
-        document.getElementById("btnWhatsApp").classList.add("hidden");
-      }
-
-    }catch(e){
-      console.error(e);
-      document.getElementById("loading").classList.add("hidden");
-      document.getElementById("erro").classList.remove("hidden");
     }
+
+    return;
   }
 
-  const menuButton=document.getElementById("mobileMenuButton");
-  const menuPanel=document.getElementById("mobileMenuPanel");
 
-  menuButton.addEventListener("click",()=>{
-    menuPanel.classList.toggle("open");
-    menuButton.textContent=menuPanel.classList.contains("open")?"✕":"☰";
-  });
+  try{
 
-  menuPanel.querySelectorAll("a").forEach(link=>{
-    link.addEventListener("click",()=>{
-      menuPanel.classList.remove("open");
-      menuButton.textContent="☰";
-    });
-  });
+    const resposta =
+      await fetch(
+        `${SUPABASE_URL}/rest/v1/rpc/get_pet_public`,
+        {
+          method:"POST",
 
-  carregarPet();
+          headers:{
+            "Content-Type":"application/json",
+            "apikey":SUPABASE_KEY,
+            "Authorization":
+              `Bearer ${SUPABASE_KEY}`
+          },
+
+          body:JSON.stringify({
+            p_codigo:codigo
+          })
+        }
+      );
+
+    if(!resposta.ok){
+
+      throw new Error(
+        "Erro ao consultar o pet"
+      );
+
+    }
+
+    const dados =
+      await resposta.json();
+
+    if(!dados || !dados.length){
+
+      document
+        .getElementById("loading")
+        .classList.add("hidden");
+
+      document
+        .getElementById("erro")
+        .classList.remove("hidden");
+
+      return;
+    }
+
+    const pet =
+      dados[0];
+
+    if(pet.tag_disponivel === true){
+
+      document
+        .getElementById("loading")
+        .classList.add("hidden");
+
+      document
+        .getElementById("ativacao")
+        .classList.remove("hidden");
+
+      document
+        .getElementById("codigoTagAtivacao")
+        .textContent =
+          pet.tag_codigo || codigo;
+
+      document
+        .getElementById("btnAtivar")
+        .href =
+          `login.html?tag=${encodeURIComponent(
+            pet.tag_codigo || codigo
+          )}`;
+
+      return;
+    }
+
+    preencherPagina(pet);
+
+  }catch(erro){
+
+    console.error(
+      "Erro:",
+      erro
+    );
+
+    document
+      .getElementById("loading")
+      .classList.add("hidden");
+
+    document
+      .getElementById("erro")
+      .classList.remove("hidden");
+
+  }
+
+}
+
+
+function preencherPagina(pet){
+
+  document
+    .getElementById("loading")
+    .classList.add("hidden");
+
+  document
+    .getElementById("conteudo")
+    .classList.remove("hidden");
+
+  document
+    .getElementById("petNome")
+    .textContent =
+      pet.nome || "Pet";
+
+  document
+    .getElementById("petSub")
+    .textContent =
+      `${pet.raca || "Raça não informada"} • ${
+        pet.sexo || "Sexo não informado"
+      }`;
+
+  document
+    .getElementById("infoNome")
+    .textContent =
+      pet.nome || "-";
+
+  document
+    .getElementById("infoEspecie")
+    .textContent =
+      pet.especie || "-";
+
+  document
+    .getElementById("infoRaca")
+    .textContent =
+      pet.raca || "-";
+
+  document
+    .getElementById("infoSexo")
+    .textContent =
+      pet.sexo || "-";
+
+  document
+    .getElementById("infoNascimento")
+    .textContent =
+      formatarData(
+        pet.data_nascimento
+      );
+
+  document
+    .getElementById("infoCidade")
+    .textContent =
+      pet.cidade || "-";
+
+  if(pet.foto_url){
+
+    document
+      .getElementById("petFoto")
+      .src =
+        pet.foto_url;
+
+  }
+
+  document
+    .getElementById("infoAlergias")
+    .textContent =
+      pet.alergias ||
+      "Nenhuma informada";
+
+  document
+    .getElementById("infoMedicamentos")
+    .textContent =
+      pet.medicamentos ||
+      "Nenhum informado";
+
+  document
+    .getElementById("infoObservacoes")
+    .textContent =
+      pet.observacoes ||
+      "Nenhuma observação cadastrada.";
+
+  document
+    .getElementById("tutorNome")
+    .textContent =
+      pet.tutor_nome ||
+      "Tutor não informado";
+
+  if(pet.telefone){
+
+    const telefone =
+      String(pet.telefone)
+        .replace(/\D/g,"");
+
+    document
+      .getElementById("btnTelefone")
+      .href =
+        `tel:${telefone}`;
+
+  }else{
+
+    document
+      .getElementById("btnTelefone")
+      .classList.add("hidden");
+
+  }
+
+  if(pet.whatsapp){
+
+    let whatsapp =
+      String(pet.whatsapp)
+        .replace(/\D/g,"");
+
+    if(
+      whatsapp.length === 10 ||
+      whatsapp.length === 11
+    ){
+
+      whatsapp =
+        "55" + whatsapp;
+
+    }
+
+    document
+      .getElementById("btnWhatsApp")
+      .href =
+        `https://wa.me/${whatsapp}`;
+
+  }else{
+
+    document
+      .getElementById("btnWhatsApp")
+      .classList.add("hidden");
+
+  }
+
+  if(pet.perdido === true){
+
+    document
+      .getElementById("cardPerdido")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("badgePerdido")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("perdidoMensagem")
+      .textContent =
+        pet.mensagem_perdido ||
+        "Este pet está desaparecido. Se você o encontrou, entre em contato com o tutor.";
+
+    document
+      .getElementById("perdidoLocal")
+      .textContent =
+        pet.ultimo_local_perdido ||
+        "Não informado";
+
+    document
+      .getElementById("perdidoData")
+      .textContent =
+        formatarData(
+          pet.data_perdido
+        );
+
+    document
+      .getElementById("perdidoHora")
+      .textContent =
+        formatarHora(
+          pet.hora_perdido
+        );
+
+  }
+
+}
+
+
+carregarPet();
+
 </script>
 
 </body>
