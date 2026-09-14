@@ -479,6 +479,27 @@
       font-weight:700;
       letter-spacing:0;
     }
+    .plan-promo{
+      background:#e8f7f1;
+      border-radius:12px;
+      padding:10px 11px;
+      margin:0 0 12px;
+      color:#244b4e;
+      font-size:12.5px;
+      line-height:1.25;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .plan-promo-icon{
+      font-size:22px;
+      line-height:1;
+      flex:0 0 auto;
+    }
+    .plan-promo strong{
+      color:#079b78;
+      font-weight:900;
+    }
     .plan-list{
       list-style:none;
       padding:0;
@@ -525,6 +546,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
+      text-align:left;
     }
     .family-highlight h3{
       color:#123b40;
@@ -540,16 +562,23 @@
       color:#416066;
       font-size:15px;
       line-height:1.4;
-      margin-bottom:12px;
+      margin-bottom:8px;
+    }
+    .family-subtitle{
+      color:#416066;
+      font-size:14px;
+      line-height:1.35;
+      margin:0 0 4px;
     }
     .family-pets{
       margin-top:auto;
       width:100%;
-      height:190px;
-      object-fit:cover;
-      object-position:center;
+      height:220px;
+      object-fit:contain;
+      object-position:center center;
+      display:block;
       border-radius:16px 16px 0 0;
-      background:#dcefe8;
+      background:transparent;
     }
     .family-heart{
       font-size:33px;
@@ -588,25 +617,7 @@
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
     }
     @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
-  
-
-        .plan-bonus {
-          margin: 14px 0 16px;
-          padding: 11px 13px;
-          border-radius: 14px;
-          background: #edf9f5;
-          color: #173d4d;
-          font-size: 13px;
-          line-height: 1.35;
-          text-align: left;
-        }
-        .plan-bonus strong { color: #0b9f7d; }
-        .family-pets {
-          object-fit: contain !important;
-          object-position: center center !important;
-        }
-
-</style>
+  </style>
 </head>
 
 <body>
@@ -1229,7 +1240,10 @@ async function carregarPet(){
 
               <div class="plan-price">R$ 9,90<small>/mês</small></div>
 
-              <div class="plan-bonus">🎁 Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 1 TAG!</strong></div>
+              <div class="plan-promo">
+                <span class="plan-promo-icon">🎁</span>
+                <span>Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 1 TAG!</strong></span>
+              </div>
 
               <ul class="plan-list">
                 <li>Todos os recursos do plano avulso</li>
@@ -1252,7 +1266,10 @@ async function carregarPet(){
 
               <div class="plan-price">R$ 19,90<small>/mês</small></div>
 
-              <div class="plan-bonus">🎁 Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 3 TAGs!</strong></div>
+              <div class="plan-promo">
+                <span class="plan-promo-icon">🎁</span>
+                <span>Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 3 TAGs!</strong></span>
+              </div>
 
               <ul class="plan-list">
                 <li>Até 4 pets na mesma conta</li>
@@ -1271,8 +1288,11 @@ async function carregarPet(){
               <div class="family-heart">♥</div>
               <h3>Proteja<br>toda a <span>família!</span></h3>
               <p>
-                Compre 1 TAG e ganhe<br>
-                a 2ª TAG no Plano Família
+                Mais segurança, tranquilidade<br>
+                e bem-estar para todos os seus pets.
+              </p>
+              <p class="family-subtitle">
+                Uma única conta para cuidar de toda a família.
               </p>
 
               <img class="family-pets"
