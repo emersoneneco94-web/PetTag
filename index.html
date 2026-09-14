@@ -333,101 +333,19 @@
     .hero-dog-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;}
     .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:25%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.7) 38%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
 
-    /* CHAMADAS DO HERO — setas direcionadas para a TAG */
-    .hero-callout{
-      position:absolute;
-      z-index:8;
-      color:#fff;
-      font-family:"Trebuchet MS",Arial,sans-serif;
-      font-weight:800;
-      line-height:1.08;
-      letter-spacing:.2px;
-      text-shadow:0 2px 8px rgba(0,0,0,.30);
-      pointer-events:none;
-    }
-    .hero-callout strong{
-      display:block;
-      font-size:24px;
-      font-weight:800;
-    }
+    /* CHAMADAS DO HERO — todas apontam para o centro da TAG */
+    .hero-callout{position:absolute;z-index:9;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;line-height:1.08;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.32);pointer-events:none;}
+    .hero-callout strong{display:block;font-size:24px;font-weight:800;}
+    .hero-callout-top{right:5%;top:10%;text-align:left;transform:rotate(-2deg);}
+    .hero-callout-left{left:7%;bottom:23%;text-align:left;transform:rotate(-1deg);}
+    .hero-callout-right{right:4%;bottom:22%;text-align:left;transform:rotate(1deg);}
 
-    /* Chamada superior: seta desce até a TAG */
-    .hero-callout-top{
-      right:5%;
-      top:10%;
-      width:230px;
-      text-align:left;
-      transform:rotate(-3deg);
-    }
+    /* Camada única de setas: o ponto final das 3 linhas é a TAG */
+    .hero-arrows{position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;overflow:visible;}
+    .hero-arrows line{stroke:#fff;stroke-width:3.5;stroke-linecap:round;filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+    .hero-arrows polygon{fill:#fff;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
 
-    /* Chamada esquerda: seta atravessa o peito até a TAG */
-    .hero-callout-left{
-      left:7%;
-      bottom:23%;
-      width:300px;
-      text-align:left;
-      transform:rotate(-2deg);
-    }
-
-    /* Chamada direita: seta desce em direção à TAG */
-    .hero-callout-right{
-      right:4%;
-      bottom:22%;
-      width:235px;
-      text-align:left;
-      transform:rotate(2deg);
-    }
-
-    /* Linhas das setas */
-    .callout-arrow{
-      position:absolute;
-      display:block;
-      width:3px;
-      height:3px;
-      padding:0;
-      margin:0;
-      background:#fff;
-      border-radius:99px;
-      box-shadow:0 2px 8px rgba(0,0,0,.25);
-      transform-origin:left center;
-      font-size:0;
-      line-height:0;
-    }
-
-    .callout-arrow::after{
-      content:"";
-      position:absolute;
-      right:-2px;
-      top:50%;
-      width:10px;
-      height:10px;
-      border-top:3px solid #fff;
-      border-right:3px solid #fff;
-      transform:translateY(-50%) rotate(45deg);
-      filter:drop-shadow(0 2px 2px rgba(0,0,0,.18));
-    }
-
-    /* Ponta final próxima ao centro da TAG */
-    .arrow-top{
-      left:-35px;
-      top:82px;
-      width:405px;
-      transform:rotate(89deg);
-    }
-
-    .arrow-left{
-      left:55px;
-      top:66px;
-      width:425px;
-      transform:rotate(8deg);
-    }
-
-    .arrow-right{
-      left:105px;
-      top:67px;
-      width:145px;
-      transform:rotate(153deg);
-    }
+    @media(max-width:850px){.hero-arrows{display:none;}}
 
     .how-section{max-width:1400px;margin:-2px auto 0;padding:48px 55px 62px;background:#fff;border-radius:55% 55% 0 0/55px 55px 0 0;position:relative;z-index:30;}
     .how-title{text-align:center;color:#102f33;font-size:37px;font-weight:900;margin-bottom:6px;}
@@ -1143,19 +1061,31 @@ async function carregarPet(){
                    src="hero-dog-clean2.png"
                    alt="Cachorro usando coleira e TAG Save Tag Pet">
 
+              <!-- As três setas terminam exatamente na TAG azul -->
+              <svg class="hero-arrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <!-- superior -> TAG -->
+                <line x1="69" y1="20" x2="63" y2="85" />
+                <polygon points="63,85 64.7,81.8 66.1,84.6" />
+
+                <!-- esquerda -> TAG -->
+                <line x1="18" y1="70" x2="62.5" y2="85" />
+                <polygon points="62.5,85 58.9,83.2 59.5,86.5" />
+
+                <!-- direita -> TAG -->
+                <line x1="82" y1="69" x2="64" y2="85" />
+                <polygon points="64,85 67.6,84.9 65.9,82.2" />
+              </svg>
+
               <div class="hero-callout hero-callout-top">
                 <strong>Pequena TAG,<br>grande proteção!</strong>
-                <span class="callout-arrow arrow-top">↙</span>
               </div>
 
               <div class="hero-callout hero-callout-left">
                 <strong>Se ele se perder,<br>alguém pode te encontrar!</strong>
-                <span class="callout-arrow arrow-left">↘</span>
               </div>
 
               <div class="hero-callout hero-callout-right">
                 <strong>Tecnologia NFC<br>sem necessidade<br>de aplicativo</strong>
-                <span class="callout-arrow arrow-right">↙</span>
               </div>
             </div>
 
