@@ -1,140 +1,1935 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Save Tag Pet | Identifique. Encontre. Proteja.</title>
-<meta name="description" content="Identificação inteligente para cães e gatos com tecnologia NFC.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
-<style>
-:root{--primary:#0b5574;--pl:#e6f4f8;--green:#07966b;--gb:#dff8ee;--blue:#2563eb;--red:#dc2626;--bg:#f8fcfb;--card:#fff;--text:#1a2e35;--tm:#6d8187;--bd:#e2e8f0;--yellow:#f59e0b;--rs:0 2px 12px rgba(0,0,0,.06);--rl:0 4px 24px rgba(0,0,0,.1)}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-body{overflow-x:hidden}
-h1,h2,h3{color:var(--primary);line-height:1.25;font-weight:800}
-h1{font-size:2.2rem;margin-bottom:1rem}
-h2{font-size:1.8rem;margin-bottom:.75rem;text-align:center}
-h3{font-size:1.3rem;margin-bottom:.5rem}
-p{color:var(--text);margin-bottom:1rem}
-.sub{text-align:center;color:var(--tm);max-width:650px;margin:0 auto 2.5rem;font-size:1.05rem}
-.ctn{width:100%;max-width:1160px;margin:0 auto;padding:0 1.25rem}
-section{padding:4rem 0}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1.75rem;font-size:1rem;font-weight:700;border-radius:50px;text-decoration:none;transition:all .2s;cursor:pointer;border:none}
-.btn:hover{transform:translateY(-2px);box-shadow:var(--rl)}
-.bg{background:var(--green);color:#fff}
-.bg:hover{background:#067d59}
-.bp{background:var(--primary);color:#fff}
-.bp:hover{background:#084058}
-.bw{width:100%}
-.tw{position:relative;display:inline-flex;flex-direction:column;align-items:center;padding-top:14px;margin:0 auto 1rem}
-.tr{position:absolute;top:0;left:50%;transform:translateX(-50%);width:18px;height:18px;border:3.5px solid #9ca3af;border-radius:50%;z-index:1}
-.nt{width:86px;height:86px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 16px rgba(0,0,0,.15),inset 0 2px 4px rgba(255,255,255,.3),inset 0 -3px 6px rgba(0,0,0,.2);border:2px solid rgba(255,255,255,.2);z-index:2}
-.nt .paw{font-size:26px;line-height:1}
-.nt .nfc{font-size:10px;font-weight:900;color:#fff;letter-spacing:1.5px;margin-top:2px}
-.tb{background:radial-gradient(circle at 35% 35%,#3b82f6,#1d4ed8)}
-.tk{background:radial-gradient(circle at 35% 35%,#374151,#111827)}
-.tv{background:radial-gradient(circle at 35% 35%,#ef4444,#b91c1c)}
-.tp{background:radial-gradient(circle at 35% 35%,#f472b6,#db2777)}
-.hdr{position:sticky;top:0;background:#fff;z-index:1000;transition:box-shadow .3s;border-bottom:1px solid var(--bd)}
-.hdr.scrolled{box-shadow:var(--rs)}
-.nc{display:flex;align-items:center;justify-content:space-between;height:72px}
-.br{display:flex;align-items:center;gap:.5rem;font-size:1.35rem;font-weight:900;color:var(--primary);text-decoration:none}
-.nl{display:none;align-items:center;gap:1.5rem;list-style:none}
-.nl a{text-decoration:none;color:var(--text);font-weight:600;font-size:.95rem;transition:color .2s}
-.nl a:hover{color:var(--primary)}
-.na{display:flex;align-items:center;gap:1rem}
-.bt{padding:.6rem 1.25rem;font-size:.9rem;border-radius:50px}
-.mt{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:.5rem}
-.mt span{width:24px;height:2.5px;background:var(--primary);border-radius:2px;transition:.3s}
-.mm{position:fixed;top:72px;left:0;width:100%;background:#fff;padding:1.5rem;box-shadow:var(--rl);display:none;flex-direction:column;gap:1.25rem;border-bottom:1px solid var(--bd);z-index:999}
-.mm.active{display:flex}
-.mm a{text-decoration:none;color:var(--text);font-weight:600;font-size:1.1rem;padding:.5rem 0}
-.hero{padding:3rem 0 4rem;background:linear-gradient(180deg,var(--pl) 0%,var(--bg) 100%)}
-.hg{display:flex;flex-direction:column;gap:2.5rem;align-items:center}
-.hc{text-align:center}
-.pb{display:inline-flex;align-items:center;gap:.5rem;background:#fff;color:var(--primary);padding:.4rem 1rem;border-radius:50px;font-size:.85rem;font-weight:700;box-shadow:var(--rs);margin-bottom:1.25rem;border:1px solid var(--bd)}
-.hero p{font-size:1.1rem;color:var(--tm);margin-bottom:1.75rem;max-width:580px;margin-left:auto;margin-right:auto}
-.hiw{width:100%;max-width:540px;border-radius:24px;overflow:hidden;box-shadow:var(--rl);background:#fff;border:4px solid #fff}
-.hiw img{width:100%;height:auto;display:block;object-fit:cover}
-.hbs{display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-top:2rem}
-.bi{display:inline-flex;align-items:center;gap:.4rem;background:#fff;padding:.6rem 1.1rem;border-radius:8px;font-size:.9rem;font-weight:700;color:var(--primary);box-shadow:var(--rs);border:1px solid var(--bd)}
-.fd{display:flex;align-items:center;justify-content:center;gap:1rem;font-size:2rem;background:#fff;padding:1.25rem 2rem;border-radius:50px;width:fit-content;margin:0 auto 3rem;box-shadow:var(--rs);border:1px solid var(--bd)}
-.fa{color:var(--green);font-size:1.5rem;font-weight:bold}
-.sg{display:grid;grid-template-columns:1fr;gap:1.5rem}
-.sc{background:var(--card);padding:2rem;border-radius:16px;box-shadow:var(--rs);border:1px solid var(--bd);text-align:center;position:relative}
-.sn{position:absolute;top:1rem;right:1.25rem;font-size:2.5rem;font-weight:900;color:var(--pl);line-height:1}
-.si{font-size:2.75rem;margin-bottom:1rem}
-.ts{background:linear-gradient(180deg,var(--bg) 0%,var(--pl) 50%,var(--bg) 100%)}
-.tg{display:grid;grid-template-columns:1fr;gap:1.5rem}
-.tc{background:var(--card);padding:2.25rem 1.5rem;border-radius:16px;box-shadow:var(--rs);border:1px solid var(--bd);text-align:center;transition:transform .2s}
-.tc:hover{transform:translateY(-4px);box-shadow:var(--rl)}
-.tc h4{font-size:1.15rem;margin-bottom:.5rem;color:var(--primary)}
-.tc p{font-size:.9rem;color:var(--tm);margin:0}
-.tfn{text-align:center;margin-top:2.5rem;background:#fff;padding:1rem 1.5rem;border-radius:50px;font-weight:700;font-size:.95rem;color:var(--primary);display:inline-flex;align-items:center;gap:.5rem;box-shadow:var(--rs);border:1px solid var(--bd);max-width:800px}
-.tfwrap{display:flex;justify-content:center}
-.nv{display:flex;flex-direction:column;gap:1rem;align-items:center;margin-bottom:3rem}
-.nfb{display:flex;align-items:center;gap:.75rem;background:var(--card);padding:.75rem 1.5rem;border-radius:50px;font-size:1.15rem;box-shadow:var(--rs);border:1px solid var(--bd)}
-.it{display:grid;grid-template-columns:1fr;gap:1.5rem}
-.ic{background:var(--card);padding:2rem;border-radius:16px;box-shadow:var(--rs);border-left:4px solid var(--primary)}
-.ph{background-color:#fff;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
-.pg{display:flex;flex-direction:column;gap:2.5rem;align-items:center}
-.pw{width:100%;max-width:500px;border-radius:24px;overflow:hidden;box-shadow:var(--rs)}
-.pw img{width:100%;height:auto;display:block}
-.fg{display:grid;grid-template-columns:1fr;gap:1.25rem;width:100%}
-.fc{background:var(--bg);padding:1.25rem;border-radius:16px;border:1px solid var(--bd)}
-.fc h4{display:flex;align-items:center;gap:.5rem;font-size:1.05rem;margin-bottom:.35rem;color:var(--primary)}
-.fc p{font-size:.9rem;color:var(--tm);margin:0}
-.pbox{margin-top:1.5rem;background:var(--pl);padding:1.25rem;border-radius:16px;border-left:4px solid var(--primary);font-size:.9rem;color:var(--primary)}
-.pgs{display:grid;grid-template-columns:1fr;gap:2rem;align-items:stretch}
-.pc{background:var(--card);border-radius:24px;padding:2.5rem 1.75rem;box-shadow:var(--rs);border:1px solid var(--bd);display:flex;flex-direction:column;position:relative}
-.pcf{border:2.5px solid var(--primary);box-shadow:var(--rl)}
-.pbadge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--yellow);color:#000;font-weight:900;font-size:.8rem;padding:.35rem 1.25rem;border-radius:50px;letter-spacing:1px;text-transform:uppercase}
-.phd{text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--bd)}
-.pp{font-size:2.25rem;font-weight:900;color:var(--primary);margin:.75rem 0 .25rem}
-.pp span{font-size:1rem;color:var(--tm);font-weight:600}
-.pt{font-weight:700;font-size:.95rem;color:var(--tm)}
-.pbonus{background:var(--gb);color:var(--green);font-weight:700;font-size:.85rem;padding:.6rem;border-radius:8px;margin:.75rem 0 0}
-.pfs{list-style:none;margin-bottom:2rem;flex-grow:1}
-.pfs li{display:flex;align-items:flex-start;gap:.6rem;font-size:.95rem;margin-bottom:.75rem;color:var(--text)}
-.pfs li::before{content:"✓";color:var(--green);font-weight:900}
-.fs{background:linear-gradient(180deg,var(--bg) 0%,var(--pl) 100%)}
-.fg2{display:flex;flex-direction:column;gap:2.5rem;align-items:center}
-.fw{width:100%;max-width:540px;border-radius:24px;overflow:hidden;box-shadow:var(--rs);background:#fff}
-.fw img{width:100%;height:auto;display:block}
-.fbl{list-style:none;margin-top:1.5rem}
-.fbl li{display:flex;align-items:center;gap:.75rem;font-size:1.05rem;font-weight:700;margin-bottom:1rem;color:var(--primary)}
-.rg{display:grid;grid-template-columns:1fr;gap:1.5rem}
-.rc{background:var(--card);padding:2rem;border-radius:16px;box-shadow:var(--rs);border:1px solid var(--bd);text-align:center}
-.rn{width:44px;height:44px;background:var(--primary);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.25rem;margin:0 auto 1.25rem}
-.fq{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:1rem}
-details{background:var(--card);border-radius:16px;box-shadow:var(--rs);border:1px solid var(--bd);overflow:hidden;transition:all .2s}
-details[open]{border-color:var(--primary)}
-summary{padding:1.25rem 1.5rem;font-weight:700;font-size:1.05rem;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;color:var(--primary)}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";font-size:1.5rem;font-weight:400;transition:transform .2s}
-details[open] summary::after{content:"−"}
-.fa2{padding:0 1.5rem 1.5rem;color:var(--tm);font-size:.95rem}
-.ctaf{background:linear-gradient(135deg,var(--primary) 0%,#063549 100%);color:#fff;text-align:center;padding:5rem 0}
-.ctaf h2{color:#fff;font-size:2.25rem;margin-bottom:1.5rem}
-.ctaf p{color:var(--pl);font-size:1.15rem;max-width:600px;margin:0 auto 2.5rem}
-.ft{background-color:#0b1a20;color:#a0aec0;padding:4rem 0 2rem;font-size:.9rem}
-.fg3{display:grid;grid-template-columns:1fr;gap:2.5rem;margin-bottom:3rem}
-.fb2{color:#fff;font-size:1.4rem;font-weight:900;display:inline-flex;align-items:center;gap:.5rem;margin-bottom:.75rem;text-decoration:none}
-.ft h4{color:#fff;font-size:1.1rem;margin-bottom:1.25rem}
-.fls{list-style:none;display:flex;flex-direction:column;gap:.6rem}
-.fls a{color:#a0aec0;text-decoration:none;transition:color .2s}
-.fls a:hover{color:#fff}
-.fbtt{border-top:1px solid rgba(255,255,255,.1);padding-top:2rem;text-align:center;font-size:.85rem}
-.btt{position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:var(--rl);z-index:999;opacity:0;visibility:hidden;transition:all .3s;font-size:1.1rem}
-.btt.show{opacity:.9;visibility:visible}
-.btt:hover{opacity:1;transform:translateY(-3px)}
-@media(min-width:768px){h1{font-size:3rem}h2{font-size:2.25rem}.sg{grid-template-columns:repeat(3,1fr)}.tg{grid-template-columns:repeat(2,1fr)}.it{grid-template-columns:repeat(3,1fr)}.fg{grid-template-columns:repeat(2,1fr)}.pgs{grid-template-columns:repeat(3,1fr)}.rg{grid-template-columns:repeat(4,1fr)}.fg3{grid-template-columns:2fr 1fr 1fr}}
-@media(min-width:1024px){.nl{display:flex}.mt{display:none}.hg{flex-direction:row;text-align:left;justify-content:space-between}.hc{text-align:left;max-width:520px}.hero p{margin-left:0;margin-right:0}.hbs{justify-content:flex-start}.tg{grid-template-columns:repeat(4,1fr)}.pg{flex-direction:row;justify-content:space-between}.fg2{flex-direction:row-reverse;justify-content:space-between}}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Tag Pet | Identifique. Encontre. Proteja.</title>
+  <meta name="description" content="TAGs inteligentes NFC para cães e gatos. Identificação rápida por aproximação de celular sem necessidade de bateria ou aplicativo.">
+
+  <!-- Allowed Basecoat CDN & System Shell -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
 </style>
+  
+
+  <style>
+    :root {
+      --accent: #0b5574;
+      --accent-text: #06394e;
+      --accent-contrast: #ffffff;
+      --cta-green: #07966b;
+      --cta-green-hover: #057a56;
+      --bg-page: #f8fcfb;
+      --surface-white: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-soft: #e2e8f0;
+      --radius-card: 16px;
+    }
+
+    /* Base Reset & Page setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .section-pad {
+      padding: 72px 0;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 40px auto;
+    }
+
+    /* Buttons */
+    .btn-cta-green {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: var(--cta-green);
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(7, 150, 107, 0.35);
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-cta-green:hover {
+      background-color: var(--cta-green-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(7, 150, 107, 0.45);
+    }
+
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: var(--accent);
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 0.98rem;
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(11, 85, 116, 0.28);
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-cta-primary:hover {
+      background-color: #08435c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(11, 85, 116, 0.38);
+    }
+
+    /* 1. Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #ffffff;
+      transition: box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+
+    .site-header.scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand-logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-desktop-links {
+      display: none;
+      align-items: center;
+      gap: 22px;
+      list-style: none;
+    }
+
+    .nav-desktop-links a {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      transition: color 0.2s;
+    }
+
+    .nav-desktop-links a:hover {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-tutor {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #f1f5f9;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s ease;
+    }
+
+    .btn-tutor:hover {
+      background-color: #e2e8f0;
+      color: #04293a;
+    }
+
+    .mobile-toggle {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .mobile-toggle span {
+      width: 100%;
+      height: 2.5px;
+      background-color: var(--accent);
+      border-radius: 2px;
+      transition: 0.25s ease;
+    }
+
+    .mobile-menu {
+      display: none;
+      background: #ffffff;
+      border-top: 1px solid #f1f5f9;
+      padding: 16px 20px 24px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mobile-menu-list a {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #334155;
+      display: block;
+      padding: 6px 0;
+    }
+
+    /* 2. Hero Section */
+    .hero-section {
+      background: linear-gradient(180deg, #e6f4f8 0%, #f8fcfb 100%);
+      padding: 48px 0 64px 0;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .hero-content {
+      max-width: 580px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #dbeafe;
+      color: #1e40af;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 6px rgba(30, 64, 175, 0.12);
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-desc {
+      font-size: 1.12rem;
+      color: #475569;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .hero-image-wrap {
+      position: relative;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(11, 85, 116, 0.25);
+      background: #e2e8f0;
+      min-height: 280px;
+    }
+
+    .hero-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-benefits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .benefit-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Common Card Styles */
+    .card-white {
+      background: var(--surface-white);
+      border-radius: var(--radius-card);
+      padding: 28px 24px;
+      box-shadow: 0 8px 24px -4px rgba(11, 85, 116, 0.08);
+      border: 1px solid #f1f5f9;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-white:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -6px rgba(11, 85, 116, 0.14);
+    }
+
+    /* Visual Flow Pill */
+    .flow-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 8px 22px;
+      border-radius: 999px;
+      margin: 0 auto 36px auto;
+      border: 1px solid #bae6fd;
+    }
+
+    /* 3. Como Funciona */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .step-number {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: var(--cta-green);
+      background: #e6f8f1;
+      padding: 4px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 0.96rem;
+      color: #64748b;
+      line-height: 1.55;
+    }
+
+    /* 4. Pure CSS NFC Pet Tags */
+    .tags-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .tag-display-card {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      padding: 30px 20px;
+      text-align: center;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 6px 20px rgba(11, 85, 116, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tag-assembly-holder {
+      position: relative;
+      padding-top: 14px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Top metal ring */
+    .nfc-metal-ring {
+      width: 18px;
+      height: 18px;
+      border: 3.5px solid #94a3b8;
+      border-radius: 50%;
+      background-color: transparent;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+      position: absolute;
+      top: 0;
+      z-index: 2;
+    }
+
+    /* 86px NFC Tag Circle */
+    .nfc-tag-circle {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -3px 6px rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      margin-top: 8px;
+      transition: transform 0.25s ease;
+    }
+
+    .tag-display-card:hover .nfc-tag-circle {
+      transform: scale(1.06) rotate(3deg);
+    }
+
+    /* Tag Color Variants */
+    .nfc-blue {
+      background: radial-gradient(circle at 35% 30%, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+    }
+
+    .nfc-black {
+      background: radial-gradient(circle at 35% 30%, #4b5563 0%, #374151 55%, #111827 100%);
+    }
+
+    .nfc-red {
+      background: radial-gradient(circle at 35% 30%, #f87171 0%, #ef4444 50%, #b91c1c 100%);
+    }
+
+    .nfc-pink {
+      background: radial-gradient(circle at 35% 30%, #f472b6 0%, #ec4899 50%, #db2777 100%);
+    }
+
+    .nfc-tag-paw {
+      font-size: 26px;
+      line-height: 1;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+      margin-bottom: 2px;
+      user-select: none;
+    }
+
+    .nfc-tag-text {
+      font-size: 10px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .tag-card-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .tag-card-desc {
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .tag-bottom-note {
+      margin-top: 36px;
+      background: #eff6ff;
+      border: 1px dashed #93c5fd;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1e40af;
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 5. O que é NFC */
+    .nfc-flows {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0 40px;
+    }
+
+    .flow-badge-item {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: var(--accent-text);
+      font-size: 0.96rem;
+    }
+
+    .nfc-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .nfc-info-card {
+      background: #ffffff;
+      border-left: 6px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(11, 85, 116, 0.06);
+    }
+
+    .nfc-info-card h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nfc-info-card p {
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    /* 6. Perfil Digital */
+    .perfil-media-box {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(11, 85, 116, 0.1);
+      margin-bottom: 28px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .perfil-media-box img {
+      max-height: 420px;
+      margin: 0 auto;
+      border-radius: 10px;
+      object-fit: contain;
+    }
+
+    .perfil-lead-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .perfil-features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .perfil-feat-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(11, 85, 116, 0.05);
+      border: 1px solid #f1f5f9;
+    }
+
+    .perfil-feat-card h4 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .perfil-feat-card p {
+      font-size: 0.92rem;
+      color: #64748b;
+    }
+
+    .privacy-notice {
+      background-color: #e6f4f8;
+      border: 1px solid #bce1ee;
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* 7. Planos */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .plan-card {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      padding: 32px 24px;
+      box-shadow: 0 8px 24px rgba(11, 85, 116, 0.08);
+      border: 2px solid #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .plan-card.featured {
+      border-color: #f59e0b;
+      box-shadow: 0 16px 36px -8px rgba(245, 158, 11, 0.28);
+      transform: translateY(-6px);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f59e0b;
+      color: #78350f;
+      font-size: 0.78rem;
+      font-weight: 900;
+      padding: 4px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .plan-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .plan-name {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .plan-target {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .plan-price-wrap {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .plan-price {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .plan-suffix {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .bonus-box {
+      background: #ecfdf5;
+      border: 1px dashed var(--cta-green);
+      color: #065f46;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .plan-features-list {
+      list-style: none;
+      margin-bottom: 28px;
+      flex-grow: 1;
+    }
+
+    .plan-features-list li {
+      font-size: 0.94rem;
+      color: #334155;
+      margin-bottom: 11px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .plan-features-list li .check-icon {
+      color: var(--cta-green);
+      font-weight: 900;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    /* 8. Família Highlight */
+    .family-section {
+      background: linear-gradient(135deg, #e6f4f8 0%, #f0fdf4 100%);
+      border-radius: var(--radius-card);
+      padding: 48px 24px;
+      margin: 40px 0;
+    }
+
+    .family-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .family-img-wrap {
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(11, 85, 116, 0.15);
+      background: #ffffff;
+      text-align: center;
+    }
+
+    .family-bullets {
+      list-style: none;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .family-bullets li {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* 9. Como Recebo Minha TAG */
+    .receive-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .receive-card {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      padding: 26px 20px;
+      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.05);
+      border: 1px solid #f1f5f9;
+      position: relative;
+    }
+
+    .receive-badge-num {
+      width: 38px;
+      height: 38px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 8px rgba(11, 85, 116, 0.3);
+    }
+
+    .receive-card h3 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .receive-card p {
+      font-size: 0.92rem;
+      color: #64748b;
+    }
+
+    /* 10. FAQ Accordion */
+    .faq-wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    details.faq-item {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 16px 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: background-color 0.2s;
+    }
+
+    details.faq-item[open] {
+      border-color: var(--accent);
+      background-color: #fafdfd;
+    }
+
+    summary.faq-question {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    summary.faq-question::-webkit-details-marker {
+      display: none;
+    }
+
+    summary.faq-question::after {
+      content: "+";
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--accent);
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    details.faq-item[open] summary.faq-question::after {
+      content: "−";
+    }
+
+    .faq-answer {
+      margin-top: 14px;
+      font-size: 0.96rem;
+      color: #475569;
+      line-height: 1.6;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 12px;
+    }
+
+    /* 11. Final CTA */
+    .final-cta-section {
+      background: linear-gradient(135deg, #0b5574 0%, #052a3a 100%);
+      color: #ffffff;
+      padding: 80px 20px;
+      border-radius: var(--radius-card);
+      text-align: center;
+      margin: 40px auto;
+    }
+
+    .final-cta-title {
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .final-cta-desc {
+      font-size: 1.1rem;
+      color: #e2e8f0;
+      max-width: 600px;
+      margin: 0 auto 32px auto;
+    }
+
+    /* 12. Footer */
+    .site-footer {
+      background-color: #0b1a20;
+      color: #94a3b8;
+      padding: 64px 0 32px 0;
+      font-size: 0.92rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .footer-slogan {
+      color: #38bdf8;
+      font-weight: 700;
+      font-size: 0.96rem;
+      margin-bottom: 14px;
+    }
+
+    .footer-text {
+      color: #94a3b8;
+      line-height: 1.55;
+      max-width: 360px;
+    }
+
+    .footer-col h4 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: #cbd5e1;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #38bdf8;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #1e293b;
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* Back To Top Floating Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      background-color: var(--accent);
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+      z-index: 999;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background-color: #08435c;
+      transform: translateY(-3px);
+    }
+
+    /* Responsive Breakpoints */
+    @media (min-width: 640px) {
+      .tags-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .perfil-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .receive-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .nav-desktop-links {
+        display: flex;
+      }
+      .mobile-toggle {
+        display: none;
+      }
+      .hero-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+      .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .tags-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .nfc-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .plans-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .family-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .receive-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .footer-grid {
+        grid-template-columns: 1.4fr 1fr 1.2fr;
+      }
+    }
+  </style>
 </head>
 <body>
-<header class="hdr" id="header">
-<div class="ctn nc">
-<a href="#inicio" class="br"><span style="font-size:1.6rem">🐾</span> Save Tag Pet</a>
-<ul class="nl">
-<li><a href="#inicio">Início</a></li>
+
+  <!-- 1. STICKY HEADER -->
+  <header class="site-header" id="header">
+    <div class="container header-nav">
+      <a href="#inicio" class="brand-logo" aria-label="Save Tag Pet Home">
+        <span>🐾 Save Tag Pet</span>
+      </a>
+
+      <ul class="nav-desktop-links">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#tags">Nossas TAGs</a></li>
+        <li><a href="#perfil-digital">Perfil Digital</a></li>
+        <li><a href="#planos">Planos</a></li>
+        <li><a href="#faq">Dúvidas</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <a href="login.html" class="btn-tutor">🔐 Área do Tutor</a>
+        <button class="mobile-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div class="mobile-menu" id="mobileMenu">
+      <ul class="mobile-menu-list">
+        <li><a href="#inicio" class="mobile-nav-link">Início</a></li>
+        <li><a href="#como-funciona" class="mobile-nav-link">Como funciona</a></li>
+        <li><a href="#tags" class="mobile-nav-link">Nossas TAGs</a></li>
+        <li><a href="#perfil-digital" class="mobile-nav-link">Perfil Digital</a></li>
+        <li><a href="#planos" class="mobile-nav-link">Planos</a></li>
+        <li><a href="#faq" class="mobile-nav-link">Dúvidas</a></li>
+        <li><a href="login.html" class="mobile-nav-link">🔐 Área do Tutor</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 2. HERO -->
+  <section class="hero-section" id="inicio">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="pill-badge">🐾 Mais segurança para quem você ama</div>
+          <h1 class="hero-title">Seu pet identificado. Você tranquilo.</h1>
+          <p class="hero-desc">
+            A TAG NFC inteligente para coleira permite que qualquer pessoa acesse os contatos do tutor e informações de saúde do seu pet em segundos, apenas aproximando o celular. Sem pilhas, sem mensalidade obrigatória e resistente à água.
+          </p>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+            🛒 Quero minha TAG →
+          </a>
+
+          <div class="hero-benefits">
+            <span class="benefit-item">🛡️ Mais segurança</span>
+            <span class="benefit-item">⚡ Identificação rápida</span>
+            <span class="benefit-item">❤️ Pet sempre com você</span>
+          </div>
+        </div>
+
+        <div class="hero-image-wrap">
+          <img src="https://generated-images.adapta.one/emerson-santos%40hotmail.com/01a09f33-06ba-7068-ad25-0ae899dd012c/2026-09-14T11-59-45-111Z_Original_user_intent_Professional_hero_image_for.png" alt="Cão e gato juntos usando coleiras com TAGs NFC inteligentes" width="600" height="420" loading="eager" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/600/420?q=dog%20cat%20collar&color=blue';">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. COMO FUNCIONA -->
+  <section class="section-pad" id="como-funciona">
+    <div class="container text-center">
+      <h2 class="section-title">Como funciona?</h2>
+      <p class="section-subtitle">É simples, rápido e 100% seguro para você e seu melhor amigo.</p>
+
+      <div class="flow-badge-pill">🐶🏷️ → 📱 → 🐾</div>
+
+      <div class="steps-grid">
+        <div class="card-white text-center">
+          <span class="step-number">Etapa 01</span>
+          <h3 class="step-title">🏷️ Escolha a TAG do seu pet</h3>
+          <p class="step-desc">
+            Selecione entre 4 cores exclusivas (azul, preta, vermelha ou rosa). Cada TAG vem com anel metálico ultra resistente e símbolo de patinha 🐾 em alto relevo.
+          </p>
+        </div>
+
+        <div class="card-white text-center">
+          <span class="step-number">Etapa 02</span>
+          <h3 class="step-title">🐶🐱 Cadastre seu cão ou gato</h3>
+          <p class="step-desc">
+            Acesse o painel do tutor em poucos cliques. Adicione fotos do pet, telefones WhatsApp para emergência, endereço e histórico de vacinas essenciais.
+          </p>
+        </div>
+
+        <div class="card-white text-center">
+          <span class="step-number">Etapa 03</span>
+          <h3 class="step-title">🛡️ Coleira equipada & pet protegido</h3>
+          <p class="step-desc">
+            Basta prender a TAG na coleira. Se ele se perder, qualquer pessoa que aproximar o celular da TAG visualiza os contatos instantaneamente para avisar você.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. NOSSAS TAGs -->
+  <section class="section-pad" id="tags" style="background-color: #f1f8fa;">
+    <div class="container text-center">
+      <h2 class="section-title">Nossas TAGs NFC</h2>
+      <p class="section-subtitle">Identificação inteligente que combina com o seu cão ou gato</p>
+
+      <div class="tags-grid">
+        <!-- Tag Azul -->
+        <div class="tag-display-card">
+          <div class="tag-assembly-holder">
+            <div class="nfc-metal-ring"></div>
+            <div class="nfc-tag-circle nfc-blue">
+              <span class="nfc-tag-paw">🐾</span>
+              <span class="nfc-tag-text">NFC</span>
+            </div>
+          </div>
+          <h3 class="tag-card-name">TAG AZUL</h3>
+          <p class="tag-card-desc">Moderna, marcante e vibrante. Perfeita para cães aventureiros e gatos curiosos.</p>
+        </div>
+
+        <!-- Tag Preta -->
+        <div class="tag-display-card">
+          <div class="tag-assembly-holder">
+            <div class="nfc-metal-ring"></div>
+            <div class="nfc-tag-circle nfc-black">
+              <span class="nfc-tag-paw">🐾</span>
+              <span class="nfc-tag-text">NFC</span>
+            </div>
+          </div>
+          <h3 class="tag-card-name">TAG PRETA</h3>
+          <p class="tag-card-desc">Elegante, discreta e premium. Combina harmoniosamente com qualquer tipo e cor de coleira.</p>
+        </div>
+
+        <!-- Tag Vermelha -->
+        <div class="tag-display-card">
+          <div class="tag-assembly-holder">
+            <div class="nfc-metal-ring"></div>
+            <div class="nfc-tag-circle nfc-red">
+              <span class="nfc-tag-paw">🐾</span>
+              <span class="nfc-tag-text">NFC</span>
+            </div>
+          </div>
+          <h3 class="tag-card-name">TAG VERMELHA</h3>
+          <p class="tag-card-desc">Alta visibilidade e estilo enérgico. Chama a atenção de imediato em situações de resgate.</p>
+        </div>
+
+        <!-- Tag Rosa -->
+        <div class="tag-display-card">
+          <div class="tag-assembly-holder">
+            <div class="nfc-metal-ring"></div>
+            <div class="nfc-tag-circle nfc-pink">
+              <span class="nfc-tag-paw">🐾</span>
+              <span class="nfc-tag-text">NFC</span>
+            </div>
+          </div>
+          <h3 class="tag-card-name">TAG ROSA</h3>
+          <p class="tag-card-desc">Delicada, alegre e carinhosa. Um charme único para pets cheios de personalidade.</p>
+        </div>
+      </div>
+
+      <div class="tag-bottom-note">
+        🛡️ Todas as TAGs possuem tecnologia NFC, são resistentes à água e não precisam de bateria
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. O QUE É NFC -->
+  <section class="section-pad" id="nfc">
+    <div class="container text-center">
+      <h2 class="section-title">O que é a tecnologia NFC?</h2>
+      <p class="section-subtitle">
+        NFC (Near Field Communication) é uma tecnologia de transmissão por aproximação sem fios. É a mesma tecnologia utilizada em pagamentos por aproximação no cartão ou smartphone, permitindo leitura ultraveloz em até 3 centímetros.
+      </p>
+
+      <div class="nfc-flows">
+        <div class="flow-badge-item">🐶🔵🏷️ → 📱 → 🐾📋 Perfil Instantâneo</div>
+        <div class="flow-badge-item">🐱🩷🏷️ → 📱 → 🐾📋 Perfil Instantâneo</div>
+      </div>
+
+      <div class="nfc-cards-grid text-left" style="text-align: left;">
+        <div class="nfc-info-card">
+          <h3>🚫 Não é GPS</h3>
+          <p>Não realiza rastreamento via satélite em tempo real. A TAG é lida por proximidade física, tornando o dispositivo leve, sem mensalidades obrigatórias de operadoras telefônicas e 100% confortável para o animal.</p>
+        </div>
+
+        <div class="nfc-info-card">
+          <h3>🔋 Zero Bateria</h3>
+          <p>Você nunca precisa recarregar. A TAG é ativada por indução magnética no milésimo de segundo em que o celular de quem encontrou é encostado nela.</p>
+        </div>
+
+        <div class="nfc-info-card">
+          <h3>🆔 Identificação Digital</h3>
+          <p>Conecta com máxima agilidade quem encontrou o pet com a sua família. Abre direto no navegador sem obrigar a pessoa a baixar nenhum aplicativo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PERFIL DIGITAL -->
+  <section class="section-pad" id="perfil-digital" style="background-color: #f8fafc;">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title">Mais que uma TAG, uma história. ❤️</h2>
+        <p class="section-subtitle">Um perfil online completo e sempre atualizado para o seu animalzinho.</p>
+      </div>
+
+      <div class="perfil-media-box">
+        <img src="perfil-pets-tags.png" alt="Demonstração do perfil digital do pet e funcionamento da tag" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/850/420?q=smartphone%20app%20pet&color=blue';">
+      </div>
+
+      <p class="perfil-lead-text">🐶🏷️ Cães e 🐱🏷️ Gatos com perfis independentes e integrados</p>
+
+      <div class="perfil-features-grid">
+        <div class="perfil-feat-card">
+          <h4>📸 Fotos do seu pet</h4>
+          <p>Galeria com fotos atuais do seu pet para facilitar a identificação visual rápida por quem o encontrar.</p>
+        </div>
+
+        <div class="perfil-feat-card">
+          <h4>📋 Informações vitais</h4>
+          <p>Nome, idade, raça, porte, microchip e se é castrado ou necessita de cuidados especiais.</p>
+        </div>
+
+        <div class="perfil-feat-card">
+          <h4>🩺 Saúde e vacinas</h4>
+          <p>Histórico de vacinação antirrábica, V8/V10, vermífugos, remédios contínuos e alergias conhecidas.</p>
+        </div>
+
+        <div class="perfil-feat-card">
+          <h4>📞 Contato do tutor</h4>
+          <p>Botão de ligação direta e WhatsApp em um clique para o tutor e contatos alternativos de confiança.</p>
+        </div>
+      </div>
+
+      <div class="privacy-notice">
+        🔒 Privacidade garantida: dados médicos e pessoais ficam protegidos na Área do Tutor
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. PLANOS -->
+  <section class="section-pad" id="planos">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title">Conheça nossos planos</h2>
+        <p class="section-subtitle">Escolha a melhor proteção para o seu pet ou para a família inteira.</p>
+      </div>
+
+      <div class="plans-grid">
+        <!-- Card 1: TAG AVULSA -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <h3 class="plan-name">TAG AVULSA</h3>
+            <p class="plan-target">🐶🐱 Ideal para 1 cão ou 1 gato</p>
+          </div>
+
+          <div class="plan-price-wrap">
+            <span class="plan-price">R$ 49,90</span>
+            <span class="plan-suffix">/único</span>
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="check-icon">✓</span> 1 TAG NFC de alta resistência</li>
+            <li><span class="check-icon">✓</span> Perfil público do pet</li>
+            <li><span class="check-icon">✓</span> Contatos de emergência (WhatsApp/Ligação)</li>
+            <li><span class="check-icon">✓</span> Modo Pet Perdido</li>
+            <li><span class="check-icon">✓</span> Atualização ilimitada dos dados</li>
+            <li><span class="check-icon">✓</span> Sem mensalidade</li>
+          </ul>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG%20Avulsa.%20%F0%9F%90%BE" class="btn-cta-primary" target="_blank" rel="noopener noreferrer">
+            Pedir TAG Avulsa
+          </a>
+        </div>
+
+        <!-- Card 2: PLANO SAVE TAG (Featured) -->
+        <div class="plan-card featured">
+          <span class="featured-badge">MAIS ESCOLHIDO</span>
+
+          <div class="plan-header">
+            <h3 class="plan-name">PLANO SAVE TAG</h3>
+            <p class="plan-target">🐶🐱 Protege 2 pets</p>
+          </div>
+
+          <div class="plan-price-wrap">
+            <span class="plan-price">R$ 9,90</span>
+            <span class="plan-suffix">/mês</span>
+          </div>
+
+          <div class="bonus-box">
+            🎁 Bônus: Compre 1 TAG e ganhe +1 grátis!
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="check-icon">✓</span> 2 TAGs NFC incluídas</li>
+            <li><span class="check-icon">✓</span> Perfis completos para 2 pets</li>
+            <li><span class="check-icon">✓</span> Carteira de vacinas digital interativa</li>
+            <li><span class="check-icon">✓</span> Modo Pet Perdido com alerta prioritário</li>
+            <li><span class="check-icon">✓</span> Suporte dedicado pelo WhatsApp</li>
+            <li><span class="check-icon">✓</span> Atualização contínua de recursos</li>
+          </ul>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20tenho%20interesse%20no%20plano%20Save%20Tag.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+            Assinar agora
+          </a>
+        </div>
+
+        <!-- Card 3: SAVE TAG FAMÍLIA -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <h3 class="plan-name">SAVE TAG FAMÍLIA</h3>
+            <p class="plan-target">👨‍👩‍👧‍👦🐾 Para toda a família pet</p>
+          </div>
+
+          <div class="plan-price-wrap">
+            <span class="plan-price">R$ 19,90</span>
+            <span class="plan-suffix">/mês</span>
+          </div>
+
+          <div class="bonus-box">
+            🎉 Super Bônus: Compre 1 TAG e ganhe +3 grátis!
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="check-icon">✓</span> Até 4 pets cadastrados</li>
+            <li><span class="check-icon">✓</span> 4 TAGs NFC personalizadas</li>
+            <li><span class="check-icon">✓</span> Todos os recursos Premium desbloqueados</li>
+            <li><span class="check-icon">✓</span> Carteira de vacinação para todos os pets</li>
+            <li><span class="check-icon">✓</span> Atendimento VIP e suporte humanizado</li>
+          </ul>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20tenho%20interesse%20no%20plano%20Save%20Tag%20Fam%C3%ADlia.%20%F0%9F%90%BE" class="btn-cta-primary" target="_blank" rel="noopener noreferrer">
+            Assinar plano família
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAMÍLIA HIGHLIGHT -->
+  <section class="container">
+    <div class="family-section">
+      <div class="family-grid">
+        <div class="family-img-wrap">
+          <img src="family-pets-final-wide-download.png" alt="Família completa com vários cães e gatos protegidos com TAG NFC" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/600/380?q=happy%20dogs%20cats&color=green';">
+        </div>
+
+        <div>
+          <h2 class="section-title" style="margin-bottom: 16px;">Proteja toda a família!</h2>
+          <p style="font-size: 1.05rem; color: #475569; line-height: 1.6;">
+            Tem mais de um companheiro de quatro patas em casa? Gerencie todos os seus cães e gatos em uma única conta unificada no painel do tutor, com máxima praticidade e economia.
+          </p>
+
+          <ul class="family-bullets">
+            <li>🐶 Gerencie até 4 cães ou gatos no mesmo painel</li>
+            <li>🐱 Cada pet com sua TAG NFC individual colorida</li>
+            <li>❤️ Mais segurança e tranquilidade para o seu lar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. COMO RECEBO MINHA TAG -->
+  <section class="section-pad" id="como-receber">
+    <div class="container text-center">
+      <h2 class="section-title">Como recebo minha TAG?</h2>
+      <p class="section-subtitle">Processo de compra direto, ágil e humanizado.</p>
+
+      <div class="receive-grid text-left" style="text-align: left;">
+        <div class="receive-card">
+          <div class="receive-badge-num">1</div>
+          <h3>Chame no WhatsApp</h3>
+          <p>Clique em qualquer botão do site e converse diretamente com a nossa equipe.</p>
+        </div>
+
+        <div class="receive-card">
+          <div class="receive-badge-num">2</div>
+          <h3>Emerson confirma</h3>
+          <p>Tiramos suas dúvidas, confirmamos a quantidade de pets e as cores desejadas.</p>
+        </div>
+
+        <div class="receive-card">
+          <div class="receive-badge-num">3</div>
+          <h3>Pagamento & Entrega</h3>
+          <p>Combinamos a forma de pagamento segura (PIX/Cartão) e o envio direto para o seu endereço.</p>
+        </div>
+
+        <div class="receive-card">
+          <div class="receive-badge-num">4</div>
+          <h3>Receba e Ative</h3>
+          <p>Receba a TAG na sua residência, vincule o código no painel e cadastre seu pet em minutos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FAQ -->
+  <section class="section-pad" id="faq" style="background-color: #f1f8fa;">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title">Perguntas Frequentes</h2>
+        <p class="section-subtitle">Tudo o que você precisa saber sobre a TAG NFC do Save Tag Pet.</p>
+      </div>
+
+      <div class="faq-wrapper">
+        <details class="faq-item">
+          <summary class="faq-question">1. A TAG funciona em qualquer celular?</summary>
+          <div class="faq-answer">
+            Sim! A imensa maioria dos smartphones modernos (Android e iPhone) possui leitor NFC integrado. Basta aproximar a parte traseira do celular da TAG para abrir instantaneamente a página do perfil do pet.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">2. A TAG precisa de bateria?</summary>
+          <div class="faq-answer">
+            Não! A TAG funciona por tecnologia passiva de indução magnética. A própria aproximação do smartphone alimenta o microchip da TAG, portanto ela nunca precisa de recarga ou troca de pilhas.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">3. A TAG é GPS?</summary>
+          <div class="faq-answer">
+            Não. A TAG Save Tag Pet é um sistema de identificação digital por aproximação NFC. Rastreadores GPS tradicionais exigem recargas frequentes na tomada, são pesados e demandam chips com assinaturas caras de operadoras. Nossa TAG é leve, eterna e funciona sem baterias.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">4. O pet precisa de internet?</summary>
+          <div class="faq-answer">
+            Não. O animal não precisa de nenhum sinal. O perfil do pet é exibido na tela do celular de quem encontrou e realizou a aproximação, utilizando a internet do próprio celular daquela pessoa.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">5. O que acontece se meu pet fugir?</summary>
+          <div class="faq-answer">
+            Você pode acessar sua Área do Tutor a qualquer momento e ativar o "Modo Pet Perdido". Isso colocará um aviso de urgência com destaque no topo do perfil público do seu pet quando alguém ler a TAG.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">6. A TAG funciona sem mensalidade?</summary>
+          <div class="faq-answer">
+            Sim! Na opção TAG Avulsa, você paga uma única vez pela TAG física e utiliza o perfil vitalício básico sem custo mensal. Nossos planos por assinatura oferecem benefícios extras como múltiplos pets e suporte prioritário.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">7. Posso ter mais de um pet?</summary>
+          <div class="faq-answer">
+            Com certeza! Nosso plano Save Tag contempla 2 pets e o plano Família atende até 4 pets em um único acesso administrativo.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">8. Posso trocar a TAG entre pets?</summary>
+          <div class="faq-answer">
+            Sim. Caso precise reatribuir uma TAG para outro pet ou substituir a coleira, basta realizar o remanejamento simples diretamente na sua Área do Tutor.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">9. Como recebo minha TAG?</summary>
+          <div class="faq-answer">
+            Após entrar em contato pelo nosso WhatsApp oficial, combinamos a quantidade, as cores, os dados de envio pelos Correios ou transportadora e o meio de pagamento.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">10. Meus dados ficam públicos?</summary>
+          <div class="faq-answer">
+            Não! Somente os contatos de emergência e as informações essenciais que você escolher exibir publicamente estarão acessíveis. Documentos e dados sensíveis ficam protegidos e criptografados sob seu login na Área do Tutor.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">11. O que acontece quando alguém encontra meu pet?</summary>
+          <div class="faq-answer">
+            A pessoa aproxima o celular da medalha na coleira. Uma notificação abre automaticamente o perfil do animalzinho com fotos, nome, recados do tutor e botões com ligação rápida e conversa de WhatsApp.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">12. A localização é compartilhada automaticamente?</summary>
+          <div class="faq-answer">
+            Não de forma oculta. Por respeito à privacidade e às políticas de segurança dos navegadores, a localização do GPS do celular de quem encontrou só pode ser enviada ao tutor mediante consentimento e permissão explícita na tela.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CTA FINAL -->
+  <section class="container">
+    <div class="final-cta-section">
+      <h2 class="final-cta-title">Pronto para proteger quem sempre esteve ao seu lado?</h2>
+      <p class="final-cta-desc">
+        Garanta a TAG inteligente do seu pet agora mesmo. Atendimento humanizado, envio rápido para todo o Brasil e a tranquilidade que a sua família merece.
+      </p>
+      <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+        🛒 Quero minha TAG →
+      </a>
+    </div>
+  </section>
+
+  <!-- 12. FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>🐾 Save Tag Pet</h3>
+          <p class="footer-slogan">Identifique. Encontre. Proteja.</p>
+          <p class="footer-text">
+            Tecnologia NFC inteligente a serviço do bem-estar e da segurança dos seus melhores amigos peludos em todo o Brasil.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navegação</h4>
+          <ul class="footer-links">
+            <li><a href="#inicio">Início</a></li>
+            <li><a href="#como-funciona">Como funciona</a></li>
+            <li><a href="#tags">Nossas TAGs</a></li>
+            <li><a href="#perfil-digital">Perfil Digital</a></li>
+            <li><a href="#planos">Planos</a></li>
+            <li><a href="#faq">Dúvidas Frequentes</a></li>
+            <li><a href="login.html">Área do Tutor</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Institucional & Suporte</h4>
+          <ul class="footer-links">
+            <li><a href="politica-privacidade.html">Política de Privacidade</a></li>
+            <li><a href="termos.html">Termos de Uso</a></li>
+            <li><a href="mailto:duvidas@savetagpet.com.br">✉️ duvidas@savetagpet.com.br</a></li>
+            <li><a href="https://wa.me/5513991118997" target="_blank" rel="noopener noreferrer">📱 WhatsApp: (13) 99111-8997</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Save Tag Pet — Todos os direitos reservados. Identifique. Encontre. Proteja.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BACK TO TOP BUTTON -->
+  <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo da página">⬆️</button>
+
+  <!-- MINIMAL CLIENT-SIDE JAVASCRIPT -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const header = document.getElementById('header');
+      const backToTopBtn = document.getElementById('backToTop');
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+      // Sticky Header Shadow & Back-to-top show/hide on scroll
+      window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY || document.documentElement.scrollTop;
+
+        if (scrollPos > 30) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+
+        if (scrollPos > 300) {
+          backToTopBtn.classList.add('show');
+        } else {
+          backToTopBtn.classList.remove('show');
+        }
+      }, { passive: true });
+
+      // Smooth scroll back to top
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+
+      // Mobile Menu Toggle
+      menuToggle.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      // Close mobile menu on clicking any navigation link
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    });
+  </script>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
+
+</script>
+</body>
+</html>
