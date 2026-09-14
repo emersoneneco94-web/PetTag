@@ -1753,12 +1753,13 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
         container.appendChild(toast);
 
+        // Display for at least 5 seconds so the user can read it
         setTimeout(() => {
           toast.style.opacity = "0";
           toast.style.transform = "translateY(10px)";
           toast.style.transition = "all 0.3s ease";
           setTimeout(() => toast.remove(), 300);
-        }, 3200);
+        }, 5000);
       }
 
       // Tab switcher
@@ -1793,6 +1794,65 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       });
 
       // Auth Handlers
+      function showDashboard(user) {
+        if (!user) return;
+        renderState({ user: user });
+      }
+
+      async function handleLogin(email, password) {
+        try {
+          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          if (error) {
+            console.log('Login error:', error);
+            // Show the ACTUAL error message from Supabase
+            let errorMsg = error.message;
+            
+            // Translate common Supabase errors to Portuguese
+            if (error.message.includes('Invalid login credentials')) {
+              errorMsg = 'Email ou senha incorretos. Verifique seus dados.';
+            } else if (error.message.includes('Email not confirmed')) {
+              errorMsg = 'Email não confirmado. Verifique sua caixa de entrada e clique no link de confirmação.';
+            } else if (error.message.includes('User not found')) {
+              errorMsg = 'Usuário não encontrado. Verifique seu e-mail ou crie uma conta.';
+            } else if (error.message.includes('Too many requests')) {
+              errorMsg = 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+            }
+            
+            showToast(errorMsg, 'error');
+            return;
+          }
+          // Success - show dashboard
+          showDashboard(data.user);
+        } catch (err) {
+          console.log('Login error:', err);
+          showToast('Erro de conexão: ' + err.message, 'error');
+        }
+      }
+
+      async function handleSignup(name, email, password, phone) {
+        try {
+          const { data, error } = await supabase.auth.signUp({ 
+            email, 
+            password, 
+            options: { data: { name, phone } } 
+          });
+          if (error) {
+            console.log('Signup error:', error);
+            showToast(error.message, 'error');
+            return;
+          }
+          // Check if email confirmation is required
+          if (data.user && !data.session) {
+            showToast('Conta criada! Verifique seu email para confirmar o cadastro.', 'success');
+          } else if (data.session) {
+            showDashboard(data.user);
+          }
+        } catch (err) {
+          console.log('Signup error:', err);
+          showToast('Erro: ' + err.message, 'error');
+        }
+      }
+
       formEmailLogin.addEventListener("submit", async (e) => {
         e.preventDefault();
         const email = document.getElementById("loginEmail").value.trim();
@@ -1801,18 +1861,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
         btn.disabled = true;
         btn.innerHTML = "<span>Entrando...</span>";
-
-        // 3. The login function uses: supabase.auth.signInWithPassword({ email, password })
-        // Note: If you encounter an unconfirmed email error blocking login,
-        // you may need to disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email settings, OR confirm their email first.
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-        btn.disabled = false;
-        btn.innerHTML = "<span>Acessar Painel</span>";
-
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast("Login realizado com sucesso! Bem-vindo(a).", "success");
+        try {
+          await handleLogin(email, password);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "<span>Acessar Painel</span>";
         }
       });
 
@@ -1826,22 +1879,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
         btn.disabled = true;
         btn.innerHTML = "<span>Criando conta...</span>";
-
-        // 4. The signup function uses: supabase.auth.signUp({ email, password, options: { data: { name, phone } } })
-        // Note: If new signups cannot immediately log in due to verification requirements,
-        // disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email settings, OR confirm their email first.
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { name, phone } }
-        });
-        btn.disabled = false;
-        btn.innerHTML = "<span>Cadastrar e Acessar</span>";
-
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast("Conta criada com sucesso!", "success");
+        try {
+          await handleSignup(name, email, password, phone);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = "<span>Cadastrar e Acessar</span>";
         }
       });
 
