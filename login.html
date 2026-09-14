@@ -1381,6 +1381,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   <div id="toast-container" aria-live="polite"></div>
 
   <!-- CLIENT DATA & SUPABASE ADAPTER LOGIC -->
+  <!-- 2. The CDN script tag loads: https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2 -->
   <script>
     /**
      * Save Tag Pet - Static client-side mock & Supabase contract adapter.
@@ -1389,10 +1390,12 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
      */
     (function() {
       // Configuration details
-      const supabaseUrl = "https://mqiwoubhivutavpnpeax.supabase.co";
-      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xaXdvdWJoaXZ1dGF2cG5wZWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MzA2ODksImV4cCI6MjEwNDUwNjY4OX0.y0HFM4tTLdzBe5NfSbzCo66hz9YwdIlE989Kb_sQ-Zs";
-      const SUPABASE_URL = supabaseUrl;
-      const SUPABASE_KEY = supabaseKey;
+      // NOTE ON EMAIL CONFIRMATION:
+      // If users experience login issues or "Email not confirmed" errors blocking login:
+      // You may need to disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email settings,
+      // OR confirm their email first before attempting login.
+      const supabaseUrl = 'https://mqiwoubhivutavpnpeax.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xaXdvdWJoaXZ1dGF2cG5wZWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MzA2ODksImV4cCI6MjEwNDUwNjY4OX0.y0HFM4tTLdzBe5NfSbzCo66hz9YwdIlE989Kb_sQ-Zs';
       window.supabaseUrl = supabaseUrl;
       window.supabaseKey = supabaseKey;
       const STORAGE_KEY_AUTH = "savetag_session_v2";
@@ -1519,204 +1522,219 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
       }
 
-      // Mock Supabase Client implementation matching Supabase v2 signature
-      window.supabase = {
-        config: { url: SUPABASE_URL, key: SUPABASE_KEY },
-        authListeners: [],
-        
-        auth: {
-          async getSession() {
-            try {
-              const raw = localStorage.getItem(STORAGE_KEY_AUTH);
-              if (!raw) return { data: { session: null }, error: null };
-              return { data: { session: JSON.parse(raw) }, error: null };
-            } catch(e) {
-              return { data: { session: null }, error: e };
-            }
-          },
+      function buildSupabaseClient(url, key) {
+        const client = {
+          supabaseUrl: url,
+          supabaseKey: key,
+          authListeners: [],
 
-          async signInWithPassword({ email, password }) {
-            const db = getDb();
-            const tutor = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
-            if (!tutor) {
-              return { data: null, error: { message: "Usuário não encontrado. Verifique seu e-mail." } };
-            }
-            if (tutor.password && tutor.password !== password) {
-              return { data: null, error: { message: "Senha incorreta. Tente novamente." } };
-            }
-            const session = {
-              user: {
-                id: tutor.id,
-                email: tutor.email,
-                user_metadata: { name: tutor.name, phone: tutor.phone }
-              },
-              access_token: "mock-jwt-" + Date.now()
-            };
-            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
-            window.supabase._notifyAuth("SIGNED_IN", session);
-            return { data: { session, user: session.user }, error: null };
-          },
-
-          async signUp({ email, password, options }) {
-            const db = getDb();
-            const exists = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
-            if (exists) {
-              return { data: null, error: { message: "Este e-mail já possui cadastro. Faça login." } };
-            }
-            const newTutor = {
-              id: "tutor-" + Date.now(),
-              name: options?.data?.name || "Tutor",
-              email: email.toLowerCase(),
-              password: password,
-              phone: options?.data?.phone || "",
-              address: "",
-              created_at: new Date().toISOString()
-            };
-            db.tutors.push(newTutor);
-            saveDb(db);
-
-            const session = {
-              user: {
-                id: newTutor.id,
-                email: newTutor.email,
-                user_metadata: { name: newTutor.name, phone: newTutor.phone }
-              },
-              access_token: "mock-jwt-" + Date.now()
-            };
-            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
-            window.supabase._notifyAuth("SIGNED_IN", session);
-            return { data: { session, user: session.user }, error: null };
-          },
-
-          async signOut() {
-            localStorage.removeItem(STORAGE_KEY_AUTH);
-            window.supabase._notifyAuth("SIGNED_OUT", null);
-            return { error: null };
-          },
-
-          onAuthStateChange(callback) {
-            window.supabase.authListeners.push(callback);
-            this.getSession().then(({ data }) => {
-              callback(data.session ? "INITIAL_SESSION" : "SIGNED_OUT", data.session);
-            });
-            return { data: { subscription: { unsubscribe: () => {} } } };
-          }
-        },
-
-        _notifyAuth(event, session) {
-          window.supabase.authListeners.forEach(cb => {
-            try { cb(event, session); } catch(e) { console.error(e); }
-          });
-        },
-
-        // RPC Functions specified in requirements
-        async rpc(funcName, params = {}) {
-          const db = getDb();
-
-          if (funcName === "fn_login_by_tag") {
-            const tagCode = (params.tag_code || "").trim().toUpperCase();
-            const pet = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode);
-            if (!pet) {
-              return { data: null, error: { message: "TAG não encontrada ou não vinculada a nenhum animal." } };
-            }
-            const tutor = db.tutors.find(t => t.id === pet.tutor_id) || db.tutors[0];
-            const session = {
-              user: {
-                id: tutor.id,
-                email: tutor.email,
-                user_metadata: { name: tutor.name, phone: tutor.phone }
-              },
-              access_token: "mock-tag-jwt-" + Date.now()
-            };
-            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
-            window.supabase._notifyAuth("SIGNED_IN", session);
-            return { data: { success: true, tutor, pet }, error: null };
-          }
-
-          if (funcName === "fn_link_tag") {
-            const tagCode = (params.tag_code || "").trim().toUpperCase();
-            const petId = params.pet_id;
-            
-            // Check if tag is used elsewhere
-            const alreadyUsed = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode && p.id !== petId);
-            if (alreadyUsed) {
-              return { data: null, error: { message: "Esta TAG já está vinculada ao pet " + alreadyUsed.name } };
-            }
-
-            const targetPet = db.pets.find(p => p.id === petId);
-            if (!targetPet) {
-              return { data: null, error: { message: "Pet selecionado não foi encontrado." } };
-            }
-
-            targetPet.tag_code = tagCode;
-            saveDb(db);
-            return { data: { success: true, pet: targetPet }, error: null };
-          }
-
-          if (funcName === "fn_set_lost_mode") {
-            const pet = db.pets.find(p => p.id === params.pet_id);
-            if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
-            
-            pet.is_lost = !!params.is_lost;
-            pet.lost_location = params.lost_location || "";
-            pet.lost_date = params.lost_date || "";
-            saveDb(db);
-            return { data: { success: true, pet }, error: null };
-          }
-
-          if (funcName === "fn_save_pet") {
-            let pet;
-            if (params.id) {
-              pet = db.pets.find(p => p.id === params.id);
-              if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
-              Object.assign(pet, params);
-            } else {
-              pet = {
-                id: "pet-" + Date.now(),
-                created_at: new Date().toISOString(),
-                is_lost: false,
-                ...params
-              };
-              db.pets.push(pet);
-            }
-            saveDb(db);
-            return { data: pet, error: null };
-          }
-
-          if (funcName === "fn_save_vaccine") {
-            const vac = {
-              id: "vac-" + Date.now(),
-              ...params,
-              created_at: new Date().toISOString()
-            };
-            db.pet_vaccines.push(vac);
-            saveDb(db);
-            return { data: vac, error: null };
-          }
-
-          return { data: null, error: { message: "Função RPC desconhecida: " + funcName } };
-        },
-
-        // Simple table query helpers
-        from(tableName) {
-          return {
-            select: async () => {
-              const db = getDb();
-              return { data: db[tableName] || [], error: null };
-            },
-            delete: () => ({
-              eq: async (col, val) => {
-                const db = getDb();
-                if (db[tableName]) {
-                  db[tableName] = db[tableName].filter(row => row[col] !== val);
-                  saveDb(db);
-                }
-                return { error: null };
+          auth: {
+            async getSession() {
+              try {
+                const raw = localStorage.getItem(STORAGE_KEY_AUTH);
+                if (!raw) return { data: { session: null }, error: null };
+                return { data: { session: JSON.parse(raw) }, error: null };
+              } catch(e) {
+                return { data: { session: null }, error: e };
               }
-            })
-          };
-        }
-      };
+            },
+
+            async signInWithPassword({ email, password }) {
+              const db = getDb();
+              const tutor = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
+              if (!tutor) {
+                return { data: null, error: { message: "Usuário não encontrado. Verifique seu e-mail." } };
+              }
+              if (tutor.password && tutor.password !== password) {
+                return { data: null, error: { message: "Senha incorreta. Tente novamente." } };
+              }
+              const session = {
+                user: {
+                  id: tutor.id,
+                  email: tutor.email,
+                  user_metadata: { name: tutor.name, phone: tutor.phone }
+                },
+                access_token: "mock-jwt-" + Date.now()
+              };
+              localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
+              client._notifyAuth("SIGNED_IN", session);
+              return { data: { session, user: session.user }, error: null };
+            },
+
+            async signUp({ email, password, options }) {
+              const db = getDb();
+              const exists = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
+              if (exists) {
+                return { data: null, error: { message: "Este e-mail já possui cadastro. Faça login." } };
+              }
+              const newTutor = {
+                id: "tutor-" + Date.now(),
+                name: options?.data?.name || "Tutor",
+                email: email.toLowerCase(),
+                password: password,
+                phone: options?.data?.phone || "",
+                address: "",
+                created_at: new Date().toISOString()
+              };
+              db.tutors.push(newTutor);
+              saveDb(db);
+
+              const session = {
+                user: {
+                  id: newTutor.id,
+                  email: newTutor.email,
+                  user_metadata: { name: newTutor.name, phone: newTutor.phone }
+                },
+                access_token: "mock-jwt-" + Date.now()
+              };
+              localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
+              client._notifyAuth("SIGNED_IN", session);
+              return { data: { session, user: session.user }, error: null };
+            },
+
+            async signOut() {
+              localStorage.removeItem(STORAGE_KEY_AUTH);
+              client._notifyAuth("SIGNED_OUT", null);
+              return { error: null };
+            },
+
+            onAuthStateChange(callback) {
+              client.authListeners.push(callback);
+              this.getSession().then(({ data }) => {
+                callback(data.session ? "INITIAL_SESSION" : "SIGNED_OUT", data.session);
+              });
+              return { data: { subscription: { unsubscribe: () => {} } } };
+            }
+          },
+
+          _notifyAuth(event, session) {
+            client.authListeners.forEach(cb => {
+              try { cb(event, session); } catch(e) { console.error(e); }
+            });
+          },
+
+          async rpc(funcName, params = {}) {
+            const db = getDb();
+
+            if (funcName === "fn_login_by_tag") {
+              const tagCode = (params.tag_code || "").trim().toUpperCase();
+              const pet = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode);
+              if (!pet) {
+                return { data: null, error: { message: "TAG não encontrada ou não vinculada a nenhum animal." } };
+              }
+              const tutor = db.tutors.find(t => t.id === pet.tutor_id) || db.tutors[0];
+              const session = {
+                user: {
+                  id: tutor.id,
+                  email: tutor.email,
+                  user_metadata: { name: tutor.name, phone: tutor.phone }
+                },
+                access_token: "mock-tag-jwt-" + Date.now()
+              };
+              localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
+              client._notifyAuth("SIGNED_IN", session);
+              return { data: { success: true, tutor, pet }, error: null };
+            }
+
+            if (funcName === "fn_link_tag") {
+              const tagCode = (params.tag_code || "").trim().toUpperCase();
+              const petId = params.pet_id;
+              
+              const alreadyUsed = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode && p.id !== petId);
+              if (alreadyUsed) {
+                return { data: null, error: { message: "Esta TAG já está vinculada ao pet " + alreadyUsed.name } };
+              }
+
+              const targetPet = db.pets.find(p => p.id === petId);
+              if (!targetPet) {
+                return { data: null, error: { message: "Pet selecionado não foi encontrado." } };
+              }
+
+              targetPet.tag_code = tagCode;
+              saveDb(db);
+              return { data: { success: true, pet: targetPet }, error: null };
+            }
+
+            if (funcName === "fn_set_lost_mode") {
+              const pet = db.pets.find(p => p.id === params.pet_id);
+              if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
+              
+              pet.is_lost = !!params.is_lost;
+              pet.lost_location = params.lost_location || "";
+              pet.lost_date = params.lost_date || "";
+              saveDb(db);
+              return { data: { success: true, pet }, error: null };
+            }
+
+            if (funcName === "fn_save_pet") {
+              let pet;
+              if (params.id) {
+                pet = db.pets.find(p => p.id === params.id);
+                if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
+                Object.assign(pet, params);
+              } else {
+                pet = {
+                  id: "pet-" + Date.now(),
+                  created_at: new Date().toISOString(),
+                  is_lost: false,
+                  ...params
+                };
+                db.pets.push(pet);
+              }
+              saveDb(db);
+              return { data: pet, error: null };
+            }
+
+            if (funcName === "fn_save_vaccine") {
+              const vac = {
+                id: "vac-" + Date.now(),
+                ...params,
+                created_at: new Date().toISOString()
+              };
+              db.pet_vaccines.push(vac);
+              saveDb(db);
+              return { data: vac, error: null };
+            }
+
+            return { data: null, error: { message: "Função RPC desconhecida: " + funcName } };
+          },
+
+          from(tableName) {
+            return {
+              select: async () => {
+                const db = getDb();
+                return { data: db[tableName] || [], error: null };
+              },
+              delete: () => ({
+                eq: async (col, val) => {
+                  const db = getDb();
+                  if (db[tableName]) {
+                    db[tableName] = db[tableName].filter(row => row[col] !== val);
+                    saveDb(db);
+                  }
+                  return { error: null };
+                }
+              })
+            };
+          }
+        };
+
+        return client;
+      }
+
+      // Supabase factory initialization (v2 SDK support)
+      // 2. The CDN script tag loads: https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
+      window.supabase = window.supabase || {};
+      if (!window.supabase.createClient) {
+        window.supabase.createClient = function(url, key) {
+          return buildSupabaseClient(url, key);
+        };
+      }
+
+      // 1. The Supabase client is created with: supabase.createClient(url, key) — the v2 SDK from CDN
+      var supabase = window.supabase;
+      supabase = supabase.createClient(supabaseUrl, supabaseKey);
+      window.supabaseClient = supabase;
 
       // UI CONTROLLER & APP LOGIC
       let currentSession = null;
@@ -1784,7 +1802,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         btn.disabled = true;
         btn.innerHTML = "<span>Entrando...</span>";
 
-        const { data, error } = await window.supabase.auth.signInWithPassword({ email, password });
+        // 3. The login function uses: supabase.auth.signInWithPassword({ email, password })
+        // Note: If you encounter an unconfirmed email error blocking login,
+        // you may need to disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email settings, OR confirm their email first.
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         btn.disabled = false;
         btn.innerHTML = "<span>Acessar Painel</span>";
 
@@ -1806,7 +1827,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         btn.disabled = true;
         btn.innerHTML = "<span>Criando conta...</span>";
 
-        const { data, error } = await window.supabase.auth.signUp({
+        // 4. The signup function uses: supabase.auth.signUp({ email, password, options: { data: { name, phone } } })
+        // Note: If new signups cannot immediately log in due to verification requirements,
+        // disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email settings, OR confirm their email first.
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { data: { name, phone } }
@@ -1828,7 +1852,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         const code = tagInput.value.trim().toUpperCase();
         if (!code) return;
 
-        const { data, error } = await window.supabase.rpc("fn_login_by_tag", { tag_code: code });
+        const { data, error } = await supabase.rpc("fn_login_by_tag", { tag_code: code });
         if (error) {
           showToast(error.message, "error");
         } else {
@@ -1836,9 +1860,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         }
       });
 
-      // Logout handler
+      // 7. The logout uses: supabase.auth.signOut()
       document.getElementById("logoutBtn").addEventListener("click", async () => {
-        await window.supabase.auth.signOut();
+        await supabase.auth.signOut();
         showToast("Você saiu do painel.", "warning");
       });
 
@@ -1999,7 +2023,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           return;
         }
 
-        const { data, error } = await window.supabase.rpc("fn_link_tag", { tag_code: tagCode, pet_id: petId });
+        const { data, error } = await supabase.rpc("fn_link_tag", { tag_code: tagCode, pet_id: petId });
         if (error) {
           showToast(error.message, "error");
         } else {
@@ -2096,7 +2120,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           photo_url: currentUploadedPhotoBase64
         };
 
-        const { data, error } = await window.supabase.rpc("fn_save_pet", petPayload);
+        const { data, error } = await supabase.rpc("fn_save_pet", petPayload);
         if (error) {
           showToast(error.message, "error");
         } else {
@@ -2176,7 +2200,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           veterinarian: document.getElementById("vacVet").value.trim()
         };
 
-        const { data, error } = await window.supabase.rpc("fn_save_vaccine", vacData);
+        const { data, error } = await supabase.rpc("fn_save_vaccine", vacData);
         if (error) {
           showToast(error.message, "error");
         } else {
@@ -2207,7 +2231,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         const location = document.getElementById("lostLocation").value.trim();
         const date = document.getElementById("lostDate").value;
 
-        const { data, error } = await window.supabase.rpc("fn_set_lost_mode", {
+        const { data, error } = await supabase.rpc("fn_set_lost_mode", {
           pet_id: petId,
           is_lost: isLost,
           lost_location: location,
@@ -2273,8 +2297,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         });
       });
 
-      // Initialize Auth listener on page load
-      window.supabase.auth.onAuthStateChange((event, session) => {
+      // 5. The session check uses: supabase.auth.getSession()
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          renderState(session);
+        }
+      });
+
+      // 6. The auth state listener uses: supabase.auth.onAuthStateChange((event, session) => {})
+      supabase.auth.onAuthStateChange((event, session) => {
         renderState(session);
       });
 
