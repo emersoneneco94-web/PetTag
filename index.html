@@ -359,14 +359,8 @@
     .profile-card{background:#fff;border-radius:34px;padding:34px 35px 35px;box-shadow:0 12px 38px rgba(20,60,55,.08);}
     .profile-card h2{text-align:center;font-size:42px;line-height:1;color:#112d59;font-weight:900;letter-spacing:-1.5px;}
     .profile-subtitle{text-align:center;color:#365c66;font-size:20px;margin:10px 0 27px;}
-    .photo-collage{display:grid;grid-template-columns:1fr 1.35fr 1fr;gap:10px;align-items:center;max-width:980px;margin:auto;}
-    .collage-photo{width:100%;object-fit:cover;display:block;border-radius:19px;box-shadow:0 7px 20px rgba(0,0,0,.08);}
-    .collage-left{height:230px;transform:rotate(-4deg);}
-    .collage-center{height:290px;}
-    .collage-right{display:grid;gap:10px;}
-    .collage-right .collage-photo{height:140px;}
-    .collage-right .collage-photo:first-child{transform:rotate(3deg);}
-    .collage-right .collage-photo:last-child{transform:rotate(-3deg);}
+    .photo-collage{max-width:1080px;margin:0 auto;display:block;}
+    .profile-pets-image{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 7px 20px rgba(0,0,0,.08);}
     .feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:24px;max-width:980px;margin-left:auto;margin-right:auto;}
     .feature{border-radius:18px;padding:18px 10px;text-align:center;min-height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
     .feature:nth-child(1){background:#e4f8f5}.feature:nth-child(2){background:#eaf3ff}.feature:nth-child(3){background:#fff0f3}.feature:nth-child(4){background:#fff7dd}
@@ -556,12 +550,11 @@
     .family-pets{
       margin-top:auto;
       width:100%;
-      height:205px;
-      object-fit:contain;
-      object-position:center bottom;
+      height:190px;
+      object-fit:cover;
+      object-position:center;
       border-radius:16px 16px 0 0;
-      background:transparent;
-      display:block;
+      background:#dcefe8;
     }
     .family-heart{
       font-size:33px;
@@ -584,7 +577,7 @@
       .plan-card{padding:23px 18px 17px}
       .plan-card.featured{padding-top:31px}
       .family-highlight{grid-column:auto;min-height:330px}
-      .family-pets{height:175px}
+      .family-pets{height:160px}
     }
 
     @media(max-width:1000px){
@@ -596,7 +589,7 @@
       .hero-inner{min-height:760px;height:760px}.hero-copy{left:20px;top:35px;width:53%;max-width:none}.hero-pill{font-size:11px;padding:8px 10px;margin-bottom:17px}.hero-copy h1{font-size:40px;letter-spacing:-2px;margin-bottom:18px}.hero-copy p{font-size:13px;line-height:1.42;margin-bottom:17px}.btn-principal{min-width:0;width:100%;height:52px;font-size:14px;padding:0 10px;gap:6px}.quick-benefits{grid-template-columns:repeat(3,1fr);width:57%;gap:2px;margin-top:24px}.quick-icon{width:48px;height:48px;font-size:22px}.quick-benefit strong{font-size:10px}
       .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}.story-note{right:2px;top:18px;width:105px;font-size:13px}.story-note .heart{font-size:34px}.tag-note{right:2px;bottom:190px;width:112px;padding:9px 7px;font-size:10px}.tag-arrow{right:88px;bottom:145px;font-size:32px}.phone-note{right:2px;bottom:20px;width:135px;padding:9px 7px;font-size:10px}.physical-tag{left:50%;top:69%;width:62px;height:62px}.physical-tag .paw{font-size:21px}.physical-tag .nfc{font-size:8px}.tag-ring{left:50%;top:63%;width:17px;height:17px}
       .how-section{padding:45px 20px 55px;border-radius:45% 45% 0 0/38px 38px 0 0}.how-title{font-size:31px}.how-sub{font-size:17px;margin-bottom:27px}.steps{grid-template-columns:1fr;gap:25px}.step:not(:last-child)::after{display:none}.step-top{margin-bottom:8px}
-      .profile-showcase{padding:0 10px 32px}.profile-card{padding:28px 12px;border-radius:27px}.profile-card h2{font-size:30px}.profile-subtitle{font-size:16px;margin:9px 0 22px}.photo-collage{grid-template-columns:1fr 1.35fr 1fr;gap:7px}.collage-left{height:155px}.collage-center{height:195px}.collage-right{gap:7px}.collage-right .collage-photo{height:94px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:7px}.feature{min-height:105px;padding:11px 6px}.feature-icon{font-size:29px}.feature strong{font-size:12px}
+      .profile-showcase{padding:0 10px 32px}.profile-card{padding:28px 12px;border-radius:27px}.profile-card h2{font-size:30px}.profile-subtitle{font-size:16px;margin:9px 0 22px}.photo-collage{width:100%}.profile-pets-image{border-radius:16px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:7px}.feature{min-height:105px;padding:11px 6px}.feature-icon{font-size:29px}.feature strong{font-size:12px}
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
     }
     @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.physical-tag{width:56px;height:56px}.tag-ring{top:63%;}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
@@ -1127,23 +1120,9 @@ async function carregarPet(){
             </div>
 
             <div class="photo-collage">
-              <img class="collage-photo collage-left"
-                   src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=85"
-                   alt="Cachorro feliz usando coleira">
-
-              <img class="collage-photo collage-center"
-                   src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=800&q=85"
-                   alt="Gato no perfil digital">
-
-              <div class="collage-right">
-                <img class="collage-photo"
-                     src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=700&q=85"
-                     alt="Cachorro descansando">
-
-                <img class="collage-photo"
-                     src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=700&q=85"
-                     alt="Gato no perfil digital">
-              </div>
+              <img class="profile-pets-image"
+                   src="perfil-pets-tags.png"
+                   alt="Perfil digital com cachorro e gatos usando coleiras e TAGs NFC">
             </div>
 
             <div id="beneficios" class="feature-grid">
