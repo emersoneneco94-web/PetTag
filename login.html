@@ -1035,7 +1035,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <button type="button" class="tab-btn" id="tabRegisterBtn" role="tab" aria-selected="false">Criar conta</button>
         </div>
 
-        <!-- Tab 1: Login Form -->
+        <!-- Tab 1: Login Form (Primary) -->
         <form id="formEmailLogin">
           <div class="form-group">
             <label class="form-label" for="loginEmail">E-mail</label>
@@ -1045,8 +1045,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <label class="form-label" for="loginPassword">Senha</label>
             <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
           </div>
-          <button type="submit" class="btn-brand" id="btnLoginSubmit">
-            <span>Acessar Painel</span>
+          <div id="login-error" style="display:none; padding:0.75rem; margin-top:0.75rem; background:#fef2f2; color:#dc2626; border-radius:8px; font-size:0.9rem; font-weight:600;"></div>
+          <button type="submit" class="btn-brand" id="login-btn" style="margin-top: 0.75rem;">
+            Entrar
           </button>
         </form>
 
@@ -1070,8 +1071,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
               <input type="password" id="regPassword" class="form-input" placeholder="Mínimo 6 dígitos" minlength="6" required>
             </div>
           </div>
-          <button type="submit" class="btn-brand" id="btnRegisterSubmit">
-            <span>Cadastrar e Acessar</span>
+          <button type="submit" class="btn-brand" id="signup-btn">
+            Criar conta
           </button>
         </form>
 
@@ -1081,13 +1082,20 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <button type="button" id="fillDemoLoginBtn">Preencher Demo</button>
         </div>
 
-        <!-- 2. LOGIN RÁPIDO POR CÓDIGO DA TAG -->
-        <div class="tag-login-box">
+        <!-- Divider line with "OU" -->
+        <div style="display: flex; align-items: center; margin: 1.5rem 0 1.25rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 600;">
+          <span style="flex: 1; height: 1px; background: var(--border-color);"></span>
+          <span style="padding: 0 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">OU</span>
+          <span style="flex: 1; height: 1px; background: var(--border-color);"></span>
+        </div>
+
+        <!-- 2. LOGIN RÁPIDO POR CÓDIGO DA TAG (Secondary) -->
+        <div class="tag-login-box" style="margin-top: 0; padding-top: 0; border-top: none;">
           <h3>🏷️ Entrar com código da TAG</h3>
           <p class="form-help" style="margin-bottom: 0.75rem;">Acesso rápido direto pelo código gravado na medalha</p>
           <form id="formTagLogin" style="display: flex; gap: 0.5rem;">
             <input type="text" id="inputTagCodeLogin" class="form-input" placeholder="Ex: SAVE-BENT-2024" style="text-transform: uppercase;" required>
-            <button type="submit" class="btn-green" style="white-space: nowrap;">Entrar</button>
+            <button type="submit" id="tag-login-btn" class="btn-green" style="white-space: nowrap;">Entrar</button>
           </form>
           <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 0.5rem;">
             Experimente o código demo: <strong style="color: var(--accent); cursor: pointer;" id="codeSnippet">SAVE-BENT-2024</strong>
@@ -1740,26 +1748,22 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       let currentSession = null;
       let currentPets = [];
 
-      // Toast Notification Helper
-      function showToast(message, type = "success") {
-        const container = document.getElementById("toast-container");
-        const toast = document.createElement("div");
-        toast.className = `toast-msg toast-${type}`;
-        
-        let icon = "✅";
-        if (type === "error") icon = "❌";
-        if (type === "warning") icon = "⚠️";
-
-        toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
-        container.appendChild(toast);
-
-        // Display for at least 5 seconds so the user can read it
-        setTimeout(() => {
-          toast.style.opacity = "0";
-          toast.style.transform = "translateY(10px)";
-          toast.style.transition = "all 0.3s ease";
-          setTimeout(() => toast.remove(), 300);
-        }, 5000);
+      // E) TOAST function — must work and stay visible for 6 seconds
+      function showToast(message, type) {
+        console.log('TOAST [' + type + ']:', message);
+        let toast = document.getElementById('toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'toast';
+          toast.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:1rem 1.5rem;border-radius:12px;font-weight:600;font-size:0.95rem;z-index:10000;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,0.15);transition:opacity 0.3s;';
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.style.opacity = '1';
+        toast.style.display = 'block';
+        if (type === 'error') { toast.style.background = '#dc2626'; toast.style.color = '#fff'; }
+        else if (type === 'success') { toast.style.background = '#07966b'; toast.style.color = '#fff'; }
+        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => { toast.style.display = 'none'; }, 300); }, 6000);
       }
 
       // Tab switcher
@@ -1799,74 +1803,93 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         renderState({ user: user });
       }
 
+      // A) LOGIN ERROR HANDLING — exact requested logic
       async function handleLogin(email, password) {
+        console.log('=== LOGIN ATTEMPT ===');
+        console.log('Email:', email);
+        
+        const btn = document.getElementById('login-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
+        
         try {
-          const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password: password
+          });
+          
+          console.log('Login response:', { data, error });
+          
           if (error) {
-            console.log('Login error:', error);
-            // Show the ACTUAL error message from Supabase
-            let errorMsg = error.message;
+            console.error('Supabase auth error:', error.message, error.status);
             
-            // Translate common Supabase errors to Portuguese
+            let errorMsg = error.message || 'Erro desconhecido';
             if (error.message.includes('Invalid login credentials')) {
               errorMsg = 'Email ou senha incorretos. Verifique seus dados.';
             } else if (error.message.includes('Email not confirmed')) {
               errorMsg = 'Email não confirmado. Verifique sua caixa de entrada e clique no link de confirmação.';
-            } else if (error.message.includes('User not found')) {
-              errorMsg = 'Usuário não encontrado. Verifique seu e-mail ou crie uma conta.';
             } else if (error.message.includes('Too many requests')) {
               errorMsg = 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
             }
             
+            // Show in BOTH toast AND visible error div
             showToast(errorMsg, 'error');
+            const errorDiv = document.getElementById('login-error');
+            if (errorDiv) {
+              errorDiv.style.display = 'block';
+              errorDiv.textContent = errorMsg;
+            }
+            
+            if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
             return;
           }
-          // Success - show dashboard
-          showDashboard(data.user);
-        } catch (err) {
-          console.log('Login error:', err);
-          showToast('Erro de conexão: ' + err.message, 'error');
-        }
-      }
-
-      async function handleSignup(name, email, password, phone) {
-        try {
-          const { data, error } = await supabase.auth.signUp({ 
-            email, 
-            password, 
-            options: { data: { name, phone } } 
-          });
-          if (error) {
-            console.log('Signup error:', error);
-            showToast(error.message, 'error');
-            return;
-          }
-          // Check if email confirmation is required
-          if (data.user && !data.session) {
-            showToast('Conta criada! Verifique seu email para confirmar o cadastro.', 'success');
-          } else if (data.session) {
+          
+          if (data.user) {
+            console.log('Login successful!');
+            showToast('Login realizado com sucesso!', 'success');
             showDashboard(data.user);
           }
         } catch (err) {
-          console.log('Signup error:', err);
+          console.error('Catch error:', err);
+          showToast('Erro de conexão: ' + (err.message || 'desconhecido'), 'error');
+          if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+        }
+      }
+
+      // D) SIGNUP function — also show real errors
+      async function handleSignup(name, email, password, phone) {
+        const btn = document.getElementById('signup-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Criando conta...'; }
+        
+        try {
+          const { data, error } = await supabase.auth.signUp({
+            email: email.trim(),
+            password: password,
+            options: { data: { name: name, phone: phone } }
+          });
+          
+          if (error) {
+            showToast(error.message, 'error');
+            if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
+            return;
+          }
+          
+          if (data.user && !data.session) {
+            showToast('Conta criada! Verifique seu email para confirmar o cadastro.', 'success');
+          } else if (data.session) {
+            showToast('Conta criada com sucesso!', 'success');
+            showDashboard(data.user);
+          }
+        } catch (err) {
           showToast('Erro: ' + err.message, 'error');
         }
+        if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
       }
 
       formEmailLogin.addEventListener("submit", async (e) => {
         e.preventDefault();
         const email = document.getElementById("loginEmail").value.trim();
         const password = document.getElementById("loginPassword").value;
-        const btn = document.getElementById("btnLoginSubmit");
-
-        btn.disabled = true;
-        btn.innerHTML = "<span>Entrando...</span>";
-        try {
-          await handleLogin(email, password);
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = "<span>Acessar Painel</span>";
-        }
+        await handleLogin(email, password);
       });
 
       formRegister.addEventListener("submit", async (e) => {
@@ -1875,31 +1898,48 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         const email = document.getElementById("regEmail").value.trim();
         const phone = document.getElementById("regPhone").value.trim();
         const password = document.getElementById("regPassword").value;
-        const btn = document.getElementById("btnRegisterSubmit");
-
-        btn.disabled = true;
-        btn.innerHTML = "<span>Criando conta...</span>";
-        try {
-          await handleSignup(name, email, password, phone);
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = "<span>Cadastrar e Acessar</span>";
-        }
+        await handleSignup(name, email, password, phone);
       });
 
-      // Tag Code Direct Login
+      // C) TAG LOGIN — Call fn_login_by_tag, real error handling & debugging
       document.getElementById("formTagLogin").addEventListener("submit", async (e) => {
         e.preventDefault();
         const tagInput = document.getElementById("inputTagCodeLogin");
-        const code = tagInput.value.trim().toUpperCase();
-        if (!code) return;
+        const tagCode = tagInput.value.trim().toUpperCase();
+        if (!tagCode) return;
 
-        const { data, error } = await supabase.rpc("fn_login_by_tag", { tag_code: code });
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast(`TAG identificada! Acesso concedido para ${data.tutor.name}.`, "success");
+        console.log('=== TAG LOGIN ATTEMPT ===');
+        console.log('Tag Code:', tagCode);
+
+        const btn = document.getElementById('tag-login-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
+
+        try {
+          const { data, error } = await supabase.rpc("fn_login_by_tag", { tag_code: tagCode });
+          console.log('Tag login response:', { data, error });
+
+          if (error) {
+            console.error('Tag login error:', error.message);
+            showToast(error.message, "error");
+            if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+            return;
+          }
+
+          if (data) {
+            console.log('Tag login successful:', data);
+            showToast(`TAG identificada! Acesso concedido para ${data.tutor?.name || 'Tutor'}.`, "success");
+            const user = data.tutor ? {
+              id: data.tutor.id,
+              email: data.tutor.email,
+              user_metadata: { name: data.tutor.name, phone: data.tutor.phone }
+            } : (data.user || { id: 'tutor-tag', email: 'tag@savetagpet.com.br', user_metadata: { name: 'Tutor' } });
+            showDashboard(user);
+          }
+        } catch (err) {
+          console.error('Tag catch error:', err);
+          showToast('Erro de conexão: ' + (err.message || 'desconhecido'), 'error');
         }
+        if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
       });
 
       // 7. The logout uses: supabase.auth.signOut()
