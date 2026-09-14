@@ -333,6 +333,16 @@
     .hero-dog-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;}
     .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:25%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.7) 38%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
 
+    .hero-callout{position:absolute;z-index:8;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;line-height:1.08;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.28);pointer-events:none;}
+    .hero-callout strong{display:block;font-size:24px;font-weight:800;}
+    .hero-callout-top{right:5%;top:10%;text-align:left;transform:rotate(-3deg);}
+    .hero-callout-left{left:7%;bottom:23%;text-align:left;transform:rotate(-2deg);}
+    .hero-callout-right{right:4%;bottom:22%;text-align:left;transform:rotate(2deg);}
+    .callout-arrow{display:block;color:#fff;font-size:54px;font-weight:400;line-height:.7;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+    .arrow-top{margin:7px 0 0 10px;}
+    .arrow-left{margin:8px 0 0 80px;}
+    .arrow-right{margin:8px 0 0 -8px;}
+
     .how-section{max-width:1400px;margin:-2px auto 0;padding:48px 55px 62px;background:#fff;border-radius:55% 55% 0 0/55px 55px 0 0;position:relative;z-index:30;}
     .how-title{text-align:center;color:#102f33;font-size:37px;font-weight:900;margin-bottom:6px;}
     .how-sub{text-align:center;color:#60757a;font-size:20px;margin-bottom:34px;}
@@ -568,7 +578,7 @@
       .home-header{height:78px;padding:12px 17px}.home-brand-icon{font-size:32px}.home-brand-text strong{font-size:24px}.home-brand-text small{font-size:11px}.home-nav{display:none}.btn-login{display:none}.mobile-menu{display:block}
       .hero-home{min-height:760px;height:760px;background:linear-gradient(90deg,#fff 0%,#fff 48%,#f4fbfa 63%,#eef9f7 100%)}
       .hero-inner{min-height:760px;height:760px}.hero-copy{left:20px;top:35px;width:53%;max-width:none}.hero-pill{font-size:11px;padding:8px 10px;margin-bottom:17px}.hero-copy h1{font-size:40px;letter-spacing:-2px;margin-bottom:18px}.hero-copy p{font-size:13px;line-height:1.42;margin-bottom:17px}.btn-principal{min-width:0;width:100%;height:52px;font-size:14px;padding:0 10px;gap:6px}.quick-benefits{grid-template-columns:repeat(3,1fr);width:57%;gap:2px;margin-top:24px}.quick-icon{width:48px;height:48px;font-size:22px}.quick-benefit strong{font-size:10px}
-      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}
+      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}.hero-callout{display:none}
       .how-section{padding:45px 20px 55px;border-radius:45% 45% 0 0/38px 38px 0 0}.how-title{font-size:31px}.how-sub{font-size:17px;margin-bottom:27px}.steps{grid-template-columns:1fr;gap:25px}.step:not(:last-child)::after{display:none}.step-top{margin-bottom:8px}
       .profile-showcase{padding:0 10px 32px}.profile-card{padding:28px 12px;border-radius:27px}.profile-card h2{font-size:30px}.profile-subtitle{font-size:16px;margin:9px 0 22px}.photo-collage{grid-template-columns:1fr 1.35fr 1fr;gap:7px}.collage-left{height:155px}.collage-center{height:195px}.collage-right{gap:7px}.collage-right .collage-photo{height:94px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:7px}.feature{min-height:105px;padding:11px 6px}.feature-icon{font-size:29px}.feature strong{font-size:12px}
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
@@ -1047,6 +1057,20 @@ async function carregarPet(){
                    src="hero-dog-clean2.png"
                    alt="Cachorro usando coleira e TAG Save Tag Pet">
 
+              <div class="hero-callout hero-callout-top">
+                <strong>Pequena TAG,<br>grande proteção!</strong>
+                <span class="callout-arrow arrow-top">↙</span>
+              </div>
+
+              <div class="hero-callout hero-callout-left">
+                <strong>Se ele se perder,<br>alguém pode te encontrar!</strong>
+                <span class="callout-arrow arrow-left">↘</span>
+              </div>
+
+              <div class="hero-callout hero-callout-right">
+                <strong>Tecnologia NFC<br>sem necessidade<br>de aplicativo</strong>
+                <span class="callout-arrow arrow-right">↙</span>
+              </div>
             </div>
 
           </div>
