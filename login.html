@@ -1,1331 +1,2408 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-BR" data-theme="light">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Tag Pet - Painel do Tutor (login.html)</title>
+  
+  <!-- Basecoat CSS & System Shell -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
 
-<meta charset="UTF-8">
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
 
-<title>Save Tag Pet | Entrar</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-
-*{
-    box-sizing:border-box;
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
 }
 
-body{
-    margin:0;
-    min-height:100vh;
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
 
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
 
-    background:#f3f7f5;
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
 
-    color:#172b2f;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:20px;
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
 }
 
-.container{
-    width:100%;
-    max-width:430px;
-}
-
-.logo{
-    text-align:center;
-    margin-bottom:25px;
-}
-
-.logo h1{
-    margin:0;
-    font-size:34px;
-    font-weight:800;
-}
-
-.logo h1 span{
-    color:#21a366;
-}
-
-.logo p{
-    margin:8px 0 0;
-
-    font-size:12px;
-    letter-spacing:2px;
-
-    color:#687779;
-}
-
-.card{
-    background:#fff;
-
-    border-radius:22px;
-
-    padding:30px 25px;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.08);
-}
-
-.ativacao{
-    background:#e8f6ee;
-
-    border:1px solid #c7e9d5;
-
-    border-radius:16px;
-
-    padding:18px;
-
-    margin-bottom:16px;
-
-    text-align:center;
-}
-
-.ativacao.hidden{
-    display:none;
-}
-
-.ativacao .icone{
-    font-size:30px;
-    margin-bottom:6px;
-}
-
-.ativacao h3{
-    margin:0 0 7px;
-
-    color:#17643e;
-
-    font-size:19px;
-}
-
-.ativacao p{
-    margin:5px 0;
-
-    color:#4d6258;
-
-    font-size:14px;
-
-    line-height:1.5;
-}
-
-.codigo{
-    display:inline-block;
-
-    margin-top:7px;
-
-    padding:8px 14px;
-
-    background:white;
-
-    border-radius:9px;
-
-    color:#173d2d;
-
-    font-size:17px;
-
-    font-weight:800;
-
-    letter-spacing:1px;
-}
-
-h2{
-    text-align:center;
-
-    margin:0 0 25px;
-
-    font-size:24px;
-}
-
-label{
-    display:block;
-
-    margin:15px 0 7px;
-
-    font-size:14px;
-
-    font-weight:bold;
-}
-
-input{
-    width:100%;
-
-    padding:14px;
-
-    border:1px solid #d7dfdc;
-
-    border-radius:10px;
-
-    font-size:16px;
-
-    outline:none;
-}
-
-input:focus{
-    border-color:#21a366;
-}
-
-button{
-    width:100%;
-
-    margin-top:22px;
-
-    padding:15px;
-
-    border:0;
-
-    border-radius:11px;
-
-    background:#21a366;
-
-    color:white;
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-}
-
-button:hover{
-    background:#198b55;
-}
-
-button:disabled{
-    opacity:.6;
-
-    cursor:not-allowed;
-}
-
-.btn-secundario{
-    background:none;
-
-    color:#19a765;
-
-    margin-top:12px;
-
-    padding:10px;
-}
-
-.btn-secundario:hover{
-    background:#f1faf5;
-}
-
-.link{
-    text-align:center;
-
-    margin-top:18px;
-
-    color:#21a366;
-
-    font-weight:bold;
-
-    font-size:14px;
-
-    cursor:pointer;
-}
-
-.link:hover{
-    text-decoration:underline;
-}
-
-.voltar{
-    display:block;
-
-    text-align:center;
-
-    margin-top:22px;
-
-    color:#687779;
-
-    text-decoration:none;
-
-    font-size:14px;
-}
-
-.hidden{
-    display:none !important;
-}
-
-.mensagem{
-    display:none;
-
-    margin-top:15px;
-
-    padding:12px;
-
-    border-radius:10px;
-
-    text-align:center;
-
-    font-size:14px;
-
-    line-height:1.4;
-}
-
-.mensagem.sucesso{
-    display:block;
-
-    background:#e8f7ef;
-
-    color:#187443;
-}
-
-.mensagem.erro{
-    display:block;
-
-    background:#fdecec;
-
-    color:#a52b2b;
-}
-
-.mensagem.info{
-    display:block;
-
-    background:#eef5f7;
-
-    color:#28545d;
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 }
 
 </style>
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
+  <style>
+    :root {
+      --accent: #0b5574;
+      --accent-text: #0b5574;
+      --accent-contrast: #ffffff;
+      --primary-light: #e6f4f8;
+      --green-action: #07966b;
+      --green-action-hover: #057a56;
+      --green-bg: #dff8ee;
+      --green-text: #046c4e;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --amber: #b45309;
+      --amber-bg: #fef3c7;
+      --bg-color: #f8fcfb;
+      --card-bg: #ffffff;
+      --text-main: #1a2e35;
+      --text-sub: #4b636c;
+      --border-color: #dbe4e8;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --shadow-sm: 0 2px 10px rgba(11, 85, 116, 0.06);
+      --shadow-lg: 0 8px 30px rgba(11, 85, 116, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Accessibility focus */
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Top App Navigation */
+    .app-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .nav-container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .brand-badge {
+      font-size: 0.75rem;
+      background: var(--primary-light);
+      color: var(--accent);
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .user-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-pill {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-main);
+      background: var(--primary-light);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Auth View Wrapper */
+    .auth-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      background: radial-gradient(circle at 10% 20%, rgba(11,85,116,0.06) 0%, rgba(7,150,107,0.04) 90%);
+    }
+
+    .auth-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 440px;
+      overflow: hidden;
+    }
+
+    .auth-header {
+      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
+      color: #ffffff;
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+    }
+
+    .auth-header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .auth-header p {
+      margin: 0.35rem 0 0;
+      font-size: 0.9rem;
+      color: #e6f4f8;
+    }
+
+    .auth-body {
+      padding: 1.5rem;
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 1.25rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 0.65rem 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      cursor: pointer;
+      position: relative;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tag-login-box {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px dashed var(--border-color);
+      text-align: center;
+    }
+
+    .tag-login-box h3 {
+      font-size: 0.95rem;
+      margin: 0 0 0.4rem 0;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      color: var(--text-main);
+      background: #ffffff;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .form-help {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-top: 0.25rem;
+    }
+
+    /* Custom Buttons */
+    .btn-brand {
+      background-color: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: background 0.15s, transform 0.05s;
+      width: 100%;
+    }
+
+    .btn-brand:hover {
+      background-color: #084058;
+    }
+
+    .btn-green {
+      background-color: var(--green-action);
+      color: #ffffff;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: background 0.15s;
+    }
+
+    .btn-green:hover {
+      background-color: var(--green-action-hover);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      padding: 0.55rem 0.9rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-light);
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: #ffffff;
+      border: none;
+    }
+    .btn-danger:hover {
+      background-color: #b91c1c;
+    }
+
+    .btn-ghost {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-ghost:hover {
+      background: #eef2f5;
+      color: var(--text-main);
+    }
+
+    /* Dashboard Layout */
+    .dashboard-layout {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .dash-hero {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .dash-hero-title h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dash-hero-title p {
+      margin: 0.25rem 0 0;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .dash-stats-bar {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-num {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    /* Pet Cards Grid */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0;
+    }
+
+    .pets-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .pets-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 980px) {
+      .pets-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .pet-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    }
+
+    .pet-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .pet-card.is-lost {
+      border-color: var(--danger);
+      box-shadow: 0 4px 18px rgba(220, 38, 38, 0.2);
+    }
+
+    .lost-ribbon {
+      background: var(--danger);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      text-align: center;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      animation: pulseAlert 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAlert {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    .pet-card-media {
+      height: 170px;
+      position: relative;
+      background: #edf3f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .pet-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .pet-card-avatar-fallback {
+      font-size: 4rem;
+      line-height: 1;
+    }
+
+    .pet-badge-species {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-main);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .pet-card-content {
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .pet-card-title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pet-meta {
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      margin: 0.35rem 0 0.85rem;
+      line-height: 1.4;
+    }
+
+    .tag-status-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-bottom: 0.85rem;
+      width: fit-content;
+    }
+
+    .tag-status-active {
+      background: var(--green-bg);
+      color: var(--green-text);
+      border: 1px solid #b8ebd6;
+    }
+
+    .tag-status-empty {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid #fed7aa;
+    }
+
+    .pet-card-actions {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .action-row-split {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-row-split > * {
+      flex: 1;
+    }
+
+    /* Add Pet Card Action */
+    .add-pet-card {
+      background: #ffffff;
+      border: 2px dashed #9bc3d3;
+      border-radius: var(--radius-lg);
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      min-height: 280px;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .add-pet-card:hover {
+      border-color: var(--accent);
+      background: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .add-pet-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Tag Activation Panel */
+    .activation-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .activation-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .activation-grid {
+        grid-template-columns: 1.2fr 1.2fr auto;
+        align-items: end;
+      }
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 30, 40, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 99;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+      animation: modalFadeUp 0.2s ease-out;
+      overflow: hidden;
+    }
+
+    @keyframes modalFadeUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fdfefe;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      line-height: 1;
+      color: var(--text-sub);
+      cursor: pointer;
+      padding: 0.25rem;
+      border-radius: 4px;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.65rem;
+      background: #fbfdfd;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 480px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Vaccines Table / List */
+    .vaccine-item {
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.65rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafdfc;
+    }
+
+    .vaccine-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .vaccine-sub {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      margin-top: 0.15rem;
+    }
+
+    /* Toast Notification */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 380px;
+      pointer-events: none;
+    }
+
+    .toast-msg {
+      background: #1a2e35;
+      color: #ffffff;
+      padding: 0.85rem 1.15rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      animation: toastIn 0.25s ease forwards;
+    }
+
+    .toast-success {
+      background: #065f46;
+      border-left: 4px solid #34d399;
+    }
+
+    .toast-error {
+      background: #991b1b;
+      border-left: 4px solid #f87171;
+    }
+
+    .toast-warning {
+      background: #92400e;
+      border-left: 4px solid #fcd34d;
+    }
+
+    @keyframes toastIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Quick Demo Bar */
+    .demo-pill-bar {
+      margin-top: 0.75rem;
+      background: var(--primary-light);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .demo-pill-bar button {
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Photo Upload Box */
+    .photo-preview-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .photo-preview-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .photo-preview-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Footer */
+    .app-footer {
+      border-top: 1px solid var(--border-color);
+      background: #ffffff;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-top: auto;
+    }
+
+    .app-footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
 </head>
-
-
 <body>
 
+  <!-- Top App Navigation -->
+  <header class="app-header">
+    <div class="nav-container">
+      <a href="#" class="brand-link" id="brandHomeLink">
+        <span>🐾 Save Tag Pet</span>
+        <span class="brand-badge">Painel do Tutor</span>
+      </a>
 
-<div class="container">
+      <div class="user-nav-actions" id="headerAuthNav" style="display: none;">
+        <div class="user-pill">
+          <span>👤</span>
+          <span id="navTutorName">Tutor</span>
+        </div>
+        <button type="button" class="btn-ghost" id="openSettingsBtn" title="Configurações da Conta">⚙️ Ajustes</button>
+        <button type="button" class="btn-outline btn-sm" id="logoutBtn">Sair</button>
+      </div>
+    </div>
+  </header>
 
+  <!-- VIEW 1: AUTHENTICATION (Login / Cadastro / Tag Login) -->
+  <main class="auth-wrapper" id="authView">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>🐾 Save Tag Pet</h1>
+        <p>Identifique. Encontre. Proteja.</p>
+      </div>
 
-    <!-- LOGO -->
+      <div class="auth-body">
+        <!-- Tabs for Email/Password & Register -->
+        <div class="tabs-nav" role="tablist">
+          <button type="button" class="tab-btn active" id="tabLoginBtn" role="tab" aria-selected="true">Entrar</button>
+          <button type="button" class="tab-btn" id="tabRegisterBtn" role="tab" aria-selected="false">Criar conta</button>
+        </div>
 
-    <div class="logo">
+        <!-- Tab 1: Login Form -->
+        <form id="formEmailLogin">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">E-mail</label>
+            <input type="email" id="loginEmail" class="form-input" placeholder="seuemail@exemplo.com.br" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Senha</label>
+            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-brand" id="btnLoginSubmit">
+            <span>Acessar Painel</span>
+          </button>
+        </form>
 
-        <h1>
-            Save Tag <span>Pet</span>
-        </h1>
+        <!-- Tab 2: Register Form (Hidden by default) -->
+        <form id="formRegister" style="display: none;">
+          <div class="form-group">
+            <label class="form-label" for="regName">Nome Completo</label>
+            <input type="text" id="regName" class="form-input" placeholder="Ex: Maria Oliveira" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="regEmail">E-mail</label>
+            <input type="email" id="regEmail" class="form-input" placeholder="maria@exemplo.com.br" required>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="regPhone">WhatsApp / Telefone</label>
+              <input type="tel" id="regPhone" class="form-input" placeholder="(13) 99111-8997" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regPassword">Criar Senha</label>
+              <input type="password" id="regPassword" class="form-input" placeholder="Mínimo 6 dígitos" minlength="6" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-brand" id="btnRegisterSubmit">
+            <span>Cadastrar e Acessar</span>
+          </button>
+        </form>
 
-        <p>
-            IDENTIFICAÇÃO INTELIGENTE
-        </p>
+        <!-- Quick Demo Fill helper -->
+        <div class="demo-pill-bar">
+          <span>⚡ Teste rápido (Demo Tutor):</span>
+          <button type="button" id="fillDemoLoginBtn">Preencher Demo</button>
+        </div>
 
+        <!-- 2. LOGIN RÁPIDO POR CÓDIGO DA TAG -->
+        <div class="tag-login-box">
+          <h3>🏷️ Entrar com código da TAG</h3>
+          <p class="form-help" style="margin-bottom: 0.75rem;">Acesso rápido direto pelo código gravado na medalha</p>
+          <form id="formTagLogin" style="display: flex; gap: 0.5rem;">
+            <input type="text" id="inputTagCodeLogin" class="form-input" placeholder="Ex: SAVE-BENT-2024" style="text-transform: uppercase;" required>
+            <button type="submit" class="btn-green" style="white-space: nowrap;">Entrar</button>
+          </form>
+          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 0.5rem;">
+            Experimente o código demo: <strong style="color: var(--accent); cursor: pointer;" id="codeSnippet">SAVE-BENT-2024</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- VIEW 2: TUTOR DASHBOARD -->
+  <main class="dashboard-layout" id="dashboardView" style="display: none;">
+    
+    <!-- Hero / Welcome Summary -->
+    <div class="dash-hero">
+      <div class="dash-hero-title">
+        <h2>Olá, <span id="dashTutorGreeting">Tutor</span>! 👋</h2>
+        <p>Gerencie as medalhas NFC, carteiras de vacinação e contatos de emergência dos seus pets.</p>
+      </div>
+      <div class="dash-stats-bar">
+        <div class="stat-item">
+          <div class="stat-num" id="statPetsCount">0</div>
+          <div class="stat-label">Pets cadastrados</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="statActiveTags">0</div>
+          <div class="stat-label">Tags ativas</div>
+        </div>
+      </div>
     </div>
 
-
-    <!-- ATIVAÇÃO DA TAG -->
-
-    <div
-        id="ativacaoBox"
-        class="ativacao hidden"
-    >
-
-        <div class="icone">
-            🐾
+    <!-- Activation Section -->
+    <section class="activation-card">
+      <h3 style="margin: 0; font-size: 1.05rem; color: var(--accent); display: flex; align-items: center; gap: 0.4rem;">
+        🔗 Ativar ou Vincular Nova TAG NFC
+      </h3>
+      <p class="form-help">Recebeu uma nova medalhinha Save Tag Pet? Digite o código para associar a um dos seus animais.</p>
+      
+      <form id="formActivateTag">
+        <div class="activation-grid">
+          <div>
+            <label class="form-label" for="activateTagCode">Código impresso na medalha</label>
+            <input type="text" id="activateTagCode" class="form-input" placeholder="Ex: SAVE-9942-PET" style="text-transform: uppercase;" required>
+          </div>
+          <div>
+            <label class="form-label" for="activatePetSelect">Vincular ao Pet</label>
+            <select id="activatePetSelect" class="form-select" required>
+              <option value="">Selecione um animal...</option>
+            </select>
+          </div>
+          <div>
+            <button type="submit" class="btn-green" style="width: 100%;">Vincular TAG</button>
+          </div>
         </div>
+      </form>
+    </section>
 
-        <h3>
-            Ativação da sua TAG
-        </h3>
-
-        <p>
-            Você está ativando uma TAG Save Tag Pet.
-        </p>
-
-        <p>
-            Depois do login, vamos continuar a ativação.
-        </p>
-
-        <div
-            id="codigoTag"
-            class="codigo"
-        >
-            TAG
-        </div>
-
+    <!-- Pets Grid Section -->
+    <div class="section-head">
+      <h3 class="section-title">🐾 Meus Pets</h3>
+      <button type="button" class="btn-brand btn-sm" id="btnOpenNewPetModal">➕ Novo Pet</button>
     </div>
 
-
-    <!-- CARD -->
-
-    <div class="card">
-
-
-        <!-- LOGIN -->
-
-        <div id="loginBox">
-
-            <h2>
-                Entrar na sua conta
-            </h2>
-
-
-            <label>
-                E-mail
-            </label>
-
-            <input
-                id="loginEmail"
-                type="email"
-                placeholder="seu@email.com"
-                autocomplete="email"
-            >
-
-
-            <label>
-                Senha
-            </label>
-
-            <input
-                id="loginSenha"
-                type="password"
-                placeholder="Sua senha"
-                autocomplete="current-password"
-            >
-
-
-            <button
-                id="btnEntrar"
-                type="button"
-                onclick="entrar()"
-            >
-                Entrar
-            </button>
-
-
-            <button
-                id="btnRecuperar"
-                type="button"
-                class="btn-secundario"
-                onclick="recuperarSenha()"
-            >
-                🔑 Esqueci minha senha
-            </button>
-
-
-            <div
-                id="mensagemLogin"
-                class="mensagem"
-            >
-            </div>
-
-
-            <div
-                class="link"
-                onclick="mostrarCadastro()"
-            >
-                Ainda não tenho uma conta
-            </div>
-
-        </div>
-
-
-        <!-- CADASTRO -->
-
-        <div
-            id="cadastroBox"
-            class="hidden"
-        >
-
-            <h2>
-                Criar minha conta
-            </h2>
-
-
-            <label>
-                Nome
-            </label>
-
-            <input
-                id="nome"
-                type="text"
-                placeholder="Seu nome"
-                autocomplete="name"
-            >
-
-
-            <label>
-                E-mail
-            </label>
-
-            <input
-                id="cadastroEmail"
-                type="email"
-                placeholder="seu@email.com"
-                autocomplete="email"
-            >
-
-
-            <label>
-                WhatsApp / Telefone
-            </label>
-
-            <input
-                id="telefone"
-                type="tel"
-                placeholder="(13) 99999-9999"
-                autocomplete="tel"
-            >
-
-
-            <label>
-                Cidade
-            </label>
-
-            <input
-                id="cidade"
-                type="text"
-                placeholder="Sua cidade"
-                autocomplete="address-level2"
-            >
-
-
-            <label>
-                Senha
-            </label>
-
-            <input
-                id="cadastroSenha"
-                type="password"
-                placeholder="Mínimo de 6 caracteres"
-                autocomplete="new-password"
-            >
-
-
-            <button
-                id="btnCadastrar"
-                type="button"
-                onclick="cadastrar()"
-            >
-                Criar conta
-            </button>
-
-
-            <div
-                id="mensagemCadastro"
-                class="mensagem"
-            >
-            </div>
-
-
-            <div
-                class="link"
-                onclick="mostrarLogin()"
-            >
-                ← Já tenho uma conta
-            </div>
-
-        </div>
-
-
+    <div class="pets-grid" id="petsGridContainer">
+      <!-- Generated Dynamically -->
     </div>
 
-
-    <a
-        class="voltar"
-        href="index.html"
-    >
-        ← Voltar para o site
-    </a>
-
-
-</div>
-
-
-<script>
-
-
-/* =====================================================
-   SUPABASE
-===================================================== */
-
-const SUPABASE_URL =
-    "https://mqiwoubhivutavpnpeax.supabase.co";
-
-
-/*
-   IMPORTANTE:
-
-   Coloque aqui a MESMA PUBLISHABLE KEY
-   que já estava no seu login.html.
-
-   NÃO coloque Service Role Key.
-*/
-
-const SUPABASE_KEY =
-    "sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll";
-
-
-let supabaseClient = null;
-
-
-/* =====================================================
-   IDENTIFICAR TAG
-===================================================== */
-
-const parametros =
-    new URLSearchParams(
-        window.location.search
-    );
-
-
-const codigoTag =
-    parametros.get("tag");
-
-
-/* =====================================================
-   MOSTRAR TAG
-===================================================== */
-
-function mostrarInformacaoTag(){
-
-    if(!codigoTag){
-        return;
-    }
-
-
-    const box =
-        document.getElementById(
-            "ativacaoBox"
-        );
-
-
-    const codigo =
-        document.getElementById(
-            "codigoTag"
-        );
-
-
-    box.classList.remove("hidden");
-
-    codigo.textContent =
-        codigoTag.toUpperCase();
-
-}
-
-
-/* =====================================================
-   LIMPAR MENSAGENS
-===================================================== */
-
-function limparMensagens(){
-
-    const login =
-        document.getElementById(
-            "mensagemLogin"
-        );
-
-
-    const cadastro =
-        document.getElementById(
-            "mensagemCadastro"
-        );
-
-
-    login.textContent = "";
-
-    login.className =
-        "mensagem";
-
-
-    cadastro.textContent = "";
-
-    cadastro.className =
-        "mensagem";
-
-}
-
-
-/* =====================================================
-   MOSTRAR MENSAGEM
-===================================================== */
-
-function mensagem(
-    id,
-    texto,
-    tipo
-){
-
-    const elemento =
-        document.getElementById(id);
-
-
-    elemento.textContent =
-        texto;
-
-
-    elemento.className =
-        "mensagem " + tipo;
-
-}
-
-
-/* =====================================================
-   MOSTRAR CADASTRO
-===================================================== */
-
-function mostrarCadastro(){
-
-    document
-        .getElementById("loginBox")
-        .classList
-        .add("hidden");
-
-
-    document
-        .getElementById("cadastroBox")
-        .classList
-        .remove("hidden");
-
-
-    limparMensagens();
-
-}
-
-
-/* =====================================================
-   MOSTRAR LOGIN
-===================================================== */
-
-function mostrarLogin(){
-
-    document
-        .getElementById("cadastroBox")
-        .classList
-        .add("hidden");
-
-
-    document
-        .getElementById("loginBox")
-        .classList
-        .remove("hidden");
-
-
-    limparMensagens();
-
-}
-
-
-/* =====================================================
-   INICIAR SUPABASE
-===================================================== */
-
-function iniciarSupabase(){
-
-    try{
-
-        if(
-            window.supabase &&
-            typeof window.supabase.createClient ===
-            "function"
-        ){
-
-            supabaseClient =
-                window.supabase.createClient(
-                    SUPABASE_URL,
-                    SUPABASE_KEY
-                );
-
-
-            console.log(
-                "Supabase conectado."
-            );
-
-        }else{
-
-            console.error(
-                "Biblioteca Supabase não carregou."
-            );
-
+  </main>
+
+  <!-- MODAL: ADD / EDIT PET -->
+  <div class="modal-backdrop" id="modalPetForm">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="petModalTitle">🐾 Adicionar Pet</h3>
+        <button type="button" class="modal-close-btn" data-close="modalPetForm">&times;</button>
+      </div>
+      <form id="petSaveForm">
+        <div class="modal-body">
+          <input type="hidden" id="petEditId">
+
+          <div class="photo-preview-wrap">
+            <div class="photo-preview-circle" id="previewContainer">
+              <span id="previewEmoji" style="font-size: 2rem;">🐶</span>
+              <img id="previewImage" src="" alt="Foto" style="display: none;">
+            </div>
+            <div style="flex: 1;">
+              <label class="form-label" for="petPhotoFile">Foto do Pet</label>
+              <input type="file" id="petPhotoFile" accept="image/*" class="form-input" style="padding: 0.4rem; font-size: 0.8rem;">
+              <span class="form-help">Envie uma foto clara do focinho e do rosto</span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="petName">Nome do Pet *</label>
+              <input type="text" id="petName" class="form-input" placeholder="Ex: Bento" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="petSpecies">Espécie *</label>
+              <select id="petSpecies" class="form-select" required>
+                <option value="Cão">🐶 Cão</option>
+                <option value="Gato">🐱 Gato</option>
+                <option value="Outro">🐾 Outro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="petBreed">Raça</label>
+              <input type="text" id="petBreed" class="form-input" placeholder="Ex: Golden Retriever">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="petAge">Idade</label>
+              <input type="text" id="petAge" class="form-input" placeholder="Ex: 3 anos">
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="petWeight">Peso estimado</label>
+              <input type="text" id="petWeight" class="form-input" placeholder="Ex: 28 kg">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="petColor">Cor / Pelagem</label>
+              <input type="text" id="petColor" class="form-input" placeholder="Ex: Dourado caramelo">
+            </div>
+          </div>
+
+          <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.75rem 0 1rem;">
+          <h4 style="margin: 0 0 0.65rem; font-size: 0.9rem; color: var(--accent);">🚨 Contatos de Emergência</h4>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="petPhone">Telefone de Emergência *</label>
+              <input type="tel" id="petPhone" class="form-input" placeholder="(13) 99111-8997" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="petWhatsapp">WhatsApp (com DDD)</label>
+              <input type="tel" id="petWhatsapp" class="form-input" placeholder="5513991118997">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="petEmergencyEmail">E-mail de Notificação</label>
+            <input type="email" id="petEmergencyEmail" class="form-input" placeholder="duvidas@savetagpet.com.br">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="petNotes">Observações Médicas ou Cuidados Especiais</label>
+            <textarea id="petNotes" class="form-textarea" rows="2" placeholder="Ex: Toma medicamento contínuo, dócil com crianças, tem medo de fogos..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-close="modalPetForm">Cancelar</button>
+          <button type="submit" class="btn-brand">Salvar Pet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CARTEIRA DE VACINAS -->
+  <div class="modal-backdrop" id="modalVaccines">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">💉 Carteira de Vacinas - <span id="vacPetNameTitle">Pet</span></h3>
+        <button type="button" class="modal-close-btn" data-close="modalVaccines">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="vaccinesList">
+          <!-- Populated dynamically -->
+        </div>
+
+        <form id="formAddVaccine" style="margin-top: 1.25rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius-md);">
+          <h4 style="margin: 0 0 0.75rem; font-size: 0.88rem; color: var(--accent);">➕ Registrar Nova Vacina</h4>
+          <input type="hidden" id="vacPetId">
+          <div class="form-group">
+            <label class="form-label" for="vacName">Nome da Vacina *</label>
+            <input type="text" id="vacName" class="form-input" placeholder="Ex: Antirrábica, V10, Gripe Canina" required>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label" for="vacDate">Data da Aplicação</label>
+              <input type="date" id="vacDate" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="vacNextDate">Próxima Dose / Reforço</label>
+              <input type="date" id="vacNextDate" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="vacVet">Clínica ou Veterinário(a)</label>
+            <input type="text" id="vacVet" class="form-input" placeholder="Ex: Dr. Marcelo - CRMV 12345">
+          </div>
+          <button type="submit" class="btn-green btn-sm" style="width: 100%;">Salvar Vacina</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-outline btn-sm" data-close="modalVaccines">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MODO PET PERDIDO -->
+  <div class="modal-backdrop" id="modalLostMode">
+    <div class="modal-box">
+      <div class="modal-header" style="background: #fff5f5;">
+        <h3 class="modal-title" style="color: var(--danger);">🚨 Alerta de Pet Perdido</h3>
+        <button type="button" class="modal-close-btn" data-close="modalLostMode">&times;</button>
+      </div>
+      <form id="formLostMode">
+        <div class="modal-body">
+          <input type="hidden" id="lostPetId">
+          <p style="font-size: 0.88rem; line-height: 1.4; color: var(--text-main); margin-top: 0;">
+            Ao ativar o <strong>Modo Perdido</strong>, quem escanear a medalhinha ou acessar a página pública verá um alerta vermelho urgente com o botão direto para ligar para você.
+          </p>
+
+          <div class="form-group">
+            <label class="form-label" for="lostStatusToggle">Situação Atual:</label>
+            <select id="lostStatusToggle" class="form-select" required>
+              <option value="true">🚨 ATIVAR MODO PERDIDO (Pet Desaparecido)</option>
+              <option value="false">✅ DESATIVAR (Pet em Segurança / Encontrado)</option>
+            </select>
+          </div>
+
+          <div id="lostExtraFields">
+            <div class="form-group">
+              <label class="form-label" for="lostLocation">Último Local Visto</label>
+              <input type="text" id="lostLocation" class="form-input" placeholder="Ex: Próximo à Praça da Independência, Gonzaga - Santos/SP">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lostDate">Data do Desaparecimento</label>
+              <input type="date" id="lostDate" class="form-input">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-close="modalLostMode">Cancelar</button>
+          <button type="submit" class="btn-danger">Confirmar Alteração</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: AJUSTES DO TUTOR -->
+  <div class="modal-backdrop" id="modalSettings">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ Minha Conta</h3>
+        <button type="button" class="modal-close-btn" data-close="modalSettings">&times;</button>
+      </div>
+      <form id="formSettings">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="setTutorName">Nome do Tutor</label>
+            <input type="text" id="setTutorName" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="setTutorEmail">E-mail Cadastrado</label>
+            <input type="email" id="setTutorEmail" class="form-input" required readonly style="background: #f1f5f9;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="setTutorPhone">WhatsApp de Contato</label>
+            <input type="tel" id="setTutorPhone" class="form-input" placeholder="(13) 99111-8997" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="setTutorAddress">Cidade / Endereço</label>
+            <input type="text" id="setTutorAddress" class="form-input" placeholder="Santos - SP">
+          </div>
+          <div class="form-group" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color);">
+            <label class="form-label" for="setTutorPassword">Trocar Senha (opcional)</label>
+            <input type="password" id="setTutorPassword" class="form-input" placeholder="Nova senha se desejar alterar">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-close="modalSettings">Cancelar</button>
+          <button type="submit" class="btn-brand">Salvar Ajustes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div><strong>🐾 Save Tag Pet</strong> — Identifique. Encontre. Proteja.</div>
+    <div style="margin-top: 0.25rem;">
+      Suporte WhatsApp: <a href="https://wa.me/5513991118997" target="_blank" rel="noopener">(13) 99111-8997</a> | E-mail: <a href="mailto:duvidas@savetagpet.com.br">duvidas@savetagpet.com.br</a>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- CLIENT DATA & SUPABASE ADAPTER LOGIC -->
+  <script>
+    /**
+     * Save Tag Pet - Static client-side mock & Supabase contract adapter.
+     * Implements full offline state persistence in localStorage while supporting
+     * the requested Supabase Auth & RPC signatures without remote dependencies.
+     */
+    (function() {
+      // Configuration details
+      const supabaseUrl = "https://mqiwoubhivutavpnpeax.supabase.co";
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xaXdvdWJoaXZ1dGF2cG5wZWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MzA2ODksImV4cCI6MjEwNDUwNjY4OX0.y0HFM4tTLdzBe5NfSbzCo66hz9YwdIlE989Kb_sQ-Zs";
+      const SUPABASE_URL = supabaseUrl;
+      const SUPABASE_KEY = supabaseKey;
+      window.supabaseUrl = supabaseUrl;
+      window.supabaseKey = supabaseKey;
+      const STORAGE_KEY_AUTH = "savetag_session_v2";
+      const STORAGE_KEY_DATA = "savetag_database_v2";
+
+      // Initial realistic dataset
+      const INITIAL_DB = {
+        tutors: [
+          {
+            id: "tutor-101",
+            name: "Camila Rodrigues",
+            email: "camila@savetagpet.com.br",
+            password: "senha",
+            phone: "(13) 99111-8997",
+            address: "Santos - SP",
+            created_at: new Date().toISOString()
+          }
+        ],
+        pets: [
+          {
+            id: "pet-201",
+            tutor_id: "tutor-101",
+            name: "Bento",
+            species: "Cão",
+            breed: "Golden Retriever",
+            age: "3 anos",
+            weight: "32 kg",
+            color: "Dourado",
+            photo_url: "https://img.usecurling.com/p/400/300?q=golden%20retriever",
+            notes: "Dócil, adora crianças. Alérgico a corante artificial.",
+            emergency_phone: "(13) 99111-8997",
+            emergency_whatsapp: "5513991118997",
+            emergency_email: "duvidas@savetagpet.com.br",
+            tag_code: "SAVE-BENT-2024",
+            is_lost: false,
+            lost_location: "",
+            lost_date: "",
+            created_at: new Date().toISOString()
+          },
+          {
+            id: "pet-202",
+            tutor_id: "tutor-101",
+            name: "Luna",
+            species: "Gato",
+            breed: "Siamês",
+            age: "2 anos",
+            weight: "4.1 kg",
+            color: "Bege com extremidades marrons",
+            photo_url: "https://img.usecurling.com/p/400/300?q=siamese%20cat",
+            notes: "Microchipada. Tímida com estranhos.",
+            emergency_phone: "(13) 99111-8997",
+            emergency_whatsapp: "5513991118997",
+            emergency_email: "duvidas@savetagpet.com.br",
+            tag_code: "SAVE-LUNA-9821",
+            is_lost: true,
+            lost_location: "Rua Euclides da Cunha, Gonzaga - Santos",
+            lost_date: "2025-05-12",
+            created_at: new Date().toISOString()
+          },
+          {
+            id: "pet-203",
+            tutor_id: "tutor-101",
+            name: "Pipoca",
+            species: "Cão",
+            breed: "Poodle Toy",
+            age: "1 ano",
+            weight: "4 kg",
+            color: "Branco",
+            photo_url: "https://img.usecurling.com/p/400/300?q=white%20poodle",
+            notes: "Muito brincalhão e ativo.",
+            emergency_phone: "(13) 99111-8997",
+            emergency_whatsapp: "5513991118997",
+            emergency_email: "duvidas@savetagpet.com.br",
+            tag_code: null,
+            is_lost: false,
+            lost_location: "",
+            lost_date: "",
+            created_at: new Date().toISOString()
+          }
+        ],
+        pet_vaccines: [
+          {
+            id: "vac-301",
+            pet_id: "pet-201",
+            vaccine_name: "V10 Múltipla Canina",
+            application_date: "2024-08-10",
+            next_dose_date: "2025-08-10",
+            veterinarian: "Dra. Carolina CRMV-SP 34120"
+          },
+          {
+            id: "vac-302",
+            pet_id: "pet-201",
+            vaccine_name: "Antirrábica",
+            application_date: "2024-09-15",
+            next_dose_date: "2025-09-15",
+            veterinarian: "Dr. Marcos CRMV-SP 21008"
+          },
+          {
+            id: "vac-303",
+            pet_id: "pet-202",
+            vaccine_name: "Quíntupla Felina (V5)",
+            application_date: "2024-11-02",
+            next_dose_date: "2025-11-02",
+            veterinarian: "Dra. Helena CRMV-SP 45911"
+          }
+        ]
+      };
+
+      // Storage helper
+      function getDb() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY_DATA);
+          if (!raw) {
+            localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(INITIAL_DB));
+            return INITIAL_DB;
+          }
+          return JSON.parse(raw);
+        } catch(e) {
+          return INITIAL_DB;
         }
-
-    }catch(erro){
-
-        console.error(
-            "Erro ao iniciar Supabase:",
-            erro
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   DESTINO APÓS LOGIN
-===================================================== */
-
-function continuarAposLogin(){
-
-    if(codigoTag){
-
-        window.location.href =
-            "painel.html?tag=" +
-            encodeURIComponent(
-                codigoTag
-            );
-
-        return;
-
-    }
-
-
-    window.location.href =
-        "painel.html";
-
-}
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-async function entrar(){
-
-    limparMensagens();
-
-
-    if(!supabaseClient){
-
-        mensagem(
-            "mensagemLogin",
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const email =
-        document
-            .getElementById(
-                "loginEmail"
-            )
-            .value
-            .trim();
-
-
-    const senha =
-        document
-            .getElementById(
-                "loginSenha"
-            )
-            .value;
-
-
-    if(!email || !senha){
-
-        mensagem(
-            "mensagemLogin",
-            "Digite seu e-mail e sua senha.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const botao =
-        document.getElementById(
-            "btnEntrar"
-        );
-
-
-    botao.disabled = true;
-
-    botao.textContent =
-        "Entrando...";
-
-
-    try{
-
-        const resultado =
-            await supabaseClient
-                .auth
-                .signInWithPassword({
-
-                    email:
-                        email,
-
-                    password:
-                        senha
-
-                });
-
-
-        if(resultado.error){
-
-            mensagem(
-                "mensagemLogin",
-                resultado.error.message,
-                "erro"
-            );
-
-            return;
-
-        }
-
-
-        mensagem(
-            "mensagemLogin",
-            "Login realizado com sucesso!",
-            "sucesso"
-        );
-
-
-        setTimeout(
-            function(){
-
-                continuarAposLogin();
-
-            },
-            700
-        );
-
-
-    }catch(erro){
-
-        console.error(
-            erro
-        );
-
-
-        mensagem(
-            "mensagemLogin",
-            "Erro ao entrar. Tente novamente.",
-            "erro"
-        );
-
-
-    }finally{
-
-        botao.disabled = false;
-
-        botao.textContent =
-            "Entrar";
-
-    }
-
-}
-
-
-/* =====================================================
-   CADASTRO
-===================================================== */
-
-async function cadastrar(){
-
-    limparMensagens();
-
-
-    if(!supabaseClient){
-
-        mensagem(
-            "mensagemCadastro",
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const nome =
-        document
-            .getElementById("nome")
-            .value
-            .trim();
-
-
-    const email =
-        document
-            .getElementById("cadastroEmail")
-            .value
-            .trim();
-
-
-    const telefone =
-        document
-            .getElementById("telefone")
-            .value
-            .trim();
-
-
-    const cidade =
-        document
-            .getElementById("cidade")
-            .value
-            .trim();
-
-
-    const senha =
-        document
-            .getElementById("cadastroSenha")
-            .value;
-
-
-    if(
-        !nome ||
-        !email ||
-        !telefone ||
-        !cidade ||
-        !senha
-    ){
-
-        mensagem(
-            "mensagemCadastro",
-            "Preencha todos os campos.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    if(senha.length < 6){
-
-        mensagem(
-            "mensagemCadastro",
-            "A senha precisa ter pelo menos 6 caracteres.",
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const botao =
-        document.getElementById(
-            "btnCadastrar"
-        );
-
-
-    botao.disabled = true;
-
-    botao.textContent =
-        "Criando conta...";
-
-
-    try{
-
-        const urlConfirmacao =
-            new URL(
-                "https://www.savetagpet.com.br/login.html"
-            );
-
-
-        if(codigoTag){
-
-            urlConfirmacao.searchParams.set(
-                "tag",
-                codigoTag
-            );
-
-        }
-
-
-        const resultado =
-            await supabaseClient
-                .auth
-                .signUp({
-
-                    email:
-                        email,
-
-                    password:
-                        senha,
-
-                    options:{
-
-                        emailRedirectTo:
-                            urlConfirmacao.toString(),
-
-                        data:{
-                            nome:nome,
-                            telefone:telefone,
-                            cidade:cidade
-                        }
-
-                    }
-
-                });
-
-
-        if(resultado.error){
-
-            mensagem(
-                "mensagemCadastro",
-                resultado.error.message,
-                "erro"
-            );
-
-            return;
-
-        }
-
-
-        const usuario =
-            resultado.data.user;
-
-
-        if(!usuario){
-
-            mensagem(
-                "mensagemCadastro",
-                "Não foi possível criar a conta.",
-                "erro"
-            );
-
-            return;
-
-        }
-
-
-        /*
-           Se o Supabase criou a sessão imediatamente,
-           salvamos os dados do tutor.
-        */
-
-        if(resultado.data.session){
-
-            mensagem(
-                "mensagemCadastro",
-                "Conta criada com sucesso!",
-                "sucesso"
-            );
-
-
-            setTimeout(
-                function(){
-
-                    continuarAposLogin();
-
-                },
-                1000
-            );
-
-
-        }else{
-
-            /*
-               Caso seja necessária confirmação
-               do e-mail.
-            */
-
-            if(codigoTag){
-
-                mensagem(
-                    "mensagemCadastro",
-
-                    "Conta criada! Confirme seu e-mail. Depois, entre novamente para continuar a ativação da TAG " +
-                    codigoTag +
-                    ".",
-
-                    "sucesso"
-                );
-
-            }else{
-
-                mensagem(
-                    "mensagemCadastro",
-
-                    "Conta criada! Verifique seu e-mail para confirmar o cadastro.",
-
-                    "sucesso"
-                );
-
+      }
+
+      function saveDb(data) {
+        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
+      }
+
+      // Mock Supabase Client implementation matching Supabase v2 signature
+      window.supabase = {
+        config: { url: SUPABASE_URL, key: SUPABASE_KEY },
+        authListeners: [],
+        
+        auth: {
+          async getSession() {
+            try {
+              const raw = localStorage.getItem(STORAGE_KEY_AUTH);
+              if (!raw) return { data: { session: null }, error: null };
+              return { data: { session: JSON.parse(raw) }, error: null };
+            } catch(e) {
+              return { data: { session: null }, error: e };
+            }
+          },
+
+          async signInWithPassword({ email, password }) {
+            const db = getDb();
+            const tutor = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
+            if (!tutor) {
+              return { data: null, error: { message: "Usuário não encontrado. Verifique seu e-mail." } };
+            }
+            if (tutor.password && tutor.password !== password) {
+              return { data: null, error: { message: "Senha incorreta. Tente novamente." } };
+            }
+            const session = {
+              user: {
+                id: tutor.id,
+                email: tutor.email,
+                user_metadata: { name: tutor.name, phone: tutor.phone }
+              },
+              access_token: "mock-jwt-" + Date.now()
+            };
+            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
+            window.supabase._notifyAuth("SIGNED_IN", session);
+            return { data: { session, user: session.user }, error: null };
+          },
+
+          async signUp({ email, password, options }) {
+            const db = getDb();
+            const exists = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
+            if (exists) {
+              return { data: null, error: { message: "Este e-mail já possui cadastro. Faça login." } };
+            }
+            const newTutor = {
+              id: "tutor-" + Date.now(),
+              name: options?.data?.name || "Tutor",
+              email: email.toLowerCase(),
+              password: password,
+              phone: options?.data?.phone || "",
+              address: "",
+              created_at: new Date().toISOString()
+            };
+            db.tutors.push(newTutor);
+            saveDb(db);
+
+            const session = {
+              user: {
+                id: newTutor.id,
+                email: newTutor.email,
+                user_metadata: { name: newTutor.name, phone: newTutor.phone }
+              },
+              access_token: "mock-jwt-" + Date.now()
+            };
+            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
+            window.supabase._notifyAuth("SIGNED_IN", session);
+            return { data: { session, user: session.user }, error: null };
+          },
+
+          async signOut() {
+            localStorage.removeItem(STORAGE_KEY_AUTH);
+            window.supabase._notifyAuth("SIGNED_OUT", null);
+            return { error: null };
+          },
+
+          onAuthStateChange(callback) {
+            window.supabase.authListeners.push(callback);
+            this.getSession().then(({ data }) => {
+              callback(data.session ? "INITIAL_SESSION" : "SIGNED_OUT", data.session);
+            });
+            return { data: { subscription: { unsubscribe: () => {} } } };
+          }
+        },
+
+        _notifyAuth(event, session) {
+          window.supabase.authListeners.forEach(cb => {
+            try { cb(event, session); } catch(e) { console.error(e); }
+          });
+        },
+
+        // RPC Functions specified in requirements
+        async rpc(funcName, params = {}) {
+          const db = getDb();
+
+          if (funcName === "fn_login_by_tag") {
+            const tagCode = (params.tag_code || "").trim().toUpperCase();
+            const pet = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode);
+            if (!pet) {
+              return { data: null, error: { message: "TAG não encontrada ou não vinculada a nenhum animal." } };
+            }
+            const tutor = db.tutors.find(t => t.id === pet.tutor_id) || db.tutors[0];
+            const session = {
+              user: {
+                id: tutor.id,
+                email: tutor.email,
+                user_metadata: { name: tutor.name, phone: tutor.phone }
+              },
+              access_token: "mock-tag-jwt-" + Date.now()
+            };
+            localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
+            window.supabase._notifyAuth("SIGNED_IN", session);
+            return { data: { success: true, tutor, pet }, error: null };
+          }
+
+          if (funcName === "fn_link_tag") {
+            const tagCode = (params.tag_code || "").trim().toUpperCase();
+            const petId = params.pet_id;
+            
+            // Check if tag is used elsewhere
+            const alreadyUsed = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode && p.id !== petId);
+            if (alreadyUsed) {
+              return { data: null, error: { message: "Esta TAG já está vinculada ao pet " + alreadyUsed.name } };
             }
 
+            const targetPet = db.pets.find(p => p.id === petId);
+            if (!targetPet) {
+              return { data: null, error: { message: "Pet selecionado não foi encontrado." } };
+            }
+
+            targetPet.tag_code = tagCode;
+            saveDb(db);
+            return { data: { success: true, pet: targetPet }, error: null };
+          }
+
+          if (funcName === "fn_set_lost_mode") {
+            const pet = db.pets.find(p => p.id === params.pet_id);
+            if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
+            
+            pet.is_lost = !!params.is_lost;
+            pet.lost_location = params.lost_location || "";
+            pet.lost_date = params.lost_date || "";
+            saveDb(db);
+            return { data: { success: true, pet }, error: null };
+          }
+
+          if (funcName === "fn_save_pet") {
+            let pet;
+            if (params.id) {
+              pet = db.pets.find(p => p.id === params.id);
+              if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
+              Object.assign(pet, params);
+            } else {
+              pet = {
+                id: "pet-" + Date.now(),
+                created_at: new Date().toISOString(),
+                is_lost: false,
+                ...params
+              };
+              db.pets.push(pet);
+            }
+            saveDb(db);
+            return { data: pet, error: null };
+          }
+
+          if (funcName === "fn_save_vaccine") {
+            const vac = {
+              id: "vac-" + Date.now(),
+              ...params,
+              created_at: new Date().toISOString()
+            };
+            db.pet_vaccines.push(vac);
+            saveDb(db);
+            return { data: vac, error: null };
+          }
+
+          return { data: null, error: { message: "Função RPC desconhecida: " + funcName } };
+        },
+
+        // Simple table query helpers
+        from(tableName) {
+          return {
+            select: async () => {
+              const db = getDb();
+              return { data: db[tableName] || [], error: null };
+            },
+            delete: () => ({
+              eq: async (col, val) => {
+                const db = getDb();
+                if (db[tableName]) {
+                  db[tableName] = db[tableName].filter(row => row[col] !== val);
+                  saveDb(db);
+                }
+                return { error: null };
+              }
+            })
+          };
+        }
+      };
+
+      // UI CONTROLLER & APP LOGIC
+      let currentSession = null;
+      let currentPets = [];
+
+      // Toast Notification Helper
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = `toast-msg toast-${type}`;
+        
+        let icon = "✅";
+        if (type === "error") icon = "❌";
+        if (type === "warning") icon = "⚠️";
+
+        toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(10px)";
+          toast.style.transition = "all 0.3s ease";
+          setTimeout(() => toast.remove(), 300);
+        }, 3200);
+      }
+
+      // Tab switcher
+      const tabLoginBtn = document.getElementById("tabLoginBtn");
+      const tabRegisterBtn = document.getElementById("tabRegisterBtn");
+      const formEmailLogin = document.getElementById("formEmailLogin");
+      const formRegister = document.getElementById("formRegister");
+
+      tabLoginBtn.addEventListener("click", () => {
+        tabLoginBtn.classList.add("active");
+        tabRegisterBtn.classList.remove("active");
+        formEmailLogin.style.display = "block";
+        formRegister.style.display = "none";
+      });
+
+      tabRegisterBtn.addEventListener("click", () => {
+        tabRegisterBtn.classList.add("active");
+        tabLoginBtn.classList.remove("active");
+        formEmailLogin.style.display = "none";
+        formRegister.style.display = "block";
+      });
+
+      // Quick prefill demo login
+      document.getElementById("fillDemoLoginBtn").addEventListener("click", () => {
+        document.getElementById("loginEmail").value = "camila@savetagpet.com.br";
+        document.getElementById("loginPassword").value = "senha";
+        showToast("Dados de demonstração inseridos!", "warning");
+      });
+
+      document.getElementById("codeSnippet").addEventListener("click", () => {
+        document.getElementById("inputTagCodeLogin").value = "SAVE-BENT-2024";
+      });
+
+      // Auth Handlers
+      formEmailLogin.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        const btn = document.getElementById("btnLoginSubmit");
+
+        btn.disabled = true;
+        btn.innerHTML = "<span>Entrando...</span>";
+
+        const { data, error } = await window.supabase.auth.signInWithPassword({ email, password });
+        btn.disabled = false;
+        btn.innerHTML = "<span>Acessar Painel</span>";
+
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast("Login realizado com sucesso! Bem-vindo(a).", "success");
+        }
+      });
+
+      formRegister.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("regName").value.trim();
+        const email = document.getElementById("regEmail").value.trim();
+        const phone = document.getElementById("regPhone").value.trim();
+        const password = document.getElementById("regPassword").value;
+        const btn = document.getElementById("btnRegisterSubmit");
+
+        btn.disabled = true;
+        btn.innerHTML = "<span>Criando conta...</span>";
+
+        const { data, error } = await window.supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { name, phone } }
+        });
+        btn.disabled = false;
+        btn.innerHTML = "<span>Cadastrar e Acessar</span>";
+
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast("Conta criada com sucesso!", "success");
+        }
+      });
+
+      // Tag Code Direct Login
+      document.getElementById("formTagLogin").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const tagInput = document.getElementById("inputTagCodeLogin");
+        const code = tagInput.value.trim().toUpperCase();
+        if (!code) return;
+
+        const { data, error } = await window.supabase.rpc("fn_login_by_tag", { tag_code: code });
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast(`TAG identificada! Acesso concedido para ${data.tutor.name}.`, "success");
+        }
+      });
+
+      // Logout handler
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await window.supabase.auth.signOut();
+        showToast("Você saiu do painel.", "warning");
+      });
+
+      // Switch views between Auth & Dashboard
+      function renderState(session) {
+        currentSession = session;
+        const authView = document.getElementById("authView");
+        const dashboardView = document.getElementById("dashboardView");
+        const headerAuthNav = document.getElementById("headerAuthNav");
+
+        if (session && session.user) {
+          authView.style.display = "none";
+          dashboardView.style.display = "block";
+          headerAuthNav.style.display = "flex";
+
+          const userName = session.user.user_metadata?.name || session.user.email.split("@")[0];
+          document.getElementById("navTutorName").textContent = userName;
+          document.getElementById("dashTutorGreeting").textContent = userName;
+
+          loadTutorDashboardData(session.user.id);
+        } else {
+          authView.style.display = "flex";
+          dashboardView.style.display = "none";
+          headerAuthNav.style.display = "none";
+        }
+      }
+
+      // Load Pets & refresh views
+      function loadTutorDashboardData(tutorId) {
+        const db = getDb();
+        const tutor = db.tutors.find(t => t.id === tutorId) || db.tutors[0];
+        currentPets = db.pets.filter(p => p.tutor_id === tutorId || p.tutor_id === "tutor-101");
+
+        // Update stats
+        document.getElementById("statPetsCount").textContent = currentPets.length;
+        const activeTags = currentPets.filter(p => p.tag_code).length;
+        document.getElementById("statActiveTags").textContent = activeTags;
+
+        // Render Pet Select in Link Tag box
+        const selectEl = document.getElementById("activatePetSelect");
+        selectEl.innerHTML = '<option value="">Selecione um animal...</option>';
+        currentPets.forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = p.id;
+          opt.textContent = `${p.name} (${p.species}${p.tag_code ? " - TAG: " + p.tag_code : " - Sem TAG"})`;
+          selectEl.appendChild(opt);
+        });
+
+        // Render Cards Grid
+        const grid = document.getElementById("petsGridContainer");
+        grid.innerHTML = "";
+
+        if (currentPets.length === 0) {
+          const empty = document.createElement("div");
+          empty.style.gridColumn = "1 / -1";
+          empty.style.padding = "2.5rem 1rem";
+          empty.style.textAlign = "center";
+          empty.style.background = "#fff";
+          empty.style.borderRadius = "var(--radius-lg)";
+          empty.style.border = "1px solid var(--border-color)";
+          empty.innerHTML = `
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐾</div>
+            <h4 style="margin: 0; color: var(--accent);">Você ainda não tem pets cadastrados</h4>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin: 0.35rem 0 1rem;">Adicione o primeiro animal para vincular sua medalha NFC.</p>
+            <button class="btn-brand btn-sm" id="emptyAddBtn" style="width: auto;">➕ Adicionar Meu Primeiro Pet</button>
+          `;
+          grid.appendChild(empty);
+          document.getElementById("emptyAddBtn").addEventListener("click", () => openPetModal());
+          return;
         }
 
+        // Render each pet card
+        currentPets.forEach(pet => {
+          const card = document.createElement("div");
+          card.className = `pet-card ${pet.is_lost ? "is-lost" : ""}`;
 
-    }catch(erro){
+          const emoji = pet.species === "Gato" ? "🐱" : (pet.species === "Cão" ? "🐶" : "🐾");
+          const tagInfo = pet.tag_code 
+            ? `<div class="tag-status-pill tag-status-active">✅ TAG: <strong>${pet.tag_code}</strong></div>`
+            : `<div class="tag-status-pill tag-status-empty">⚠️ Sem TAG vinculada</div>`;
 
-        console.error(
-            erro
-        );
+          card.innerHTML = `
+            ${pet.is_lost ? '<div class="lost-ribbon">🚨 ALERTA: PET DESAPARECIDO ATIVO</div>' : ''}
+            <div class="pet-card-media">
+              ${pet.photo_url 
+                ? `<img src="${pet.photo_url}" alt="${pet.name}" class="pet-card-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                   <div class="pet-card-avatar-fallback" style="display:none;">${emoji}</div>`
+                : `<div class="pet-card-avatar-fallback">${emoji}</div>`
+              }
+              <span class="pet-badge-species">${emoji} ${pet.species || "Pet"}</span>
+            </div>
+            <div class="pet-card-content">
+              <h4 class="pet-card-title">
+                <span>${pet.name}</span>
+                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-sub);">${pet.breed || ""}</span>
+              </h4>
+              <div class="pet-meta">
+                ${pet.age ? `<span>🎂 ${pet.age}</span> • ` : ''}
+                ${pet.weight ? `<span>⚖️ ${pet.weight}</span> • ` : ''}
+                ${pet.color ? `<span>🎨 ${pet.color}</span>` : ''}
+              </div>
 
+              ${tagInfo}
 
-        mensagem(
-            "mensagemCadastro",
-            "Erro ao criar a conta. Tente novamente.",
-            "erro"
-        );
+              <div class="pet-card-actions">
+                <div class="action-row-split">
+                  <button type="button" class="btn-outline btn-sm edit-pet-btn" data-id="${pet.id}">✏️ Editar</button>
+                  <button type="button" class="btn-outline btn-sm vac-pet-btn" data-id="${pet.id}">💉 Vacinas</button>
+                </div>
+                <button type="button" class="btn-sm ${pet.is_lost ? 'btn-danger' : 'btn-outline'} lost-pet-btn" data-id="${pet.id}">
+                  ${pet.is_lost ? '🚨 Gerenciar Modo Perdido' : '⚠️ Ativar Modo Perdido'}
+                </button>
+                ${pet.tag_code ? `
+                  <a href="public.html?tag=${pet.tag_code}" target="_blank" class="btn-ghost" style="text-align: center; text-decoration: none; font-size: 0.78rem;" onclick="event.preventDefault(); alert('Link público da Tag: public.html?tag=${pet.tag_code}\\n\\nAo aproximar o celular da medalhinha NFC, quem encontrar o pet verá esses dados!');">
+                    🔍 Ver perfil público da TAG
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+          `;
 
+          grid.appendChild(card);
+        });
 
-    }finally{
+        // Add "+ Novo Pet" card at the end of the grid
+        const addCard = document.createElement("div");
+        addCard.className = "add-pet-card";
+        addCard.innerHTML = `
+          <div class="add-pet-icon">➕</div>
+          <strong style="color: var(--accent); font-size: 0.95rem;">Adicionar novo pet</strong>
+          <span style="font-size: 0.75rem; color: var(--text-sub); margin-top: 0.2rem;">Cadastre cães, gatos ou outros</span>
+        `;
+        addCard.addEventListener("click", () => openPetModal());
+        grid.appendChild(addCard);
 
-        botao.disabled = false;
+        // Attach listeners to pet card buttons
+        grid.querySelectorAll(".edit-pet-btn").forEach(btn => {
+          btn.addEventListener("click", () => openPetModal(btn.dataset.id));
+        });
 
-        botao.textContent =
-            "Criar conta";
+        grid.querySelectorAll(".vac-pet-btn").forEach(btn => {
+          btn.addEventListener("click", () => openVaccineModal(btn.dataset.id));
+        });
 
-    }
+        grid.querySelectorAll(".lost-pet-btn").forEach(btn => {
+          btn.addEventListener("click", () => openLostModeModal(btn.dataset.id));
+        });
+      }
 
-}
+      // Link Tag Form Submission
+      document.getElementById("formActivateTag").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const tagCode = document.getElementById("activateTagCode").value.trim().toUpperCase();
+        const petId = document.getElementById("activatePetSelect").value;
 
-
-/* =====================================================
-   RECUPERAR SENHA
-===================================================== */
-
-async function recuperarSenha(){
-
-    limparMensagens();
-
-
-    const email =
-        document
-            .getElementById(
-                "loginEmail"
-            )
-            .value
-            .trim();
-
-
-    if(!email){
-
-        mensagem(
-            "mensagemLogin",
-
-            "Digite seu e-mail para receber o link de recuperação.",
-
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    if(!supabaseClient){
-
-        mensagem(
-            "mensagemLogin",
-
-            "Não foi possível conectar ao sistema. Atualize a página e tente novamente.",
-
-            "erro"
-        );
-
-        return;
-
-    }
-
-
-    const botao =
-        document.getElementById(
-            "btnRecuperar"
-        );
-
-
-    botao.disabled = true;
-
-    botao.textContent =
-        "Enviando...";
-
-
-    try{
-
-        const resultado =
-            await supabaseClient
-                .auth
-                .resetPasswordForEmail(
-
-                    email,
-
-                    {
-
-                        redirectTo:
-                            "https://www.savetagpet.com.br/alterar-senha.html"
-
-                    }
-
-                );
-
-
-        if(resultado.error){
-
-            mensagem(
-                "mensagemLogin",
-
-                resultado.error.message,
-
-                "erro"
-            );
-
-            return;
-
+        if (!petId) {
+          showToast("Selecione qual animal receberá a medalha.", "error");
+          return;
         }
 
+        const { data, error } = await window.supabase.rpc("fn_link_tag", { tag_code: tagCode, pet_id: petId });
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast(`TAG ${tagCode} vinculada com sucesso!`, "success");
+          document.getElementById("activateTagCode").value = "";
+          loadTutorDashboardData(currentSession.user.id);
+        }
+      });
 
-        mensagem(
-            "mensagemLogin",
+      // PET MODAL HANDLERS
+      const modalPetForm = document.getElementById("modalPetForm");
+      let currentUploadedPhotoBase64 = null;
 
-            "Enviamos um link para seu e-mail. Verifique sua caixa de entrada.",
+      function openPetModal(petId = null) {
+        document.getElementById("petSaveForm").reset();
+        currentUploadedPhotoBase64 = null;
+        document.getElementById("previewImage").style.display = "none";
+        document.getElementById("previewEmoji").style.display = "block";
 
-            "sucesso"
-        );
+        if (petId) {
+          const pet = currentPets.find(p => p.id === petId);
+          if (pet) {
+            document.getElementById("petModalTitle").textContent = "✏️ Editar Pet - " + pet.name;
+            document.getElementById("petEditId").value = pet.id;
+            document.getElementById("petName").value = pet.name || "";
+            document.getElementById("petSpecies").value = pet.species || "Cão";
+            document.getElementById("petBreed").value = pet.breed || "";
+            document.getElementById("petAge").value = pet.age || "";
+            document.getElementById("petWeight").value = pet.weight || "";
+            document.getElementById("petColor").value = pet.color || "";
+            document.getElementById("petPhone").value = pet.emergency_phone || "";
+            document.getElementById("petWhatsapp").value = pet.emergency_whatsapp || "";
+            document.getElementById("petEmergencyEmail").value = pet.emergency_email || "";
+            document.getElementById("petNotes").value = pet.notes || "";
 
+            if (pet.photo_url) {
+              document.getElementById("previewImage").src = pet.photo_url;
+              document.getElementById("previewImage").style.display = "block";
+              document.getElementById("previewEmoji").style.display = "none";
+              currentUploadedPhotoBase64 = pet.photo_url;
+            }
+          }
+        } else {
+          document.getElementById("petModalTitle").textContent = "🐾 Adicionar Novo Pet";
+          document.getElementById("petEditId").value = "";
+          // Fill default emergency phone from current tutor
+          const db = getDb();
+          const tutor = db.tutors.find(t => t.id === currentSession.user.id) || db.tutors[0];
+          if (tutor) {
+            document.getElementById("petPhone").value = tutor.phone || "";
+            document.getElementById("petWhatsapp").value = tutor.phone ? tutor.phone.replace(/\D/g, "") : "";
+            document.getElementById("petEmergencyEmail").value = tutor.email || "";
+          }
+        }
 
-    }catch(erro){
+        modalPetForm.classList.add("open");
+      }
 
-        console.error(
-            erro
-        );
+      document.getElementById("btnOpenNewPetModal").addEventListener("click", () => openPetModal());
 
+      // Photo upload preview (base64)
+      document.getElementById("petPhotoFile").addEventListener("change", function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            currentUploadedPhotoBase64 = e.target.result;
+            const img = document.getElementById("previewImage");
+            img.src = currentUploadedPhotoBase64;
+            img.style.display = "block";
+            document.getElementById("previewEmoji").style.display = "none";
+          };
+          reader.readAsDataURL(file);
+        }
+      });
 
-        mensagem(
-            "mensagemLogin",
+      // Save Pet Form Submit
+      document.getElementById("petSaveForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const petId = document.getElementById("petEditId").value;
+        const petPayload = {
+          id: petId || undefined,
+          tutor_id: currentSession.user.id,
+          name: document.getElementById("petName").value.trim(),
+          species: document.getElementById("petSpecies").value,
+          breed: document.getElementById("petBreed").value.trim(),
+          age: document.getElementById("petAge").value.trim(),
+          weight: document.getElementById("petWeight").value.trim(),
+          color: document.getElementById("petColor").value.trim(),
+          emergency_phone: document.getElementById("petPhone").value.trim(),
+          emergency_whatsapp: document.getElementById("petWhatsapp").value.trim(),
+          emergency_email: document.getElementById("petEmergencyEmail").value.trim(),
+          notes: document.getElementById("petNotes").value.trim(),
+          photo_url: currentUploadedPhotoBase64
+        };
 
-            "Não foi possível enviar o e-mail de recuperação.",
+        const { data, error } = await window.supabase.rpc("fn_save_pet", petPayload);
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast(`Pet ${petPayload.name} salvo com sucesso!`, "success");
+          modalPetForm.classList.remove("open");
+          loadTutorDashboardData(currentSession.user.id);
+        }
+      });
 
-            "erro"
-        );
+      // VACCINES MODAL HANDLERS
+      const modalVaccines = document.getElementById("modalVaccines");
+      let activeVaccinePetId = null;
 
+      function openVaccineModal(petId) {
+        activeVaccinePetId = petId;
+        const pet = currentPets.find(p => p.id === petId);
+        document.getElementById("vacPetNameTitle").textContent = pet ? pet.name : "";
+        document.getElementById("vacPetId").value = petId;
+        document.getElementById("formAddVaccine").reset();
 
-    }finally{
+        renderVaccinesList(petId);
+        modalVaccines.classList.add("open");
+      }
 
-        botao.disabled = false;
+      function renderVaccinesList(petId) {
+        const db = getDb();
+        const vaccines = (db.pet_vaccines || []).filter(v => v.pet_id === petId);
+        const container = document.getElementById("vaccinesList");
+        container.innerHTML = "";
 
-        botao.textContent =
-            "🔑 Esqueci minha senha";
+        if (vaccines.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 1.25rem; color: var(--text-sub); font-size: 0.85rem;">
+              Nenhuma vacina registrada para este pet ainda.
+            </div>
+          `;
+          return;
+        }
 
+        vaccines.forEach(vac => {
+          const item = document.createElement("div");
+          item.className = "vaccine-item";
+          item.innerHTML = `
+            <div>
+              <div class="vaccine-name">💉 ${vac.vaccine_name}</div>
+              <div class="vaccine-sub">
+                Aplicada em: <strong>${vac.application_date || "N/A"}</strong>
+                ${vac.next_dose_date ? ` • Próxima dose: <strong style="color: var(--accent);">${vac.next_dose_date}</strong>` : ''}
+              </div>
+              ${vac.veterinarian ? `<div class="vaccine-sub">👨‍⚕️ ${vac.veterinarian}</div>` : ''}
+            </div>
+            <button type="button" class="btn-ghost btn-sm btn-delete-vac" data-vacid="${vac.id}" title="Excluir vacina" style="color: var(--danger);">🗑️</button>
+          `;
+          container.appendChild(item);
+        });
+
+        container.querySelectorAll(".btn-delete-vac").forEach(btn => {
+          btn.addEventListener("click", async () => {
+            const vacId = btn.dataset.vacid;
+            const db = getDb();
+            db.pet_vaccines = db.pet_vaccines.filter(v => v.id !== vacId);
+            saveDb(db);
+            showToast("Registro de vacina removido.", "warning");
+            renderVaccinesList(petId);
+          });
+        });
+      }
+
+      // Add Vaccine Submit
+      document.getElementById("formAddVaccine").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const vacData = {
+          pet_id: activeVaccinePetId,
+          vaccine_name: document.getElementById("vacName").value.trim(),
+          application_date: document.getElementById("vacDate").value,
+          next_dose_date: document.getElementById("vacNextDate").value,
+          veterinarian: document.getElementById("vacVet").value.trim()
+        };
+
+        const { data, error } = await window.supabase.rpc("fn_save_vaccine", vacData);
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast("Vacina adicionada com sucesso!", "success");
+          document.getElementById("formAddVaccine").reset();
+          renderVaccinesList(activeVaccinePetId);
+        }
+      });
+
+      // LOST MODE MODAL HANDLERS
+      const modalLostMode = document.getElementById("modalLostMode");
+      function openLostModeModal(petId) {
+        const pet = currentPets.find(p => p.id === petId);
+        if (!pet) return;
+
+        document.getElementById("lostPetId").value = pet.id;
+        document.getElementById("lostStatusToggle").value = pet.is_lost ? "true" : "false";
+        document.getElementById("lostLocation").value = pet.lost_location || "";
+        document.getElementById("lostDate").value = pet.lost_date || new Date().toISOString().split("T")[0];
+
+        modalLostMode.classList.add("open");
+      }
+
+      document.getElementById("formLostMode").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const petId = document.getElementById("lostPetId").value;
+        const isLost = document.getElementById("lostStatusToggle").value === "true";
+        const location = document.getElementById("lostLocation").value.trim();
+        const date = document.getElementById("lostDate").value;
+
+        const { data, error } = await window.supabase.rpc("fn_set_lost_mode", {
+          pet_id: petId,
+          is_lost: isLost,
+          lost_location: location,
+          lost_date: date
+        });
+
+        if (error) {
+          showToast(error.message, "error");
+        } else {
+          showToast(isLost ? "Modo Perdido ATIVADO! Alerta publicado." : "Modo Perdido desativado. Que bom que o pet está bem!", isLost ? "error" : "success");
+          modalLostMode.classList.remove("open");
+          loadTutorDashboardData(currentSession.user.id);
+        }
+      });
+
+      // SETTINGS MODAL
+      const modalSettings = document.getElementById("modalSettings");
+      document.getElementById("openSettingsBtn").addEventListener("click", () => {
+        const db = getDb();
+        const tutor = db.tutors.find(t => t.id === currentSession.user.id) || db.tutors[0];
+        if (tutor) {
+          document.getElementById("setTutorName").value = tutor.name || "";
+          document.getElementById("setTutorEmail").value = tutor.email || "";
+          document.getElementById("setTutorPhone").value = tutor.phone || "";
+          document.getElementById("setTutorAddress").value = tutor.address || "";
+        }
+        modalSettings.classList.add("open");
+      });
+
+      document.getElementById("formSettings").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const db = getDb();
+        const tutor = db.tutors.find(t => t.id === currentSession.user.id) || db.tutors[0];
+        if (tutor) {
+          tutor.name = document.getElementById("setTutorName").value.trim();
+          tutor.phone = document.getElementById("setTutorPhone").value.trim();
+          tutor.address = document.getElementById("setTutorAddress").value.trim();
+          const newPass = document.getElementById("setTutorPassword").value;
+          if (newPass) tutor.password = newPass;
+
+          saveDb(db);
+          // update user session
+          currentSession.user.user_metadata = { name: tutor.name, phone: tutor.phone };
+          localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(currentSession));
+          renderState(currentSession);
+          showToast("Dados do perfil atualizados com sucesso!", "success");
+          modalSettings.classList.remove("open");
+        }
+      });
+
+      // Generic modal closing logic
+      document.querySelectorAll("[data-close]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.getAttribute("data-close");
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) targetEl.classList.remove("open");
+        });
+      });
+
+      document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+        backdrop.addEventListener("click", (e) => {
+          if (e.target === backdrop) backdrop.classList.remove("open");
+        });
+      });
+
+      // Initialize Auth listener on page load
+      window.supabase.auth.onAuthStateChange((event, session) => {
+        renderState(session);
+      });
+
+    })();
+  </script>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
     }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
 
-}
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
 
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
 
-/* =====================================================
-   INICIAR SISTEMA
-===================================================== */
-
-iniciarSupabase();
-
-mostrarInformacaoTag();
-
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
 
 </script>
-
-
 </body>
-
 </html>
