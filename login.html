@@ -361,6 +361,20 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       margin-top: 0.25rem;
     }
 
+    .forgot-password-link {
+      display: inline-block;
+      color: #0b5574;
+      font-size: 0.85rem;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: text-decoration 0.2s;
+    }
+
+    .forgot-password-link:hover {
+      text-decoration: underline;
+    }
+
     /* Custom Buttons */
     .btn-brand {
       background-color: var(--accent);
@@ -1357,9 +1371,12 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <label class="form-label" for="loginEmail">E-mail</label>
             <input type="email" id="loginEmail" class="form-input" placeholder="seuemail@exemplo.com.br" required autocomplete="email">
           </div>
-          <div class="form-group">
+          <div class="form-group" style="margin-bottom: 0.4rem;">
             <label class="form-label" for="loginPassword">Senha</label>
             <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+          <div style="text-align: right; margin-bottom: 0.75rem;">
+            <a href="#" class="forgot-password-link" id="forgotPasswordLink">Esqueci minha senha?</a>
           </div>
           <div id="login-error" style="display:none; padding:0.75rem; margin-top:0.75rem; background:#fef2f2; color:#dc2626; border-radius:8px; font-size:0.9rem; font-weight:600;"></div>
           <button type="submit" class="btn-brand" id="login-btn" style="margin-top: 0.75rem;">
@@ -1757,6 +1774,63 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     </div>
   </div>
 
+  <!-- MODAL: RECUPERAR SENHA (ESQUECI MINHA SENHA) -->
+  <div class="modal-backdrop" id="modalForgotPassword">
+    <div class="modal-box" style="max-width: 420px; border-radius: 24px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔑 Recuperar senha</h3>
+        <button type="button" class="modal-close-btn" data-close="modalForgotPassword">&times;</button>
+      </div>
+      <form id="formForgotPassword">
+        <div class="modal-body">
+          <p style="font-size: 0.88rem; color: var(--text-sub); margin: 0 0 1rem; line-height: 1.45;">
+            Digite seu email e enviaremos um link para redefinir sua senha
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="forgotEmail">E-mail</label>
+            <input type="email" id="forgotEmail" class="form-input" placeholder="seuemail@exemplo.com.br" required autocomplete="email">
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.25rem;">
+          <button type="submit" class="btn-brand" id="forgot-btn" style="width: 100%;">
+            Enviar link de recuperação
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DEFINIR NOVA SENHA (RECOVERY FLOW) -->
+  <div class="modal-backdrop" id="modalResetPassword">
+    <div class="modal-box" style="max-width: 420px; border-radius: 24px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔑 Definir nova senha</h3>
+        <button type="button" class="modal-close-btn" data-close="modalResetPassword">&times;</button>
+      </div>
+      <form id="formResetPassword">
+        <div class="modal-body">
+          <p style="font-size: 0.88rem; color: var(--text-sub); margin: 0 0 1rem; line-height: 1.45;">
+            Digite sua nova senha abaixo. Ambas as senhas devem coincidir e ter no mínimo 6 dígitos.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="newPassword">Nova senha</label>
+            <input type="password" id="newPassword" class="form-input" placeholder="Mínimo 6 caracteres" minlength="6" required autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="confirmNewPassword">Confirmar nova senha</label>
+            <input type="password" id="confirmNewPassword" class="form-input" placeholder="Repita a nova senha" minlength="6" required autocomplete="new-password">
+          </div>
+          <div id="reset-error" style="display:none; padding:0.65rem; margin-top:0.5rem; background:#fef2f2; color:#dc2626; border-radius:8px; font-size:0.85rem; font-weight:600;"></div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.25rem;">
+          <button type="submit" class="btn-brand" id="reset-pass-btn" style="width: 100%;">
+            Salvar nova senha
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="app-footer">
     <div><strong>🐾 Save Tag Pet</strong> — Identifique. Encontre. Proteja.</div>
@@ -1986,6 +2060,34 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
               return { error: null };
             },
 
+            async resetPasswordForEmail(email, options) {
+              if (!email || !email.includes('@')) {
+                return { data: null, error: { message: 'Por favor, insira um e-mail válido.' } };
+              }
+              const db = getDb();
+              const tutor = db.tutors.find(t => t.email.toLowerCase() === (email || '').toLowerCase());
+              return { data: {}, error: null };
+            },
+
+            async updateUser(attributes) {
+              const sessionData = await this.getSession();
+              const user = sessionData?.data?.session?.user;
+              const db = getDb();
+              if (attributes && attributes.password) {
+                if (user) {
+                  const tutor = db.tutors.find(t => t.id === user.id || t.email.toLowerCase() === user.email.toLowerCase());
+                  if (tutor) {
+                    tutor.password = attributes.password;
+                    saveDb(db);
+                  }
+                } else if (db.tutors.length > 0) {
+                  db.tutors[0].password = attributes.password;
+                  saveDb(db);
+                }
+              }
+              return { data: { user: user || db.tutors[0] }, error: null };
+            },
+
             onAuthStateChange(callback) {
               client.authListeners.push(callback);
               this.getSession().then(({ data }) => {
@@ -2177,6 +2279,66 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         document.getElementById("inputTagCodeLogin").value = "SAVE-BENT-2024";
       });
 
+      // FORGOT PASSWORD MODAL HELPERS & LOGIC
+      function openForgotModal() {
+        const modal = document.getElementById('modalForgotPassword');
+        if (modal) {
+          document.getElementById('formForgotPassword')?.reset();
+          const currentEmail = document.getElementById('loginEmail')?.value.trim();
+          const forgotInput = document.getElementById('forgotEmail');
+          if (forgotInput && currentEmail) {
+            forgotInput.value = currentEmail;
+          }
+          modal.classList.add('open');
+          if (forgotInput) forgotInput.focus();
+        }
+      }
+
+      function closeForgotModal() {
+        const modal = document.getElementById('modalForgotPassword');
+        if (modal) modal.classList.remove('open');
+      }
+
+      function openResetModal() {
+        const modal = document.getElementById('modalResetPassword');
+        if (modal) {
+          document.getElementById('formResetPassword')?.reset();
+          const errDiv = document.getElementById('reset-error');
+          if (errDiv) errDiv.style.display = 'none';
+          modal.classList.add('open');
+        }
+      }
+
+      function closeResetModal() {
+        const modal = document.getElementById('modalResetPassword');
+        if (modal) modal.classList.remove('open');
+      }
+
+      async function handleForgotPassword(email) {
+        const btn = document.getElementById('forgot-btn');
+        if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+        
+        try {
+          const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://www.savetagpet.com.br/login.html'
+          });
+          
+          if (error) {
+            console.error('Reset error:', error.message);
+            showToast(error.message, 'error');
+            if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
+            return;
+          }
+          
+          showToast('Link de recuperação enviado! Verifique seu email.', 'success');
+          closeForgotModal();
+          if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
+        } catch (err) {
+          showToast('Erro: ' + err.message, 'error');
+          if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
+        }
+      }
+
       // Auth Handlers
       function showDashboard(user) {
         if (!user) return;
@@ -2263,6 +2425,106 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           showToast('Erro: ' + err.message, 'error');
         }
         if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
+      }
+
+      // Forgot Password trigger link
+      const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+      if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          openForgotModal();
+        });
+      }
+
+      // Forgot Password form submit with validation
+      const formForgotPassword = document.getElementById('formForgotPassword');
+      if (formForgotPassword) {
+        formForgotPassword.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const emailInput = document.getElementById('forgotEmail');
+          const email = (emailInput ? emailInput.value : '').trim();
+
+          if (!email) {
+            showToast('Por favor, digite seu e-mail.', 'error');
+            return;
+          }
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(email)) {
+            showToast('Por favor, insira um e-mail válido.', 'error');
+            return;
+          }
+
+          await handleForgotPassword(email);
+        });
+      }
+
+      // Reset Password form submit (definir nova senha)
+      const formResetPassword = document.getElementById('formResetPassword');
+      if (formResetPassword) {
+        formResetPassword.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const newPass = document.getElementById('newPassword').value;
+          const confirmPass = document.getElementById('confirmNewPassword').value;
+          const errorDiv = document.getElementById('reset-error');
+          const btn = document.getElementById('reset-pass-btn');
+
+          if (!newPass || newPass.length < 6) {
+            const msg = 'A nova senha deve ter no mínimo 6 caracteres.';
+            if (errorDiv) { errorDiv.textContent = msg; errorDiv.style.display = 'block'; }
+            showToast(msg, 'error');
+            return;
+          }
+
+          if (newPass !== confirmPass) {
+            const msg = 'As senhas não coincidem. Digite novamente.';
+            if (errorDiv) { errorDiv.textContent = msg; errorDiv.style.display = 'block'; }
+            showToast(msg, 'error');
+            return;
+          }
+
+          if (errorDiv) errorDiv.style.display = 'none';
+          if (btn) { btn.disabled = true; btn.textContent = 'Atualizando senha...'; }
+
+          try {
+            const { error } = await supabase.auth.updateUser({ password: newPass });
+            if (error) {
+              console.error('Update password error:', error.message);
+              showToast(error.message, 'error');
+              if (errorDiv) { errorDiv.textContent = error.message; errorDiv.style.display = 'block'; }
+              if (btn) { btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
+              return;
+            }
+
+            showToast('Senha atualizada com sucesso!', 'success');
+            closeResetModal();
+            if (btn) { btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
+
+            // Clear recovery parameters from URL without full reload
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState(null, '', window.location.pathname);
+            }
+
+            // If session exists, show dashboard
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (sessionData && sessionData.session && sessionData.session.user) {
+              showDashboard(sessionData.session.user);
+            }
+          } catch (err) {
+            showToast('Erro ao atualizar senha: ' + err.message, 'error');
+            if (btn) { btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
+          }
+        });
+      }
+
+      // Check on page load for password recovery mode in URL hash or search params
+      function checkRecoveryMode() {
+        const hash = window.location.hash || '';
+        const search = window.location.search || '';
+        if (hash.includes('type=recovery') || search.includes('type=recovery')) {
+          console.log('Recovery mode detected via URL parameters');
+          openResetModal();
+        }
       }
 
       formEmailLogin.addEventListener("submit", async (e) => {
@@ -2899,7 +3161,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         });
       });
 
-      // 5. The session check uses: supabase.auth.getSession()
+      // 5. The session check uses: supabase.auth.getSession() & recovery detection
+      checkRecoveryMode();
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
           renderState(session);
