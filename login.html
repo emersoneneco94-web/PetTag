@@ -145,6 +145,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       --shadow-lg: 0 8px 30px rgba(11, 85, 116, 0.12);
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     * {
       box-sizing: border-box;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -157,6 +161,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
 
     /* Accessibility focus */
@@ -229,6 +234,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       justify-content: center;
       padding: 2rem 1rem;
       background: radial-gradient(circle at 10% 20%, rgba(11,85,116,0.06) 0%, rgba(7,150,107,0.04) 90%);
+      overflow-y: auto;
     }
 
     .auth-card {
@@ -238,7 +244,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       box-shadow: var(--shadow-lg);
       width: 100%;
       max-width: 440px;
-      overflow: hidden;
+      max-height: 90vh;
+      overflow-y: auto;
+      margin: auto 0;
     }
 
     .auth-header {
@@ -446,6 +454,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       padding: 1.5rem 1.25rem 3rem;
       flex: 1;
       width: 100%;
+      overflow-y: auto;
     }
 
     .dash-hero {
@@ -747,7 +756,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       backdrop-filter: blur(4px);
       z-index: 99;
       display: none;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 1rem;
       overflow-y: auto;
@@ -768,6 +777,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       box-shadow: 0 16px 40px rgba(0,0,0,0.25);
       animation: modalFadeUp 0.2s ease-out;
       overflow: hidden;
+      margin: 1.5rem auto;
+    }
+
+    .modal-box form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
     }
 
     @keyframes modalFadeUp {
@@ -782,6 +800,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       align-items: center;
       justify-content: space-between;
       background: #fdfefe;
+      flex-shrink: 0;
     }
 
     .modal-title {
@@ -813,6 +832,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     .modal-body {
       padding: 1.25rem;
       overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+      max-height: calc(90vh - 120px);
     }
 
     .modal-footer {
@@ -822,6 +844,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       justify-content: flex-end;
       gap: 0.65rem;
       background: #fbfdfd;
+      flex-shrink: 0;
     }
 
     .grid-2 {
