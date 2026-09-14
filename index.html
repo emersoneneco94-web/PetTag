@@ -333,11 +333,19 @@
     .hero-dog-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;}
     .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:25%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.7) 38%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
 
-    .hero-callout{position:absolute;z-index:8;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;line-height:1.08;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.28);pointer-events:none;}
+    /* CHAMADAS DO HERO — todas apontam para o centro da TAG */
+    .hero-callout{position:absolute;z-index:9;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;line-height:1.08;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.32);pointer-events:none;}
     .hero-callout strong{display:block;font-size:24px;font-weight:800;}
-    .hero-callout-top{right:5%;top:10%;text-align:left;transform:rotate(-3deg);}
-    .hero-callout-left{left:7%;bottom:23%;text-align:left;transform:rotate(-2deg);}
-    .hero-callout-right{right:4%;bottom:22%;text-align:left;transform:rotate(2deg);}
+    .hero-callout-top{right:5%;top:10%;text-align:left;transform:rotate(-2deg);}
+    .hero-callout-left{left:7%;bottom:23%;text-align:left;transform:rotate(-1deg);}
+    .hero-callout-right{right:4%;bottom:22%;text-align:left;transform:rotate(1deg);}
+
+    /* Camada única de setas: o ponto final das 3 linhas é a TAG */
+    .hero-arrows{position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;overflow:visible;}
+    .hero-arrows line{stroke:#fff;stroke-width:3.5;stroke-linecap:round;filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+    .hero-arrows polygon{fill:#fff;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
+
+    @media(max-width:850px){.hero-arrows{display:none;}}
 
     .how-section{max-width:1400px;margin:-2px auto 0;padding:48px 55px 62px;background:#fff;border-radius:55% 55% 0 0/55px 55px 0 0;position:relative;z-index:30;}
     .how-title{text-align:center;color:#102f33;font-size:37px;font-weight:900;margin-bottom:6px;}
@@ -580,7 +588,25 @@
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
     }
     @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
-  </style>
+  
+
+        .plan-bonus {
+          margin: 14px 0 16px;
+          padding: 11px 13px;
+          border-radius: 14px;
+          background: #edf9f5;
+          color: #173d4d;
+          font-size: 13px;
+          line-height: 1.35;
+          text-align: left;
+        }
+        .plan-bonus strong { color: #0b9f7d; }
+        .family-pets {
+          object-fit: contain !important;
+          object-position: center center !important;
+        }
+
+</style>
 </head>
 
 <body>
@@ -1053,6 +1079,21 @@ async function carregarPet(){
                    src="hero-dog-clean2.png"
                    alt="Cachorro usando coleira e TAG Save Tag Pet">
 
+              <!-- As três setas terminam exatamente na TAG azul -->
+              <svg class="hero-arrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <!-- superior -> TAG -->
+                <line x1="69" y1="20" x2="63" y2="85" />
+                <polygon points="63,85 64.7,81.8 66.1,84.6" />
+
+                <!-- esquerda -> TAG -->
+                <line x1="18" y1="70" x2="62.5" y2="85" />
+                <polygon points="62.5,85 58.9,83.2 59.5,86.5" />
+
+                <!-- direita -> TAG -->
+                <line x1="82" y1="69" x2="64" y2="85" />
+                <polygon points="64,85 67.6,84.9 65.9,82.2" />
+              </svg>
+
               <div class="hero-callout hero-callout-top">
                 <strong>Pequena TAG,<br>grande proteção!</strong>
               </div>
@@ -1188,6 +1229,8 @@ async function carregarPet(){
 
               <div class="plan-price">R$ 9,90<small>/mês</small></div>
 
+              <div class="plan-bonus">🎁 Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 1 TAG!</strong></div>
+
               <ul class="plan-list">
                 <li>Todos os recursos do plano avulso</li>
                 <li>Carteira de vacinação</li>
@@ -1207,11 +1250,13 @@ async function carregarPet(){
                 <div class="plan-name">SAVE TAG FAMÍLIA</div>
               </div>
 
-              <div class="plan-price">R$ 15,99<small>/mês</small></div>
+              <div class="plan-price">R$ 19,90<small>/mês</small></div>
+
+              <div class="plan-bonus">🎁 Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 3 TAGs!</strong></div>
 
               <ul class="plan-list">
                 <li>Até 4 pets na mesma conta</li>
-                <li>2 TAGs (1 grátis)</li>
+                <li>1 pet por TAG</li>
                 <li>Todos os recursos Premium</li>
                 <li>Carteira de vacinação</li>
                 <li>Consultas e exames</li>
