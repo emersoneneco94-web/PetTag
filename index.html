@@ -378,36 +378,213 @@
 
 
     /* =========================================================
-       PLANOS — versão visual aprovada
+       PLANOS — versão com preços
        ========================================================= */
-    .plans-section{max-width:1400px;margin:0 auto;padding:56px 42px 58px;background:#fff;position:relative;z-index:30;}
-    .plans-title{text-align:center;color:#102f33;font-size:42px;font-weight:900;letter-spacing:-1.2px;margin:0 0 8px;}
-    .plans-subtitle{text-align:center;color:#60757a;font-size:19px;margin:0 0 40px;}
-    .plans-layout{max-width:1310px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;align-items:stretch;}
-    .plan-card{background:#fff;border:1px solid #e0ebe8;border-radius:22px;padding:28px 22px 22px;box-shadow:0 10px 28px rgba(17,55,54,.075);display:flex;flex-direction:column;min-height:600px;position:relative;}
-    .plan-card.featured{border:2px solid #18ae8a;box-shadow:0 12px 34px rgba(25,165,132,.13);padding-top:35px;}
-    .plan-popular{position:absolute;top:-17px;left:50%;transform:translateX(-50%);background:#20aa82;color:#fff;padding:7px 28px;border-radius:22px;font-size:13px;font-weight:900;white-space:nowrap;}
-    .plan-head{display:flex;align-items:center;gap:14px;min-height:58px;}
-    .plan-icon{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e5f5f2;font-size:29px;flex:0 0 58px;}
-    .plan-name{color:#10333a;font-size:23px;line-height:1.03;font-weight:900;}
-    .plan-price{text-align:center;color:#0c3440;font-size:38px;line-height:1;font-weight:900;letter-spacing:-1.4px;margin:27px 0 27px;}
-    .plan-price small{font-size:15px;letter-spacing:0;margin-left:2px;}
-    .plan-promo{display:flex;align-items:center;gap:12px;background:#e6f5f1;border-radius:12px;padding:12px 13px;margin:-2px 0 15px;color:#173b43;font-size:14px;line-height:1.18;}
-    .plan-promo strong{color:#069c79;}
-    .plan-promo-icon{font-size:30px;line-height:1;flex:0 0 auto;}
-    .plan-list{list-style:none;padding:0;margin:0;flex:1;}
-    .plan-list li{position:relative;padding-left:27px;margin:0 0 16px;color:#244a53;font-size:15px;line-height:1.25;}
-    .plan-list li::before{content:'✓';position:absolute;left:0;top:-2px;color:#0aa27e;font-size:23px;font-weight:900;}
-    .plan-button{display:flex;align-items:center;justify-content:center;min-height:54px;border-radius:12px;background:#08a381;color:#fff;text-decoration:none;font-size:17px;font-weight:900;margin-top:10px;transition:.2s ease;}
-    .plan-button:hover{transform:translateY(-1px);filter:brightness(.97);}
-    .family-highlight{background:#e4f4ef;border-radius:22px;padding:26px 26px 18px;min-height:600px;display:flex;flex-direction:column;overflow:hidden;}
-    .family-heart{color:#078f82;font-size:32px;line-height:1;margin-bottom:10px;}
-    .family-highlight h3{margin:0 0 13px;color:#10343a;font-size:29px;line-height:1.02;font-weight:900;}
-    .family-highlight h3 span{color:#079d7f;}
-    .family-highlight p{margin:0;color:#41616a;font-size:16px;line-height:1.4;}
-    .family-pets{width:100%;height:330px;object-fit:contain;object-position:center center;display:block;margin:auto auto 0;}
-    @media(max-width:1050px){.plans-section{padding-left:24px;padding-right:24px}.plans-layout{grid-template-columns:repeat(2,minmax(0,1fr));}.family-highlight{min-height:420px}.family-pets{height:240px;}}
-    @media(max-width:650px){.plans-section{padding:45px 16px 48px}.plans-title{font-size:32px}.plans-subtitle{font-size:16px;margin-bottom:34px}.plans-layout{grid-template-columns:1fr;max-width:520px}.plan-card,.family-highlight{min-height:0}.plan-card{padding:25px 20px 20px}.plan-card.featured{padding-top:33px}.plan-price{font-size:34px;margin:23px 0}.family-highlight{padding:24px 20px 16px}.family-pets{height:270px;max-width:100%;}}
+    .plans-section{
+      max-width:1400px;
+      margin:0 auto;
+      padding:56px 48px 54px;
+      background:#fff;
+      position:relative;
+      z-index:30;
+    }
+    .plans-title{
+      text-align:center;
+      color:#102f33;
+      font-size:40px;
+      font-weight:900;
+      letter-spacing:-1px;
+      margin-bottom:7px;
+    }
+    .plans-subtitle{
+      text-align:center;
+      color:#60757a;
+      font-size:18px;
+      margin-bottom:34px;
+    }
+    .plan-promo{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      background:#e7f6ef;
+      border-radius:11px;
+      padding:10px 11px;
+      margin:0 0 12px;
+      color:#24565a;
+      font-size:11px;
+      line-height:1.25;
+      min-height:48px;
+    }
+    .plan-promo-icon{font-size:21px;flex:0 0 auto;}
+    .plan-promo strong{color:#079b78;font-weight:900;}
+    .plans-layout{
+      max-width:1260px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(3,1fr) 0.95fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    .plan-card{
+      background:#fff;
+      border:1px solid #e4ecea;
+      border-radius:20px;
+      padding:24px 20px 18px;
+      box-shadow:0 8px 25px rgba(17,55,54,.07);
+      display:flex;
+      flex-direction:column;
+      min-height:420px;
+      position:relative;
+    }
+    .plan-card.featured{
+      border:2px solid #21aa88;
+      box-shadow:0 12px 32px rgba(25,165,132,.13);
+      padding-top:31px;
+    }
+    .plan-popular{
+      position:absolute;
+      top:-14px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#20aa82;
+      color:#fff;
+      padding:6px 23px;
+      border-radius:20px;
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .plan-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .plan-icon{
+      width:48px;
+      height:48px;
+      flex:0 0 48px;
+      border-radius:50%;
+      background:#e5f7f4;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:25px;
+    }
+    .plan-card.featured .plan-icon{background:#fff3d8}
+    .plan-name{
+      color:#123a3d;
+      font-size:20px;
+      font-weight:900;
+      line-height:1.05;
+    }
+    .plan-price{
+      color:#123a3d;
+      font-size:27px;
+      font-weight:900;
+      margin:6px 0 16px 60px;
+      letter-spacing:-.5px;
+    }
+    .plan-price small{
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:0;
+    }
+    .plan-list{
+      list-style:none;
+      padding:0;
+      margin:0 0 18px;
+      display:grid;
+      gap:9px;
+      flex:1;
+    }
+    .plan-list li{
+      color:#415d61;
+      font-size:14px;
+      line-height:1.28;
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+    }
+    .plan-list li::before{
+      content:"✓";
+      color:#18a77e;
+      font-weight:900;
+      font-size:17px;
+      line-height:15px;
+      flex:0 0 auto;
+    }
+    .plan-button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:47px;
+      border-radius:12px;
+      background:#0b9f78;
+      color:#fff;
+      text-decoration:none;
+      font-weight:900;
+      font-size:15px;
+      margin-top:auto;
+    }
+    .plan-card:not(.featured) .plan-button{background:#079b78}
+    .family-highlight{
+      border-radius:20px;
+      background:#e7f6ef;
+      padding:23px 18px 0;
+      min-height:420px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .family-highlight h3{
+      color:#123b40;
+      font-size:23px;
+      line-height:1.05;
+      font-weight:900;
+      margin-bottom:13px;
+    }
+    .family-highlight h3 span{
+      color:#168f79;
+    }
+    .family-highlight p{
+      color:#416066;
+      font-size:15px;
+      line-height:1.4;
+      margin-bottom:12px;
+    }
+    .family-pets{
+      margin-top:auto;
+      width:100%;
+      height:190px;
+      object-fit:cover;
+      object-position:center;
+      border-radius:16px 16px 0 0;
+      background:#dcefe8;
+    }
+    .family-heart{
+      font-size:33px;
+      line-height:1;
+      margin-bottom:5px;
+      color:#087d72;
+    }
+    @media(max-width:1050px){
+      .plans-section{padding-left:24px;padding-right:24px}
+      .plans-layout{grid-template-columns:repeat(3,1fr);gap:15px}
+      .family-highlight{grid-column:1/-1;min-height:260px}
+      .family-pets{height:150px;max-width:420px;align-self:center}
+    }
+    @media(max-width:850px){
+      .plans-section{padding:44px 15px 42px}
+      .plans-title{font-size:31px}
+      .plans-subtitle{font-size:16px;margin-bottom:27px}
+      .plans-layout{grid-template-columns:1fr;max-width:520px}
+      .plan-card,.family-highlight{min-height:0}
+      .plan-card{padding:23px 18px 17px}
+      .plan-card.featured{padding-top:31px}
+      .family-highlight{grid-column:auto;min-height:330px}
+      .family-pets{height:160px}
+    }
 
     @media(max-width:1000px){
       .home-header{padding:14px 22px}.home-nav{gap:18px;margin-right:18px}.home-nav a{font-size:13px}.hero-copy{left:4%;width:45%}.hero-copy h1{font-size:51px}.hero-copy p{font-size:16px}.hero-visual{width:58%}.story-note{right:12px}.tag-note{right:175px}.phone-note{width:175px}
@@ -422,7 +599,14 @@
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
     }
     @media(max-width:390px){.hero-home,.hero-inner,.hero-visual{height:735px;min-height:735px}.hero-copy{left:15px;top:31px;width:55%}.hero-copy h1{font-size:37px}.hero-copy p{font-size:12px}.quick-benefits{width:59%;margin-top:18px}.quick-icon{width:44px;height:44px}.quick-benefit strong{font-size:9px}.physical-tag{width:56px;height:56px}.tag-ring{top:63%;}.how-title{font-size:28px}.profile-card h2{font-size:27px}.profile-subtitle{font-size:14px}.collage-left{height:140px}.collage-center{height:178px}.collage-right .collage-photo{height:85px}}
-  </style>
+  
+    /* HERO LIMPO — sem balões, textos ou elementos sobre a foto */
+    .hero-visual .story-note, .hero-visual .tag-note, .hero-visual .tag-arrow,
+    .hero-visual .phone-note, .hero-visual .physical-tag, .hero-visual .tag-ring{
+      display:none !important;
+    }
+    .family-pets{object-position:center center;}
+</style>
 </head>
 
 <body>
@@ -895,26 +1079,6 @@ async function carregarPet(){
                    src="hero-dog-clean2.png"
                    alt="Cachorro usando coleira e TAG Save Tag Pet">
 
-              <div class="story-note">
-                <span class="heart">♡</span>
-                Mais que uma TAG,<br>uma história!
-              </div>
-
-              <div class="tag-ring"></div>
-
-              <div class="physical-tag">
-                <div class="paw">🐾</div>
-                <div class="nfc">Save Tag Pet</div>
-              </div>
-
-              <div class="tag-note">Nossa TAG<br>em ação! 🐾</div>
-
-              <div class="phone-note">
-                📱<br>
-                Aproxime o celular<br>
-                e acesse o perfil<br>
-                do seu pet!
-              </div>
             </div>
 
           </div>
@@ -1009,44 +1173,96 @@ async function carregarPet(){
           </p>
 
           <div class="plans-layout">
+
             <article class="plan-card">
-              <div class="plan-head"><div class="plan-icon">🐾</div><div class="plan-name">TAG AVULSA</div></div>
+              <div class="plan-head">
+                <div class="plan-icon">🐾</div>
+                <div class="plan-name">TAG AVULSA</div>
+              </div>
+
               <div class="plan-price">R$ 49,90</div>
+
               <ul class="plan-list">
-                <li>1 TAG NFC</li><li>Perfil público básico</li><li>Contato do tutor</li><li>Modo pet perdido</li><li>Atualização dos dados</li>
+                <li>1 TAG NFC</li>
+                <li>Perfil público básico</li>
+                <li>Contato do tutor</li>
+                <li>Modo pet perdido</li>
+                <li>Atualização dos dados</li>
               </ul>
+
               <a href="#planos" class="plan-button">Quero minha TAG</a>
             </article>
 
             <article class="plan-card featured">
               <div class="plan-popular">MAIS ESCOLHIDO</div>
-              <div class="plan-head"><div class="plan-icon">⭐</div><div class="plan-name">SAVE TAG</div></div>
+
+              <div class="plan-head">
+                <div class="plan-icon">⭐</div>
+                <div class="plan-name">SAVE TAG</div>
+              </div>
+
               <div class="plan-price">R$ 9,90<small>/mês</small></div>
-              <div class="plan-promo"><span class="plan-promo-icon">🎁</span><span>Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 1 TAG!</strong></span></div>
+
+              <div class="plan-promo">
+                <span class="plan-promo-icon">🎁</span>
+                <span>Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 1 TAG!</strong></span>
+              </div>
+
               <ul class="plan-list">
-                <li>Todos os recursos do plano avulso</li><li>Carteira de vacinação</li><li>Histórico de saúde</li><li>Consultas e exames</li><li>Alertas e lembretes</li><li>Fotos e momentos</li><li>Área exclusiva do tutor</li>
+                <li>Todos os recursos do plano avulso</li>
+                <li>Carteira de vacinação</li>
+                <li>Histórico de saúde</li>
+                <li>Consultas e exames</li>
+                <li>Alertas e lembretes</li>
+                <li>Fotos e momentos</li>
+                <li>Área exclusiva do tutor</li>
               </ul>
+
               <a href="login.html" class="plan-button">Assinar agora</a>
             </article>
 
             <article class="plan-card">
-              <div class="plan-head"><div class="plan-icon">👥</div><div class="plan-name">SAVE TAG FAMÍLIA</div></div>
+              <div class="plan-head">
+                <div class="plan-icon">👥</div>
+                <div class="plan-name">SAVE TAG FAMÍLIA</div>
+              </div>
+
               <div class="plan-price">R$ 19,90<small>/mês</small></div>
-              <div class="plan-promo"><span class="plan-promo-icon">🎁</span><span>Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 3 TAGs!</strong></span></div>
+
+              <div class="plan-promo">
+                <span class="plan-promo-icon">🎁</span>
+                <span>Na compra de 1 TAG e assinatura deste plano, <strong>você ganha mais 3 TAGs!</strong></span>
+              </div>
+
               <ul class="plan-list">
-                <li>Até 4 pets na mesma conta</li><li>1 pet por TAG</li><li>Todos os recursos Premium</li><li>Carteira de vacinação</li><li>Consultas e exames</li><li>Alertas e lembretes</li><li>Área exclusiva do tutor</li>
+                <li>Até 4 pets na mesma conta</li>
+                <li>1 pet por TAG</li>
+                <li>Todos os recursos Premium</li>
+                <li>Carteira de vacinação</li>
+                <li>Consultas e exames</li>
+                <li>Alertas e lembretes</li>
+                <li>Área exclusiva do tutor</li>
               </ul>
+
               <a href="login.html" class="plan-button">Assinar plano família</a>
             </article>
 
             <aside class="family-highlight">
               <div class="family-heart">♥</div>
               <h3>Proteja<br>toda a <span>família!</span></h3>
-              <p>Mais segurança, tranquilidade<br>e bem-estar para todos os seus pets.</p>
-              <p style="margin-top:12px;">Uma única conta para cuidar de toda a família.</p>
-              <img class="family-pets" src="family-pets.png" alt="Cachorro e gato da família usando TAG Save Tag Pet">
-              <div style="text-align:center;color:#079d7f;font-family:'Trebuchet MS',Arial,sans-serif;font-size:22px;font-weight:900;line-height:1.05;padding:0 0 6px;">Pets seguros,<br>famílias mais felizes!<br><span style="font-size:25px;">♥</span></div>
+              <p>
+                Mais segurança, tranquilidade<br>
+                e bem-estar para todos os seus pets.
+                <br><br>
+                Uma única conta para cuidar de toda<br>
+                a família.
+              </p>
+
+              <img class="family-pets"
+                   src="family-pets.png"
+                   alt="Pets da família usando TAG Save Tag Pet">
             </aside>
+
           </div>
         </section>
 
