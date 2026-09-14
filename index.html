@@ -571,14 +571,20 @@
       margin:0 0 4px;
     }
     .family-pets{
-      margin-top:auto;
+      margin:10px auto 0;
       width:100%;
-      height:220px;
+      height:225px;
+      max-width:100%;
       object-fit:contain;
       object-position:center center;
+      align-self:center;
       display:block;
       border-radius:16px 16px 0 0;
       background:transparent;
+    }
+    .family-highlight .family-pets{
+      margin-left:auto;
+      margin-right:auto;
     }
     .family-heart{
       font-size:33px;
@@ -590,7 +596,7 @@
       .plans-section{padding-left:24px;padding-right:24px}
       .plans-layout{grid-template-columns:repeat(3,1fr);gap:15px}
       .family-highlight{grid-column:1/-1;min-height:260px}
-      .family-pets{height:150px;max-width:420px;align-self:center}
+      .family-pets{height:170px;max-width:420px;align-self:center;margin:8px auto 0}
     }
     @media(max-width:850px){
       .plans-section{padding:44px 15px 42px}
@@ -601,7 +607,7 @@
       .plan-card{padding:23px 18px 17px}
       .plan-card.featured{padding-top:31px}
       .family-highlight{grid-column:auto;min-height:330px}
-      .family-pets{height:160px}
+      .family-pets{height:175px;margin:8px auto 0}
     }
 
     @media(max-width:1000px){
