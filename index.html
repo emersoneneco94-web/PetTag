@@ -333,19 +333,15 @@
     .hero-dog-image{width:100%;height:100%;display:block;object-fit:cover;object-position:center center;}
     .hero-visual::after{content:"";position:absolute;left:0;top:0;bottom:0;width:25%;background:linear-gradient(90deg,#f8fcfb 0%,rgba(248,252,251,.7) 38%,rgba(248,252,251,0) 100%);pointer-events:none;z-index:2;}
 
-    /* CHAMADAS DO HERO — todas apontam para o centro da TAG */
-    .hero-callout{position:absolute;z-index:9;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;line-height:1.08;letter-spacing:.2px;text-shadow:0 2px 8px rgba(0,0,0,.32);pointer-events:none;}
-    .hero-callout strong{display:block;font-size:24px;font-weight:800;}
-    .hero-callout-top{right:5%;top:10%;text-align:left;transform:rotate(-2deg);}
-    .hero-callout-left{left:7%;bottom:23%;text-align:left;transform:rotate(-1deg);}
-    .hero-callout-right{right:4%;bottom:22%;text-align:left;transform:rotate(1deg);}
-
-    /* Camada única de setas: o ponto final das 3 linhas é a TAG */
-    .hero-arrows{position:absolute;inset:0;width:100%;height:100%;z-index:8;pointer-events:none;overflow:visible;}
-    .hero-arrows line{stroke:#fff;stroke-width:3.5;stroke-linecap:round;filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
-    .hero-arrows polygon{fill:#fff;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));}
-
-    @media(max-width:850px){.hero-arrows{display:none;}}
+    .hero-callout{position:absolute;z-index:8;color:#fff;font-family:"Trebuchet MS",Arial,sans-serif;font-weight:800;line-height:1.08;letter-spacing:.15px;text-shadow:0 2px 9px rgba(0,0,0,.34);pointer-events:none;}
+    .hero-callout strong{display:block;font-size:22px;font-weight:800;}
+    .hero-callout-top{right:6%;top:9%;width:225px;text-align:left;transform:rotate(-2deg);}
+    .hero-callout-left{left:6%;bottom:20%;width:265px;text-align:left;transform:rotate(-1deg);}
+    .hero-callout-right{right:4%;bottom:20%;width:225px;text-align:left;transform:rotate(1deg);}
+    .hero-callout .callout-arrow{display:none;}
+    .hero-callout-lines{position:absolute;inset:0;width:100%;height:100%;z-index:7;pointer-events:none;overflow:visible;}
+    .hero-callout-lines path{fill:none;stroke:rgba(255,255,255,.96);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 3px rgba(0,0,0,.22));}
+    .hero-callout-lines circle{fill:#fff;stroke:rgba(18,63,66,.72);stroke-width:2;}
 
     .how-section{max-width:1400px;margin:-2px auto 0;padding:48px 55px 62px;background:#fff;border-radius:55% 55% 0 0/55px 55px 0 0;position:relative;z-index:30;}
     .how-title{text-align:center;color:#102f33;font-size:37px;font-weight:900;margin-bottom:6px;}
@@ -582,7 +578,7 @@
       .home-header{height:78px;padding:12px 17px}.home-brand-icon{font-size:32px}.home-brand-text strong{font-size:24px}.home-brand-text small{font-size:11px}.home-nav{display:none}.btn-login{display:none}.mobile-menu{display:block}
       .hero-home{min-height:760px;height:760px;background:linear-gradient(90deg,#fff 0%,#fff 48%,#f4fbfa 63%,#eef9f7 100%)}
       .hero-inner{min-height:760px;height:760px}.hero-copy{left:20px;top:35px;width:53%;max-width:none}.hero-pill{font-size:11px;padding:8px 10px;margin-bottom:17px}.hero-copy h1{font-size:40px;letter-spacing:-2px;margin-bottom:18px}.hero-copy p{font-size:13px;line-height:1.42;margin-bottom:17px}.btn-principal{min-width:0;width:100%;height:52px;font-size:14px;padding:0 10px;gap:6px}.quick-benefits{grid-template-columns:repeat(3,1fr);width:57%;gap:2px;margin-top:24px}.quick-icon{width:48px;height:48px;font-size:22px}.quick-benefit strong{font-size:10px}
-      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}.hero-callout{display:none}
+      .hero-visual{width:57%;min-height:760px;height:760px;border-radius:0}.hero-dog-image{object-position:center center}.hero-callout-lines{display:none}.hero-visual::after{width:18%;background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.72) 40%,rgba(255,255,255,0) 100%)}.hero-callout{display:none}
       .how-section{padding:45px 20px 55px;border-radius:45% 45% 0 0/38px 38px 0 0}.how-title{font-size:31px}.how-sub{font-size:17px;margin-bottom:27px}.steps{grid-template-columns:1fr;gap:25px}.step:not(:last-child)::after{display:none}.step-top{margin-bottom:8px}
       .profile-showcase{padding:0 10px 32px}.profile-card{padding:28px 12px;border-radius:27px}.profile-card h2{font-size:30px}.profile-subtitle{font-size:16px;margin:9px 0 22px}.photo-collage{grid-template-columns:1fr 1.35fr 1fr;gap:7px}.collage-left{height:155px}.collage-center{height:195px}.collage-right{gap:7px}.collage-right .collage-photo{height:94px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:7px}.feature{min-height:105px;padding:11px 6px}.feature-icon{font-size:29px}.feature strong{font-size:12px}
       .home-footer{padding:28px 18px 32px;flex-direction:column;text-align:center}.footer-message{font-size:14px}.footer-cta{width:100%;max-width:300px}
@@ -1061,19 +1057,17 @@ async function carregarPet(){
                    src="hero-dog-clean2.png"
                    alt="Cachorro usando coleira e TAG Save Tag Pet">
 
-              <!-- As três setas terminam exatamente na TAG azul -->
-              <svg class="hero-arrows" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-                <!-- superior -> TAG -->
-                <line x1="69" y1="20" x2="63" y2="85" />
-                <polygon points="63,85 64.7,81.8 66.1,84.6" />
-
-                <!-- esquerda -> TAG -->
-                <line x1="18" y1="70" x2="62.5" y2="85" />
-                <polygon points="62.5,85 58.9,83.2 59.5,86.5" />
-
-                <!-- direita -> TAG -->
-                <line x1="82" y1="69" x2="64" y2="85" />
-                <polygon points="64,85 67.6,84.9 65.9,82.2" />
+              <svg class="hero-callout-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <marker id="calloutArrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(255,255,255,.96)"></path>
+                  </marker>
+                </defs>
+                <!-- Todas as linhas terminam no centro da TAG. As curvas contornam o rosto. -->
+                <path d="M76 18 C92 25, 94 47, 82 64 C77 72, 71 79, 64 87" marker-end="url(#calloutArrow)"></path>
+                <path d="M25 72 C38 74, 49 81, 64 87" marker-end="url(#calloutArrow)"></path>
+                <path d="M89 72 C82 76, 74 82, 64 87" marker-end="url(#calloutArrow)"></path>
+                <circle cx="64" cy="87" r="1.2"></circle>
               </svg>
 
               <div class="hero-callout hero-callout-top">
