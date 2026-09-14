@@ -124,6 +124,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       --accent: #0b5574;
       --accent-text: #0b5574;
       --accent-contrast: #ffffff;
+      --primary-gradient: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
       --primary-light: #e6f4f8;
       --green-action: #07966b;
       --green-action-hover: #057a56;
@@ -136,12 +137,16 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       --bg-color: #f8fcfb;
       --card-bg: #ffffff;
       --text-main: #1a2e35;
-      --text-sub: #4b636c;
-      --border-color: #dbe4e8;
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --radius-sm: 6px;
-      --shadow-sm: 0 2px 10px rgba(11, 85, 116, 0.06);
+      --text-muted: #6d8187;
+      --text-sub: #6d8187;
+      --border-color: #e2e8f0;
+      --radius-card: 24px;
+      --radius-pill: 50px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 4px 16px rgba(11, 85, 116, 0.05);
+      --shadow-social: 0 8px 24px rgba(11, 85, 116, 0.08);
+      --shadow-hover: 0 16px 36px rgba(11, 85, 116, 0.14);
       --shadow-lg: 0 8px 30px rgba(11, 85, 116, 0.12);
     }
 
@@ -448,99 +453,237 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
 
     /* Dashboard Layout */
+    /* Social Dashboard Layout */
     .dashboard-layout {
-      max-width: 1160px;
+      max-width: 1140px;
       margin: 0 auto;
-      padding: 1.5rem 1.25rem 3rem;
+      padding: 1.25rem 1rem 3.5rem;
       flex: 1;
       width: 100%;
       overflow-y: auto;
     }
 
-    .dash-hero {
+    /* 1. SOCIAL WELCOME COVER HEADER */
+    .social-profile-cover {
       background: #ffffff;
+      border-radius: var(--radius-card);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-social);
+      overflow: hidden;
+      margin-bottom: 1.75rem;
+      position: relative;
+    }
+
+    .cover-banner {
+      height: 125px;
+      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .cover-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .social-profile-body {
+      padding: 0 1.5rem 1.5rem;
+      position: relative;
+    }
+
+    .tutor-avatar-overlap {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: var(--accent);
+      border: 4px solid #ffffff;
+      box-shadow: 0 6px 18px rgba(11,85,116,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-top: -46px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile-meta-row {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
+      align-items: flex-end;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 1.25rem;
+      margin-top: 0.6rem;
     }
 
-    .dash-hero-title h2 {
+    .profile-title-area h2 {
       margin: 0;
-      font-size: 1.35rem;
-      color: var(--accent);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
     }
 
-    .dash-hero-title p {
-      margin: 0.25rem 0 0;
-      font-size: 0.85rem;
-      color: var(--text-sub);
+    .profile-title-area p {
+      margin: 0.3rem 0 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
     }
 
-    .dash-stats-bar {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .stat-item {
+    /* Instagram-Style Stats Row */
+    .social-stats-bar {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      background: #f8fcfc;
+      padding: 0.65rem 1.25rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid #e5eff2;
+      gap: 1.15rem;
     }
 
-    .stat-num {
-      font-weight: 700;
-      font-size: 1.2rem;
+    .social-stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 65px;
+    }
+
+    .social-stat-num {
+      font-weight: 800;
+      font-size: 1.15rem;
       color: var(--accent);
+      line-height: 1.1;
     }
 
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-sub);
+    .social-stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
-    /* Pet Cards Grid */
+    .social-stat-divider {
+      width: 1px;
+      height: 26px;
+      background: #d4e3e8;
+    }
+
+    /* 2. QUICK ACTIONS ROW (Instagram Stories Style) */
+    .quick-actions-bar {
+      margin-bottom: 2rem;
+    }
+
+    .quick-actions-scroll {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      padding: 0.5rem 0.25rem 0.75rem;
+      scrollbar-width: thin;
+    }
+
+    .quick-action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      flex-shrink: 0;
+    }
+
+    .quick-action-item:hover {
+      transform: translateY(-3px) scale(1.03);
+    }
+
+    .quick-action-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      color: #ffffff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      border: 2.5px solid #ffffff;
+      outline: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .quick-action-circle.primary {
+      background: linear-gradient(135deg, #0b5574 0%, #177a9e 100%);
+      box-shadow: 0 6px 16px rgba(11, 85, 116, 0.28);
+    }
+
+    .quick-action-circle.green {
+      background: linear-gradient(135deg, #07966b 0%, #10b981 100%);
+      box-shadow: 0 6px 16px rgba(7, 150, 107, 0.28);
+    }
+
+    .quick-action-circle.blue {
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.28);
+    }
+
+    .quick-action-circle.danger {
+      background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
+      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.28);
+    }
+
+    .quick-action-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-main);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Section Header */
     .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     .section-title {
-      font-size: 1.2rem;
-      font-weight: 700;
+      font-size: 1.25rem;
+      font-weight: 800;
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
       margin: 0;
     }
 
+    /* 3. PET MINI SOCIAL PROFILE CARDS */
     .pets-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.25rem;
-      margin-bottom: 2rem;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
     }
 
-    @media (min-width: 640px) {
+    @media (min-width: 680px) {
       .pets-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (min-width: 980px) {
+    @media (min-width: 1040px) {
       .pets-grid {
         grid-template-columns: repeat(3, 1fr);
       }
@@ -548,114 +691,144 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     .pet-card {
       background: var(--card-bg);
-      border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-card);
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-social);
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
 
     .pet-card:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-4px);
     }
 
     .pet-card.is-lost {
-      border-color: var(--danger);
-      box-shadow: 0 4px 18px rgba(220, 38, 38, 0.2);
+      border: 2px solid var(--danger);
+      box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2);
     }
 
-    .lost-ribbon {
-      background: var(--danger);
+    /* Pet Card Top Cover Banner */
+    .pet-cover-banner {
+      height: 82px;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .pet-cover-dog {
+      background: linear-gradient(135deg, #0b5574 0%, #1e8bb5 100%);
+    }
+
+    .pet-cover-cat {
+      background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
+    }
+
+    .pet-cover-other {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    }
+
+    /* Lost Alert Banner inside card */
+    .pet-lost-alert-banner {
+      background: #dc2626;
       color: #ffffff;
-      font-weight: 700;
-      font-size: 0.75rem;
-      padding: 0.35rem 0.75rem;
-      text-align: center;
+      font-size: 0.76rem;
+      font-weight: 800;
       letter-spacing: 0.5px;
+      text-align: center;
+      padding: 0.4rem 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.4rem;
-      animation: pulseAlert 2s infinite ease-in-out;
+      animation: pulseAlert 1.8s infinite ease-in-out;
     }
 
     @keyframes pulseAlert {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.85; }
+      50% { opacity: 0.82; }
     }
 
-    .pet-card-media {
-      height: 170px;
+    /* Overlapping Pet Avatar (Centered) */
+    .pet-avatar-wrapper {
       position: relative;
-      background: #edf3f5;
+      margin-top: -46px;
+      display: flex;
+      justify-content: center;
+      z-index: 3;
+    }
+
+    .pet-avatar-circle {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 4px solid #ffffff;
+      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.16);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      font-size: 2.8rem;
     }
 
-    .pet-card-img {
+    .pet-avatar-circle img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .pet-card-avatar-fallback {
-      font-size: 4rem;
-      line-height: 1;
-    }
-
-    .pet-badge-species {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 20px;
-      padding: 0.2rem 0.55rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-main);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-
     .pet-card-content {
-      padding: 1.15rem;
+      padding: 0.85rem 1.25rem 1.25rem;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      text-align: center;
       flex: 1;
     }
 
-    .pet-card-title {
-      margin: 0;
-      font-size: 1.15rem;
-      font-weight: 700;
+    .pet-name-title {
+      font-size: 1.3rem;
+      font-weight: 800;
       color: var(--text-main);
+      margin: 0.2rem 0 0.5rem;
+      letter-spacing: -0.3px;
+    }
+
+    /* Instagram-Style Bio Chips */
+    .pet-bio-chips {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.35rem;
+      margin-bottom: 0.85rem;
     }
 
-    .pet-meta {
-      font-size: 0.82rem;
-      color: var(--text-sub);
-      margin: 0.35rem 0 0.85rem;
-      line-height: 1.4;
-    }
-
-    .tag-status-pill {
-      font-size: 0.75rem;
+    .pet-chip {
+      background: #e6f4f8;
+      color: var(--accent);
       font-weight: 600;
-      padding: 0.3rem 0.6rem;
-      border-radius: 6px;
+      font-size: 0.78rem;
+      padding: 0.28rem 0.7rem;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Tag Status Pill */
+    .tag-status-pill {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-pill);
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      margin-bottom: 0.85rem;
-      width: fit-content;
+      margin-bottom: 1rem;
     }
 
     .tag-status-active {
@@ -670,90 +843,233 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       border: 1px solid #fed7aa;
     }
 
-    .pet-card-actions {
+    /* Profile Action Buttons (Instagram Style) */
+    .pet-social-actions {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
       margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+    }
+
+    .btn-profile-main {
+      flex: 1.4;
+      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-profile-main:hover {
+      opacity: 0.94;
+    }
+
+    .btn-profile-sec {
+      flex: 1;
+      background: #ffffff;
+      color: var(--accent);
+      border: 1.5px solid var(--border-color);
+      padding: 0.55rem 0.8rem;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+      transition: all 0.15s;
+    }
+
+    .btn-profile-sec:hover {
+      background: var(--primary-light);
+      border-color: #9bc3d3;
+    }
+
+    .btn-profile-lost {
+      width: 40px;
+      height: 38px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-pill);
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1.5px solid var(--border-color);
+      background: #ffffff;
+      transition: all 0.15s;
+    }
+
+    .btn-profile-lost.active {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: #ffffff;
+    }
+
+    /* Collapsible Vaccines Timeline Inline */
+    .vaccine-expand-trigger {
+      margin-top: 0.85rem;
       padding-top: 0.75rem;
-      border-top: 1px solid var(--border-color);
-    }
-
-    .action-row-split {
+      border-top: 1px dashed var(--border-color);
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
       display: flex;
-      gap: 0.5rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: color 0.15s;
     }
 
-    .action-row-split > * {
+    .vaccine-expand-trigger:hover {
+      color: var(--green-action);
+    }
+
+    .vaccine-timeline-box {
+      width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: #fafdfc;
+      border: 1px solid #e8f0ed;
+      border-radius: var(--radius-md);
+      text-align: left;
+      font-size: 0.78rem;
+    }
+
+    .timeline-vac-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #edf4f2;
+    }
+
+    .timeline-vac-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .timeline-vac-icon {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    .timeline-vac-details {
       flex: 1;
     }
 
-    /* Add Pet Card Action */
-    .add-pet-card {
+    .timeline-vac-name {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .timeline-vac-date {
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      margin-top: 0.15rem;
+    }
+
+    /* 4. ADD PET CARD */
+    .add-pet-social-card {
       background: #ffffff;
-      border: 2px dashed #9bc3d3;
-      border-radius: var(--radius-lg);
-      padding: 2rem 1rem;
+      border: 2px dashed #b5d5e2;
+      border-radius: var(--radius-card);
+      padding: 2.5rem 1.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
       cursor: pointer;
-      min-height: 280px;
-      transition: all 0.2s ease;
-      background: rgba(255, 255, 255, 0.6);
+      min-height: 320px;
+      transition: all 0.25s ease;
     }
 
-    .add-pet-card:hover {
+    .add-pet-social-card:hover {
       border-color: var(--accent);
-      background: var(--primary-light);
-      transform: translateY(-2px);
+      background: linear-gradient(180deg, #ffffff 0%, var(--primary-light) 100%);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
     }
 
-    .add-pet-icon {
-      width: 50px;
-      height: 50px;
+    .add-pet-social-circle {
+      width: 68px;
+      height: 68px;
       border-radius: 50%;
-      background: var(--primary-light);
-      color: var(--accent);
+      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
-      margin-bottom: 0.75rem;
+      font-size: 2rem;
+      margin-bottom: 0.85rem;
+      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.22);
     }
 
-    /* Tag Activation Panel */
-    .activation-card {
+    /* 6. EMPTY STATE */
+    .empty-social-state {
       background: #ffffff;
+      border-radius: var(--radius-card);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-social);
+      padding: 3.5rem 1.5rem;
+      text-align: center;
+      grid-column: 1 / -1;
     }
 
-    .activation-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-top: 1rem;
+    .empty-emoji-illustration {
+      font-size: 4rem;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      animation: floatEmoji 3s ease-in-out infinite;
     }
 
-    @media (min-width: 768px) {
-      .activation-grid {
-        grid-template-columns: 1.2fr 1.2fr auto;
-        align-items: end;
-      }
+    @keyframes floatEmoji {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
-    /* Modals */
+    .btn-empty-create {
+      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.85rem 1.85rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(11, 85, 116, 0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-empty-create:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(11, 85, 116, 0.35);
+    }
+
+    /* 5. RESTYLED MODALS */
     .modal-backdrop {
       position: fixed;
       inset: 0;
       background: rgba(10, 30, 40, 0.65);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
       z-index: 99;
       display: none;
       align-items: flex-start;
@@ -768,14 +1084,14 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     .modal-box {
       background: #ffffff;
-      border-radius: var(--radius-lg);
+      border-radius: 24px;
       width: 100%;
       max-width: 540px;
       max-height: 90vh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
-      animation: modalFadeUp 0.2s ease-out;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.22);
+      animation: modalFadeUp 0.22s ease-out;
       overflow: hidden;
       margin: 1.5rem auto;
     }
@@ -1105,63 +1421,77 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     </div>
   </main>
 
-  <!-- VIEW 2: TUTOR DASHBOARD -->
+  <!-- VIEW 2: TUTOR DASHBOARD (REDESIGNED SOCIAL NETWORK PROFILE STYLE) -->
   <main class="dashboard-layout" id="dashboardView" style="display: none;">
-    
-    <!-- Hero / Welcome Summary -->
-    <div class="dash-hero">
-      <div class="dash-hero-title">
-        <h2>Olá, <span id="dashTutorGreeting">Tutor</span>! 👋</h2>
-        <p>Gerencie as medalhas NFC, carteiras de vacinação e contatos de emergência dos seus pets.</p>
-      </div>
-      <div class="dash-stats-bar">
-        <div class="stat-item">
-          <div class="stat-num" id="statPetsCount">0</div>
-          <div class="stat-label">Pets cadastrados</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="statActiveTags">0</div>
-          <div class="stat-label">Tags ativas</div>
+
+    <!-- 1. WELCOME HEADER (Facebook cover banner style) -->
+    <div class="social-profile-cover">
+      <div class="cover-banner"></div>
+      <div class="social-profile-body">
+        <div class="tutor-avatar-overlap" id="tutorInitialsAvatar">CR</div>
+        
+        <div class="profile-meta-row">
+          <div class="profile-title-area">
+            <h2>Olá, <span id="dashTutorGreeting">Tutor</span>! 👋</h2>
+            <p>Gerencie os perfis digitais dos seus pets</p>
+          </div>
+
+          <!-- Stats row (Instagram profile stats style) -->
+          <div class="social-stats-bar">
+            <div class="social-stat-item">
+              <span class="social-stat-num" id="statPetsCount">0</span>
+              <span class="social-stat-label">Pets</span>
+            </div>
+            <div class="social-stat-divider"></div>
+            <div class="social-stat-item">
+              <span class="social-stat-num" id="statActiveTags">0</span>
+              <span class="social-stat-label">TAGs Ativas</span>
+            </div>
+            <div class="social-stat-divider"></div>
+            <div class="social-stat-item">
+              <span class="social-stat-num" id="statVaccinesCount">0</span>
+              <span class="social-stat-label">Vacinas</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Activation Section -->
-    <section class="activation-card">
-      <h3 style="margin: 0; font-size: 1.05rem; color: var(--accent); display: flex; align-items: center; gap: 0.4rem;">
-        🔗 Ativar ou Vincular Nova TAG NFC
-      </h3>
-      <p class="form-help">Recebeu uma nova medalhinha Save Tag Pet? Digite o código para associar a um dos seus animais.</p>
-      
-      <form id="formActivateTag">
-        <div class="activation-grid">
-          <div>
-            <label class="form-label" for="activateTagCode">Código impresso na medalha</label>
-            <input type="text" id="activateTagCode" class="form-input" placeholder="Ex: SAVE-9942-PET" style="text-transform: uppercase;" required>
-          </div>
-          <div>
-            <label class="form-label" for="activatePetSelect">Vincular ao Pet</label>
-            <select id="activatePetSelect" class="form-select" required>
-              <option value="">Selecione um animal...</option>
-            </select>
-          </div>
-          <div>
-            <button type="submit" class="btn-green" style="width: 100%;">Vincular TAG</button>
-          </div>
-        </div>
-      </form>
-    </section>
+    <!-- 2. QUICK ACTIONS ROW (Instagram story buttons style) -->
+    <div class="quick-actions-bar">
+      <div class="quick-actions-scroll">
+        <button type="button" class="quick-action-item" id="qaNewPetBtn">
+          <div class="quick-action-circle primary">➕</div>
+          <span class="quick-action-label">Novo Pet</span>
+        </button>
 
-    <!-- Pets Grid Section -->
+        <button type="button" class="quick-action-item" id="qaActivateTagBtn">
+          <div class="quick-action-circle green">🏷️</div>
+          <span class="quick-action-label">Ativar TAG</span>
+        </button>
+
+        <button type="button" class="quick-action-item" id="qaVaccineBtn">
+          <div class="quick-action-circle blue">💉</div>
+          <span class="quick-action-label">Vacina</span>
+        </button>
+
+        <button type="button" class="quick-action-item" id="qaLostPetBtn" style="display: none;">
+          <div class="quick-action-circle danger">🆘</div>
+          <span class="quick-action-label">Pet Perdido</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PETS GRID HEADER -->
     <div class="section-head">
-      <h3 class="section-title">🐾 Meus Pets</h3>
-      <button type="button" class="btn-brand btn-sm" id="btnOpenNewPetModal">➕ Novo Pet</button>
+      <h3 class="section-title">🐾 Perfis dos Pets</h3>
+      <button type="button" class="btn-brand btn-sm" id="btnOpenNewPetModal" style="border-radius: var(--radius-pill); padding: 0.45rem 1rem;">
+        ➕ Novo Pet
+      </button>
     </div>
 
-    <div class="pets-grid" id="petsGridContainer">
-      <!-- Generated Dynamically -->
-    </div>
-
+    <!-- 3. PET PROFILE CARDS GRID -->
+    <div class="pets-grid" id="petsGridContainer"></div>
   </main>
 
   <!-- MODAL: ADD / EDIT PET -->
@@ -1336,6 +1666,56 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           <button type="submit" class="btn-danger">Confirmar Alteração</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ATIVAR TAG NFC -->
+  <div class="modal-backdrop" id="modalActivateTag">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🏷️ Ativar ou Vincular Nova TAG NFC</h3>
+        <button type="button" class="modal-close-btn" data-close="modalActivateTag">&times;</button>
+      </div>
+      <form id="formActivateTag">
+        <div class="modal-body">
+          <p style="font-size: 0.88rem; color: var(--text-sub); margin-top: 0;">
+            Recebeu uma nova medalhinha inteligente Save Tag Pet? Digite o código gravado na peça para associar ao perfil do seu pet.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="activateTagCode">Código impresso na medalha</label>
+            <input type="text" id="activateTagCode" class="form-input" placeholder="Ex: SAVE-9942-PET" style="text-transform: uppercase;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="activatePetSelect">Vincular ao Pet</label>
+            <select id="activatePetSelect" class="form-select" required>
+              <option value="">Selecione um animal...</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" data-close="modalActivateTag">Cancelar</button>
+          <button type="submit" class="btn-green" style="border-radius: var(--radius-pill);">Vincular TAG</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: SELECIONAR PET PARA VACINA -->
+  <div class="modal-backdrop" id="modalSelectPetVac">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">💉 Carteira de Vacinas</h3>
+        <button type="button" class="modal-close-btn" data-close="modalSelectPetVac">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--text-sub); margin-top: 0;">
+          Escolha de qual pet você deseja visualizar ou registrar vacinas:
+        </p>
+        <div id="vacPetSelectList" style="display: flex; flex-direction: column; gap: 0.65rem;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-outline btn-sm" data-close="modalSelectPetVac">Fechar</button>
+      </div>
     </div>
   </div>
 
@@ -1973,95 +2353,164 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
 
       // Load Pets & refresh views
+      function getInitials(name) {
+        if (!name) return 'PT';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+
       function loadTutorDashboardData(tutorId) {
         const db = getDb();
         const tutor = db.tutors.find(t => t.id === tutorId) || db.tutors[0];
         currentPets = db.pets.filter(p => p.tutor_id === tutorId || p.tutor_id === "tutor-101");
 
+        const tutorName = (currentSession?.user?.user_metadata?.name) || tutor?.name || "Tutor";
+        const initials = getInitials(tutorName);
+        const avatarEl = document.getElementById("tutorInitialsAvatar");
+        if (avatarEl) avatarEl.textContent = initials;
+
+        // Count vaccines across tutor's pets
+        const petIds = currentPets.map(p => p.id);
+        const totalVaccines = (db.pet_vaccines || []).filter(v => petIds.includes(v.pet_id)).length;
+
         // Update stats
         document.getElementById("statPetsCount").textContent = currentPets.length;
         const activeTags = currentPets.filter(p => p.tag_code).length;
         document.getElementById("statActiveTags").textContent = activeTags;
+        document.getElementById("statVaccinesCount").textContent = totalVaccines;
 
-        // Render Pet Select in Link Tag box
+        // Show/hide quick action Pet Perdido button based on pet existence
+        const qaLostBtn = document.getElementById("qaLostPetBtn");
+        if (qaLostBtn) {
+          qaLostBtn.style.display = currentPets.length > 0 ? "flex" : "none";
+        }
+
+        // Populate Link Tag select in modal
         const selectEl = document.getElementById("activatePetSelect");
-        selectEl.innerHTML = '<option value="">Selecione um animal...</option>';
-        currentPets.forEach(p => {
-          const opt = document.createElement("option");
-          opt.value = p.id;
-          opt.textContent = `${p.name} (${p.species}${p.tag_code ? " - TAG: " + p.tag_code : " - Sem TAG"})`;
-          selectEl.appendChild(opt);
-        });
+        if (selectEl) {
+          selectEl.innerHTML = '<option value="">Selecione um animal...</option>';
+          currentPets.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = p.id;
+            opt.textContent = `${p.name} (${p.species}${p.tag_code ? " - TAG: " + p.tag_code : " - Sem TAG"})`;
+            selectEl.appendChild(opt);
+          });
+        }
 
-        // Render Cards Grid
         const grid = document.getElementById("petsGridContainer");
         grid.innerHTML = "";
 
+        // 6. EMPTY STATE (no pets yet)
         if (currentPets.length === 0) {
           const empty = document.createElement("div");
-          empty.style.gridColumn = "1 / -1";
-          empty.style.padding = "2.5rem 1rem";
-          empty.style.textAlign = "center";
-          empty.style.background = "#fff";
-          empty.style.borderRadius = "var(--radius-lg)";
-          empty.style.border = "1px solid var(--border-color)";
+          empty.className = "empty-social-state";
           empty.innerHTML = `
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🐾</div>
-            <h4 style="margin: 0; color: var(--accent);">Você ainda não tem pets cadastrados</h4>
-            <p style="font-size: 0.85rem; color: var(--text-sub); margin: 0.35rem 0 1rem;">Adicione o primeiro animal para vincular sua medalha NFC.</p>
-            <button class="btn-brand btn-sm" id="emptyAddBtn" style="width: auto;">➕ Adicionar Meu Primeiro Pet</button>
+            <div class="empty-emoji-illustration">🐾</div>
+            <h3 style="margin: 0 0 0.5rem; color: var(--accent); font-size: 1.4rem; font-weight: 800;">
+              Seu pet ainda não tem perfil digital
+            </h3>
+            <p style="font-size: 0.95rem; color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.5;">
+              Crie o perfil do seu melhor amigo em segundos! Com a medalha inteligente Save Tag Pet, qualquer pessoa que escanear com o celular verá o perfil completo, carteira de vacinas e seus contatos de emergência.
+            </p>
+            <button class="btn-empty-create" id="emptyAddBtn">
+              🐾 Criar primeiro perfil
+            </button>
           `;
           grid.appendChild(empty);
           document.getElementById("emptyAddBtn").addEventListener("click", () => openPetModal());
           return;
         }
 
-        // Render each pet card
+        // 3. PET MINI SOCIAL PROFILE CARDS
         currentPets.forEach(pet => {
           const card = document.createElement("div");
           card.className = `pet-card ${pet.is_lost ? "is-lost" : ""}`;
 
-          const emoji = pet.species === "Gato" ? "🐱" : (pet.species === "Cão" ? "🐶" : "🐾");
-          const tagInfo = pet.tag_code 
-            ? `<div class="tag-status-pill tag-status-active">✅ TAG: <strong>${pet.tag_code}</strong></div>`
+          const isCat = pet.species === "Gato";
+          const isDog = pet.species === "Cão";
+          const emoji = isCat ? "🐱" : (isDog ? "🐶" : "🐾");
+          const coverClass = isDog ? "pet-cover-dog" : (isCat ? "pet-cover-cat" : "pet-cover-other");
+
+          const petVaccines = (db.pet_vaccines || []).filter(v => v.pet_id === pet.id);
+          const vacCount = petVaccines.length;
+
+          const tagPill = pet.tag_code
+            ? `<div class="tag-status-pill tag-status-active">🏷️ TAG: <strong>${pet.tag_code}</strong> ativa ✅</div>`
             : `<div class="tag-status-pill tag-status-empty">⚠️ Sem TAG vinculada</div>`;
 
-          card.innerHTML = `
-            ${pet.is_lost ? '<div class="lost-ribbon">🚨 ALERTA: PET DESAPARECIDO ATIVO</div>' : ''}
-            <div class="pet-card-media">
-              ${pet.photo_url 
-                ? `<img src="${pet.photo_url}" alt="${pet.name}" class="pet-card-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                   <div class="pet-card-avatar-fallback" style="display:none;">${emoji}</div>`
-                : `<div class="pet-card-avatar-fallback">${emoji}</div>`
-              }
-              <span class="pet-badge-species">${emoji} ${pet.species || "Pet"}</span>
+          const chipsHtml = `
+            <div class="pet-bio-chips">
+              <span class="pet-chip">${emoji} ${pet.breed || pet.species || "Pet"}</span>
+              ${pet.age ? `<span class="pet-chip">🎂 ${pet.age}</span>` : ''}
+              ${pet.weight ? `<span class="pet-chip">⚖️ ${pet.weight}</span>` : ''}
+              ${pet.color ? `<span class="pet-chip">🎨 ${pet.color}</span>` : ''}
             </div>
+          `;
+
+          let vacListHtml = '';
+          if (petVaccines.length > 0) {
+            vacListHtml = petVaccines.map(v => `
+              <div class="timeline-vac-item">
+                <span class="timeline-vac-icon">💉</span>
+                <div class="timeline-vac-details">
+                  <div class="timeline-vac-name">${v.vaccine_name}</div>
+                  <div class="timeline-vac-date">
+                    Dose: ${v.application_date || "N/A"} ${v.next_dose_date ? ` • Reforço: <strong>${v.next_dose_date}</strong>` : ''}
+                    ${v.veterinarian ? ` • ${v.veterinarian}` : ''}
+                  </div>
+                </div>
+              </div>
+            `).join('');
+          } else {
+            vacListHtml = '<div style="color: var(--text-muted); padding: 0.35rem 0;">Nenhuma vacina registrada ainda.</div>';
+          }
+
+          card.innerHTML = `
+            ${pet.is_lost ? '<div class="pet-lost-alert-banner">🆘 ESTE PET ESTÁ PERDIDO</div>' : ''}
+            <div class="pet-cover-banner ${coverClass}"></div>
+            <div class="pet-avatar-wrapper">
+              <div class="pet-avatar-circle">
+                ${pet.photo_url
+                  ? `<img src="${pet.photo_url}" alt="${pet.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                     <span style="display:none;">${emoji}</span>`
+                  : `<span>${emoji}</span>`
+                }
+              </div>
+            </div>
+
             <div class="pet-card-content">
-              <h4 class="pet-card-title">
-                <span>${pet.name}</span>
-                <span style="font-size: 0.8rem; font-weight: 500; color: var(--text-sub);">${pet.breed || ""}</span>
-              </h4>
-              <div class="pet-meta">
-                ${pet.age ? `<span>🎂 ${pet.age}</span> • ` : ''}
-                ${pet.weight ? `<span>⚖️ ${pet.weight}</span> • ` : ''}
-                ${pet.color ? `<span>🎨 ${pet.color}</span>` : ''}
+              <h3 class="pet-name-title">${pet.name}</h3>
+              ${chipsHtml}
+              ${tagPill}
+
+              <div class="pet-social-actions">
+                <a href="${pet.tag_code ? 'public.html?tag=' + pet.tag_code : '#'}" 
+                   class="btn-profile-main view-profile-btn" 
+                   data-tag="${pet.tag_code || ''}" 
+                   title="Ver perfil digital público">
+                  Ver Perfil
+                </a>
+                <button type="button" class="btn-profile-sec edit-pet-btn" data-id="${pet.id}">
+                  Editar
+                </button>
+                <button type="button" class="btn-profile-lost ${pet.is_lost ? 'active' : ''} lost-pet-btn" data-id="${pet.id}" title="${pet.is_lost ? 'Desativar modo perdido' : 'Ativar alerta pet perdido'}">
+                  🆘
+                </button>
               </div>
 
-              ${tagInfo}
-
-              <div class="pet-card-actions">
-                <div class="action-row-split">
-                  <button type="button" class="btn-outline btn-sm edit-pet-btn" data-id="${pet.id}">✏️ Editar</button>
-                  <button type="button" class="btn-outline btn-sm vac-pet-btn" data-id="${pet.id}">💉 Vacinas</button>
+              <!-- Collapsible inline vaccines -->
+              <button type="button" class="vaccine-expand-trigger toggle-vac-inline" data-id="${pet.id}">
+                💉 Carteira de vacinas (${vacCount}) ▾
+              </button>
+              <div class="vaccine-timeline-box inline-vac-container-${pet.id}" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                  <strong style="color: var(--accent);">Histórico de Doses</strong>
+                  <button type="button" class="btn-green btn-sm vac-add-quick-btn" data-id="${pet.id}" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: var(--radius-pill);">
+                    + Nova
+                  </button>
                 </div>
-                <button type="button" class="btn-sm ${pet.is_lost ? 'btn-danger' : 'btn-outline'} lost-pet-btn" data-id="${pet.id}">
-                  ${pet.is_lost ? '🚨 Gerenciar Modo Perdido' : '⚠️ Ativar Modo Perdido'}
-                </button>
-                ${pet.tag_code ? `
-                  <a href="public.html?tag=${pet.tag_code}" target="_blank" class="btn-ghost" style="text-align: center; text-decoration: none; font-size: 0.78rem;" onclick="event.preventDefault(); alert('Link público da Tag: public.html?tag=${pet.tag_code}\\n\\nAo aproximar o celular da medalhinha NFC, quem encontrar o pet verá esses dados!');">
-                    🔍 Ver perfil público da TAG
-                  </a>
-                ` : ''}
+                ${vacListHtml}
               </div>
             </div>
           `;
@@ -2069,30 +2518,100 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           grid.appendChild(card);
         });
 
-        // Add "+ Novo Pet" card at the end of the grid
+        // 4. ADD PET CARD
         const addCard = document.createElement("div");
-        addCard.className = "add-pet-card";
+        addCard.className = "add-pet-social-card";
         addCard.innerHTML = `
-          <div class="add-pet-icon">➕</div>
-          <strong style="color: var(--accent); font-size: 0.95rem;">Adicionar novo pet</strong>
-          <span style="font-size: 0.75rem; color: var(--text-sub); margin-top: 0.2rem;">Cadastre cães, gatos ou outros</span>
+          <div class="add-pet-social-circle">➕</div>
+          <strong style="color: var(--accent); font-size: 1.05rem; font-weight: 700;">Adicionar novo pet</strong>
+          <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; max-width: 220px;">
+            Crie um novo perfil digital para outro cão, gato ou animal
+          </span>
         `;
         addCard.addEventListener("click", () => openPetModal());
         grid.appendChild(addCard);
 
-        // Attach listeners to pet card buttons
+        // Attach listeners
         grid.querySelectorAll(".edit-pet-btn").forEach(btn => {
           btn.addEventListener("click", () => openPetModal(btn.dataset.id));
-        });
-
-        grid.querySelectorAll(".vac-pet-btn").forEach(btn => {
-          btn.addEventListener("click", () => openVaccineModal(btn.dataset.id));
         });
 
         grid.querySelectorAll(".lost-pet-btn").forEach(btn => {
           btn.addEventListener("click", () => openLostModeModal(btn.dataset.id));
         });
+
+        grid.querySelectorAll(".vac-add-quick-btn").forEach(btn => {
+          btn.addEventListener("click", () => openVaccineModal(btn.dataset.id));
+        });
+
+        grid.querySelectorAll(".view-profile-btn").forEach(link => {
+          link.addEventListener("click", (e) => {
+            const tag = link.dataset.tag;
+            if (!tag) {
+              e.preventDefault();
+              showToast("Este pet ainda não tem uma TAG vinculada. Ative uma TAG primeiro!", "warning");
+            }
+          });
+        });
+
+        grid.querySelectorAll(".toggle-vac-inline").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const petId = btn.dataset.id;
+            const container = grid.querySelector(`.inline-vac-container-${petId}`);
+            if (container) {
+              const isHidden = container.style.display === "none";
+              container.style.display = isHidden ? "block" : "none";
+              btn.innerHTML = `💉 Carteira de vacinas (${container.querySelectorAll(".timeline-vac-item").length}) ${isHidden ? "▴" : "▾"}`;
+            }
+          });
+        });
       }
+
+      // Quick Actions row triggers
+      document.getElementById("qaNewPetBtn").addEventListener("click", () => openPetModal());
+      
+      const modalActivateTag = document.getElementById("modalActivateTag");
+      document.getElementById("qaActivateTagBtn").addEventListener("click", () => {
+        if (modalActivateTag) modalActivateTag.classList.add("open");
+      });
+
+      const modalSelectPetVac = document.getElementById("modalSelectPetVac");
+      document.getElementById("qaVaccineBtn").addEventListener("click", () => {
+        if (currentPets.length === 0) {
+          showToast("Cadastre um pet primeiro para gerenciar vacinas.", "warning");
+          openPetModal();
+          return;
+        }
+        if (currentPets.length === 1) {
+          openVaccineModal(currentPets[0].id);
+          return;
+        }
+        const list = document.getElementById("vacPetSelectList");
+        list.innerHTML = "";
+        currentPets.forEach(p => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn-outline";
+          btn.style.cssText = "text-align: left; justify-content: flex-start; padding: 0.65rem 1rem; border-radius: 12px;";
+          btn.innerHTML = `<strong>${p.name}</strong> <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">${p.species}</span>`;
+          btn.addEventListener("click", () => {
+            modalSelectPetVac.classList.remove("open");
+            openVaccineModal(p.id);
+          });
+          list.appendChild(btn);
+        });
+        modalSelectPetVac.classList.add("open");
+      });
+
+      document.getElementById("qaLostPetBtn").addEventListener("click", () => {
+        if (currentPets.length === 0) return;
+        if (currentPets.length === 1) {
+          openLostModeModal(currentPets[0].id);
+        } else {
+          const lostOne = currentPets.find(p => p.is_lost) || currentPets[0];
+          openLostModeModal(lostOne.id);
+        }
+      });
 
       // Link Tag Form Submission
       document.getElementById("formActivateTag").addEventListener("submit", async (e) => {
@@ -2111,6 +2630,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         } else {
           showToast(`TAG ${tagCode} vinculada com sucesso!`, "success");
           document.getElementById("activateTagCode").value = "";
+          if (modalActivateTag) modalActivateTag.classList.remove("open");
           loadTutorDashboardData(currentSession.user.id);
         }
       });
