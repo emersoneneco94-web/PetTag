@@ -506,100 +506,67 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       line-height: 1.55;
     }
 
-    /* 4. Pure CSS NFC Pet Tags */
+    /* 4. Nossas TAGs Section */
+    .tags-product-showcase {
+      max-width: 720px;
+      margin: 0 auto 36px auto;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 16px 36px -8px rgba(11, 85, 116, 0.16);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .tags-product-showcase:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 42px -6px rgba(11, 85, 116, 0.22);
+    }
+
+    .tags-product-showcase img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
     .tags-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 24px;
+      gap: 20px;
     }
 
-    .tag-display-card {
+    .tag-desc-card {
       background: #ffffff;
       border-radius: var(--radius-card);
-      padding: 30px 20px;
+      padding: 24px 20px;
       text-align: center;
-      border: 1px solid #f1f5f9;
-      box-shadow: 0 6px 20px rgba(11, 85, 116, 0.06);
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(11, 85, 116, 0.05);
       display: flex;
       flex-direction: column;
       align-items: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .tag-assembly-holder {
-      position: relative;
-      padding-top: 14px;
-      margin-bottom: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .tag-desc-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(11, 85, 116, 0.1);
     }
 
-    /* Top metal ring */
-    .nfc-metal-ring {
-      width: 18px;
-      height: 18px;
-      border: 3.5px solid #94a3b8;
+    .tag-color-indicator {
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      background-color: transparent;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-      position: absolute;
-      top: 0;
-      z-index: 2;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      border: 2px solid #ffffff;
     }
 
-    /* 86px NFC Tag Circle */
-    .nfc-tag-circle {
-      width: 86px;
-      height: 86px;
-      border-radius: 50%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28), inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -3px 6px rgba(0, 0, 0, 0.4);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      margin-top: 8px;
-      transition: transform 0.25s ease;
-    }
-
-    .tag-display-card:hover .nfc-tag-circle {
-      transform: scale(1.06) rotate(3deg);
-    }
-
-    /* Tag Color Variants */
-    .nfc-blue {
-      background: radial-gradient(circle at 35% 30%, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
-    }
-
-    .nfc-black {
-      background: radial-gradient(circle at 35% 30%, #4b5563 0%, #374151 55%, #111827 100%);
-    }
-
-    .nfc-red {
-      background: radial-gradient(circle at 35% 30%, #f87171 0%, #ef4444 50%, #b91c1c 100%);
-    }
-
-    .nfc-pink {
-      background: radial-gradient(circle at 35% 30%, #f472b6 0%, #ec4899 50%, #db2777 100%);
-    }
-
-    .nfc-tag-paw {
-      font-size: 26px;
-      line-height: 1;
-      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
-      margin-bottom: 2px;
-      user-select: none;
-    }
-
-    .nfc-tag-text {
-      font-size: 10px;
-      font-weight: 900;
-      color: #ffffff;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    }
+    .tag-indicator-blue { background-color: #2563eb; }
+    .tag-indicator-black { background-color: #1e293b; }
+    .tag-indicator-red { background-color: #dc2626; }
+    .tag-indicator-pink { background-color: #ec4899; }
 
     .tag-card-name {
       font-size: 1.15rem;
@@ -609,8 +576,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
 
     .tag-card-desc {
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: #64748b;
+      line-height: 1.5;
     }
 
     .tag-bottom-note {
@@ -1242,7 +1210,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         </div>
 
         <div class="hero-image-wrap">
-          <img src="https://generated-images.adapta.one/emerson-santos%40hotmail.com/01a09f33-06ba-7068-ad25-0ae899dd012c/2026-09-14T11-59-45-111Z_Original_user_intent_Professional_hero_image_for.png" alt="Cão e gato juntos usando coleiras com TAGs NFC inteligentes" width="600" height="420" loading="eager" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/600/420?q=dog%20cat%20collar&color=blue';">
+          <img src="https://generated-images.adapta.one/emerson-santos%40hotmail.com/01a09f33-06ba-7068-ad25-0ae899dd012c/2026-09-14T13-26-44-043Z_Original_user_intent_Tool_generated_image_directi.png" alt="Cão e gato com as TAGs NFC oficiais Save Tag Pet presas nas coleiras" width="600" height="420" loading="eager" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/600/420?q=dog%20cat%20collar%20nfc&color=blue';">
         </div>
       </div>
     </div>
@@ -1254,7 +1222,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <h2 class="section-title">Como funciona?</h2>
       <p class="section-subtitle">É simples, rápido e 100% seguro para você e seu melhor amigo.</p>
 
-      <div class="flow-badge-pill">🐶🏷️ → 📱 → 🐾</div>
+      <div class="flow-badge-pill" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 26px; border-radius: 20px;">
+        <div>🐶🔵🏷️ → 📱 → 🐾📋</div>
+        <div>🐱🩷🏷️ → 📱 → 🐾📋</div>
+      </div>
 
       <div class="steps-grid">
         <div class="card-white text-center">
@@ -1290,55 +1261,37 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <h2 class="section-title">Nossas TAGs NFC</h2>
       <p class="section-subtitle">Identificação inteligente que combina com o seu cão ou gato</p>
 
+      <!-- Prominent Product Showcase Image: 4 NFC Pet Tags in a 2x2 grid -->
+      <div class="tags-product-showcase">
+        <img src="https://generated-images.adapta.one/emerson-santos%40hotmail.com/01a09f33-06ba-7068-ad25-0ae899dd012c/2026-09-14T13-25-58-087Z_Original_user_intent_Tool_generated_image_directi.png" alt="4 TAGs NFC Save Tag Pet nas cores azul, preta, vermelha e rosa com patinha e texto NFC" width="720" height="520" loading="lazy">
+      </div>
+
+      <!-- 4 Tag Name Labels with Descriptions -->
       <div class="tags-grid">
         <!-- Tag Azul -->
-        <div class="tag-display-card">
-          <div class="tag-assembly-holder">
-            <div class="nfc-metal-ring"></div>
-            <div class="nfc-tag-circle nfc-blue">
-              <span class="nfc-tag-paw">🐾</span>
-              <span class="nfc-tag-text">NFC</span>
-            </div>
-          </div>
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-blue" title="Cor Azul"></div>
           <h3 class="tag-card-name">TAG AZUL</h3>
           <p class="tag-card-desc">Moderna, marcante e vibrante. Perfeita para cães aventureiros e gatos curiosos.</p>
         </div>
 
         <!-- Tag Preta -->
-        <div class="tag-display-card">
-          <div class="tag-assembly-holder">
-            <div class="nfc-metal-ring"></div>
-            <div class="nfc-tag-circle nfc-black">
-              <span class="nfc-tag-paw">🐾</span>
-              <span class="nfc-tag-text">NFC</span>
-            </div>
-          </div>
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-black" title="Cor Preta"></div>
           <h3 class="tag-card-name">TAG PRETA</h3>
           <p class="tag-card-desc">Elegante, discreta e premium. Combina harmoniosamente com qualquer tipo e cor de coleira.</p>
         </div>
 
         <!-- Tag Vermelha -->
-        <div class="tag-display-card">
-          <div class="tag-assembly-holder">
-            <div class="nfc-metal-ring"></div>
-            <div class="nfc-tag-circle nfc-red">
-              <span class="nfc-tag-paw">🐾</span>
-              <span class="nfc-tag-text">NFC</span>
-            </div>
-          </div>
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-red" title="Cor Vermelha"></div>
           <h3 class="tag-card-name">TAG VERMELHA</h3>
           <p class="tag-card-desc">Alta visibilidade e estilo enérgico. Chama a atenção de imediato em situações de resgate.</p>
         </div>
 
         <!-- Tag Rosa -->
-        <div class="tag-display-card">
-          <div class="tag-assembly-holder">
-            <div class="nfc-metal-ring"></div>
-            <div class="nfc-tag-circle nfc-pink">
-              <span class="nfc-tag-paw">🐾</span>
-              <span class="nfc-tag-text">NFC</span>
-            </div>
-          </div>
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-pink" title="Cor Rosa"></div>
           <h3 class="tag-card-name">TAG ROSA</h3>
           <p class="tag-card-desc">Delicada, alegre e carinhosa. Um charme único para pets cheios de personalidade.</p>
         </div>
@@ -1359,8 +1312,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       </p>
 
       <div class="nfc-flows">
-        <div class="flow-badge-item">🐶🔵🏷️ → 📱 → 🐾📋 Perfil Instantâneo</div>
-        <div class="flow-badge-item">🐱🩷🏷️ → 📱 → 🐾📋 Perfil Instantâneo</div>
+        <div class="flow-badge-item">🐶🔵🏷️ (Cão com TAG na coleira) → 📱 (Aproximação) → 🐾📋 Perfil Instantâneo</div>
+        <div class="flow-badge-item">🐱🩷🏷️ (Gato com TAG na coleira) → 📱 (Aproximação) → 🐾📋 Perfil Instantâneo</div>
       </div>
 
       <div class="nfc-cards-grid text-left" style="text-align: left;">
