@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>login.html — Save Tag Pet completo (perfil estilo rede social)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+  
+  <!-- Basecoat CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
+  <!-- Shell CSS (Design tokens e componentes) -->
+  <style>
+/* Skip artifact shell — fixed styles served beside every artifact.
+   Complements basecoat; artifacts override --accent for their own identity. */
+:root {
+  color-scheme: light dark;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-text: color-mix(in srgb, var(--accent) 72%, #000);
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --text: #14171f;
+  --text-muted: #5b6472;
+  --border: rgba(20, 23, 31, 0.10);
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(20, 23, 31, 0.08);
+  --space: 16px;
+}
+/* Theme resolution. Without data-theme the viewer's system preference decides,
+   as it always did. With it, the artifact's own choice wins in BOTH directions:
+   a page that hardcodes one palette must not be handed the opposite set of
+   tokens by the machine it happens to be opened on. The dark values appear
+   twice because a media query cannot be folded into a selector list.
+   The attribute sits inside :where() so these blocks keep the specificity of a
+   bare :root — the page's own <style> is linked after this file and must go on
+   overriding any token it wants, exactly as it could before. */
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+    --bg: #101318;
+    --surface: #181c23;
+    --text: #eef1f6;
+    --text-muted: #9aa4b2;
+    --border: rgba(238, 241, 246, 0.12);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+}
+:root:where([data-theme="dark"]) {
+  color-scheme: dark;
+  --accent-text: color-mix(in srgb, var(--accent) 78%, #fff);
+  --bg: #101318;
+  --surface: #181c23;
+  --text: #eef1f6;
+  --text-muted: #9aa4b2;
+  --border: rgba(238, 241, 246, 0.12);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+:root:where([data-theme="light"]) { color-scheme: light; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+
+.shell-container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.shell-section { padding: calc(var(--space) * 2) 0; }
+.shell-grid { display: grid; gap: var(--space); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.shell-toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: var(--space); }
+.shell-footer { padding: 24px 0 40px; color: var(--text-muted); font-size: 13px; }
+
+.shell-hero { padding: calc(var(--space) * 3) 0 calc(var(--space) * 2); }
+.shell-hero h1 { font-size: clamp(26px, 4vw, 40px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.shell-hero p { color: var(--text-muted); max-width: 60ch; margin: 0; }
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space);
+}
+
+.kpi { display: flex; flex-direction: column; gap: 4px; }
+.kpi .kpi-value { font-size: 28px; font-weight: 650; line-height: 1.1; }
+.kpi .kpi-label { font-size: 13px; color: var(--text-muted); }
+.kpi .kpi-delta { font-size: 12.5px; font-weight: 600; }
+.kpi .kpi-delta.up { color: #0a8f3c; }
+.kpi .kpi-delta.down { color: #cf3131; }
+
+table.shell-table { border-collapse: collapse; width: 100%; font-size: 14px; }
+table.shell-table th {
+  text-align: left; font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600;
+}
+table.shell-table th, table.shell-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--border); }
+table.shell-table td.num, table.shell-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.chart-box { width: 100%; min-height: 220px; }
+.chart-box svg { width: 100%; height: auto; display: block; }
+
+.muted { color: var(--text-muted); }
+.accent { color: var(--accent-text); }
+.shell-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent-text);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .shell-fade { animation: shell-fade 400ms ease both; }
+  @keyframes shell-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+}
+
+</style>
+  
+
+  <style>
+    :root {
+      --primary: #0b5574;
+      --primary-light: #e6f4f8;
+      --primary-dark: #084058;
+      --accent: #0b5574;
+      --accent-text: #084058;
+      --accent-contrast: #ffffff;
+      --green: #07966b;
+      --green-bg: #dff8ee;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --yellow: #b45309;
+      --yellow-bg: #fef3c7;
+      --bg: #f8fcfb;
+      --card: #ffffff;
+      --text: #1a2e35;
+      --text-muted: #6d8187;
+      --border: #e2e8f0;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-sm: 0 2px 8px rgba(11, 85, 116, 0.06);
+      --shadow-md: 0 8px 24px rgba(11, 85, 116, 0.10);
+      --shadow-lg: 0 16px 36px rgba(11, 85, 116, 0.14);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Utilitários e Tipografia */
+    .app-wrapper {
+      flex: 1;
+      width: 100%;
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    .banner-config {
+      background: var(--yellow-bg);
+      border-bottom: 1px solid #fde68a;
+      color: var(--yellow);
+      padding: 10px 16px;
+      font-size: 0.85rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    /* Cards e Containers */
+    .glass-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    /* VIEW 1: AUTH */
+    #view-auth {
+      min-height: calc(100vh - 50px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 32px 24px;
+      position: relative;
+    }
+    .auth-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .logo-badge {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .auth-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+    .auth-sub {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 4px;
+    }
+
+    .pill-tabs {
+      display: flex;
+      background: var(--primary-light);
+      padding: 4px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+      gap: 4px;
+    }
+    .pill-tab {
+      flex: 1;
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+    .pill-tab.active {
+      background: var(--card);
+      color: var(--primary-dark);
+      box-shadow: 0 2px 6px rgba(11, 85, 116, 0.12);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11, 85, 116, 0.15);
+    }
+    .btn-action {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-action:hover {
+      opacity: 0.92;
+    }
+    .btn-action:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .link-muted {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-align: center;
+      display: block;
+      margin-top: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .link-muted:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* VIEW 2 & 3: INSTAGRAM-STYLE PROFILE & DASHBOARD */
+    .profile-hero {
+      position: relative;
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-top: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .profile-banner {
+      height: 160px;
+      background: linear-gradient(135deg, #0b5574 0%, #084058 100%);
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+    /* Padrão sutil de patinhas */
+    .profile-banner::before {
+      content: "🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
+      position: absolute;
+      top: -20px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      font-size: 30px;
+      line-height: 50px;
+      letter-spacing: 28px;
+      opacity: 0.08;
+      color: #ffffff;
+      pointer-events: none;
+      word-break: break-all;
+    }
+    .banner-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 24px;
+      fill: var(--card);
+    }
+
+    .banner-btn-cam {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+    }
+    .banner-btn-cam:hover {
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    .profile-body {
+      padding: 0 24px 24px;
+      position: relative;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin-top: -55px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .avatar-img, .avatar-placeholder {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 4px solid var(--card);
+      outline: 3px solid var(--green);
+      object-fit: cover;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: bold;
+      color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+    .avatar-cam-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid var(--card);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      font-size: 14px;
+    }
+
+    .profile-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .profile-info h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .profile-info .email-sub {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 2px 0 8px 0;
+    }
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-bg);
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+    .tag-badge.badge-lost {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+    .tag-badge.badge-notag {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-sm-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-sm-ghost {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-sm-ghost:hover {
+      background: var(--red-bg);
+    }
+    .btn-sm-outline {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-sm-outline:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+
+    /* Instagram Stats Bar */
+    .ig-stats-bar {
+      display: flex;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 20px 0;
+      padding: 12px 0;
+    }
+    .ig-stat-col {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+    .ig-stat-col:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 15%;
+      height: 70%;
+      width: 1px;
+      background: var(--border);
+    }
+    .ig-stat-num {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+      line-height: 1.1;
+    }
+    .ig-stat-lbl {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Stories Quick Actions */
+    .stories-container {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding: 8px 0 16px;
+      scrollbar-width: thin;
+    }
+    .story-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+      min-width: 72px;
+    }
+    .story-ring {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--primary));
+      padding: 2.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .story-ring.danger {
+      background: linear-gradient(135deg, var(--red), #f97316);
+    }
+    .story-item:hover .story-ring {
+      transform: scale(1.06);
+    }
+    .story-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .story-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    /* Seção Pets */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 24px 0 16px;
+    }
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .pets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .pet-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .pet-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+    .pet-card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pet-card-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      border: 2px solid var(--border);
+    }
+    .pet-card-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .pet-card-info p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .pet-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+      font-size: 0.8rem;
+    }
+
+    /* VIEW 3: PERFIL DETALHADO DO PET */
+    .btn-back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 999px;
+      color: var(--primary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-back-nav:hover {
+      background: var(--primary-light);
+    }
+
+    .pet-hero-banner {
+      height: 220px;
+    }
+    .pet-avatar-wrapper {
+      width: 120px;
+      height: 120px;
+      margin-top: -60px;
+    }
+    .pet-avatar-wrapper .avatar-img,
+    .pet-avatar-wrapper .avatar-placeholder {
+      width: 120px;
+      height: 120px;
+      font-size: 44px;
+    }
+
+    /* Alerta de Pet Perdido Banner */
+    .lost-alert-banner {
+      background: var(--red-bg);
+      border: 2px solid var(--red);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin: 16px 0;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      animation: pulseAlert 2s infinite ease-in-out;
+    }
+    @keyframes pulseAlert {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+      50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0.1); }
+    }
+
+    /* Abas do Pet */
+    .pet-tabs-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      border-bottom: 2px solid var(--border);
+      margin: 20px 0 16px;
+      padding-bottom: 4px;
+    }
+    .pet-tab-btn {
+      padding: 10px 18px;
+      border: none;
+      background: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .pet-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Mural / Feed de Posts */
+    .new-post-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .post-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .post-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .post-header-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .post-avatar-mini {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .post-image {
+      width: 100%;
+      max-height: 480px;
+      object-fit: cover;
+      background: #000000;
+      display: block;
+    }
+    .post-caption {
+      padding: 14px 16px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .post-delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      font-size: 1rem;
+      border-radius: 4px;
+    }
+    .post-delete-btn:hover {
+      color: var(--red);
+      background: var(--red-bg);
+    }
+
+    /* Grid de Fotos */
+    .photo-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 600px) {
+      .photo-gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .profile-banner {
+        height: 110px;
+      }
+      .pet-hero-banner {
+        height: 160px;
+      }
+      .avatar-wrapper {
+        width: 85px;
+        height: 85px;
+        margin-top: -42px;
+      }
+      .avatar-img, .avatar-placeholder {
+        width: 85px;
+        height: 85px;
+        font-size: 28px;
+      }
+    }
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: #e2e8f0;
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    /* Linha do Tempo de Saúde / Vacinas */
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+      margin: 20px 0;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 7px;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-node {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--green);
+      border: 3px solid var(--card);
+      box-shadow: 0 0 0 2px var(--green);
+    }
+    .timeline-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .timeline-card h4 {
+      margin: 0 0 6px 0;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+    .timeline-dates {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .next-dose-pill {
+      background: var(--green-bg);
+      color: var(--green);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    /* Ficha Sobre */
+    .info-sheet {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+    }
+    .info-card .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .info-card .val {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .nfc-status-box {
+      background: var(--primary-light);
+      border: 1px dashed var(--primary);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* MODAIS */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 30, 40, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.2s ease;
+    }
+    .modal-overlay.active .modal-card {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+    .modal-close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      line-height: 1;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .modal-close-btn:hover {
+      color: var(--red);
+    }
+
+    /* LIGHTBOX */
+    #lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    #lightbox-img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    #lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 28px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* TOASTS */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 380px;
+    }
+    .toast-msg {
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #ffffff;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast-msg.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-success { background: var(--green); }
+    .toast-error { background: var(--red); }
+    .toast-warning { background: var(--yellow); color: #fff; }
+
+    /* Spinner util */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BANNER INDICADOR DE CONFIGURAÇÃO SUPABASE -->
+  <header id="supabase-alert-banner" class="banner-config">
+    <span>⚠️ <strong>Atenção:</strong> Configure as credenciais do Supabase no início do arquivo para sincronização com banco de dados remoto. Modo local/demonstração ativo.</span>
+  </header>
+
+  <div class="app-wrapper">
+
+    <!-- ========================================== -->
+    <!-- VIEW 1 — LOGIN / CADASTRO (TELA PÚBLICA)   -->
+    <!-- ========================================== -->
+    <section id="view-auth">
+      <div class="auth-card">
+        <div class="auth-logo">
+          <div class="logo-badge">🐾</div>
+          <h1 class="auth-title">Save Tag Pet</h1>
+          <p class="auth-sub">Identificação inteligente por TAG NFC</p>
+        </div>
+
+        <!-- Abas Entrar / Criar Conta -->
+        <div class="pill-tabs" id="auth-tabs" role="tablist">
+          <button type="button" class="pill-tab active" data-tab="login" role="tab" aria-selected="true">Entrar</button>
+          <button type="button" class="pill-tab" data-tab="signup" role="tab" aria-selected="false">Criar conta</button>
+        </div>
+
+        <!-- FORMULÁRIO DE LOGIN -->
+        <form id="form-login">
+          <div class="form-group">
+            <label class="form-label" for="login-email">E-mail</label>
+            <input type="email" id="login-email" class="form-input" placeholder="seu@email.com" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="login-password">Senha</label>
+            <input type="password" id="login-password" class="form-input" placeholder="Sua senha secreta" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-action" id="btn-login-submit">
+            <span>Acessar Painel</span>
+          </button>
+          <a class="link-muted" id="btn-forgot-password">🔑 Esqueci minha senha</a>
+        </form>
+
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <form id="form-signup" class="hidden">
+          <div class="form-group">
+            <label class="form-label" for="signup-name">Nome Completo</label>
+            <input type="text" id="signup-name" class="form-input" placeholder="Ex: Roberto Carlos" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="signup-email">E-mail</label>
+            <input type="email" id="signup-email" class="form-input" placeholder="seu@email.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="signup-whatsapp">WhatsApp</label>
+            <input type="tel" id="signup-whatsapp" class="form-input" placeholder="(11) 99999-9999" required maxlength="15">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="signup-password">Senha (mínimo 6 caracteres)</label>
+            <input type="password" id="signup-password" class="form-input" placeholder="••••••••" required minlength="6">
+          </div>
+          <button type="submit" class="btn-action" id="btn-signup-submit">
+            <span>Criar Minha Conta</span>
+          </button>
+        </form>
+
+        <!-- TELA DEFINIR NOVA SENHA (?reset=1) -->
+        <form id="form-recovery" class="hidden">
+          <p style="font-size:0.9rem; margin-bottom: 16px; color: var(--text-muted); text-align: center;">
+            Defina uma nova senha de acesso para sua conta.
+          </p>
+          <div class="form-group">
+            <label class="form-label" for="recov-password">Nova Senha</label>
+            <input type="password" id="recov-password" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="recov-password-confirm">Confirmar Senha</label>
+            <input type="password" id="recov-password-confirm" class="form-input" placeholder="Repita a senha" required minlength="6">
+          </div>
+          <button type="submit" class="btn-action" id="btn-recovery-submit">
+            <span>Salvar Nova Senha</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2 — DASHBOARD DO TUTOR (INSTAGRAM)    -->
+    <!-- ========================================== -->
+    <section id="view-dashboard" class="hidden">
+      <div class="profile-hero">
+        <!-- Banner / Capa com padrão de patinhas -->
+        <div class="profile-banner" id="tutor-banner">
+          <svg class="banner-wave" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C150,90 350,-40 500,40 C650,120 900,20 1200,60 L1200,120 L0,120 Z"></path>
+          </svg>
+        </div>
+
+        <div class="profile-body">
+          <div class="avatar-wrapper">
+            <div id="tutor-avatar-container">
+              <div class="avatar-placeholder" id="tutor-avatar-fallback">T</div>
+            </div>
+            <label for="input-tutor-avatar" class="avatar-cam-badge" title="Trocar foto de perfil" aria-label="Trocar foto">
+              📷
+            </label>
+            <input type="file" id="input-tutor-avatar" accept="image/*" class="hidden">
+          </div>
+
+          <div class="profile-meta-row">
+            <div class="profile-info">
+              <h1 id="tutor-name-display">Carregando...</h1>
+              <div class="email-sub" id="tutor-email-display">email@exemplo.com</div>
+              <span class="tag-badge">🐾 Tutor Save Tag Pet</span>
+            </div>
+            <div class="profile-actions">
+              <button class="btn-sm-primary" id="btn-open-edit-tutor">✏️ Editar Perfil</button>
+              <button class="btn-sm-ghost" id="btn-tutor-logout">🚪 Sair</button>
+            </div>
+          </div>
+
+          <!-- Estatísticas estilo Instagram -->
+          <div class="ig-stats-bar">
+            <div class="ig-stat-col">
+              <span class="ig-stat-num" id="stat-pets-count">0</span>
+              <span class="ig-stat-lbl">Pets</span>
+            </div>
+            <div class="ig-stat-col">
+              <span class="ig-stat-num" id="stat-tags-count">0</span>
+              <span class="ig-stat-lbl">TAGs Ativas</span>
+            </div>
+            <div class="ig-stat-col">
+              <span class="ig-stat-num" id="stat-vax-count">0</span>
+              <span class="ig-stat-lbl">Vacinas</span>
+            </div>
+          </div>
+
+          <!-- Ações rápidas estilo Stories -->
+          <div class="stories-container">
+            <button class="story-item" id="btn-story-newpet" aria-label="Cadastrar novo pet">
+              <div class="story-ring"><div class="story-circle">➕</div></div>
+              <span class="story-label">Novo Pet</span>
+            </button>
+            <button class="story-item" id="btn-story-activetag" aria-label="Vincular TAG NFC">
+              <div class="story-ring"><div class="story-circle">🏷️</div></div>
+              <span class="story-label">Ativar TAG</span>
+            </button>
+            <button class="story-item" id="btn-story-newvax" aria-label="Registrar vacina">
+              <div class="story-ring"><div class="story-circle">💉</div></div>
+              <span class="story-label">Vacina</span>
+            </button>
+            <button class="story-item" id="btn-story-lostmode" aria-label="Ativar modo pet perdido">
+              <div class="story-ring danger"><div class="story-circle">🚨</div></div>
+              <span class="story-label">Pet Perdido</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid de Meus Pets -->
+      <div class="section-header">
+        <h2 class="section-title">🐾 Meus Pets (<span id="tutor-pets-badge">0</span>)</h2>
+        <button class="btn-sm-primary" id="btn-quick-add-pet">➕ Adicionar Pet</button>
+      </div>
+
+      <div id="pets-list-container" class="pets-grid">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 3 — PERFIL DO PET (REDE SOCIAL)       -->
+    <!-- ========================================== -->
+    <section id="view-pet-profile" class="hidden">
+      <button class="btn-back-nav" id="btn-back-to-dashboard">
+        ← Voltar ao painel
+      </button>
+
+      <div class="profile-hero">
+        <!-- Capa do Pet -->
+        <div class="profile-banner pet-hero-banner" id="pet-cover-bg">
+          <label for="input-pet-cover" class="banner-btn-cam" title="Alterar capa">
+            📷 Trocar capa
+          </label>
+          <input type="file" id="input-pet-cover" accept="image/*" class="hidden">
+          <svg class="banner-wave" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C150,90 350,-40 500,40 C650,120 900,20 1200,60 L1200,120 L0,120 Z"></path>
+          </svg>
+        </div>
+
+        <div class="profile-body">
+          <div class="avatar-wrapper pet-avatar-wrapper">
+            <div id="pet-avatar-container">
+              <div class="avatar-placeholder" id="pet-avatar-fallback">🐾</div>
+            </div>
+            <label for="input-pet-photo" class="avatar-cam-badge" title="Trocar foto do pet" aria-label="Trocar foto">
+              📷
+            </label>
+            <input type="file" id="input-pet-photo" accept="image/*" class="hidden">
+          </div>
+
+          <div class="profile-meta-row">
+            <div class="profile-info">
+              <h1 id="pet-name-display">Nome do Pet</h1>
+              <div class="email-sub" id="pet-meta-line">Espécie • Raça • Idade • Peso</div>
+              <div id="pet-location-city" style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 6px;">📍 Localização</div>
+              <span id="pet-status-badge" class="tag-badge">🏷️ TAG Ativa</span>
+            </div>
+            <div class="profile-actions">
+              <button class="btn-sm-primary" id="btn-edit-current-pet">✏️ Editar Perfil</button>
+              <button class="btn-sm-outline" id="btn-pet-add-vax">💉 Saúde</button>
+              <button class="btn-sm-outline" id="btn-trigger-newpost">➕ Nova Publicação</button>
+              <button class="btn-sm-ghost" id="btn-pet-toggle-lost">🚨 Modo Perdido</button>
+            </div>
+          </div>
+
+          <!-- Alerta de Modo Perdido se ativo -->
+          <div id="pet-lost-alert-box" class="lost-alert-banner hidden">
+            <div>
+              <strong>🚨 ALERTA DE PET PERDIDO ATIVADO!</strong>
+              <div style="font-size:0.85rem; margin-top:2px;">Aviso exibido publicamente para quem aproximar o celular da TAG NFC.</div>
+            </div>
+            <button class="btn-sm-outline" id="btn-deactivate-lost" style="background:#ffffff;">Desativar Alerta</button>
+          </div>
+
+          <!-- Estatísticas do Pet -->
+          <div class="ig-stats-bar">
+            <div class="ig-stat-col">
+              <span class="ig-stat-num" id="stat-pet-posts">0</span>
+              <span class="ig-stat-lbl">Publicações</span>
+            </div>
+            <div class="ig-stat-col">
+              <span class="ig-stat-num" id="stat-pet-photos">0</span>
+              <span class="ig-stat-lbl">Fotos</span>
+            </div>
+            <div class="ig-stat-col">
+              <span class="ig-stat-num" id="stat-pet-vax">0</span>
+              <span class="ig-stat-lbl">Vacinas</span>
+            </div>
+          </div>
+
+          <!-- Abas em Pílula -->
+          <div class="pet-tabs-nav" role="tablist">
+            <button class="pet-tab-btn active" data-pettab="mural">📝 Mural</button>
+            <button class="pet-tab-btn" data-pettab="fotos">🖼️ Fotos</button>
+            <button class="pet-tab-btn" data-pettab="saude">💉 Saúde</button>
+            <button class="pet-tab-btn" data-pettab="sobre">ℹ️ Sobre</button>
+          </div>
+
+          <!-- CONTEÚDO DAS ABAS -->
+          <div id="tab-content-mural">
+            <!-- Card de Criar Publicação -->
+            <div class="new-post-card">
+              <div class="form-group" style="margin-bottom:10px;">
+                <textarea id="post-caption-input" class="form-textarea" rows="2" placeholder="Escreva uma legenda para o momento do pet..."></textarea>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <label for="post-photo-upload" class="btn-sm-outline" style="cursor:pointer;">
+                  📷 Anexar Foto
+                </label>
+                <input type="file" id="post-photo-upload" accept="image/*" class="hidden">
+                <span id="post-photo-preview-name" style="font-size:0.8rem; color:var(--text-muted);"></span>
+                <button class="btn-sm-primary" id="btn-publish-post">Publicar</button>
+              </div>
+            </div>
+
+            <!-- Feed de Publicações -->
+            <div id="posts-feed-container">
+              <!-- Cards de posts renderizados aqui -->
+            </div>
+          </div>
+
+          <div id="tab-content-fotos" class="hidden">
+            <div class="photo-gallery-grid" id="pet-gallery-container">
+              <!-- Fotos renderizadas aqui -->
+            </div>
+          </div>
+
+          <div id="tab-content-saude" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h3 style="margin:0; font-size:1.1rem; color:var(--primary);">Histórico de Vacinas</h3>
+              <button class="btn-sm-primary" id="btn-add-vax-direct">➕ Registrar Vacina</button>
+            </div>
+            <div class="timeline" id="vax-timeline-container">
+              <!-- Timeline de vacinas -->
+            </div>
+          </div>
+
+          <div id="tab-content-sobre" class="hidden">
+            <div class="info-sheet">
+              <div class="info-card">
+                <div class="lbl">Espécie / Raça</div>
+                <div class="val" id="info-breed">-</div>
+              </div>
+              <div class="info-card">
+                <div class="lbl">Idade Estimada</div>
+                <div class="val" id="info-age">-</div>
+              </div>
+              <div class="info-card">
+                <div class="lbl">Peso</div>
+                <div class="val" id="info-weight">-</div>
+              </div>
+              <div class="info-card">
+                <div class="lbl">Cor / Pelagem</div>
+                <div class="val" id="info-color">-</div>
+              </div>
+            </div>
+
+            <div class="info-card" style="margin-bottom:16px;">
+              <div class="lbl">Observações Médicas / Comportamento</div>
+              <div class="val" id="info-notes" style="font-weight:400; font-size:0.95rem;">Nenhuma observação informada.</div>
+            </div>
+
+            <div class="info-card" style="margin-bottom:16px;">
+              <div class="lbl" style="margin-bottom:8px;">Contatos de Emergência do Tutor</div>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div id="contact-phone-row">📞 <strong>Telefone:</strong> <span id="contact-phone-val">-</span></div>
+                <div id="contact-whatsapp-row">💬 <strong>WhatsApp:</strong> <a id="contact-whatsapp-link" href="#" target="_blank" style="color:var(--green); font-weight:700;">Enviar mensagem</a></div>
+                <div id="contact-email-row">✉️ <strong>E-mail:</strong> <a id="contact-email-link" href="#" style="color:var(--primary);">Enviar e-mail</a></div>
+              </div>
+            </div>
+
+            <div class="nfc-status-box">
+              <div style="font-size:24px; margin-bottom:6px;">📍</div>
+              <h4 style="margin:0 0 6px 0; color:var(--primary);">Status da TAG NFC Save Tag</h4>
+              <p id="nfc-status-text" style="font-size:0.9rem; color:var(--text); margin:0;">
+                Aguardando a primeira leitura da TAG NFC
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAIS                                     -->
+  <!-- ========================================== -->
+
+  <!-- MODAL: MINHA CONTA (TUTOR) -->
+  <div class="modal-overlay" id="modal-tutor-profile">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Editar Meu Perfil</h3>
+        <button class="modal-close-btn" data-close="modal-tutor-profile">&times;</button>
+      </div>
+      <form id="form-edit-tutor">
+        <div class="form-group">
+          <label class="form-label" for="edit-tutor-name">Nome Completo</label>
+          <input type="text" id="edit-tutor-name" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-tutor-email">E-mail (somente leitura)</label>
+          <input type="email" id="edit-tutor-email" class="form-input" readonly style="background:#f1f5f9; cursor:not-allowed;">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-tutor-whatsapp">WhatsApp</label>
+          <input type="tel" id="edit-tutor-whatsapp" class="form-input" placeholder="(11) 99999-9999" maxlength="15">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="edit-tutor-city">Cidade / Estado</label>
+          <input type="text" id="edit-tutor-city" class="form-input" placeholder="Ex: São Paulo, SP">
+        </div>
+        <button type="submit" class="btn-action" id="btn-save-tutor-profile">Salvar Alterações</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: NOVO / EDITAR PET -->
+  <div class="modal-overlay" id="modal-pet-form">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-pet-title">Novo Pet</h3>
+        <button class="modal-close-btn" data-close="modal-pet-form">&times;</button>
+      </div>
+      <form id="form-pet">
+        <input type="hidden" id="pet-form-id">
+        <div class="form-group">
+          <label class="form-label" for="pet-form-name">Nome do Pet *</label>
+          <input type="text" id="pet-form-name" class="form-input" required placeholder="Ex: Thor">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label" for="pet-form-species">Espécie *</label>
+            <select id="pet-form-species" class="form-select" required>
+              <option value="Cão">Cão 🐶</option>
+              <option value="Gato">Gato 🐱</option>
+              <option value="Outro">Outro 🐾</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pet-form-breed">Raça</label>
+            <input type="text" id="pet-form-breed" class="form-input" placeholder="Ex: Golden Retriever">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label" for="pet-form-birth">Data de Nascimento</label>
+            <input type="date" id="pet-form-birth" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pet-form-weight">Peso (kg)</label>
+            <input type="text" id="pet-form-weight" class="form-input" placeholder="Ex: 14.5 kg">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pet-form-color">Cor / Pelagem</label>
+          <input type="text" id="pet-form-color" class="form-input" placeholder="Ex: Caramelo com manchas">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pet-form-photo">Foto do Pet</label>
+          <input type="file" id="pet-form-photo" accept="image/*" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pet-form-notes">Observações Médicas / Microchip</label>
+          <textarea id="pet-form-notes" class="form-textarea" rows="2" placeholder="Alergias, remédios de uso contínuo, etc."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pet-form-phone">Telefone de Contato</label>
+          <input type="tel" id="pet-form-phone" class="form-input" placeholder="(11) 99999-9999">
+        </div>
+        <button type="submit" class="btn-action" id="btn-save-pet">Salvar Pet</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ATIVAR TAG NFC -->
+  <div class="modal-overlay" id="modal-tag">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">🏷️ Ativar TAG NFC</h3>
+        <button class="modal-close-btn" data-close="modal-tag">&times;</button>
+      </div>
+      <form id="form-activate-tag">
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px;">
+          Insira o código gravado no verso da TAG Save Tag para vinculá-la a um de seus pets cadastrados.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="tag-code-input">Código da TAG (ex: STP-98432) *</label>
+          <input type="text" id="tag-code-input" class="form-input" placeholder="STP-XXXXXX" required style="text-transform:uppercase; font-weight:700;">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="tag-pet-select">Selecione o Pet *</label>
+          <select id="tag-pet-select" class="form-select" required>
+            <!-- Carregado via JS -->
+          </select>
+        </div>
+        <button type="submit" class="btn-action" id="btn-submit-tag">Vincular e Ativar TAG</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTRAR VACINA -->
+  <div class="modal-overlay" id="modal-vax">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">💉 Registrar Vacina</h3>
+        <button class="modal-close-btn" data-close="modal-vax">&times;</button>
+      </div>
+      <form id="form-vax">
+        <div class="form-group">
+          <label class="form-label" for="vax-pet-select">Pet *</label>
+          <select id="vax-pet-select" class="form-select" required>
+            <!-- Carregado via JS -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="vax-name-input">Nome da Vacina *</label>
+          <input type="text" id="vax-name-input" class="form-input" placeholder="Ex: V10, Antirrábica, Giardia" required>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label" for="vax-applied-date">Data da Aplicação *</label>
+            <input type="date" id="vax-applied-date" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="vax-next-date">Próxima Dose</label>
+            <input type="date" id="vax-next-date" class="form-input">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="vax-vet-input">Veterinário / Clínica</label>
+          <input type="text" id="vax-vet-input" class="form-input" placeholder="Ex: Dr. Roberto / Clínica VetLife">
+        </div>
+        <button type="submit" class="btn-action" id="btn-save-vax">Registrar Vacina</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: MODO PERDIDO -->
+  <div class="modal-overlay" id="modal-lost">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color:var(--red);">🚨 Ativar Modo Pet Perdido</h3>
+        <button class="modal-close-btn" data-close="modal-lost">&times;</button>
+      </div>
+      <form id="form-lost">
+        <p style="font-size:0.9rem; color:var(--text); line-height:1.5;">
+          Ao ativar o <strong>Modo Perdido</strong>, um alerta em destaque vermelho será fixado no perfil público do pet. Qualquer pessoa que ler a TAG NFC receberá um aviso urgente com seus contatos diretos.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="lost-pet-select">Selecione o Pet em Alerta</label>
+          <select id="lost-pet-select" class="form-select">
+            <!-- Carregado via JS -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="lost-toggle-state">Status</label>
+          <select id="lost-toggle-state" class="form-select">
+            <option value="true">🚨 ATIVAR ALERTA (Pet Perdido)</option>
+            <option value="false">✅ DESATIVAR (Pet está seguro)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-action" style="background:var(--red);" id="btn-save-lost">Atualizar Status</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX DE FOTOS -->
+  <div id="lightbox-overlay" role="dialog" aria-modal="true">
+    <button id="lightbox-close" aria-label="Fechar">&times;</button>
+    <img id="lightbox-img" src="" alt="Foto expandida">
+  </div>
+
+  <!-- CONTAINER DE TOASTS -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ========================================== -->
+  <!-- SCRIPT INTEGRADO: LÓGICA E ESTADO LOCAL    -->
+  <!-- ========================================== -->
+  <script>
+    /**
+     * SAVE TAG PET - SISTEMA DE IDENTIFICAÇÃO NFC
+     * Configuração do Supabase (substitua pelas suas chaves)
+     */
+    const SUPABASE_URL = 'https://mqiwoubhivutavpnpeax.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll';
+
+    // Utilitário para checar se as chaves reais foram fornecidas
+    const isSupabaseConfigured = () => {
+      return SUPABASE_URL && 
+             SUPABASE_ANON_KEY && 
+             !SUPABASE_URL.includes('COLE_AQUI') && 
+             !SUPABASE_ANON_KEY.includes('COLE_AQUI');
+    };
+
+    /**
+     * GERENCIADOR DE ESTADO LOCAL (Degradação graciosa e persistência no localStorage)
+     */
+    const STORAGE_KEY_AUTH = 'savetag_auth_user';
+    const STORAGE_KEY_PETS = 'savetag_pets_data';
+    const STORAGE_KEY_VAX = 'savetag_vax_data';
+    const STORAGE_KEY_POSTS = 'savetag_posts_data';
+
+    // Carregamento de mock padrão para demonstração inicial rica
+    function initDefaultData() {
+      if (!localStorage.getItem(STORAGE_KEY_PETS)) {
+        const defaultPets = [
+          {
+            id: 'pet-1',
+            tutor_id: 'usr-1',
+            name: 'Thor',
+            species: 'Cão',
+            breed: 'Golden Retriever',
+            birth_date: '2021-04-12',
+            weight: '32 kg',
+            color: 'Dourado',
+            notes: 'Extremamente dócil. Alérgico a frutos do mar.',
+            tag_code: 'STP-98432',
+            is_lost: false,
+            phone: '(11) 98765-4321',
+            photo_url: 'https://img.usecurling.com/p/400/400?q=golden%20retriever',
+            cover_url: ''
+          },
+          {
+            id: 'pet-2',
+            tutor_id: 'usr-1',
+            name: 'Luna',
+            species: 'Gato',
+            breed: 'Siamês',
+            birth_date: '2022-08-20',
+            weight: '4.2 kg',
+            color: 'Branco com pontas escuras',
+            notes: 'Tímida com estranhos. Castrada.',
+            tag_code: '',
+            is_lost: false,
+            phone: '(11) 98765-4321',
+            photo_url: 'https://img.usecurling.com/p/400/400?q=siamese%20cat',
+            cover_url: ''
+          }
+        ];
+        localStorage.setItem(STORAGE_KEY_PETS, JSON.stringify(defaultPets));
+      }
+
+      if (!localStorage.getItem(STORAGE_KEY_VAX)) {
+        const defaultVax = [
+          {
+            id: 'vax-1',
+            pet_id: 'pet-1',
+            tutor_id: 'usr-1',
+            name: 'V10 (Déctupla Canina)',
+            applied_at: '2024-03-10',
+            next_due: '2025-03-10',
+            vet: 'Dra. Carolina Mendes (CRMV 4421)'
+          },
+          {
+            id: 'vax-2',
+            pet_id: 'pet-1',
+            tutor_id: 'usr-1',
+            name: 'Antirrábica',
+            applied_at: '2024-04-05',
+            next_due: '2025-04-05',
+            vet: 'Dr. Lucas Prado'
+          }
+        ];
+        localStorage.setItem(STORAGE_KEY_VAX, JSON.stringify(defaultVax));
+      }
+
+      if (!localStorage.getItem(STORAGE_KEY_POSTS)) {
+        const defaultPosts = [
+          {
+            id: 'post-1',
+            pet_id: 'pet-1',
+            tutor_id: 'usr-1',
+            caption: 'Passeio matinal no parque com a nova TAG NFC!',
+            image_url: 'https://img.usecurling.com/p/600/450?q=dog%20park%20play',
+            created_at: new Date(Date.now() - 3600 * 1000 * 24).toISOString()
+          }
+        ];
+        localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(defaultPosts));
+      }
+
+      // Se nenhum usuário logado, inicializar sessão padrão de teste para visualização imediata
+      if (!localStorage.getItem(STORAGE_KEY_AUTH)) {
+        const defaultUser = {
+          id: 'usr-1',
+          email: 'tutor@savetagpet.com.br',
+          user_metadata: {
+            full_name: 'Dr. Carlos Alberto',
+            whatsapp: '(11) 98765-4321',
+            city: 'São Paulo, SP',
+            avatar_url: ''
+          }
+        };
+        localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(defaultUser));
+      }
+    }
+
+    initDefaultData();
+
+    /**
+     * CAMADA DE ABSTRAÇÃO AUTH & DB (COMPATÍVEL COM SUPABASE API)
+     */
+    const localStore = {
+      getUser() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY_AUTH) || 'null');
+        } catch (e) {
+          return null;
+        }
+      },
+      setUser(u) {
+        if (u) {
+          localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(u));
+        } else {
+          localStorage.removeItem(STORAGE_KEY_AUTH);
+        }
+      },
+      getPets(tutorId) {
+        try {
+          const list = JSON.parse(localStorage.getItem(STORAGE_KEY_PETS) || '[]');
+          return tutorId ? list.filter(p => p.tutor_id === tutorId) : list;
+        } catch (e) {
+          return [];
+        }
+      },
+      savePet(pet) {
+        const list = JSON.parse(localStorage.getItem(STORAGE_KEY_PETS) || '[]');
+        const idx = list.findIndex(p => p.id === pet.id);
+        if (idx >= 0) {
+          list[idx] = { ...list[idx], ...pet };
+        } else {
+          list.push(pet);
+        }
+        localStorage.setItem(STORAGE_KEY_PETS, JSON.stringify(list));
+      },
+      getVaccines(petId) {
+        try {
+          const list = JSON.parse(localStorage.getItem(STORAGE_KEY_VAX) || '[]');
+          return petId ? list.filter(v => v.pet_id === petId) : list;
+        } catch (e) {
+          return [];
+        }
+      },
+      saveVaccine(vax) {
+        const list = JSON.parse(localStorage.getItem(STORAGE_KEY_VAX) || '[]');
+        list.unshift(vax);
+        localStorage.setItem(STORAGE_KEY_VAX, JSON.stringify(list));
+      },
+      getPosts(petId) {
+        try {
+          const list = JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS) || '[]');
+          return petId ? list.filter(p => p.pet_id === petId) : list;
+        } catch (e) {
+          return [];
+        }
+      },
+      savePost(post) {
+        const list = JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS) || '[]');
+        list.unshift(post);
+        localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(list));
+      },
+      deletePost(postId) {
+        let list = JSON.parse(localStorage.getItem(STORAGE_KEY_POSTS) || '[]');
+        list = list.filter(p => p.id !== postId);
+        localStorage.setItem(STORAGE_KEY_POSTS, JSON.stringify(list));
+      }
+    };
+
+    /**
+     * SISTEMA DE TOAST
+     */
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast-msg toast-${type}`;
+      
+      const icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : '⚠️');
+      toast.innerHTML = `<span>${icon} ${message}</span>`;
+      container.appendChild(toast);
+
+      // Trigger animação
+      setTimeout(() => toast.classList.add('show'), 10);
+
+      // Desaparece após 6 segundos
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 6000);
+    }
+
+    /**
+     * REDIMENSIONADOR DE IMAGENS VIA CANVAS (MÁXIMO LARGURA/ALTURA)
+     */
+    function resizeImage(file, maxWidth, maxHeight) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > maxWidth) {
+                height = Math.round((height * maxWidth) / width);
+                width = maxWidth;
+              }
+            } else {
+              if (height > maxHeight) {
+                width = Math.round((width * maxHeight) / height);
+                height = maxHeight;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.82));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /**
+     * FORMATAÇÃO DE DATA RELATIVA PT-BR
+     */
+    function formatRelativeDate(isoDateStr) {
+      if (!isoDateStr) return '';
+      const date = new Date(isoDateStr);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return 'Hoje';
+      if (diffDays === 1) return 'Ontem';
+      if (diffDays < 30) return `Há ${diffDays} dias`;
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    /**
+     * MÁSCARA TELEFONE / WHATSAPP SIMPLES
+     */
+    function maskPhone(val) {
+      let v = val.replace(/\D/g, '');
+      if (v.length > 11) v = v.substring(0, 11);
+      if (v.length > 6) {
+        return `(${v.substring(0, 2)}) ${v.substring(2, 7)}-${v.substring(7)}`;
+      } else if (v.length > 2) {
+        return `(${v.substring(0, 2)}) ${v.substring(2)}`;
+      }
+      return v;
+    }
+
+    /**
+     * ESTADO GLOBAL DA APLICAÇÃO
+     */
+    let currentUser = null;
+    let currentPetId = null;
+    let pendingPostImageBase64 = '';
+
+    // Elementos principais
+    const viewAuth = document.getElementById('view-auth');
+    const viewDashboard = document.getElementById('view-dashboard');
+    const viewPetProfile = document.getElementById('view-pet-profile');
+    const supabaseAlertBanner = document.getElementById('supabase-alert-banner');
+
+    // Checagem de banner
+    if (isSupabaseConfigured()) {
+      supabaseAlertBanner.classList.add('hidden');
+    }
+
+    /**
+     * CONTROLE DE ROTAS E TELAS
+     */
+    function navigateToAuth() {
+      viewAuth.classList.remove('hidden');
+      viewDashboard.classList.add('hidden');
+      viewPetProfile.classList.add('hidden');
+    }
+
+    function navigateToDashboard() {
+      viewAuth.classList.add('hidden');
+      viewDashboard.classList.remove('hidden');
+      viewPetProfile.classList.add('hidden');
+      renderDashboard();
+    }
+
+    function navigateToPetProfile(petId) {
+      currentPetId = petId;
+      viewAuth.classList.add('hidden');
+      viewDashboard.classList.add('hidden');
+      viewPetProfile.classList.remove('hidden');
+      renderPetProfile();
+    }
+
+    /**
+     * INICIALIZAÇÃO E LISTENER DE AUTENTICAÇÃO
+     */
+    function checkAuthState() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isResetFlow = urlParams.get('reset') === '1';
+
+      currentUser = localStore.getUser();
+
+      if (isResetFlow) {
+        // Fluxo de recuperação de senha
+        navigateToAuth();
+        document.getElementById('auth-tabs').classList.add('hidden');
+        document.getElementById('form-login').classList.add('hidden');
+        document.getElementById('form-signup').classList.add('hidden');
+        document.getElementById('form-recovery').classList.remove('hidden');
+        return;
+      }
+
+      if (currentUser) {
+        navigateToDashboard();
+      } else {
+        navigateToAuth();
+      }
+    }
+
+    /**
+     * ABAS DE LOGIN / CADASTRO
+     */
+    document.querySelectorAll('#auth-tabs .pill-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('#auth-tabs .pill-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const target = tab.getAttribute('data-tab');
+        if (target === 'login') {
+          document.getElementById('form-login').classList.remove('hidden');
+          document.getElementById('form-signup').classList.add('hidden');
+        } else {
+          document.getElementById('form-login').classList.add('hidden');
+          document.getElementById('form-signup').classList.remove('hidden');
+        }
+      });
+    });
+
+    // Máscara para WhatsApp no cadastro
+    const signupWhatsappInput = document.getElementById('signup-whatsapp');
+    signupWhatsappInput.addEventListener('input', (e) => {
+      e.target.value = maskPhone(e.target.value);
+    });
+
+    /**
+     * VIEW 1: ENTRAR (LOGIN)
+     */
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-login-submit');
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Acessando...`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Acessar Painel</span>`;
+
+        // Mock login
+        currentUser = {
+          id: 'usr-1',
+          email: email,
+          user_metadata: {
+            full_name: email.split('@')[0],
+            whatsapp: '(11) 98765-4321',
+            city: 'São Paulo, SP',
+            avatar_url: ''
+          }
+        };
+        localStore.setUser(currentUser);
+        showToast('Login realizado com sucesso!');
+        navigateToDashboard();
+      }, 700);
+    });
+
+    /**
+     * VIEW 1: CADASTRO
+     */
+    document.getElementById('form-signup').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-signup-submit');
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const whatsapp = document.getElementById('signup-whatsapp').value.trim();
+      const password = document.getElementById('signup-password').value;
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Criando conta...`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Criar Minha Conta</span>`;
+
+        currentUser = {
+          id: 'usr-' + Date.now(),
+          email: email,
+          user_metadata: {
+            full_name: name,
+            whatsapp: whatsapp,
+            city: '',
+            avatar_url: ''
+          }
+        };
+        localStore.setUser(currentUser);
+        showToast('Conta criada com sucesso! Bem-vindo(a) ao Save Tag Pet.');
+        navigateToDashboard();
+      }, 800);
+    });
+
+    /**
+     * VIEW 1: ESQUECI MINHA SENHA
+     */
+    document.getElementById('btn-forgot-password').addEventListener('click', async () => {
+      const email = prompt('Digite o e-mail cadastrado para redefinição de senha:');
+      if (!email || !email.includes('@')) {
+        if (email !== null) showToast('E-mail inválido.', 'error');
+        return;
+      }
+
+      showToast('Enviando instruções de recuperação...', 'warning');
+      setTimeout(() => {
+        showToast('Confira seu e-mail (e a caixa de spam) para redefinir a senha!', 'success');
+      }, 900);
+    });
+
+    /**
+     * VIEW 1: DEFINIR NOVA SENHA (?reset=1)
+     */
+    document.getElementById('form-recovery').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const p1 = document.getElementById('recov-password').value;
+      const p2 = document.getElementById('recov-password-confirm').value;
+
+      if (p1 !== p2) {
+        showToast('As senhas não coincidem!', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-recovery-submit');
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> Salvando...`;
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = `<span>Salvar Nova Senha</span>`;
+        showToast('Senha atualizada com sucesso! Faça login com a nova senha.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+        document.getElementById('form-recovery').classList.add('hidden');
+        document.getElementById('auth-tabs').classList.remove('hidden');
+        document.getElementById('form-login').classList.remove('hidden');
+      }, 800);
+    });
+
+    /**
+     * VIEW 2: LOGOUT DO TUTOR
+     */
+    document.getElementById('btn-tutor-logout').addEventListener('click', () => {
+      if (confirm('Deseja realmente sair da sua conta?')) {
+        localStore.setUser(null);
+        currentUser = null;
+        showToast('Sessão encerrada com sucesso.');
+        navigateToAuth();
+      }
+    });
+
+    /**
+     * RENDERIZAR DASHBOARD DO TUTOR
+     */
+    function renderDashboard() {
+      if (!currentUser) return;
+      const meta = currentUser.user_metadata || {};
+      const name = meta.full_name || 'Tutor Save Tag';
+      const email = currentUser.email || '';
+      const avatarUrl = meta.avatar_url || '';
+
+      document.getElementById('tutor-name-display').textContent = name;
+      document.getElementById('tutor-email-display').textContent = email;
+
+      // Avatar tutor
+      const avatarContainer = document.getElementById('tutor-avatar-container');
+      if (avatarUrl) {
+        avatarContainer.innerHTML = `<img src="${avatarUrl}" class="avatar-img" alt="Foto do Tutor">`;
+      } else {
+        const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+        avatarContainer.innerHTML = `<div class="avatar-placeholder">${initials || '🐾'}</div>`;
+      }
+
+      // Estatísticas
+      const pets = localStore.getPets(currentUser.id);
+      const activeTags = pets.filter(p => !!p.tag_code).length;
+      let totalVax = 0;
+      pets.forEach(p => {
+        totalVax += localStore.getVaccines(p.id).length;
+      });
+
+      document.getElementById('stat-pets-count').textContent = pets.length;
+      document.getElementById('stat-tags-count').textContent = activeTags;
+      document.getElementById('stat-vax-count').textContent = totalVax;
+      document.getElementById('tutor-pets-badge').textContent = pets.length;
+
+      // Lista de pets
+      const petsList = document.getElementById('pets-list-container');
+      petsList.innerHTML = '';
+
+      if (pets.length === 0) {
+        petsList.innerHTML = `
+          <div style="grid-column: 1/-1; text-align:center; padding: 40px 20px; background:var(--card); border:1px dashed var(--border); border-radius:var(--radius-md);">
+            <div style="font-size:40px; margin-bottom:8px;">🐾</div>
+            <h3 style="margin:0 0 6px 0; color:var(--primary);">Nenhum pet cadastrado</h3>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Adicione seu primeiro pet para ativar a TAG NFC e acompanhar o histórico de saúde.</p>
+            <button class="btn-sm-primary" onclick="openNewPetModal()">➕ Cadastrar Meu Primeiro Pet</button>
+          </div>
+        `;
+        return;
+      }
+
+      pets.forEach(pet => {
+        const card = document.createElement('div');
+        card.className = 'pet-card';
+        card.onclick = (e) => {
+          // Se não clicou em botões internos de ação
+          if (!e.target.closest('button')) {
+            navigateToPetProfile(pet.id);
+          }
+        };
+
+        const avatarThumb = pet.photo_url 
+          ? `<img src="${pet.photo_url}" class="pet-card-avatar" alt="${pet.name}">`
+          : `<div class="pet-card-avatar">${pet.species === 'Gato' ? '🐱' : '🐶'}</div>`;
+
+        let tagBadgeHtml = '<span class="tag-badge badge-notag">Sem TAG</span>';
+        if (pet.tag_code) {
+          tagBadgeHtml = `<span class="tag-badge">🏷️ TAG Ativa (${pet.tag_code})</span>`;
+        }
+        if (pet.is_lost) {
+          tagBadgeHtml = '<span class="tag-badge badge-lost">🚨 MODO PERDIDO</span>';
+        }
+
+        card.innerHTML = `
+          <div class="pet-card-head">
+            ${avatarThumb}
+            <div class="pet-card-info">
+              <h3>${pet.name}</h3>
+              <p>${pet.species} • ${pet.breed || 'SRD'}</p>
+            </div>
+          </div>
+          <div>${tagBadgeHtml}</div>
+          <div class="pet-card-footer">
+            <span style="color:var(--primary); font-weight:600;">Ver Perfil Social →</span>
+            <button class="btn-sm-outline" style="padding:4px 10px; font-size:0.75rem;" onclick="event.stopPropagation(); openEditPetModal('${pet.id}')">✏️ Editar</button>
+          </div>
+        `;
+        petsList.appendChild(card);
+      });
+    }
+
+    /**
+     * UPLOAD AVATAR DO TUTOR VIA CANVAS (400x400)
+     */
+    document.getElementById('input-tutor-avatar').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        showToast('Processando foto...', 'warning');
+        const base64 = await resizeImage(file, 400, 400);
+        if (currentUser) {
+          currentUser.user_metadata = currentUser.user_metadata || {};
+          currentUser.user_metadata.avatar_url = base64;
+          localStore.setUser(currentUser);
+          renderDashboard();
+          showToast('Foto do perfil atualizada com sucesso!');
+        }
+      } catch (err) {
+        showToast('Erro ao processar imagem.', 'error');
+      }
+    });
+
+    /**
+     * RENDERIZAR VIEW 3: PERFIL DETALHADO DO PET
+     */
+    function renderPetProfile() {
+      const pets = localStore.getPets();
+      const pet = pets.find(p => p.id === currentPetId);
+      if (!pet) {
+        navigateToDashboard();
+        return;
+      }
+
+      // Capa do pet
+      const bannerEl = document.getElementById('pet-cover-bg');
+      if (pet.cover_url) {
+        bannerEl.style.backgroundImage = `url("${pet.cover_url}")`;
+      } else if (pet.photo_url) {
+        bannerEl.style.backgroundImage = `linear-gradient(rgba(11, 85, 116, 0.45), rgba(8, 64, 88, 0.75)), url("${pet.photo_url}")`;
+      } else {
+        bannerEl.style.backgroundImage = 'linear-gradient(135deg, #0b5574 0%, #084058 100%)';
+      }
+
+      // Avatar do pet
+      const avatarContainer = document.getElementById('pet-avatar-container');
+      if (pet.photo_url) {
+        avatarContainer.innerHTML = `<img src="${pet.photo_url}" class="avatar-img" alt="${pet.name}">`;
+      } else {
+        avatarContainer.innerHTML = `<div class="avatar-placeholder">${pet.species === 'Gato' ? '🐱' : '🐶'}</div>`;
+      }
+
+      // Informações básicas
+      document.getElementById('pet-name-display').textContent = pet.name;
+      const breed = pet.breed || 'SRD';
+      const weight = pet.weight || 'Peso não informado';
+      
+      let ageText = 'Idade não informada';
+      if (pet.birth_date) {
+        const b = new Date(pet.birth_date);
+        const diffYears = Math.floor((new Date() - b) / (1000 * 60 * 60 * 24 * 365.25));
+        ageText = diffYears > 0 ? `${diffYears} ano(s)` : 'Menos de 1 ano';
+      }
+
+      document.getElementById('pet-meta-line').textContent = `${pet.species} • ${breed} • ${ageText} • ${weight}`;
+      const tutorCity = (currentUser && currentUser.user_metadata && currentUser.user_metadata.city) || 'São Paulo, SP';
+      document.getElementById('pet-location-city').textContent = `📍 ${tutorCity}`;
+
+      // Badge de Status da TAG
+      const statusBadge = document.getElementById('pet-status-badge');
+      if (pet.is_lost) {
+        statusBadge.className = 'tag-badge badge-lost';
+        statusBadge.textContent = '🚨 Modo Perdido';
+        document.getElementById('pet-lost-alert-box').classList.remove('hidden');
+      } else if (pet.tag_code) {
+        statusBadge.className = 'tag-badge';
+        statusBadge.textContent = `🏷️ TAG Ativa (${pet.tag_code})`;
+        document.getElementById('pet-lost-alert-box').classList.add('hidden');
+      } else {
+        statusBadge.className = 'tag-badge badge-notag';
+        statusBadge.textContent = 'Sem TAG vinculada';
+        document.getElementById('pet-lost-alert-box').classList.add('hidden');
+      }
+
+      // Contagens
+      const posts = localStore.getPosts(pet.id);
+      const vaxes = localStore.getVaccines(pet.id);
+      const photoCount = posts.filter(p => !!p.image_url).length + (pet.photo_url ? 1 : 0);
+
+      document.getElementById('stat-pet-posts').textContent = posts.length;
+      document.getElementById('stat-pet-photos').textContent = photoCount;
+      document.getElementById('stat-pet-vax').textContent = vaxes.length;
+
+      // Renderizar sub-abas
+      renderMuralTab(pet, posts);
+      renderFotosTab(pet, posts);
+      renderSaudeTab(pet, vaxes);
+      renderSobreTab(pet);
+    }
+
+    // Botão Voltar ao Dashboard
+    document.getElementById('btn-back-to-dashboard').addEventListener('click', () => {
+      navigateToDashboard();
+    });
+
+    /**
+     * TROCA DE CAPA DO PET (CANVAS 1280px)
+     */
+    document.getElementById('input-pet-cover').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file || !currentPetId) return;
+      try {
+        showToast('Processando foto de capa...', 'warning');
+        const base64 = await resizeImage(file, 1280, 720);
+        localStore.savePet({ id: currentPetId, cover_url: base64 });
+        renderPetProfile();
+        showToast('Foto de capa atualizada com sucesso!');
+      } catch (err) {
+        showToast('Erro ao processar imagem.', 'error');
+      }
+    });
+
+    /**
+     * TROCA DE AVATAR DO PET (CANVAS 400px)
+     */
+    document.getElementById('input-pet-photo').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file || !currentPetId) return;
+      try {
+        showToast('Processando avatar do pet...', 'warning');
+        const base64 = await resizeImage(file, 400, 400);
+        localStore.savePet({ id: currentPetId, photo_url: base64 });
+        renderPetProfile();
+        showToast('Foto do pet atualizada!');
+      } catch (err) {
+        showToast('Erro ao processar foto.', 'error');
+      }
+    });
+
+    /**
+     * CONTROLE DE ABAS DO PERFIL DO PET
+     */
+    document.querySelectorAll('.pet-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pet-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.getAttribute('data-pettab');
+
+        document.getElementById('tab-content-mural').classList.toggle('hidden', tab !== 'mural');
+        document.getElementById('tab-content-fotos').classList.toggle('hidden', tab !== 'fotos');
+        document.getElementById('tab-content-saude').classList.toggle('hidden', tab !== 'saude');
+        document.getElementById('tab-content-sobre').classList.toggle('hidden', tab !== 'sobre');
+      });
+    });
+
+    /**
+     * ABA MURAL: PUBLICAR NO FEED
+     */
+    document.getElementById('post-photo-upload').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        showToast('Preparando imagem...', 'warning');
+        pendingPostImageBase64 = await resizeImage(file, 900, 900);
+        document.getElementById('post-photo-preview-name').textContent = 'Foto anexada ✓';
+      } catch (err) {
+        showToast('Erro ao carregar imagem.', 'error');
+      }
+    });
+
+    document.getElementById('btn-publish-post').addEventListener('click', () => {
+      const captionInput = document.getElementById('post-caption-input');
+      const caption = captionInput.value.trim();
+
+      if (!caption && !pendingPostImageBase64) {
+        showToast('Escreva algo ou anexe uma foto para publicar.', 'error');
+        return;
+      }
+
+      const newPost = {
+        id: 'post-' + Date.now(),
+        pet_id: currentPetId,
+        tutor_id: currentUser ? currentUser.id : 'usr-1',
+        caption: caption,
+        image_url: pendingPostImageBase64,
+        created_at: new Date().toISOString()
+      };
+
+      localStore.savePost(newPost);
+      captionInput.value = '';
+      pendingPostImageBase64 = '';
+      document.getElementById('post-photo-preview-name').textContent = '';
+      document.getElementById('post-photo-upload').value = '';
+
+      showToast('Publicação compartilhada no mural!');
+      renderPetProfile();
+    });
+
+    function renderMuralTab(pet, posts) {
+      const container = document.getElementById('posts-feed-container');
+      container.innerHTML = '';
+
+      if (posts.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:32px 16px; background:var(--card); border:1px dashed var(--border); border-radius:var(--radius-md);">
+            <div style="font-size:36px; margin-bottom:6px;">📸</div>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">Nenhuma publicação ainda. Compartilhe o primeiro momento de ${pet.name}!</p>
+          </div>
+        `;
+        return;
+      }
+
+      posts.forEach(post => {
+        const postCard = document.createElement('div');
+        postCard.className = 'post-card';
+
+        const avatarMini = pet.photo_url 
+          ? `<img src="${pet.photo_url}" class="post-avatar-mini" alt="${pet.name}">`
+          : `<div class="post-avatar-mini" style="background:var(--primary-light); display:flex; align-items:center; justify-content:center;">🐾</div>`;
+
+        const imgHtml = post.image_url ? `<img src="${post.image_url}" class="post-image" alt="Publicação do pet" onclick="openLightbox('${post.image_url}')" style="cursor:pointer;">` : '';
+
+        postCard.innerHTML = `
+          <div class="post-header">
+            <div class="post-header-author">
+              ${avatarMini}
+              <div>
+                <strong style="font-size:0.9rem; color:var(--text);">${pet.name}</strong>
+                <div style="font-size:0.75rem; color:var(--text-muted);">${formatRelativeDate(post.created_at)}</div>
+              </div>
+            </div>
+            <button class="post-delete-btn" title="Excluir post" onclick="deletePetPost('${post.id}')" aria-label="Excluir publicação">🗑️</button>
+          </div>
+          ${imgHtml}
+          ${post.caption ? `<div class="post-caption">${post.caption}</div>` : ''}
+        `;
+        container.appendChild(postCard);
+      });
+    }
+
+    window.deletePetPost = function(postId) {
+      if (confirm('Deseja excluir esta publicação?')) {
+        localStore.deletePost(postId);
+        showToast('Publicação removida.');
+        renderPetProfile();
+      }
+    };
+
+    /**
+     * ABA FOTOS: GALERIA E LIGHTBOX
+     */
+    function renderFotosTab(pet, posts) {
+      const gallery = document.getElementById('pet-gallery-container');
+      gallery.innerHTML = '';
+
+      const photos = [];
+      if (pet.photo_url) photos.push(pet.photo_url);
+      if (pet.cover_url) photos.push(pet.cover_url);
+      posts.forEach(p => {
+        if (p.image_url) photos.push(p.image_url);
+      });
+
+      if (photos.length === 0) {
+        gallery.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:32px; background:var(--card); border:1px dashed var(--border); border-radius:var(--radius-md);">
+            <p style="color:var(--text-muted); margin:0;">Nenhuma foto cadastrada no mural ou perfil.</p>
+          </div>
+        `;
+        return;
+      }
+
+      photos.forEach(url => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.innerHTML = `<img src="${url}" alt="Foto do pet" loading="lazy">`;
+        item.onclick = () => openLightbox(url);
+        gallery.appendChild(item);
+      });
+    }
+
+    function openLightbox(url) {
+      const lb = document.getElementById('lightbox-overlay');
+      const img = document.getElementById('lightbox-img');
+      img.src = url;
+      lb.style.display = 'flex';
+    }
+    document.getElementById('lightbox-close').addEventListener('click', () => {
+      document.getElementById('lightbox-overlay').style.display = 'none';
+    });
+    document.getElementById('lightbox-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'lightbox-overlay') {
+        e.target.style.display = 'none';
+      }
+    });
+
+    /**
+     * ABA SAÚDE: TIMELINE DE VACINAS
+     */
+    function renderSaudeTab(pet, vaxes) {
+      const timeline = document.getElementById('vax-timeline-container');
+      timeline.innerHTML = '';
+
+      if (vaxes.length === 0) {
+        timeline.innerHTML = `
+          <div style="text-align:center; padding:24px; background:var(--card); border:1px dashed var(--border); border-radius:var(--radius-md);">
+            <p style="color:var(--text-muted); margin:0 0 10px 0;">Nenhuma vacina registrada até o momento.</p>
+            <button class="btn-sm-primary" onclick="openVaccineModal('${pet.id}')">➕ Cadastrar Vacina</button>
+          </div>
+        `;
+        return;
+      }
+
+      vaxes.forEach(v => {
+        const node = document.createElement('div');
+        node.className = 'timeline-node';
+
+        const appliedFmt = v.applied_at ? new Date(v.applied_at + 'T00:00:00').toLocaleDateString('pt-BR') : 'Data não informada';
+        const nextFmt = v.next_due ? new Date(v.next_due + 'T00:00:00').toLocaleDateString('pt-BR') : 'Não definida';
+
+        node.innerHTML = `
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <h4>${v.name}</h4>
+            <div class="timeline-dates">
+              <span>📅 Aplicada em: <strong>${appliedFmt}</strong></span>
+              <span class="next-dose-pill">🎯 Próxima dose: ${nextFmt}</span>
+            </div>
+            ${v.vet ? `<div style="font-size:0.8rem; color:var(--text-muted); margin-top:6px;">👨‍⚕️ Veterinário: ${v.vet}</div>` : ''}
+          </div>
+        `;
+        timeline.appendChild(node);
+      });
+    }
+
+    /**
+     * ABA SOBRE: DADOS DO PET E CONTATOS
+     */
+    function renderSobreTab(pet) {
+      document.getElementById('info-breed').textContent = `${pet.species} (${pet.breed || 'SRD'})`;
+      
+      let ageText = 'Não informada';
+      if (pet.birth_date) {
+        const b = new Date(pet.birth_date);
+        const diffYears = Math.floor((new Date() - b) / (1000 * 60 * 60 * 24 * 365.25));
+        ageText = diffYears > 0 ? `${diffYears} anos` : 'Menos de 1 ano';
+      }
+      document.getElementById('info-age').textContent = ageText;
+      document.getElementById('info-weight').textContent = pet.weight || 'Não informado';
+      document.getElementById('info-color').textContent = pet.color || 'Não informado';
+      document.getElementById('info-notes').textContent = pet.notes || 'Nenhuma restrição ou observação informada.';
+
+      // Contatos
+      const phone = pet.phone || (currentUser && currentUser.user_metadata && currentUser.user_metadata.whatsapp) || '';
+      document.getElementById('contact-phone-val').textContent = phone || 'Não cadastrado';
+
+      const cleanPhone = phone.replace(/\D/g, '');
+      const waLink = document.getElementById('contact-whatsapp-link');
+      if (cleanPhone) {
+        waLink.href = `https://wa.me/55${cleanPhone}?text=Olá,%20encontrei%20seu%20pet%20${encodeURIComponent(pet.name)}!`;
+        waLink.style.display = 'inline';
+      } else {
+        waLink.style.display = 'none';
+      }
+
+      const emailLink = document.getElementById('contact-email-link');
+      if (currentUser && currentUser.email) {
+        emailLink.href = `mailto:${currentUser.email}?subject=Save%20Tag%20Pet%20-%20${encodeURIComponent(pet.name)}`;
+        emailLink.textContent = currentUser.email;
+      }
+
+      // Bloco TAG NFC
+      const nfcText = document.getElementById('nfc-status-text');
+      if (pet.tag_code) {
+        nfcText.innerHTML = `TAG NFC vinculada com sucesso: <strong style="color:var(--primary); font-family:monospace; font-size:1.05rem;">${pet.tag_code}</strong>.<br><span style="color:var(--green); font-size:0.85rem;">Pronto para leitura por aproximação de qualquer smartphone.</span>`;
+      } else {
+        nfcText.textContent = 'Aguardando a primeira leitura da TAG NFC. Vincule uma TAG na barra superior.';
+      }
+    }
+
+    /**
+     * MODAIS: ABERTURA E FECHAMENTO UNIFICADOS
+     */
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('active');
+    }
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('active');
+    }
+
+    document.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        closeModal(btn.getAttribute('data-close'));
+      });
+    });
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        document.getElementById('lightbox-overlay').style.display = 'none';
+      }
+    });
+
+    /**
+     * MODAL: EDITAR PERFIL DO TUTOR
+     */
+    document.getElementById('btn-open-edit-tutor').addEventListener('click', () => {
+      if (!currentUser) return;
+      const meta = currentUser.user_metadata || {};
+      document.getElementById('edit-tutor-name').value = meta.full_name || '';
+      document.getElementById('edit-tutor-email').value = currentUser.email || '';
+      document.getElementById('edit-tutor-whatsapp').value = meta.whatsapp || '';
+      document.getElementById('edit-tutor-city').value = meta.city || '';
+      openModal('modal-tutor-profile');
+    });
+
+    document.getElementById('edit-tutor-whatsapp').addEventListener('input', (e) => {
+      e.target.value = maskPhone(e.target.value);
+    });
+
+    document.getElementById('form-edit-tutor').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-tutor-profile');
+      btn.disabled = true;
+
+      const name = document.getElementById('edit-tutor-name').value.trim();
+      const whatsapp = document.getElementById('edit-tutor-whatsapp').value.trim();
+      const city = document.getElementById('edit-tutor-city').value.trim();
+
+      setTimeout(() => {
+        btn.disabled = false;
+        currentUser.user_metadata = currentUser.user_metadata || {};
+        currentUser.user_metadata.full_name = name;
+        currentUser.user_metadata.whatsapp = whatsapp;
+        currentUser.user_metadata.city = city;
+        localStore.setUser(currentUser);
+        closeModal('modal-tutor-profile');
+        renderDashboard();
+        showToast('Perfil do tutor atualizado com sucesso!');
+      }, 500);
+    });
+
+    /**
+     * MODAL: NOVO / EDITAR PET
+     */
+    window.openNewPetModal = function() {
+      document.getElementById('modal-pet-title').textContent = 'Novo Pet';
+      document.getElementById('pet-form-id').value = '';
+      document.getElementById('pet-form-name').value = '';
+      document.getElementById('pet-form-species').value = 'Cão';
+      document.getElementById('pet-form-breed').value = '';
+      document.getElementById('pet-form-birth').value = '';
+      document.getElementById('pet-form-weight').value = '';
+      document.getElementById('pet-form-color').value = '';
+      document.getElementById('pet-form-photo').value = '';
+      document.getElementById('pet-form-notes').value = '';
+      document.getElementById('pet-form-phone').value = (currentUser && currentUser.user_metadata && currentUser.user_metadata.whatsapp) || '';
+      openModal('modal-pet-form');
+    };
+
+    window.openEditPetModal = function(petId) {
+      const pet = localStore.getPets().find(p => p.id === petId);
+      if (!pet) return;
+
+      document.getElementById('modal-pet-title').textContent = `Editar ${pet.name}`;
+      document.getElementById('pet-form-id').value = pet.id;
+      document.getElementById('pet-form-name').value = pet.name;
+      document.getElementById('pet-form-species').value = pet.species;
+      document.getElementById('pet-form-breed').value = pet.breed || '';
+      document.getElementById('pet-form-birth').value = pet.birth_date || '';
+      document.getElementById('pet-form-weight').value = pet.weight || '';
+      document.getElementById('pet-form-color').value = pet.color || '';
+      document.getElementById('pet-form-notes').value = pet.notes || '';
+      document.getElementById('pet-form-phone').value = pet.phone || '';
+      document.getElementById('pet-form-photo').value = '';
+      openModal('modal-pet-form');
+    };
+
+    document.getElementById('btn-story-newpet').addEventListener('click', openNewPetModal);
+    document.getElementById('btn-quick-add-pet').addEventListener('click', openNewPetModal);
+    document.getElementById('btn-edit-current-pet').addEventListener('click', () => {
+      if (currentPetId) openEditPetModal(currentPetId);
+    });
+
+    document.getElementById('form-pet').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-save-pet');
+      btn.disabled = true;
+
+      const petId = document.getElementById('pet-form-id').value;
+      const name = document.getElementById('pet-form-name').value.trim();
+      const species = document.getElementById('pet-form-species').value;
+      const breed = document.getElementById('pet-form-breed').value.trim();
+      const birth = document.getElementById('pet-form-birth').value;
+      const weight = document.getElementById('pet-form-weight').value.trim();
+      const color = document.getElementById('pet-form-color').value.trim();
+      const notes = document.getElementById('pet-form-notes').value.trim();
+      const phone = document.getElementById('pet-form-phone').value.trim();
+
+      const photoFile = document.getElementById('pet-form-photo').files[0];
+      let photoBase64 = '';
+      if (photoFile) {
+        photoBase64 = await resizeImage(photoFile, 400, 400);
+      }
+
+      const existingPet = petId ? localStore.getPets().find(p => p.id === petId) : null;
+
+      const petData = {
+        id: petId || 'pet-' + Date.now(),
+        tutor_id: currentUser ? currentUser.id : 'usr-1',
+        name,
+        species,
+        breed,
+        birth_date: birth,
+        weight,
+        color,
+        notes,
+        phone,
+        tag_code: existingPet ? existingPet.tag_code : '',
+        is_lost: existingPet ? existingPet.is_lost : false,
+        cover_url: existingPet ? existingPet.cover_url : '',
+        photo_url: photoBase64 || (existingPet ? existingPet.photo_url : '')
+      };
+
+      localStore.savePet(petData);
+      btn.disabled = false;
+      closeModal('modal-pet-form');
+      showToast('Dados do pet salvos com sucesso!');
+
+      if (viewPetProfile.classList.contains('hidden')) {
+        renderDashboard();
+      } else {
+        renderPetProfile();
+      }
+    });
+
+    /**
+     * MODAL: ATIVAR TAG NFC
+     */
+    function openTagModal() {
+      const pets = localStore.getPets(currentUser ? currentUser.id : null);
+      const select = document.getElementById('tag-pet-select');
+      select.innerHTML = '';
+
+      if (pets.length === 0) {
+        showToast('Cadastre um pet antes de vincular uma TAG.', 'warning');
+        return;
+      }
+
+      pets.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.name} (${p.tag_code ? 'Atual: ' + p.tag_code : 'Sem TAG'})`;
+        select.appendChild(opt);
+      });
+
+      document.getElementById('tag-code-input').value = '';
+      openModal('modal-tag');
+    }
+
+    document.getElementById('btn-story-activetag').addEventListener('click', openTagModal);
+
+    document.getElementById('form-activate-tag').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = document.getElementById('tag-code-input').value.trim().toUpperCase();
+      const petId = document.getElementById('tag-pet-select').value;
+
+      // Verificação de duplicidade de TAG
+      const allPets = localStore.getPets();
+      const duplicate = allPets.find(p => p.id !== petId && p.tag_code && p.tag_code.toUpperCase() === code);
+
+      if (duplicate) {
+        showToast(`O código ${code} já está vinculado ao pet "${duplicate.name}".`, 'error');
+        return;
+      }
+
+      localStore.savePet({ id: petId, tag_code: code });
+      closeModal('modal-tag');
+      showToast(`TAG ${code} ativada com sucesso!`);
+      
+      if (viewPetProfile.classList.contains('hidden')) {
+        renderDashboard();
+      } else {
+        renderPetProfile();
+      }
+    });
+
+    /**
+     * MODAL: REGISTRAR VACINA
+     */
+    window.openVaccineModal = function(preSelectedPetId) {
+      const pets = localStore.getPets(currentUser ? currentUser.id : null);
+      const select = document.getElementById('vax-pet-select');
+      select.innerHTML = '';
+
+      pets.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name;
+        if (preSelectedPetId && p.id === preSelectedPetId) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      });
+
+      document.getElementById('vax-name-input').value = '';
+      document.getElementById('vax-applied-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('vax-next-date').value = '';
+      document.getElementById('vax-vet-input').value = '';
+
+      openModal('modal-vax');
+    };
+
+    document.getElementById('btn-story-newvax').addEventListener('click', () => openVaccineModal());
+    document.getElementById('btn-pet-add-vax').addEventListener('click', () => openVaccineModal(currentPetId));
+    document.getElementById('btn-add-vax-direct').addEventListener('click', () => openVaccineModal(currentPetId));
+
+    document.getElementById('form-vax').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const petId = document.getElementById('vax-pet-select').value;
+      const name = document.getElementById('vax-name-input').value.trim();
+      const applied = document.getElementById('vax-applied-date').value;
+      const nextDue = document.getElementById('vax-next-date').value;
+      const vet = document.getElementById('vax-vet-input').value.trim();
+
+      const newVax = {
+        id: 'vax-' + Date.now(),
+        pet_id: petId,
+        tutor_id: currentUser ? currentUser.id : 'usr-1',
+        name,
+        applied_at: applied,
+        next_due: nextDue,
+        vet
+      };
+
+      localStore.saveVaccine(newVax);
+      closeModal('modal-vax');
+      showToast('Vacina registrada no histórico!');
+
+      if (viewPetProfile.classList.contains('hidden')) {
+        renderDashboard();
+      } else {
+        renderPetProfile();
+      }
+    });
+
+    /**
+     * MODAL: MODO PERDIDO
+     */
+    function openLostModal(preSelectedPetId) {
+      const pets = localStore.getPets(currentUser ? currentUser.id : null);
+      const select = document.getElementById('lost-pet-select');
+      select.innerHTML = '';
+
+      pets.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `${p.name} (${p.is_lost ? '🚨 PERDIDO' : 'Seguro'})`;
+        if (preSelectedPetId && p.id === preSelectedPetId) {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      });
+
+      const selectedId = select.value;
+      const targetPet = pets.find(p => p.id === selectedId);
+      document.getElementById('lost-toggle-state').value = targetPet && targetPet.is_lost ? 'true' : 'false';
+
+      openModal('modal-lost');
+    }
+
+    document.getElementById('btn-story-lostmode').addEventListener('click', () => openLostModal());
+    document.getElementById('btn-pet-toggle-lost').addEventListener('click', () => openLostModal(currentPetId));
+
+    document.getElementById('form-lost').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const petId = document.getElementById('lost-pet-select').value;
+      const isLost = document.getElementById('lost-toggle-state').value === 'true';
+
+      localStore.savePet({ id: petId, is_lost: isLost });
+      closeModal('modal-lost');
+
+      if (isLost) {
+        showToast('Modo Perdido ATIVADO! Informações de contato em alerta.', 'warning');
+      } else {
+        showToast('Modo Perdido desativado. Que ótimo que o pet está seguro!', 'success');
+      }
+
+      if (viewPetProfile.classList.contains('hidden')) {
+        renderDashboard();
+      } else {
+        renderPetProfile();
+      }
+    });
+
+    document.getElementById('btn-deactivate-lost').addEventListener('click', () => {
+      if (currentPetId) {
+        localStore.savePet({ id: currentPetId, is_lost: false });
+        showToast('Modo Perdido desativado!');
+        renderPetProfile();
+      }
+    });
+
+    document.getElementById('btn-trigger-newpost').addEventListener('click', () => {
+      // Alternar para aba mural e dar foco no campo
+      document.querySelector('[data-pettab="mural"]').click();
+      document.getElementById('post-caption-input').focus();
+    });
+
+    // Iniciar verificação de sessão ao carregar a página
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuthState();
+    });
+  </script>
+<script>
+/* Skip artifact shell — fixed helpers served beside every artifact. */
+(function () {
+  "use strict";
+
+  var fmt = {
+    num: function (v, opts) { return new Intl.NumberFormat("pt-BR", opts || {}).format(v); },
+    brl: function (v) { return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v); },
+    pct: function (v) { return new Intl.NumberFormat("pt-BR", { style: "percent", maximumFractionDigits: 1 }).format(v); }
+  };
+
+  // axisFmt keeps axis tick labels short (compact notation) so long values
+  // (e.g. full BRL amounts) never clip against the plot edge.
+  function axisFmt(v) {
+    return fmt.num(v, { notation: "compact", maximumFractionDigits: 1 });
+  }
+
+  // format accepts a function OR one of the fmt names ("num" | "brl" | "pct").
+  function coerceFormat(spec) {
+    if (typeof spec === "function") return spec;
+    if (typeof spec === "string" && fmt[spec]) return fmt[spec];
+    return function (v) { return fmt.num(v); };
+  }
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#2563eb";
+  }
+  function mutedColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--text-muted").trim() || "#5b6472";
+  }
+  function svgEl(tag, attrs) {
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+  function frame(el, w, h) {
+    var svg = svgEl("svg", { viewBox: "0 0 " + w + " " + h, role: "img" });
+    el.innerHTML = "";
+    el.appendChild(svg);
+    return svg;
+  }
+
+  // maxOf guards the axis scale: empty values would give -Infinity (truthy,
+  // so "|| 1" can't catch it) and a non-positive max would flip the chart.
+  function maxOf(values) {
+    var m = values.length ? Math.max.apply(null, values) : 0;
+    return m > 0 ? m : 1;
+  }
+
+  // bar(el, {labels:[], values:[], color?, format?}) — vertical bar chart.
+  function bar(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 12, plotH = H - padT - padB;
+    var step = plotW / n, bw = Math.min(step * 0.62, 64);
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 12, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    cfg.values.forEach(function (v, i) {
+      var bh = Math.max(0, (v / max) * plotH);
+      var x = padL + i * step + (step - bw) / 2;
+      var y = padT + plotH - bh;
+      var r = svgEl("rect", { x: x, y: y, width: bw, height: bh, rx: 4, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(v);
+      r.appendChild(t);
+      svg.appendChild(r);
+      var tx = svgEl("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // line(el, {labels:[], values:[], color?, format?}) — single-series line.
+  function line(el, cfg) {
+    var W = 640, H = 280, padL = 46, padB = 30, padT = 12;
+    var svg = frame(el, W, H);
+    var max = maxOf(cfg.values);
+    var n = cfg.values.length;
+    var plotW = W - padL - 16, plotH = H - padT - padB;
+    var color = cfg.color || accent();
+    var f = coerceFormat(cfg.format);
+    for (var g = 0; g <= 4; g++) {
+      var gy = padT + plotH - (plotH * g) / 4;
+      svg.appendChild(svgEl("line", { x1: padL, y1: gy, x2: W - 16, y2: gy, stroke: "currentColor", "stroke-opacity": 0.08 }));
+      var lbl = svgEl("text", { x: padL - 8, y: gy + 4, "text-anchor": "end", "font-size": 10, fill: mutedColor() });
+      lbl.textContent = axisFmt((max * g) / 4);
+      svg.appendChild(lbl);
+    }
+    var pts = cfg.values.map(function (v, i) {
+      var x = padL + (n === 1 ? plotW / 2 : (plotW * i) / (n - 1));
+      var y = padT + plotH - (v / max) * plotH;
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 2, "stroke-linejoin": "round" }));
+    pts.forEach(function (p, i) {
+      var c = svgEl("circle", { cx: p[0], cy: p[1], r: 3.5, fill: color });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + f(cfg.values[i]);
+      c.appendChild(t);
+      svg.appendChild(c);
+      var tx = svgEl("text", { x: p[0], y: H - 10, "text-anchor": "middle", "font-size": 11, fill: mutedColor() });
+      tx.textContent = cfg.labels[i];
+      svg.appendChild(tx);
+    });
+  }
+
+  // donut(el, {labels:[], values:[], colors?}) — donut with center total.
+  function donut(el, cfg) {
+    var W = 320, H = 280, cx = W / 2, cy = H / 2, R = 92, r = 58;
+    var svg = frame(el, W, H);
+    var total = cfg.values.reduce(function (a, b) { return a + b; }, 0) || 1;
+    var palette = cfg.colors || [accent(), "#1baf7a", "#eda100", "#e34948", "#4a3aa7", "#e87ba4"];
+    var a0 = -Math.PI / 2;
+    cfg.values.forEach(function (v, i) {
+      var a1 = a0 + (v / total) * Math.PI * 2;
+      var large = a1 - a0 > Math.PI ? 1 : 0;
+      var p = ["M", cx + R * Math.cos(a0), cy + R * Math.sin(a0),
+        "A", R, R, 0, large, 1, cx + R * Math.cos(a1), cy + R * Math.sin(a1),
+        "L", cx + r * Math.cos(a1), cy + r * Math.sin(a1),
+        "A", r, r, 0, large, 0, cx + r * Math.cos(a0), cy + r * Math.sin(a0), "Z"].join(" ");
+      var path = svgEl("path", { d: p, fill: palette[i % palette.length] });
+      var t = svgEl("title", {});
+      t.textContent = cfg.labels[i] + ": " + fmt.num(v) + " (" + fmt.pct(v / total) + ")";
+      path.appendChild(t);
+      svg.appendChild(path);
+      a0 = a1;
+    });
+    var center = svgEl("text", { x: cx, y: cy + 5, "text-anchor": "middle", "font-size": 20, "font-weight": 650, fill: "currentColor" });
+    center.textContent = fmt.num(total);
+    svg.appendChild(center);
+  }
+
+  window.skipShell = { fmt: fmt };
+  window.skipChart = { bar: bar, line: line, donut: donut };
+})();
+
+</script>
+</body>
+</html>
