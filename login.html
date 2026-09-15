@@ -163,7 +163,245 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       line-height: 1.5;
     }
 
-    /* TOASTS (6s requirement) */
+       4. ESTADO GLOBAL DA APLICAÇÃO
+       ========================================================== */
+    let currentUser = null;
+    let petsList = [];
+    let vaccinesList = [];
+    let currentPhotoBase64 = '';
+=======
+       7. PAINEL DO TUTOR & DADOS DO SUPABASE
+       ========================================================== */
+    function setUserSession(user) {
+      currentUser = user;
+      authView.style.display = 'none';
+      dashboardView.style.display = 'flex';
+      navUserArea.style.display = 'flex';
+
+      const tutorName = user.user_metadata?.full_name || user.email.split('@')[0] || 'Tutor';
+      const initials = tutorName.substring(0, 2).toUpperCase();
+
+      document.getElementById('nav-user-name').textContent = tutorName;
+      document.getElementById('nav-avatar').textContent = initials;
+      document.getElementById('hero-display-name').textContent = `Olá, ${tutorName}!`;
+      document.getElementById('hero-display-email').textContent = user.email;
+      document.getElementById('hero-avatar-circle').textContent = initials[0] || '🐾';
+
+      loadUserData();
+    }
+=======
+       8. GESTÃO DE FOTOS COM CANVAS RESIZE (~500KB)
+       ========================================================== */
+    const petPhotoInput = document.getElementById('pet-photo-input');
+    const petPhotoPreview = document.getElementById('pet-photo-preview');
+
+    petPhotoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (evt) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement('canvas');
+          const maxDim = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else if (height > maxDim) {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Salvar como base64 comprimido
+          currentPhotoBase64 = canvas.toDataURL('image/jpeg', 0.82);
+          petPhotoPreview.innerHTML = `<img src="${currentPhotoBase64}" alt="Preview">`;
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+=======
+    /* ==========================================================
+       8. GESTÃO DE FOTOS (AVATAR DO TUTOR & FOTO DO PET)
+       ========================================================== */
+    // Helper reutilizável para redimensionamento via Canvas
+    function resizeImageFile(file, maxDimension, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onerror = reject;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height && width > maxDimension) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else if (height > maxDimension) {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Processamento e Salvamento do Avatar do Tutor
+    async function processAndSaveTutorAvatar(file) {
+      if (!file || !currentUser) return;
+
+      try {
+        showToast('Processando foto...', 'warning');
+        const dataUrl = await resizeImageFile(file, 400, 0.82);
+        currentTutorAvatarBase64 = dataUrl;
+
+        // Atualização imediata na UI
+        const tutorName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0] || 'Tutor';
+        const initials = tutorName.substring(0, 2).toUpperCase();
+        updateAvatarElements(dataUrl, initials);
+
+        // Salvar no metadata do Supabase
+        const { data, error } = await supabase.auth.updateUser({
+          data: { avatar_url: dataUrl }
+        });
+
+        if (error) {
+          showToast('Erro ao atualizar foto: ' + mapSupabaseError(error), 'error');
+        } else {
+          showToast('Foto atualizada! 🐾', 'success');
+          if (data && data.user) {
+            currentUser = data.user;
+          }
+        }
+      } catch (err) {
+        showToast('Falha ao processar imagem.', 'error');
+      }
+    }
+
+    // Gatilhos de upload do Avatar no Header
+    const heroAvatarWrap = document.getElementById('btn-trigger-avatar-upload');
+    const heroAvatarInput = document.getElementById('tutor-hero-avatar-input');
+
+    if (heroAvatarWrap && heroAvatarInput) {
+      heroAvatarWrap.addEventListener('click', () => {
+        heroAvatarInput.click();
+      });
+
+      heroAvatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          processAndSaveTutorAvatar(file);
+        }
+        e.target.value = '';
+      });
+    }
+
+    // Gatilhos de upload do Avatar no Modal Minha Conta
+    const modalAvatarWrap = document.getElementById('modal-avatar-preview-wrap');
+    const modalAvatarInput = document.getElementById('modal-tutor-avatar-input');
+
+    if (modalAvatarWrap && modalAvatarInput) {
+      modalAvatarWrap.addEventListener('click', () => {
+        modalAvatarInput.click();
+      });
+
+      modalAvatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          processAndSaveTutorAvatar(file);
+        }
+        e.target.value = '';
+      });
+    }
+
+    // Upload da foto do pet (no modal de cadastrar/editar pet)
+    const petPhotoInput = document.getElementById('pet-photo-input');
+    const petPhotoPreview = document.getElementById('pet-photo-preview');
+
+    petPhotoInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      try {
+        const base64 = await resizeImageFile(file, 800, 0.82);
+        currentPhotoBase64 = base64;
+        petPhotoPreview.innerHTML = `<img src="${base64}" alt="Preview">`;
+      } catch (err) {
+        showToast('Erro ao carregar foto do pet.', 'error');
+      }
+    });==========================================================
+       7. PAINEL DO TUTOR & DADOS DO SUPABASE
+       ========================================================== */
+    function updateAvatarElements(avatarUrl, initials) {
+      const heroAvatarEl = document.getElementById('hero-avatar-circle');
+      const navAvatarEl = document.getElementById('nav-avatar');
+      const modalPreviewEl = document.getElementById('modal-account-avatar-preview');
+
+      if (avatarUrl) {
+        heroAvatarEl.innerHTML = `<img src="${avatarUrl}" alt="Avatar">`;
+        heroAvatarEl.style.background = 'transparent';
+        
+        navAvatarEl.innerHTML = `<img src="${avatarUrl}" alt="Avatar" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+        if (modalPreviewEl) {
+          modalPreviewEl.innerHTML = `<img src="${avatarUrl}" alt="Avatar">`;
+        }
+      } else {
+        heroAvatarEl.innerHTML = initials || '🐾';
+        heroAvatarEl.style.background = 'var(--primary-light)';
+        
+        navAvatarEl.innerHTML = initials || 'TU';
+        if (modalPreviewEl) {
+          modalPreviewEl.innerHTML = initials || 'TU';
+        }
+      }
+    }
+
+    function setUserSession(user) {
+      currentUser = user;
+      authView.style.display = 'none';
+      dashboardView.style.display = 'flex';
+      navUserArea.style.display = 'flex';
+
+      const tutorName = user.user_metadata?.full_name || user.email.split('@')[0] || 'Tutor';
+      const initials = tutorName.substring(0, 2).toUpperCase();
+      const avatarUrl = user.user_metadata?.avatar_url || '';
+      currentTutorAvatarBase64 = avatarUrl;
+
+      document.getElementById('nav-user-name').textContent = tutorName;
+      document.getElementById('hero-display-name').textContent = tutorName;
+      document.getElementById('hero-display-email').textContent = user.email;
+
+      updateAvatarElements(avatarUrl, initials);
+
+      loadUserData();
+    }==========================================================
+       4. ESTADO GLOBAL DA APLICAÇÃO
+       ========================================================== */
+    let currentUser = null;
+    let petsList = [];
+    let vaccinesList = [];
+    let currentPhotoBase64 = '';
+    let currentTutorAvatarBase64 = '';TOASTS (6s requirement) */
     #toast-container {
       position: fixed;
       top: 18px;
@@ -492,97 +730,246 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Profile Header & Stats (Instagram inspired) */
-    .profile-hero {
+    /* Profile Hero Redesign (Instagram/Facebook Style) */
+    .profile-card {
       background: var(--card);
       border-radius: var(--radius-card);
-      padding: 24px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-md);
       border: 1px solid var(--border);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 20px;
     }
 
-    .hero-top {
+    .profile-cover-banner {
+      height: 160px;
+      background: linear-gradient(135deg, #0b5574 0%, #084058 100%);
+      background-image: 
+        radial-gradient(circle at 20% 40%, rgba(255, 255, 255, 0.08) 0, rgba(255, 255, 255, 0) 50%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80' opacity='0.1'%3E%3Ctext x='15' y='35' font-size='22' transform='rotate(-20 15 35)' fill='%23ffffff'%3E🐾%3C/text%3E%3Ctext x='55' y='65' font-size='18' transform='rotate(15 55 65)' fill='%23ffffff'%3E🐾%3C/text%3E%3C/svg%3E");
+      position: relative;
+    }
+
+    .profile-cover-banner .wave-bottom {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 28px;
+      fill: var(--card);
+      pointer-events: none;
+    }
+
+    .profile-content {
+      padding: 0 26px 22px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .profile-header-main {
+      display: flex;
+      align-items: flex-end;
       justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
+      gap: 20px;
+      margin-top: -65px;
+      position: relative;
+      z-index: 5;
     }
 
-    .hero-info {
+    .profile-left-col {
       display: flex;
-      align-items: center;
-      gap: 16px;
+      align-items: flex-end;
+      gap: 20px;
+      min-width: 0;
     }
 
-    .hero-avatar {
-      width: 64px;
-      height: 64px;
+    /* TUTOR AVATAR COM ANEL E SELETOR */
+    .profile-avatar-wrap {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .profile-avatar {
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary) 0%, #177ba3 100%);
-      color: #ffffff;
-      font-size: 1.6rem;
-      font-weight: 700;
+      border: 4px solid #ffffff;
+      outline: 3px solid var(--green);
+      background: var(--primary-light);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 14px rgba(11, 85, 116, 0.2);
-    }
-
-    .hero-names h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
       color: var(--primary);
-      margin-bottom: 2px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(11, 85, 116, 0.22);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      background-size: cover;
+      background-position: center;
     }
 
-    .hero-names p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
+    .profile-avatar-wrap:hover .profile-avatar {
+      transform: scale(1.03);
+      box-shadow: 0 12px 28px rgba(7, 150, 107, 0.3);
     }
 
-    .stats-bar {
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .avatar-camera-badge {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #ffffff;
       display: flex;
-      justify-content: space-around;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0;
+      align-items: center;
+      justify-content: center;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+      font-size: 0.92rem;
+      pointer-events: none;
+      transition: transform 0.2s;
     }
 
-    .stat-item {
-      text-align: center;
-      flex: 1;
+    .profile-avatar-wrap:hover .avatar-camera-badge {
+      transform: scale(1.1);
+      background: var(--green-hover);
     }
 
-    .stat-num {
-      font-size: 1.5rem;
+    .profile-meta-info {
+      padding-bottom: 4px;
+      min-width: 0;
+    }
+
+    .profile-meta-info .tutor-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      background: var(--green-bg);
+      color: var(--green-hover);
+      border-radius: var(--radius-pill);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      margin-bottom: 5px;
+    }
+
+    .profile-meta-info h2 {
+      font-size: 1.45rem;
       font-weight: 800;
       color: var(--primary);
-      line-height: 1;
+      line-height: 1.2;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .stat-lbl {
-      font-size: 0.8rem;
+    .profile-meta-info p {
+      font-size: 0.86rem;
       color: var(--text-muted);
-      font-weight: 600;
-      margin-top: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* Story-style Quick Actions */
-    .quick-actions-bar {
+    .profile-actions-top {
       display: flex;
-      gap: 16px;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-ghost-logout {
+      background: transparent;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      padding: 9px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ghost-logout:hover {
+      background: var(--red-bg);
+      border-color: var(--red);
+      transform: translateY(-2px);
+    }
+
+    .profile-actions-top .btn-pill:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Linha de estatísticas estilo Instagram */
+    .profile-stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 8px;
+      gap: 0;
+    }
+
+    .profile-stat-box {
+      flex: 1;
+      text-align: center;
+      padding: 4px 10px;
+    }
+
+    .profile-stat-box:not(:first-child) {
+      border-left: 1px solid var(--border);
+    }
+
+    .profile-stat-box .stat-num {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .profile-stat-box .stat-lbl {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-top: 2px;
+    }
+
+    /* Ações Rápidas em Formato de Stories Instagram */
+    .stories-container {
+      padding-top: 4px;
+    }
+
+    .stories-scroll {
+      display: flex;
+      gap: 20px;
       overflow-x: auto;
-      padding: 4px 2px 10px;
+      padding: 6px 4px 8px;
       scrollbar-width: thin;
     }
 
-    .quick-btn {
+    .story-item {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -590,41 +977,56 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       background: none;
       border: none;
       cursor: pointer;
-      min-width: 72px;
+      min-width: 74px;
+      outline: none;
       transition: transform 0.2s ease;
     }
 
-    .quick-btn:hover {
-      transform: translateY(-2px);
+    .story-item:hover {
+      transform: translateY(-3px);
     }
 
-    .quick-circle {
-      width: 58px;
-      height: 58px;
+    .story-ring {
+      width: 66px;
+      height: 66px;
       border-radius: 50%;
+      padding: 2.5px;
+      background: linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #0b5574 100%);
+      box-shadow: 0 4px 12px rgba(11, 85, 116, 0.14);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .story-ring.story-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    }
+
+    .story-item:hover .story-ring {
+      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.22);
+    }
+
+    .story-inner-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
       background: var(--card);
-      border: 2px solid var(--primary);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s;
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      transition: background 0.2s;
     }
 
-    .quick-btn:hover .quick-circle {
+    .story-item:hover .story-inner-circle {
       background: var(--primary-light);
-      box-shadow: var(--shadow-md);
     }
 
-    .quick-circle.danger {
-      border-color: var(--red);
-      background: var(--red-bg);
-    }
-
-    .quick-label {
+    .story-label {
       font-size: 0.78rem;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--text);
       text-align: center;
       white-space: nowrap;
@@ -987,19 +1389,78 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       color: var(--primary);
     }
 
+    @media (max-width: 768px) {
+      .profile-cover-banner {
+        height: 115px;
+      }
+      .profile-header-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-top: -46px;
+      }
+      .profile-left-col {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+      }
+      .profile-avatar-wrap {
+        width: 85px;
+        height: 85px;
+      }
+      .profile-avatar {
+        font-size: 1.8rem;
+      }
+      .avatar-camera-badge {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+      }
+      .profile-meta-info {
+        padding-bottom: 0;
+        width: 100%;
+      }
+      .profile-meta-info h2 {
+        font-size: 1.25rem;
+      }
+      .profile-actions-top {
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        padding-top: 2px;
+      }
+      .profile-actions-top .btn-pill,
+      .profile-actions-top .btn-ghost-logout {
+        flex: 1;
+        justify-content: center;
+        padding: 9px 12px;
+        font-size: 0.84rem;
+      }
+      .stories-scroll {
+        gap: 14px;
+      }
+      .story-item {
+        min-width: 64px;
+      }
+      .story-ring {
+        width: 58px;
+        height: 58px;
+      }
+      .story-inner-circle {
+        font-size: 1.25rem;
+      }
+      .story-label {
+        font-size: 0.74rem;
+      }
+    }
+
     @media (max-width: 640px) {
       .grid-2 {
         grid-template-columns: 1fr;
       }
       .nav-inner {
         padding: 10px 14px;
-      }
-      .hero-top {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .user-pill {
-        align-self: flex-start;
       }
     }
   </style>
@@ -1115,57 +1576,95 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     <!-- ========================================== -->
     <!-- TELA 2 — PAINEL DO TUTOR (LOGADO)          -->
     <!-- ========================================== -->
-    <section id="dashboard-view">
-      <!-- Profile Header (Instagram style) -->
-      <div class="profile-hero">
-        <div class="hero-top">
-          <div class="hero-info">
-            <div class="hero-avatar" id="hero-avatar-circle">T</div>
-            <div class="hero-names">
-              <h2 id="hero-display-name">Olá, Tutor!</h2>
-              <p id="hero-display-email">tutor@email.com</p>
+    <section id="dashboard-view" style="display: none;">
+      <!-- Hidden file input for tutor avatar in hero -->
+      <input type="file" id="tutor-hero-avatar-input" accept="image/*" style="display: none;">
+
+      <!-- Profile Header (Instagram/Facebook style) -->
+      <div class="profile-card">
+        <!-- Banner / Capa com gradiente e ondas -->
+        <div class="profile-cover-banner">
+          <svg class="wave-bottom" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,50 L1200,120 L0,120 Z"></path>
+          </svg>
+        </div>
+
+        <div class="profile-content">
+          <!-- Header Identity & Action Buttons -->
+          <div class="profile-header-main">
+            <div class="profile-left-col">
+              <!-- Avatar com Anel + Câmera + Fallback de iniciais -->
+              <div class="profile-avatar-wrap" id="btn-trigger-avatar-upload" title="Clique para alterar sua foto de perfil">
+                <div class="profile-avatar" id="hero-avatar-circle">TU</div>
+                <div class="avatar-camera-badge" title="Trocar foto">📷</div>
+              </div>
+
+              <!-- Metadados do Tutor -->
+              <div class="profile-meta-info">
+                <div class="tutor-badge-pill">🐾 Tutor Save Tag Pet</div>
+                <h2 id="hero-display-name">Carregando...</h2>
+                <p id="hero-display-email">tutor@email.com</p>
+              </div>
+            </div>
+
+            <!-- Botões de Ação na mesma linha -->
+            <div class="profile-actions-top">
+              <button type="button" class="btn-pill btn-primary-blue" id="btn-edit-profile">
+                ✏️ Editar Perfil
+              </button>
+              <button type="button" class="btn-ghost-logout" id="btn-hero-logout">
+                🚪 Sair
+              </button>
             </div>
           </div>
-          <button class="btn-pill btn-outline" id="btn-edit-profile" style="font-size: 0.85rem; padding: 7px 16px;">
-            ⚙️ Minha Conta
-          </button>
-        </div>
 
-        <!-- Stats Bar -->
-        <div class="stats-bar">
-          <div class="stat-item">
-            <div class="stat-num" id="stat-pets-count">0</div>
-            <div class="stat-lbl">Pets</div>
+          <!-- Estatísticas estilo Instagram (divisores verticais sutis) -->
+          <div class="profile-stats-bar">
+            <div class="profile-stat-box">
+              <div class="stat-num" id="stat-pets-count">0</div>
+              <div class="stat-lbl">Pets</div>
+            </div>
+            <div class="profile-stat-box">
+              <div class="stat-num" id="stat-tags-count">0</div>
+              <div class="stat-lbl">TAGs Ativas</div>
+            </div>
+            <div class="profile-stat-box">
+              <div class="stat-num" id="stat-vaccines-count">0</div>
+              <div class="stat-lbl">Vacinas</div>
+            </div>
           </div>
-          <div class="stat-item">
-            <div class="stat-num" id="stat-tags-count">0</div>
-            <div class="stat-lbl">TAGs Ativas</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num" id="stat-vaccines-count">0</div>
-            <div class="stat-lbl">Vacinas</div>
-          </div>
-        </div>
 
-        <!-- Quick Actions Stories-style -->
-        <div>
-          <div class="quick-actions-bar">
-            <button class="quick-btn" id="qa-add-pet">
-              <div class="quick-circle">➕</div>
-              <span class="quick-label">Novo Pet</span>
-            </button>
-            <button class="quick-btn" id="qa-link-tag">
-              <div class="quick-circle">🏷️</div>
-              <span class="quick-label">Ativar TAG</span>
-            </button>
-            <button class="quick-btn" id="qa-vaccines">
-              <div class="quick-circle">💉</div>
-              <span class="quick-label">Vacina</span>
-            </button>
-            <button class="quick-btn" id="qa-lost-mode">
-              <div class="quick-circle danger">🚨</div>
-              <span class="quick-label" style="color: var(--red);">Pet Perdido</span>
-            </button>
+          <!-- Ações Rápidas (Stories Instagram com anel degradê) -->
+          <div class="stories-container">
+            <div class="stories-scroll">
+              <button type="button" class="story-item" id="qa-add-pet">
+                <div class="story-ring">
+                  <div class="story-inner-circle">➕</div>
+                </div>
+                <span class="story-label">Novo Pet</span>
+              </button>
+
+              <button type="button" class="story-item" id="qa-link-tag">
+                <div class="story-ring">
+                  <div class="story-inner-circle">🏷️</div>
+                </div>
+                <span class="story-label">Ativar TAG</span>
+              </button>
+
+              <button type="button" class="story-item" id="qa-vaccines">
+                <div class="story-ring">
+                  <div class="story-inner-circle">💉</div>
+                </div>
+                <span class="story-label">Vacina</span>
+              </button>
+
+              <button type="button" class="story-item" id="qa-lost-mode">
+                <div class="story-ring story-danger">
+                  <div class="story-inner-circle" style="background: var(--red-bg);">🚨</div>
+                </div>
+                <span class="story-label" style="color: var(--red);">Pet Perdido</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1173,7 +1672,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <!-- Pets Section -->
       <div>
         <div class="section-head">
-          <h3>Meus Pets Cadastrados</h3>
+          <h3 id="pets-section-title">🐾 Meus Pets (0)</h3>
           <button class="btn-pill btn-primary-blue" id="btn-add-pet-top" style="font-size: 0.82rem; padding: 7px 16px;">
             + Adicionar Pet
           </button>
@@ -1414,18 +1913,30 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     </div>
   </div>
 
-  <!-- 5. MODAL: MINHA CONTA -->
+  <!-- 5. MODAL: MINHA CONTA (COM FOTO DE PERFIL) -->
   <div class="modal-backdrop" id="modal-account">
     <div class="modal-card">
       <div class="modal-head">
-        <h3>⚙️ Minha Conta (Tutor)</h3>
+        <h3>⚙️ Editar Perfil do Tutor</h3>
         <button type="button" class="btn-close-modal" data-close="modal-account">✕</button>
       </div>
       <form id="form-account">
         <div class="modal-body">
+          <!-- Preview da foto do tutor e upload -->
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 6px;">
+            <div class="profile-avatar-wrap" id="modal-avatar-preview-wrap" style="width: 90px; height: 90px; cursor: pointer;">
+              <div class="profile-avatar" id="modal-account-avatar-preview" style="font-size: 1.8rem;">TU</div>
+              <div class="avatar-camera-badge" style="width: 28px; height: 28px; font-size: 0.8rem;">📷</div>
+            </div>
+            <label for="modal-tutor-avatar-input" class="btn-pill btn-outline" style="font-size: 0.78rem; padding: 5px 14px; cursor: pointer;">
+              Alterar Foto de Perfil
+            </label>
+            <input type="file" id="modal-tutor-avatar-input" accept="image/*" style="display: none;">
+          </div>
+
           <div class="form-group">
-            <label for="acc-name">Nome do Tutor</label>
-            <input type="text" id="acc-name" class="form-control" required>
+            <label for="acc-name">Nome do Tutor *</label>
+            <input type="text" id="acc-name" class="form-control" placeholder="Seu nome completo" required>
           </div>
           <div class="form-group">
             <label for="acc-email">E-mail Cadastrado (identificador)</label>
@@ -2122,14 +2633,20 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     });
 
     // LOGOUT
-    document.getElementById('btn-logout').addEventListener('click', async () => {
+    async function handleLogout() {
       await supabase.auth.signOut();
       currentUser = null;
       navUserArea.style.display = 'none';
       dashboardView.style.display = 'none';
       authView.style.display = 'flex';
       showToast('Sessão encerrada com sucesso.', 'success');
-    });
+    }
+
+    document.getElementById('btn-logout').addEventListener('click', handleLogout);
+    const btnHeroLogout = document.getElementById('btn-hero-logout');
+    if (btnHeroLogout) {
+      btnHeroLogout.addEventListener('click', handleLogout);
+    }
 
     /* ==========================================================
        7. PAINEL DO TUTOR & DADOS DO SUPABASE
@@ -2198,6 +2715,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       document.getElementById('stat-pets-count').textContent = totalPets;
       document.getElementById('stat-tags-count').textContent = activeTags;
       document.getElementById('stat-vaccines-count').textContent = totalVacs;
+
+      const sectionTitle = document.getElementById('pets-section-title');
+      if (sectionTitle) {
+        sectionTitle.textContent = `🐾 Meus Pets (${totalPets})`;
+      }
 
       const container = document.getElementById('pets-container');
       const emptyState = document.getElementById('empty-pets-state');
@@ -2572,6 +3094,18 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       document.getElementById('acc-email').value = currentUser.email || '';
       document.getElementById('acc-phone').value = currentUser.user_metadata?.phone || '';
       document.getElementById('acc-address').value = currentUser.user_metadata?.address || '';
+
+      const tutorName = currentUser.user_metadata?.full_name || currentUser.email.split('@')[0] || 'Tutor';
+      const initials = tutorName.substring(0, 2).toUpperCase();
+      const avatarUrl = currentUser.user_metadata?.avatar_url || currentTutorAvatarBase64 || '';
+      const previewEl = document.getElementById('modal-account-avatar-preview');
+
+      if (avatarUrl) {
+        previewEl.innerHTML = `<img src="${avatarUrl}" alt="Avatar">`;
+      } else {
+        previewEl.innerHTML = initials || 'TU';
+      }
+
       openModal('modal-account');
     }
 
@@ -2585,24 +3119,39 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const address = document.getElementById('acc-address').value.trim();
       const btn = document.getElementById('btn-save-account');
 
+      if (!name) {
+        showToast('Informe o nome do tutor.', 'warning');
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = 'Salvando...';
 
+      const updatePayload = {
+        full_name: name,
+        phone: phone,
+        address: address
+      };
+
+      if (currentTutorAvatarBase64) {
+        updatePayload.avatar_url = currentTutorAvatarBase64;
+      }
+
       try {
         const { data, error } = await supabase.auth.updateUser({
-          data: { full_name: name, phone: phone, address: address }
+          data: updatePayload
         });
         if (error) {
           showToast(mapSupabaseError(error), 'error');
         } else {
-          showToast('Dados da conta atualizados com sucesso!', 'success');
+          showToast('Perfil atualizado com sucesso! 🐾', 'success');
           if (data && data.user) {
             setUserSession(data.user);
           }
           closeModal('modal-account');
         }
       } catch (err) {
-        showToast('Erro ao atualizar conta.', 'error');
+        showToast('Erro ao atualizar perfil.', 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Salvar Alterações';
