@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Save Tag Pet - Painel do Tutor (login.html)</title>
-  
-  <!-- Basecoat CSS & System Shell -->
+  <title>Save Tag Pet | Identifique. Encontre. Proteja.</title>
+  <meta name="description" content="TAGs inteligentes NFC para cães e gatos. Identificação rápida por aproximação de celular sem necessidade de bateria ou aplicativo.">
+
+  <!-- Allowed Basecoat CDN & System Shell -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
   <style>
 /* Skip artifact shell — fixed styles served beside every artifact.
@@ -117,3064 +118,1624 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
 </style>
   
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 
   <style>
     :root {
       --accent: #0b5574;
-      --accent-text: #0b5574;
+      --accent-text: #06394e;
       --accent-contrast: #ffffff;
-      --primary-gradient: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      --primary-light: #e6f4f8;
-      --green-action: #07966b;
-      --green-action-hover: #057a56;
-      --green-bg: #dff8ee;
-      --green-text: #046c4e;
-      --danger: #dc2626;
-      --danger-bg: #fef2f2;
-      --amber: #b45309;
-      --amber-bg: #fef3c7;
-      --bg-color: #f8fcfb;
-      --card-bg: #ffffff;
-      --text-main: #1a2e35;
-      --text-muted: #6d8187;
-      --text-sub: #6d8187;
-      --border-color: #e2e8f0;
-      --radius-card: 24px;
-      --radius-pill: 50px;
-      --radius-md: 14px;
-      --radius-sm: 8px;
-      --shadow-sm: 0 4px 16px rgba(11, 85, 116, 0.05);
-      --shadow-social: 0 8px 24px rgba(11, 85, 116, 0.08);
-      --shadow-hover: 0 16px 36px rgba(11, 85, 116, 0.14);
-      --shadow-lg: 0 8px 30px rgba(11, 85, 116, 0.12);
+      --cta-green: #07966b;
+      --cta-green-hover: #057a56;
+      --bg-page: #f8fcfb;
+      --surface-white: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-soft: #e2e8f0;
+      --radius-card: 16px;
+    }
+
+    /* Base Reset & Page setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     html {
       scroll-behavior: smooth;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
     body {
-      margin: 0;
-      background-color: var(--bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
       color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Accessibility focus */
-    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+    a {
+      text-decoration: none;
+      color: inherit;
     }
 
-    /* Top App Navigation */
-    .app-header {
-      background: #ffffff;
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 40;
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
     }
 
-    .nav-container {
+    .container {
+      width: 100%;
       max-width: 1160px;
       margin: 0 auto;
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
+      padding: 0 20px;
     }
 
-    .brand-link {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 1.15rem;
+    .section-pad {
+      padding: 72px 0;
     }
 
-    .brand-badge {
-      font-size: 0.75rem;
-      background: var(--primary-light);
-      color: var(--accent);
-      padding: 0.2rem 0.55rem;
-      border-radius: 999px;
-      font-weight: 600;
-    }
-
-    .user-nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .user-pill {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-main);
-      background: var(--primary-light);
-      padding: 0.35rem 0.75rem;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Auth View Wrapper */
-    .auth-wrapper {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-      background: radial-gradient(circle at 10% 20%, rgba(11,85,116,0.06) 0%, rgba(7,150,107,0.04) 90%);
-      overflow-y: auto;
-    }
-
-    .auth-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-lg);
-      width: 100%;
-      max-width: 440px;
-      max-height: 90vh;
-      overflow-y: auto;
-      margin: auto 0;
-    }
-
-    .auth-header {
-      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      color: #ffffff;
-      padding: 1.75rem 1.5rem;
+    .text-center {
       text-align: center;
-    }
-
-    .auth-header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-    }
-
-    .auth-header p {
-      margin: 0.35rem 0 0;
-      font-size: 0.9rem;
-      color: #e6f4f8;
-    }
-
-    .auth-body {
-      padding: 1.5rem;
-    }
-
-    /* Tabs */
-    .tabs-nav {
-      display: flex;
-      border-bottom: 2px solid var(--border-color);
-      margin-bottom: 1.25rem;
-    }
-
-    .tab-btn {
-      flex: 1;
-      background: none;
-      border: none;
-      padding: 0.65rem 0.5rem;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      cursor: pointer;
-      position: relative;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      transition: all 0.2s ease;
-    }
-
-    .tab-btn.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
-
-    .tag-login-box {
-      margin-top: 1.5rem;
-      padding-top: 1.25rem;
-      border-top: 1px dashed var(--border-color);
-      text-align: center;
-    }
-
-    .tag-login-box h3 {
-      font-size: 0.95rem;
-      margin: 0 0 0.4rem 0;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-    }
-
-    /* Forms */
-    .form-group {
-      margin-bottom: 1rem;
-      text-align: left;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: 0.35rem;
-    }
-
-    .form-input, .form-select, .form-textarea {
-      width: 100%;
-      padding: 0.65rem 0.85rem;
-      border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-md);
-      font-size: 0.9rem;
-      color: var(--text-main);
-      background: #ffffff;
-      transition: border-color 0.2s;
-    }
-
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .form-help {
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      margin-top: 0.25rem;
-    }
-
-    .forgot-password-link {
-      display: inline-block;
-      color: #0b5574;
-      font-size: 0.85rem;
-      text-decoration: none;
-      font-weight: 500;
-      cursor: pointer;
-      transition: text-decoration 0.2s;
-    }
-
-    .forgot-password-link:hover {
-      text-decoration: underline;
-    }
-
-    /* Custom Buttons */
-    .btn-brand {
-      background-color: var(--accent);
-      color: #ffffff;
-      border: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      transition: background 0.15s, transform 0.05s;
-      width: 100%;
-    }
-
-    .btn-brand:hover {
-      background-color: #084058;
-    }
-
-    .btn-green {
-      background-color: var(--green-action);
-      color: #ffffff;
-      border: none;
-      padding: 0.65rem 1.2rem;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      transition: background 0.15s;
-    }
-
-    .btn-green:hover {
-      background-color: var(--green-action-hover);
-    }
-
-    .btn-outline {
-      background-color: transparent;
-      color: var(--accent);
-      border: 1.5px solid var(--accent);
-      padding: 0.55rem 0.9rem;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-    }
-
-    .btn-outline:hover {
-      background-color: var(--primary-light);
-    }
-
-    .btn-sm {
-      padding: 0.35rem 0.65rem;
-      font-size: 0.8rem;
-      border-radius: var(--radius-sm);
-    }
-
-    .btn-danger {
-      background-color: var(--danger);
-      color: #ffffff;
-      border: none;
-    }
-    .btn-danger:hover {
-      background-color: #b91c1c;
-    }
-
-    .btn-ghost {
-      background: none;
-      border: none;
-      color: var(--text-sub);
-      cursor: pointer;
-      padding: 0.4rem 0.6rem;
-      font-size: 0.85rem;
-      border-radius: var(--radius-sm);
-    }
-
-    .btn-ghost:hover {
-      background: #eef2f5;
-      color: var(--text-main);
-    }
-
-    /* Dashboard Layout */
-    /* Social Dashboard Layout */
-    .dashboard-layout {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 1.25rem 1rem 3.5rem;
-      flex: 1;
-      width: 100%;
-      overflow-y: auto;
-    }
-
-    /* 1. SOCIAL WELCOME COVER HEADER */
-    .social-profile-cover {
-      background: #ffffff;
-      border-radius: var(--radius-card);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-social);
-      overflow: hidden;
-      margin-bottom: 1.75rem;
-      position: relative;
-    }
-
-    .cover-banner {
-      height: 125px;
-      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      position: relative;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .cover-banner::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.18) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .social-profile-body {
-      padding: 0 1.5rem 1.5rem;
-      position: relative;
-    }
-
-    .tutor-avatar-overlap {
-      width: 86px;
-      height: 86px;
-      border-radius: 50%;
-      background: #ffffff;
-      color: var(--accent);
-      border: 4px solid #ffffff;
-      box-shadow: 0 6px 18px rgba(11,85,116,0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.85rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-top: -46px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .profile-meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 1.25rem;
-      margin-top: 0.6rem;
-    }
-
-    .profile-title-area h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-
-    .profile-title-area p {
-      margin: 0.3rem 0 0;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* Instagram-Style Stats Row */
-    .social-stats-bar {
-      display: flex;
-      align-items: center;
-      background: #f8fcfc;
-      padding: 0.65rem 1.25rem;
-      border-radius: var(--radius-pill);
-      border: 1px solid #e5eff2;
-      gap: 1.15rem;
-    }
-
-    .social-stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 65px;
-    }
-
-    .social-stat-num {
-      font-weight: 800;
-      font-size: 1.15rem;
-      color: var(--accent);
-      line-height: 1.1;
-    }
-
-    .social-stat-label {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-
-    .social-stat-divider {
-      width: 1px;
-      height: 26px;
-      background: #d4e3e8;
-    }
-
-    /* 2. QUICK ACTIONS ROW (Instagram Stories Style) */
-    .quick-actions-bar {
-      margin-bottom: 2rem;
-    }
-
-    .quick-actions-scroll {
-      display: flex;
-      gap: 1.25rem;
-      overflow-x: auto;
-      padding: 0.5rem 0.25rem 0.75rem;
-      scrollbar-width: thin;
-    }
-
-    .quick-action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.45rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-      flex-shrink: 0;
-    }
-
-    .quick-action-item:hover {
-      transform: translateY(-3px) scale(1.03);
-    }
-
-    .quick-action-circle {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.45rem;
-      color: #ffffff;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-      border: 2.5px solid #ffffff;
-      outline: 2px solid transparent;
-      transition: all 0.2s ease;
-    }
-
-    .quick-action-circle.primary {
-      background: linear-gradient(135deg, #0b5574 0%, #177a9e 100%);
-      box-shadow: 0 6px 16px rgba(11, 85, 116, 0.28);
-    }
-
-    .quick-action-circle.green {
-      background: linear-gradient(135deg, #07966b 0%, #10b981 100%);
-      box-shadow: 0 6px 16px rgba(7, 150, 107, 0.28);
-    }
-
-    .quick-action-circle.blue {
-      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.28);
-    }
-
-    .quick-action-circle.danger {
-      background: linear-gradient(135deg, #dc2626 0%, #f87171 100%);
-      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.28);
-    }
-
-    .quick-action-label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-main);
-      text-align: center;
-      white-space: nowrap;
-    }
-
-    /* Section Header */
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
     }
 
     .section-title {
-      font-size: 1.25rem;
+      font-size: clamp(1.75rem, 3.5vw, 2.4rem);
       font-weight: 800;
-      color: var(--text-main);
+      color: var(--accent);
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 40px auto;
+    }
+
+    /* Buttons */
+    .btn-cta-green {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: var(--cta-green);
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(7, 150, 107, 0.35);
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-cta-green:hover {
+      background-color: var(--cta-green-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(7, 150, 107, 0.45);
+    }
+
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: var(--accent);
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 0.98rem;
+      padding: 12px 24px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(11, 85, 116, 0.28);
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-cta-primary:hover {
+      background-color: #08435c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(11, 85, 116, 0.38);
+    }
+
+    /* 1. Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: #ffffff;
+      transition: box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+
+    .site-header.scrolled {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .header-nav {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      margin: 0;
+      justify-content: space-between;
+      height: 72px;
     }
 
-    /* 3. PET MINI SOCIAL PROFILE CARDS */
-    .pets-grid {
+    .brand-logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-desktop-links {
+      display: none;
+      align-items: center;
+      gap: 22px;
+      list-style: none;
+    }
+
+    .nav-desktop-links a {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      transition: color 0.2s;
+    }
+
+    .nav-desktop-links a:hover {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-tutor {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #f1f5f9;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid #cbd5e1;
+      transition: all 0.2s ease;
+    }
+
+    .btn-tutor:hover {
+      background-color: #e2e8f0;
+      color: #04293a;
+    }
+
+    .mobile-toggle {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .mobile-toggle span {
+      width: 100%;
+      height: 2.5px;
+      background-color: var(--accent);
+      border-radius: 2px;
+      transition: 0.25s ease;
+    }
+
+    .mobile-menu {
+      display: none;
+      background: #ffffff;
+      border-top: 1px solid #f1f5f9;
+      padding: 16px 20px 24px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mobile-menu-list a {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #334155;
+      display: block;
+      padding: 6px 0;
+    }
+
+    /* 2. Hero Section */
+    .hero-section {
+      background: linear-gradient(180deg, #e6f4f8 0%, #f8fcfb 100%);
+      padding: 48px 0 64px 0;
+    }
+
+    .hero-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
+      gap: 36px;
+      align-items: center;
     }
 
-    @media (min-width: 680px) {
-      .pets-grid {
+    .hero-content {
+      max-width: 580px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #dbeafe;
+      color: #1e40af;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 6px rgba(30, 64, 175, 0.12);
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-desc {
+      font-size: 1.12rem;
+      color: #475569;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .hero-image-wrap {
+      position: relative;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(11, 85, 116, 0.25);
+      background: #e2e8f0;
+      min-height: 280px;
+    }
+
+    .hero-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-benefits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .benefit-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Common Card Styles */
+    .card-white {
+      background: var(--surface-white);
+      border-radius: var(--radius-card);
+      padding: 28px 24px;
+      box-shadow: 0 8px 24px -4px rgba(11, 85, 116, 0.08);
+      border: 1px solid #f1f5f9;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-white:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -6px rgba(11, 85, 116, 0.14);
+    }
+
+    /* Visual Flow Pill */
+    .flow-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 1.05rem;
+      padding: 8px 22px;
+      border-radius: 999px;
+      margin: 0 auto 36px auto;
+      border: 1px solid #bae6fd;
+    }
+
+    /* 3. Como Funciona */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .step-number {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: var(--cta-green);
+      background: #e6f8f1;
+      padding: 4px 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 0.96rem;
+      color: #64748b;
+      line-height: 1.55;
+    }
+
+    /* 4. Nossas TAGs Section */
+    .tags-product-showcase {
+      max-width: 720px;
+      margin: 0 auto 36px auto;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 16px 36px -8px rgba(11, 85, 116, 0.16);
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .tags-product-showcase:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 42px -6px rgba(11, 85, 116, 0.22);
+    }
+
+    .tags-product-showcase img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    .tags-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .tag-desc-card {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 16px rgba(11, 85, 116, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .tag-desc-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(11, 85, 116, 0.1);
+    }
+
+    .tag-color-indicator {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      border: 2px solid #ffffff;
+    }
+
+    .tag-indicator-blue { background-color: #2563eb; }
+    .tag-indicator-black { background-color: #1e293b; }
+    .tag-indicator-red { background-color: #dc2626; }
+    .tag-indicator-pink { background-color: #ec4899; }
+
+    .tag-card-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .tag-card-desc {
+      font-size: 0.92rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .tag-bottom-note {
+      margin-top: 36px;
+      background: #eff6ff;
+      border: 1px dashed #93c5fd;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1e40af;
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 5. O que é NFC */
+    .nfc-flows {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin: 24px 0 40px;
+    }
+
+    .flow-badge-item {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      color: var(--accent-text);
+      font-size: 0.96rem;
+    }
+
+    .nfc-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .nfc-info-card {
+      background: #ffffff;
+      border-left: 6px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(11, 85, 116, 0.06);
+    }
+
+    .nfc-info-card h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nfc-info-card p {
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    /* 6. Perfil Digital */
+    .perfil-media-box {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(11, 85, 116, 0.1);
+      margin-bottom: 28px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .perfil-media-box img {
+      max-height: 420px;
+      margin: 0 auto;
+      border-radius: 10px;
+      object-fit: contain;
+    }
+
+    .perfil-lead-text {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .perfil-features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .perfil-feat-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(11, 85, 116, 0.05);
+      border: 1px solid #f1f5f9;
+    }
+
+    .perfil-feat-card h4 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .perfil-feat-card p {
+      font-size: 0.92rem;
+      color: #64748b;
+    }
+
+    .privacy-notice {
+      background-color: #e6f4f8;
+      border: 1px solid #bce1ee;
+      border-radius: 12px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    /* 7. Planos */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .plan-card {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      padding: 32px 24px;
+      box-shadow: 0 8px 24px rgba(11, 85, 116, 0.08);
+      border: 2px solid #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .plan-card.featured {
+      border-color: #f59e0b;
+      box-shadow: 0 16px 36px -8px rgba(245, 158, 11, 0.28);
+      transform: translateY(-6px);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f59e0b;
+      color: #78350f;
+      font-size: 0.78rem;
+      font-weight: 900;
+      padding: 4px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .plan-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .plan-name {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .plan-target {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .plan-price-wrap {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .plan-price {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1;
+    }
+
+    .plan-suffix {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .bonus-box {
+      background: #ecfdf5;
+      border: 1px dashed var(--cta-green);
+      color: #065f46;
+      font-size: 0.88rem;
+      font-weight: 700;
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .plan-features-list {
+      list-style: none;
+      margin-bottom: 28px;
+      flex-grow: 1;
+    }
+
+    .plan-features-list li {
+      font-size: 0.94rem;
+      color: #334155;
+      margin-bottom: 11px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .plan-features-list li .check-icon {
+      color: var(--cta-green);
+      font-weight: 900;
+      font-size: 1.1rem;
+      line-height: 1.2;
+    }
+
+    /* 8. Família Highlight */
+    .family-section {
+      background: linear-gradient(135deg, #e6f4f8 0%, #f0fdf4 100%);
+      border-radius: var(--radius-card);
+      padding: 48px 24px;
+      margin: 40px 0;
+    }
+
+    .family-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .family-img-wrap {
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(11, 85, 116, 0.15);
+      background: #ffffff;
+      text-align: center;
+    }
+
+    .family-bullets {
+      list-style: none;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .family-bullets li {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* 9. Como Recebo Minha TAG */
+    .receive-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .receive-card {
+      background: #ffffff;
+      border-radius: var(--radius-card);
+      padding: 26px 20px;
+      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.05);
+      border: 1px solid #f1f5f9;
+      position: relative;
+    }
+
+    .receive-badge-num {
+      width: 38px;
+      height: 38px;
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 900;
+      font-size: 1.1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 8px rgba(11, 85, 116, 0.3);
+    }
+
+    .receive-card h3 {
+      font-size: 1.12rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .receive-card p {
+      font-size: 0.92rem;
+      color: #64748b;
+    }
+
+    /* 10. FAQ Accordion */
+    .faq-wrapper {
+      max-width: 820px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    details.faq-item {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 16px 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      transition: background-color 0.2s;
+    }
+
+    details.faq-item[open] {
+      border-color: var(--accent);
+      background-color: #fafdfd;
+    }
+
+    summary.faq-question {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    summary.faq-question::-webkit-details-marker {
+      display: none;
+    }
+
+    summary.faq-question::after {
+      content: "+";
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--accent);
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    details.faq-item[open] summary.faq-question::after {
+      content: "−";
+    }
+
+    .faq-answer {
+      margin-top: 14px;
+      font-size: 0.96rem;
+      color: #475569;
+      line-height: 1.6;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 12px;
+    }
+
+    /* 11. Final CTA */
+    .final-cta-section {
+      background: linear-gradient(135deg, #0b5574 0%, #052a3a 100%);
+      color: #ffffff;
+      padding: 80px 20px;
+      border-radius: var(--radius-card);
+      text-align: center;
+      margin: 40px auto;
+    }
+
+    .final-cta-title {
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .final-cta-desc {
+      font-size: 1.1rem;
+      color: #e2e8f0;
+      max-width: 600px;
+      margin: 0 auto 32px auto;
+    }
+
+    /* 12. Footer */
+    .site-footer {
+      background-color: #0b1a20;
+      color: #94a3b8;
+      padding: 64px 0 32px 0;
+      font-size: 0.92rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .footer-slogan {
+      color: #38bdf8;
+      font-weight: 700;
+      font-size: 0.96rem;
+      margin-bottom: 14px;
+    }
+
+    .footer-text {
+      color: #94a3b8;
+      line-height: 1.55;
+      max-width: 360px;
+    }
+
+    .footer-col h4 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: #cbd5e1;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #38bdf8;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #1e293b;
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* Back To Top Floating Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      background-color: var(--accent);
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+      z-index: 999;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background-color: #08435c;
+      transform: translateY(-3px);
+    }
+
+    /* Responsive Breakpoints */
+    @media (min-width: 640px) {
+      .tags-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .perfil-features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .receive-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (min-width: 1040px) {
-      .pets-grid {
+    @media (min-width: 900px) {
+      .nav-desktop-links {
+        display: flex;
+      }
+      .mobile-toggle {
+        display: none;
+      }
+      .hero-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+      .steps-grid {
         grid-template-columns: repeat(3, 1fr);
       }
-    }
-
-    .pet-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      overflow: hidden;
-      box-shadow: var(--shadow-social);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    }
-
-    .pet-card:hover {
-      box-shadow: var(--shadow-hover);
-      transform: translateY(-4px);
-    }
-
-    .pet-card.is-lost {
-      border: 2px solid var(--danger);
-      box-shadow: 0 10px 30px rgba(220, 38, 38, 0.2);
-    }
-
-    /* Pet Card Top Cover Banner */
-    .pet-cover-banner {
-      height: 82px;
-      position: relative;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .pet-cover-dog {
-      background: linear-gradient(135deg, #0b5574 0%, #1e8bb5 100%);
-    }
-
-    .pet-cover-cat {
-      background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);
-    }
-
-    .pet-cover-other {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    }
-
-    /* Lost Alert Banner inside card */
-    .pet-lost-alert-banner {
-      background: #dc2626;
-      color: #ffffff;
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      text-align: center;
-      padding: 0.4rem 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      animation: pulseAlert 1.8s infinite ease-in-out;
-    }
-
-    @keyframes pulseAlert {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.82; }
-    }
-
-    /* Overlapping Pet Avatar (Centered) */
-    .pet-avatar-wrapper {
-      position: relative;
-      margin-top: -46px;
-      display: flex;
-      justify-content: center;
-      z-index: 3;
-    }
-
-    .pet-avatar-circle {
-      width: 92px;
-      height: 92px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: 4px solid #ffffff;
-      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.16);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8rem;
-    }
-
-    .pet-avatar-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .pet-card-content {
-      padding: 0.85rem 1.25rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      flex: 1;
-    }
-
-    .pet-name-title {
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--text-main);
-      margin: 0.2rem 0 0.5rem;
-      letter-spacing: -0.3px;
-    }
-
-    /* Instagram-Style Bio Chips */
-    .pet-bio-chips {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.35rem;
-      margin-bottom: 0.85rem;
-    }
-
-    .pet-chip {
-      background: #e6f4f8;
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.78rem;
-      padding: 0.28rem 0.7rem;
-      border-radius: var(--radius-pill);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    /* Tag Status Pill */
-    .tag-status-pill {
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 0.35rem 0.85rem;
-      border-radius: var(--radius-pill);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-bottom: 1rem;
-    }
-
-    .tag-status-active {
-      background: var(--green-bg);
-      color: var(--green-text);
-      border: 1px solid #b8ebd6;
-    }
-
-    .tag-status-empty {
-      background: var(--amber-bg);
-      color: var(--amber);
-      border: 1px solid #fed7aa;
-    }
-
-    /* Profile Action Buttons (Instagram Style) */
-    .pet-social-actions {
-      display: flex;
-      gap: 0.5rem;
-      width: 100%;
-      margin-top: auto;
-    }
-
-    .btn-profile-main {
-      flex: 1.4;
-      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      color: #ffffff;
-      border: none;
-      padding: 0.55rem 0.85rem;
-      border-radius: var(--radius-pill);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      text-decoration: none;
-      transition: opacity 0.15s, transform 0.1s;
-    }
-
-    .btn-profile-main:hover {
-      opacity: 0.94;
-    }
-
-    .btn-profile-sec {
-      flex: 1;
-      background: #ffffff;
-      color: var(--accent);
-      border: 1.5px solid var(--border-color);
-      padding: 0.55rem 0.8rem;
-      border-radius: var(--radius-pill);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-      transition: all 0.15s;
-    }
-
-    .btn-profile-sec:hover {
-      background: var(--primary-light);
-      border-color: #9bc3d3;
-    }
-
-    .btn-profile-lost {
-      width: 40px;
-      height: 38px;
-      padding: 0;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-pill);
-      font-size: 1rem;
-      cursor: pointer;
-      border: 1.5px solid var(--border-color);
-      background: #ffffff;
-      transition: all 0.15s;
-    }
-
-    .btn-profile-lost.active {
-      background: #dc2626;
-      border-color: #dc2626;
-      color: #ffffff;
-    }
-
-    /* Collapsible Vaccines Timeline Inline */
-    .vaccine-expand-trigger {
-      margin-top: 0.85rem;
-      padding-top: 0.75rem;
-      border-top: 1px dashed var(--border-color);
-      width: 100%;
-      text-align: center;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--accent);
-      cursor: pointer;
-      background: none;
-      border-left: none;
-      border-right: none;
-      border-bottom: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      transition: color 0.15s;
-    }
-
-    .vaccine-expand-trigger:hover {
-      color: var(--green-action);
-    }
-
-    .vaccine-timeline-box {
-      width: 100%;
-      margin-top: 0.75rem;
-      padding: 0.65rem 0.85rem;
-      background: #fafdfc;
-      border: 1px solid #e8f0ed;
-      border-radius: var(--radius-md);
-      text-align: left;
-      font-size: 0.78rem;
-    }
-
-    .timeline-vac-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid #edf4f2;
-    }
-
-    .timeline-vac-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .timeline-vac-icon {
-      font-size: 0.95rem;
-      line-height: 1;
-    }
-
-    .timeline-vac-details {
-      flex: 1;
-    }
-
-    .timeline-vac-name {
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .timeline-vac-date {
-      color: var(--text-muted);
-      font-size: 0.74rem;
-      margin-top: 0.15rem;
-    }
-
-    /* 4. ADD PET CARD */
-    .add-pet-social-card {
-      background: #ffffff;
-      border: 2px dashed #b5d5e2;
-      border-radius: var(--radius-card);
-      padding: 2.5rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      cursor: pointer;
-      min-height: 320px;
-      transition: all 0.25s ease;
-    }
-
-    .add-pet-social-card:hover {
-      border-color: var(--accent);
-      background: linear-gradient(180deg, #ffffff 0%, var(--primary-light) 100%);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .add-pet-social-circle {
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin-bottom: 0.85rem;
-      box-shadow: 0 6px 18px rgba(11, 85, 116, 0.22);
-    }
-
-    /* 6. EMPTY STATE */
-    .empty-social-state {
-      background: #ffffff;
-      border-radius: var(--radius-card);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow-social);
-      padding: 3.5rem 1.5rem;
-      text-align: center;
-      grid-column: 1 / -1;
-    }
-
-    .empty-emoji-illustration {
-      font-size: 4rem;
-      margin-bottom: 0.75rem;
-      display: inline-block;
-      animation: floatEmoji 3s ease-in-out infinite;
-    }
-
-    @keyframes floatEmoji {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .btn-empty-create {
-      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      color: #ffffff;
-      border: none;
-      padding: 0.85rem 1.85rem;
-      border-radius: var(--radius-pill);
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(11, 85, 116, 0.25);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
-    .btn-empty-create:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(11, 85, 116, 0.35);
-    }
-
-    /* 5. RESTYLED MODALS */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(10, 30, 40, 0.65);
-      backdrop-filter: blur(5px);
-      z-index: 99;
-      display: none;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      background: #ffffff;
-      border-radius: 24px;
-      width: 100%;
-      max-width: 540px;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.22);
-      animation: modalFadeUp 0.22s ease-out;
-      overflow: hidden;
-      margin: 1.5rem auto;
-    }
-
-    .modal-box form {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
-    }
-
-    @keyframes modalFadeUp {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modal-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fdfefe;
-      flex-shrink: 0;
-    }
-
-    .modal-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .modal-close-btn {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      line-height: 1;
-      color: var(--text-sub);
-      cursor: pointer;
-      padding: 0.25rem;
-      border-radius: 4px;
-    }
-
-    .modal-close-btn:hover {
-      color: var(--danger);
-      background: var(--danger-bg);
-    }
-
-    .modal-body {
-      padding: 1.25rem;
-      overflow-y: auto;
-      flex: 1;
-      min-height: 0;
-      max-height: calc(90vh - 120px);
-    }
-
-    .modal-footer {
-      padding: 0.85rem 1.25rem;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.65rem;
-      background: #fbfdfd;
-      flex-shrink: 0;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.85rem;
-    }
-
-    @media (min-width: 480px) {
-      .grid-2 {
+      .tags-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .nfc-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .plans-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .family-grid {
         grid-template-columns: 1fr 1fr;
       }
-    }
-
-    /* Vaccines Table / List */
-    .vaccine-item {
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.65rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fafdfc;
-    }
-
-    .vaccine-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-main);
-    }
-
-    .vaccine-sub {
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      margin-top: 0.15rem;
-    }
-
-    /* Toast Notification */
-    #toast-container {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-width: 380px;
-      pointer-events: none;
-    }
-
-    .toast-msg {
-      background: #1a2e35;
-      color: #ffffff;
-      padding: 0.85rem 1.15rem;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.2);
-      pointer-events: auto;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      animation: toastIn 0.25s ease forwards;
-    }
-
-    .toast-success {
-      background: #065f46;
-      border-left: 4px solid #34d399;
-    }
-
-    .toast-error {
-      background: #991b1b;
-      border-left: 4px solid #f87171;
-    }
-
-    .toast-warning {
-      background: #92400e;
-      border-left: 4px solid #fcd34d;
-    }
-
-    @keyframes toastIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Quick Demo Bar */
-    .demo-pill-bar {
-      margin-top: 0.75rem;
-      background: var(--primary-light);
-      padding: 0.5rem 0.75rem;
-      border-radius: 8px;
-      font-size: 0.75rem;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .demo-pill-bar button {
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    /* Photo Upload Box */
-    .photo-preview-wrap {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .photo-preview-circle {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #e2e8f0;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid var(--border-color);
-      flex-shrink: 0;
-    }
-
-    .photo-preview-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Footer */
-    .app-footer {
-      border-top: 1px solid var(--border-color);
-      background: #ffffff;
-      padding: 1.25rem 1rem;
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      margin-top: auto;
-    }
-
-    .app-footer a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
+      .receive-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .footer-grid {
+        grid-template-columns: 1.4fr 1fr 1.2fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top App Navigation -->
-  <header class="app-header">
-    <div class="nav-container">
-      <a href="#" class="brand-link" id="brandHomeLink">
+  <!-- 1. STICKY HEADER -->
+  <header class="site-header" id="header">
+    <div class="container header-nav">
+      <a href="#inicio" class="brand-logo" aria-label="Save Tag Pet Home">
         <span>🐾 Save Tag Pet</span>
-        <span class="brand-badge">Painel do Tutor</span>
       </a>
 
-      <div class="user-nav-actions" id="headerAuthNav" style="display: none;">
-        <div class="user-pill">
-          <span>👤</span>
-          <span id="navTutorName">Tutor</span>
-        </div>
-        <button type="button" class="btn-ghost" id="openSettingsBtn" title="Configurações da Conta">⚙️ Ajustes</button>
-        <button type="button" class="btn-outline btn-sm" id="logoutBtn">Sair</button>
+      <ul class="nav-desktop-links">
+        <li><a href="#inicio">Início</a></li>
+        <li><a href="#como-funciona">Como funciona</a></li>
+        <li><a href="#tags">Nossas TAGs</a></li>
+        <li><a href="#perfil-digital">Perfil Digital</a></li>
+        <li><a href="#planos">Planos</a></li>
+        <li><a href="#faq">Dúvidas</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <a href="login.html" class="btn-tutor">🔐 Área do Tutor</a>
+        <button class="mobile-toggle" id="menuToggle" aria-label="Abrir menu de navegação" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div class="mobile-menu" id="mobileMenu">
+      <ul class="mobile-menu-list">
+        <li><a href="#inicio" class="mobile-nav-link">Início</a></li>
+        <li><a href="#como-funciona" class="mobile-nav-link">Como funciona</a></li>
+        <li><a href="#tags" class="mobile-nav-link">Nossas TAGs</a></li>
+        <li><a href="#perfil-digital" class="mobile-nav-link">Perfil Digital</a></li>
+        <li><a href="#planos" class="mobile-nav-link">Planos</a></li>
+        <li><a href="#faq" class="mobile-nav-link">Dúvidas</a></li>
+        <li><a href="login.html" class="mobile-nav-link">🔐 Área do Tutor</a></li>
+      </ul>
     </div>
   </header>
 
-  <!-- VIEW 1: AUTHENTICATION (Login / Cadastro / Tag Login) -->
-  <main class="auth-wrapper" id="authView">
-    <div class="auth-card">
-      <div class="auth-header">
-        <h1>🐾 Save Tag Pet</h1>
-        <p>Identifique. Encontre. Proteja.</p>
-      </div>
-
-      <div class="auth-body">
-        <!-- Tabs for Email/Password & Register -->
-        <div class="tabs-nav" role="tablist">
-          <button type="button" class="tab-btn active" id="tabLoginBtn" role="tab" aria-selected="true">Entrar</button>
-          <button type="button" class="tab-btn" id="tabRegisterBtn" role="tab" aria-selected="false">Criar conta</button>
-        </div>
-
-        <!-- Tab 1: Login Form (Primary) -->
-        <form id="formEmailLogin">
-          <div class="form-group">
-            <label class="form-label" for="loginEmail">E-mail</label>
-            <input type="email" id="loginEmail" class="form-input" placeholder="seuemail@exemplo.com.br" required autocomplete="email">
-          </div>
-          <div class="form-group" style="margin-bottom: 0.4rem;">
-            <label class="form-label" for="loginPassword">Senha</label>
-            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
-          </div>
-          <div style="text-align: right; margin-bottom: 0.75rem;">
-            <a href="#" class="forgot-password-link" id="forgotPasswordLink">Esqueci minha senha?</a>
-          </div>
-          <div id="login-error" style="display:none; padding:0.75rem; margin-top:0.75rem; background:#fef2f2; color:#dc2626; border-radius:8px; font-size:0.9rem; font-weight:600;"></div>
-          <button type="submit" class="btn-brand" id="login-btn" style="margin-top: 0.75rem;">
-            Entrar
-          </button>
-        </form>
-
-        <!-- Tab 2: Register Form (Hidden by default) -->
-        <form id="formRegister" style="display: none;">
-          <div class="form-group">
-            <label class="form-label" for="regName">Nome Completo</label>
-            <input type="text" id="regName" class="form-input" placeholder="Ex: Maria Oliveira" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="regEmail">E-mail</label>
-            <input type="email" id="regEmail" class="form-input" placeholder="maria@exemplo.com.br" required>
-          </div>
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label" for="regPhone">WhatsApp / Telefone</label>
-              <input type="tel" id="regPhone" class="form-input" placeholder="(13) 99111-8997" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="regPassword">Criar Senha</label>
-              <input type="password" id="regPassword" class="form-input" placeholder="Mínimo 6 dígitos" minlength="6" required>
-            </div>
-          </div>
-          <button type="submit" class="btn-brand" id="signup-btn">
-            Criar conta
-          </button>
-        </form>
-
-        <!-- Quick Demo Fill helper -->
-        <div class="demo-pill-bar">
-          <span>⚡ Teste rápido (Demo Tutor):</span>
-          <button type="button" id="fillDemoLoginBtn">Preencher Demo</button>
-        </div>
-
-        <!-- Divider line with "OU" -->
-        <div style="display: flex; align-items: center; margin: 1.5rem 0 1.25rem; color: var(--text-sub); font-size: 0.8rem; font-weight: 600;">
-          <span style="flex: 1; height: 1px; background: var(--border-color);"></span>
-          <span style="padding: 0 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">OU</span>
-          <span style="flex: 1; height: 1px; background: var(--border-color);"></span>
-        </div>
-
-        <!-- 2. LOGIN RÁPIDO POR CÓDIGO DA TAG (Secondary) -->
-        <div class="tag-login-box" style="margin-top: 0; padding-top: 0; border-top: none;">
-          <h3>🏷️ Entrar com código da TAG</h3>
-          <p class="form-help" style="margin-bottom: 0.75rem;">Acesso rápido direto pelo código gravado na medalha</p>
-          <form id="formTagLogin" style="display: flex; gap: 0.5rem;">
-            <input type="text" id="inputTagCodeLogin" class="form-input" placeholder="Ex: SAVE-BENT-2024" style="text-transform: uppercase;" required>
-            <button type="submit" id="tag-login-btn" class="btn-green" style="white-space: nowrap;">Entrar</button>
-          </form>
-          <div style="font-size: 0.72rem; color: var(--text-sub); margin-top: 0.5rem;">
-            Experimente o código demo: <strong style="color: var(--accent); cursor: pointer;" id="codeSnippet">SAVE-BENT-2024</strong>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- VIEW 2: TUTOR DASHBOARD (REDESIGNED SOCIAL NETWORK PROFILE STYLE) -->
-  <main class="dashboard-layout" id="dashboardView" style="display: none;">
-
-    <!-- 1. WELCOME HEADER (Facebook cover banner style) -->
-    <div class="social-profile-cover">
-      <div class="cover-banner"></div>
-      <div class="social-profile-body">
-        <div class="tutor-avatar-overlap" id="tutorInitialsAvatar">CR</div>
-        
-        <div class="profile-meta-row">
-          <div class="profile-title-area">
-            <h2>Olá, <span id="dashTutorGreeting">Tutor</span>! 👋</h2>
-            <p>Gerencie os perfis digitais dos seus pets</p>
-          </div>
-
-          <!-- Stats row (Instagram profile stats style) -->
-          <div class="social-stats-bar">
-            <div class="social-stat-item">
-              <span class="social-stat-num" id="statPetsCount">0</span>
-              <span class="social-stat-label">Pets</span>
-            </div>
-            <div class="social-stat-divider"></div>
-            <div class="social-stat-item">
-              <span class="social-stat-num" id="statActiveTags">0</span>
-              <span class="social-stat-label">TAGs Ativas</span>
-            </div>
-            <div class="social-stat-divider"></div>
-            <div class="social-stat-item">
-              <span class="social-stat-num" id="statVaccinesCount">0</span>
-              <span class="social-stat-label">Vacinas</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. QUICK ACTIONS ROW (Instagram story buttons style) -->
-    <div class="quick-actions-bar">
-      <div class="quick-actions-scroll">
-        <button type="button" class="quick-action-item" id="qaNewPetBtn">
-          <div class="quick-action-circle primary">➕</div>
-          <span class="quick-action-label">Novo Pet</span>
-        </button>
-
-        <button type="button" class="quick-action-item" id="qaActivateTagBtn">
-          <div class="quick-action-circle green">🏷️</div>
-          <span class="quick-action-label">Ativar TAG</span>
-        </button>
-
-        <button type="button" class="quick-action-item" id="qaVaccineBtn">
-          <div class="quick-action-circle blue">💉</div>
-          <span class="quick-action-label">Vacina</span>
-        </button>
-
-        <button type="button" class="quick-action-item" id="qaLostPetBtn" style="display: none;">
-          <div class="quick-action-circle danger">🆘</div>
-          <span class="quick-action-label">Pet Perdido</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- PETS GRID HEADER -->
-    <div class="section-head">
-      <h3 class="section-title">🐾 Perfis dos Pets</h3>
-      <button type="button" class="btn-brand btn-sm" id="btnOpenNewPetModal" style="border-radius: var(--radius-pill); padding: 0.45rem 1rem;">
-        ➕ Novo Pet
-      </button>
-    </div>
-
-    <!-- 3. PET PROFILE CARDS GRID -->
-    <div class="pets-grid" id="petsGridContainer"></div>
-  </main>
-
-  <!-- MODAL: ADD / EDIT PET -->
-  <div class="modal-backdrop" id="modalPetForm">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title" id="petModalTitle">🐾 Adicionar Pet</h3>
-        <button type="button" class="modal-close-btn" data-close="modalPetForm">&times;</button>
-      </div>
-      <form id="petSaveForm">
-        <div class="modal-body">
-          <input type="hidden" id="petEditId">
-
-          <div class="photo-preview-wrap">
-            <div class="photo-preview-circle" id="previewContainer">
-              <span id="previewEmoji" style="font-size: 2rem;">🐶</span>
-              <img id="previewImage" src="" alt="Foto" style="display: none;">
-            </div>
-            <div style="flex: 1;">
-              <label class="form-label" for="petPhotoFile">Foto do Pet</label>
-              <input type="file" id="petPhotoFile" accept="image/*" class="form-input" style="padding: 0.4rem; font-size: 0.8rem;">
-              <span class="form-help">Envie uma foto clara do focinho e do rosto</span>
-            </div>
-          </div>
-
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label" for="petName">Nome do Pet *</label>
-              <input type="text" id="petName" class="form-input" placeholder="Ex: Bento" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="petSpecies">Espécie *</label>
-              <select id="petSpecies" class="form-select" required>
-                <option value="Cão">🐶 Cão</option>
-                <option value="Gato">🐱 Gato</option>
-                <option value="Outro">🐾 Outro</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label" for="petBreed">Raça</label>
-              <input type="text" id="petBreed" class="form-input" placeholder="Ex: Golden Retriever">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="petAge">Idade</label>
-              <input type="text" id="petAge" class="form-input" placeholder="Ex: 3 anos">
-            </div>
-          </div>
-
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label" for="petWeight">Peso estimado</label>
-              <input type="text" id="petWeight" class="form-input" placeholder="Ex: 28 kg">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="petColor">Cor / Pelagem</label>
-              <input type="text" id="petColor" class="form-input" placeholder="Ex: Dourado caramelo">
-            </div>
-          </div>
-
-          <hr style="border: 0; border-top: 1px dashed var(--border-color); margin: 0.75rem 0 1rem;">
-          <h4 style="margin: 0 0 0.65rem; font-size: 0.9rem; color: var(--accent);">🚨 Contatos de Emergência</h4>
-
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label" for="petPhone">Telefone de Emergência *</label>
-              <input type="tel" id="petPhone" class="form-input" placeholder="(13) 99111-8997" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="petWhatsapp">WhatsApp (com DDD)</label>
-              <input type="tel" id="petWhatsapp" class="form-input" placeholder="5513991118997">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="petEmergencyEmail">E-mail de Notificação</label>
-            <input type="email" id="petEmergencyEmail" class="form-input" placeholder="duvidas@savetagpet.com.br">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="petNotes">Observações Médicas ou Cuidados Especiais</label>
-            <textarea id="petNotes" class="form-textarea" rows="2" placeholder="Ex: Toma medicamento contínuo, dócil com crianças, tem medo de fogos..."></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-ghost" data-close="modalPetForm">Cancelar</button>
-          <button type="submit" class="btn-brand">Salvar Pet</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: CARTEIRA DE VACINAS -->
-  <div class="modal-backdrop" id="modalVaccines">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title">💉 Carteira de Vacinas - <span id="vacPetNameTitle">Pet</span></h3>
-        <button type="button" class="modal-close-btn" data-close="modalVaccines">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div id="vaccinesList">
-          <!-- Populated dynamically -->
-        </div>
-
-        <form id="formAddVaccine" style="margin-top: 1.25rem; padding: 1rem; background: var(--primary-light); border-radius: var(--radius-md);">
-          <h4 style="margin: 0 0 0.75rem; font-size: 0.88rem; color: var(--accent);">➕ Registrar Nova Vacina</h4>
-          <input type="hidden" id="vacPetId">
-          <div class="form-group">
-            <label class="form-label" for="vacName">Nome da Vacina *</label>
-            <input type="text" id="vacName" class="form-input" placeholder="Ex: Antirrábica, V10, Gripe Canina" required>
-          </div>
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label" for="vacDate">Data da Aplicação</label>
-              <input type="date" id="vacDate" class="form-input" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="vacNextDate">Próxima Dose / Reforço</label>
-              <input type="date" id="vacNextDate" class="form-input">
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="vacVet">Clínica ou Veterinário(a)</label>
-            <input type="text" id="vacVet" class="form-input" placeholder="Ex: Dr. Marcelo - CRMV 12345">
-          </div>
-          <button type="submit" class="btn-green btn-sm" style="width: 100%;">Salvar Vacina</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-outline btn-sm" data-close="modalVaccines">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: MODO PET PERDIDO -->
-  <div class="modal-backdrop" id="modalLostMode">
-    <div class="modal-box">
-      <div class="modal-header" style="background: #fff5f5;">
-        <h3 class="modal-title" style="color: var(--danger);">🚨 Alerta de Pet Perdido</h3>
-        <button type="button" class="modal-close-btn" data-close="modalLostMode">&times;</button>
-      </div>
-      <form id="formLostMode">
-        <div class="modal-body">
-          <input type="hidden" id="lostPetId">
-          <p style="font-size: 0.88rem; line-height: 1.4; color: var(--text-main); margin-top: 0;">
-            Ao ativar o <strong>Modo Perdido</strong>, quem escanear a medalhinha ou acessar a página pública verá um alerta vermelho urgente com o botão direto para ligar para você.
+  <!-- 2. HERO -->
+  <section class="hero-section" id="inicio">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="pill-badge">🐾 Mais segurança para quem você ama</div>
+          <h1 class="hero-title">Seu pet identificado. Você tranquilo.</h1>
+          <p class="hero-desc">
+            A TAG NFC inteligente para coleira permite que qualquer pessoa acesse os contatos do tutor e informações de saúde do seu pet em segundos, apenas aproximando o celular. Sem pilhas, sem mensalidade obrigatória e resistente à água.
           </p>
 
-          <div class="form-group">
-            <label class="form-label" for="lostStatusToggle">Situação Atual:</label>
-            <select id="lostStatusToggle" class="form-select" required>
-              <option value="true">🚨 ATIVAR MODO PERDIDO (Pet Desaparecido)</option>
-              <option value="false">✅ DESATIVAR (Pet em Segurança / Encontrado)</option>
-            </select>
-          </div>
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+            🛒 Quero minha TAG →
+          </a>
 
-          <div id="lostExtraFields">
-            <div class="form-group">
-              <label class="form-label" for="lostLocation">Último Local Visto</label>
-              <input type="text" id="lostLocation" class="form-input" placeholder="Ex: Próximo à Praça da Independência, Gonzaga - Santos/SP">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="lostDate">Data do Desaparecimento</label>
-              <input type="date" id="lostDate" class="form-input">
-            </div>
+          <div class="hero-benefits">
+            <span class="benefit-item">🛡️ Mais segurança</span>
+            <span class="benefit-item">⚡ Identificação rápida</span>
+            <span class="benefit-item">❤️ Pet sempre com você</span>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-ghost" data-close="modalLostMode">Cancelar</button>
-          <button type="submit" class="btn-danger">Confirmar Alteração</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <!-- MODAL: ATIVAR TAG NFC -->
-  <div class="modal-backdrop" id="modalActivateTag">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title">🏷️ Ativar ou Vincular Nova TAG NFC</h3>
-        <button type="button" class="modal-close-btn" data-close="modalActivateTag">&times;</button>
+        <div class="hero-image-wrap">
+          <img src="https://generated-images.adapta.one/emerson-santos%40hotmail.com/01a09f33-06ba-7068-ad25-0ae899dd012c/2026-09-14T13-26-44-043Z_Original_user_intent_Tool_generated_image_directi.png" alt="Cão e gato com as TAGs NFC oficiais Save Tag Pet presas nas coleiras" width="600" height="420" loading="eager" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/600/420?q=dog%20cat%20collar%20nfc&color=blue';">
+        </div>
       </div>
-      <form id="formActivateTag">
-        <div class="modal-body">
-          <p style="font-size: 0.88rem; color: var(--text-sub); margin-top: 0;">
-            Recebeu uma nova medalhinha inteligente Save Tag Pet? Digite o código gravado na peça para associar ao perfil do seu pet.
+    </div>
+  </section>
+
+  <!-- 3. COMO FUNCIONA -->
+  <section class="section-pad" id="como-funciona">
+    <div class="container text-center">
+      <h2 class="section-title">Como funciona?</h2>
+      <p class="section-subtitle">É simples, rápido e 100% seguro para você e seu melhor amigo.</p>
+
+      <div class="flow-badge-pill" style="display: flex; flex-direction: column; gap: 8px; padding: 12px 26px; border-radius: 20px;">
+        <div>🐶🔵🏷️ → 📱 → 🐾📋</div>
+        <div>🐱🩷🏷️ → 📱 → 🐾📋</div>
+      </div>
+
+      <div class="steps-grid">
+        <div class="card-white text-center">
+          <span class="step-number">Etapa 01</span>
+          <h3 class="step-title">🏷️ Escolha a TAG do seu pet</h3>
+          <p class="step-desc">
+            Selecione entre 4 cores exclusivas (azul, preta, vermelha ou rosa). Cada TAG vem com anel metálico ultra resistente e símbolo de patinha 🐾 em alto relevo.
           </p>
-          <div class="form-group">
-            <label class="form-label" for="activateTagCode">Código impresso na medalha</label>
-            <input type="text" id="activateTagCode" class="form-input" placeholder="Ex: SAVE-9942-PET" style="text-transform: uppercase;" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="activatePetSelect">Vincular ao Pet</label>
-            <select id="activatePetSelect" class="form-select" required>
-              <option value="">Selecione um animal...</option>
-            </select>
-          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-ghost" data-close="modalActivateTag">Cancelar</button>
-          <button type="submit" class="btn-green" style="border-radius: var(--radius-pill);">Vincular TAG</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <!-- MODAL: SELECIONAR PET PARA VACINA -->
-  <div class="modal-backdrop" id="modalSelectPetVac">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title">💉 Carteira de Vacinas</h3>
-        <button type="button" class="modal-close-btn" data-close="modalSelectPetVac">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size: 0.88rem; color: var(--text-sub); margin-top: 0;">
-          Escolha de qual pet você deseja visualizar ou registrar vacinas:
-        </p>
-        <div id="vacPetSelectList" style="display: flex; flex-direction: column; gap: 0.65rem;"></div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-outline btn-sm" data-close="modalSelectPetVac">Fechar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: AJUSTES DO TUTOR -->
-  <div class="modal-backdrop" id="modalSettings">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title">⚙️ Minha Conta</h3>
-        <button type="button" class="modal-close-btn" data-close="modalSettings">&times;</button>
-      </div>
-      <form id="formSettings">
-        <div class="modal-body">
-          <div class="form-group">
-            <label class="form-label" for="setTutorName">Nome do Tutor</label>
-            <input type="text" id="setTutorName" class="form-input" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="setTutorEmail">E-mail Cadastrado</label>
-            <input type="email" id="setTutorEmail" class="form-input" required readonly style="background: #f1f5f9;">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="setTutorPhone">WhatsApp de Contato</label>
-            <input type="tel" id="setTutorPhone" class="form-input" placeholder="(13) 99111-8997" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="setTutorAddress">Cidade / Endereço</label>
-            <input type="text" id="setTutorAddress" class="form-input" placeholder="Santos - SP">
-          </div>
-          <div class="form-group" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color);">
-            <label class="form-label" for="setTutorPassword">Trocar Senha (opcional)</label>
-            <input type="password" id="setTutorPassword" class="form-input" placeholder="Nova senha se desejar alterar">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-ghost" data-close="modalSettings">Cancelar</button>
-          <button type="submit" class="btn-brand">Salvar Ajustes</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL: RECUPERAR SENHA (ESQUECI MINHA SENHA) -->
-  <div class="modal-backdrop" id="modalForgotPassword">
-    <div class="modal-box" style="max-width: 420px; border-radius: 24px;">
-      <div class="modal-header">
-        <h3 class="modal-title">🔑 Recuperar senha</h3>
-        <button type="button" class="modal-close-btn" data-close="modalForgotPassword">&times;</button>
-      </div>
-      <form id="formForgotPassword">
-        <div class="modal-body">
-          <p style="font-size: 0.88rem; color: var(--text-sub); margin: 0 0 1rem; line-height: 1.45;">
-            Digite seu email e enviaremos um link para redefinir sua senha
+        <div class="card-white text-center">
+          <span class="step-number">Etapa 02</span>
+          <h3 class="step-title">🐶🐱 Cadastre seu cão ou gato</h3>
+          <p class="step-desc">
+            Acesse o painel do tutor em poucos cliques. Adicione fotos do pet, telefones WhatsApp para emergência, endereço e histórico de vacinas essenciais.
           </p>
-          <div class="form-group">
-            <label class="form-label" for="forgotEmail">E-mail</label>
-            <input type="email" id="forgotEmail" class="form-input" placeholder="seuemail@exemplo.com.br" required autocomplete="email">
-          </div>
         </div>
-        <div class="modal-footer" style="padding: 1rem 1.25rem;">
-          <button type="submit" class="btn-brand" id="forgot-btn" style="width: 100%;">
-            Enviar link de recuperação
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
-  <!-- MODAL: DEFINIR NOVA SENHA (RECOVERY FLOW) -->
-  <div class="modal-backdrop" id="modalResetPassword">
-    <div class="modal-box" style="max-width: 420px; border-radius: 24px;">
-      <div class="modal-header">
-        <h3 class="modal-title">🔑 Definir nova senha</h3>
-        <button type="button" class="modal-close-btn" data-close="modalResetPassword">&times;</button>
-      </div>
-      <form id="formResetPassword">
-        <div class="modal-body">
-          <p style="font-size: 0.88rem; color: var(--text-sub); margin: 0 0 1rem; line-height: 1.45;">
-            Digite sua nova senha abaixo. Ambas as senhas devem coincidir e ter no mínimo 6 dígitos.
+        <div class="card-white text-center">
+          <span class="step-number">Etapa 03</span>
+          <h3 class="step-title">🛡️ Coleira equipada & pet protegido</h3>
+          <p class="step-desc">
+            Basta prender a TAG na coleira. Se ele se perder, qualquer pessoa que aproximar o celular da TAG visualiza os contatos instantaneamente para avisar você.
           </p>
-          <div class="form-group">
-            <label class="form-label" for="newPassword">Nova senha</label>
-            <input type="password" id="newPassword" class="form-input" placeholder="Mínimo 6 caracteres" minlength="6" required autocomplete="new-password">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="confirmNewPassword">Confirmar nova senha</label>
-            <input type="password" id="confirmNewPassword" class="form-input" placeholder="Repita a nova senha" minlength="6" required autocomplete="new-password">
-          </div>
-          <div id="reset-error" style="display:none; padding:0.65rem; margin-top:0.5rem; background:#fef2f2; color:#dc2626; border-radius:8px; font-size:0.85rem; font-weight:600;"></div>
         </div>
-        <div class="modal-footer" style="padding: 1rem 1.25rem;">
-          <button type="submit" class="btn-brand" id="reset-pass-btn" style="width: 100%;">
-            Salvar nova senha
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Footer -->
-  <footer class="app-footer">
-    <div><strong>🐾 Save Tag Pet</strong> — Identifique. Encontre. Proteja.</div>
-    <div style="margin-top: 0.25rem;">
-      Suporte WhatsApp: <a href="https://wa.me/5513991118997" target="_blank" rel="noopener">(13) 99111-8997</a> | E-mail: <a href="mailto:duvidas@savetagpet.com.br">duvidas@savetagpet.com.br</a>
+  <!-- 4. NOSSAS TAGs -->
+  <section class="section-pad" id="tags" style="background-color: #f1f8fa;">
+    <div class="container text-center">
+      <h2 class="section-title">Nossas TAGs NFC</h2>
+      <p class="section-subtitle">Identificação inteligente que combina com o seu cão ou gato</p>
+
+      <!-- Prominent Product Showcase Image: 4 NFC Pet Tags in a 2x2 grid -->
+      <div class="tags-product-showcase">
+        <img src="https://generated-images.adapta.one/emerson-santos%40hotmail.com/01a09f33-06ba-7068-ad25-0ae899dd012c/2026-09-14T13-25-58-087Z_Original_user_intent_Tool_generated_image_directi.png" alt="4 TAGs NFC Save Tag Pet nas cores azul, preta, vermelha e rosa com patinha e texto NFC" width="720" height="520" loading="lazy">
+      </div>
+
+      <!-- 4 Tag Name Labels with Descriptions -->
+      <div class="tags-grid">
+        <!-- Tag Azul -->
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-blue" title="Cor Azul"></div>
+          <h3 class="tag-card-name">TAG AZUL</h3>
+          <p class="tag-card-desc">Moderna, marcante e vibrante. Perfeita para cães aventureiros e gatos curiosos.</p>
+        </div>
+
+        <!-- Tag Preta -->
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-black" title="Cor Preta"></div>
+          <h3 class="tag-card-name">TAG PRETA</h3>
+          <p class="tag-card-desc">Elegante, discreta e premium. Combina harmoniosamente com qualquer tipo e cor de coleira.</p>
+        </div>
+
+        <!-- Tag Vermelha -->
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-red" title="Cor Vermelha"></div>
+          <h3 class="tag-card-name">TAG VERMELHA</h3>
+          <p class="tag-card-desc">Alta visibilidade e estilo enérgico. Chama a atenção de imediato em situações de resgate.</p>
+        </div>
+
+        <!-- Tag Rosa -->
+        <div class="tag-desc-card">
+          <div class="tag-color-indicator tag-indicator-pink" title="Cor Rosa"></div>
+          <h3 class="tag-card-name">TAG ROSA</h3>
+          <p class="tag-card-desc">Delicada, alegre e carinhosa. Um charme único para pets cheios de personalidade.</p>
+        </div>
+      </div>
+
+      <div class="tag-bottom-note">
+        🛡️ Todas as TAGs possuem tecnologia NFC, são resistentes à água e não precisam de bateria
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. O QUE É NFC -->
+  <section class="section-pad" id="nfc">
+    <div class="container text-center">
+      <h2 class="section-title">O que é a tecnologia NFC?</h2>
+      <p class="section-subtitle">
+        NFC (Near Field Communication) é uma tecnologia de transmissão por aproximação sem fios. É a mesma tecnologia utilizada em pagamentos por aproximação no cartão ou smartphone, permitindo leitura ultraveloz em até 3 centímetros.
+      </p>
+
+      <div class="nfc-flows">
+        <div class="flow-badge-item">🐶🔵🏷️ (Cão com TAG na coleira) → 📱 (Aproximação) → 🐾📋 Perfil Instantâneo</div>
+        <div class="flow-badge-item">🐱🩷🏷️ (Gato com TAG na coleira) → 📱 (Aproximação) → 🐾📋 Perfil Instantâneo</div>
+      </div>
+
+      <div class="nfc-cards-grid text-left" style="text-align: left;">
+        <div class="nfc-info-card">
+          <h3>🚫 Não é GPS</h3>
+          <p>Não realiza rastreamento via satélite em tempo real. A TAG é lida por proximidade física, tornando o dispositivo leve, sem mensalidades obrigatórias de operadoras telefônicas e 100% confortável para o animal.</p>
+        </div>
+
+        <div class="nfc-info-card">
+          <h3>🔋 Zero Bateria</h3>
+          <p>Você nunca precisa recarregar. A TAG é ativada por indução magnética no milésimo de segundo em que o celular de quem encontrou é encostado nela.</p>
+        </div>
+
+        <div class="nfc-info-card">
+          <h3>🆔 Identificação Digital</h3>
+          <p>Conecta com máxima agilidade quem encontrou o pet com a sua família. Abre direto no navegador sem obrigar a pessoa a baixar nenhum aplicativo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PERFIL DIGITAL -->
+  <section class="section-pad" id="perfil-digital" style="background-color: #f8fafc;">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title">Mais que uma TAG, uma história. ❤️</h2>
+        <p class="section-subtitle">Um perfil online completo e sempre atualizado para o seu animalzinho.</p>
+      </div>
+
+      <div class="perfil-media-box">
+        <img src="perfil-pets-tags.png" alt="Demonstração do perfil digital do pet e funcionamento da tag" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/850/420?q=smartphone%20app%20pet&color=blue';">
+      </div>
+
+      <p class="perfil-lead-text">🐶🏷️ Cães e 🐱🏷️ Gatos com perfis independentes e integrados</p>
+
+      <div class="perfil-features-grid">
+        <div class="perfil-feat-card">
+          <h4>📸 Fotos do seu pet</h4>
+          <p>Galeria com fotos atuais do seu pet para facilitar a identificação visual rápida por quem o encontrar.</p>
+        </div>
+
+        <div class="perfil-feat-card">
+          <h4>📋 Informações vitais</h4>
+          <p>Nome, idade, raça, porte, microchip e se é castrado ou necessita de cuidados especiais.</p>
+        </div>
+
+        <div class="perfil-feat-card">
+          <h4>🩺 Saúde e vacinas</h4>
+          <p>Histórico de vacinação antirrábica, V8/V10, vermífugos, remédios contínuos e alergias conhecidas.</p>
+        </div>
+
+        <div class="perfil-feat-card">
+          <h4>📞 Contato do tutor</h4>
+          <p>Botão de ligação direta e WhatsApp em um clique para o tutor e contatos alternativos de confiança.</p>
+        </div>
+      </div>
+
+      <div class="privacy-notice">
+        🔒 Privacidade garantida: dados médicos e pessoais ficam protegidos na Área do Tutor
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. PLANOS -->
+  <section class="section-pad" id="planos">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title">Conheça nossos planos</h2>
+        <p class="section-subtitle">Escolha a melhor proteção para o seu pet ou para a família inteira.</p>
+      </div>
+
+      <div class="plans-grid">
+        <!-- Card 1: TAG AVULSA -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <h3 class="plan-name">TAG AVULSA</h3>
+            <p class="plan-target">🐶🐱 Ideal para 1 cão ou 1 gato</p>
+          </div>
+
+          <div class="plan-price-wrap">
+            <span class="plan-price">R$ 49,90</span>
+            <span class="plan-suffix">/único</span>
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="check-icon">✓</span> 1 TAG NFC de alta resistência</li>
+            <li><span class="check-icon">✓</span> Perfil público do pet</li>
+            <li><span class="check-icon">✓</span> Contatos de emergência (WhatsApp/Ligação)</li>
+            <li><span class="check-icon">✓</span> Modo Pet Perdido</li>
+            <li><span class="check-icon">✓</span> Atualização ilimitada dos dados</li>
+            <li><span class="check-icon">✓</span> Sem mensalidade</li>
+          </ul>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG%20Avulsa.%20%F0%9F%90%BE" class="btn-cta-primary" target="_blank" rel="noopener noreferrer">
+            Pedir TAG Avulsa
+          </a>
+        </div>
+
+        <!-- Card 2: PLANO SAVE TAG (Featured) -->
+        <div class="plan-card featured">
+          <span class="featured-badge">MAIS ESCOLHIDO</span>
+
+          <div class="plan-header">
+            <h3 class="plan-name">PLANO SAVE TAG</h3>
+            <p class="plan-target">🐶🐱 Protege 2 pets</p>
+          </div>
+
+          <div class="plan-price-wrap">
+            <span class="plan-price">R$ 9,90</span>
+            <span class="plan-suffix">/mês</span>
+          </div>
+
+          <div class="bonus-box">
+            🎁 Bônus: Compre 1 TAG e ganhe +1 grátis!
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="check-icon">✓</span> 2 TAGs NFC incluídas</li>
+            <li><span class="check-icon">✓</span> Perfis completos para 2 pets</li>
+            <li><span class="check-icon">✓</span> Carteira de vacinas digital interativa</li>
+            <li><span class="check-icon">✓</span> Modo Pet Perdido com alerta prioritário</li>
+            <li><span class="check-icon">✓</span> Suporte dedicado pelo WhatsApp</li>
+            <li><span class="check-icon">✓</span> Atualização contínua de recursos</li>
+          </ul>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20tenho%20interesse%20no%20plano%20Save%20Tag.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+            Assinar agora
+          </a>
+        </div>
+
+        <!-- Card 3: SAVE TAG FAMÍLIA -->
+        <div class="plan-card">
+          <div class="plan-header">
+            <h3 class="plan-name">SAVE TAG FAMÍLIA</h3>
+            <p class="plan-target">👨‍👩‍👧‍👦🐾 Para toda a família pet</p>
+          </div>
+
+          <div class="plan-price-wrap">
+            <span class="plan-price">R$ 19,90</span>
+            <span class="plan-suffix">/mês</span>
+          </div>
+
+          <div class="bonus-box">
+            🎉 Super Bônus: Compre 1 TAG e ganhe +3 grátis!
+          </div>
+
+          <ul class="plan-features-list">
+            <li><span class="check-icon">✓</span> Até 4 pets cadastrados</li>
+            <li><span class="check-icon">✓</span> 4 TAGs NFC personalizadas</li>
+            <li><span class="check-icon">✓</span> Todos os recursos Premium desbloqueados</li>
+            <li><span class="check-icon">✓</span> Carteira de vacinação para todos os pets</li>
+            <li><span class="check-icon">✓</span> Atendimento VIP e suporte humanizado</li>
+          </ul>
+
+          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20tenho%20interesse%20no%20plano%20Save%20Tag%20Fam%C3%ADlia.%20%F0%9F%90%BE" class="btn-cta-primary" target="_blank" rel="noopener noreferrer">
+            Assinar plano família
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FAMÍLIA HIGHLIGHT -->
+  <section class="container">
+    <div class="family-section">
+      <div class="family-grid">
+        <div class="family-img-wrap">
+          <img src="family-pets-final-wide-download.png" alt="Família completa com vários cães e gatos protegidos com TAG NFC" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/600/380?q=happy%20dogs%20cats&color=green';">
+        </div>
+
+        <div>
+          <h2 class="section-title" style="margin-bottom: 16px;">Proteja toda a família!</h2>
+          <p style="font-size: 1.05rem; color: #475569; line-height: 1.6;">
+            Tem mais de um companheiro de quatro patas em casa? Gerencie todos os seus cães e gatos em uma única conta unificada no painel do tutor, com máxima praticidade e economia.
+          </p>
+
+          <ul class="family-bullets">
+            <li>🐶 Gerencie até 4 cães ou gatos no mesmo painel</li>
+            <li>🐱 Cada pet com sua TAG NFC individual colorida</li>
+            <li>❤️ Mais segurança e tranquilidade para o seu lar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. COMO RECEBO MINHA TAG -->
+  <section class="section-pad" id="como-receber">
+    <div class="container text-center">
+      <h2 class="section-title">Como recebo minha TAG?</h2>
+      <p class="section-subtitle">Processo de compra direto, ágil e humanizado.</p>
+
+      <div class="receive-grid text-left" style="text-align: left;">
+        <div class="receive-card">
+          <div class="receive-badge-num">1</div>
+          <h3>Chame no WhatsApp</h3>
+          <p>Clique em qualquer botão do site e converse diretamente com a nossa equipe.</p>
+        </div>
+
+        <div class="receive-card">
+          <div class="receive-badge-num">2</div>
+          <h3>Emerson confirma</h3>
+          <p>Tiramos suas dúvidas, confirmamos a quantidade de pets e as cores desejadas.</p>
+        </div>
+
+        <div class="receive-card">
+          <div class="receive-badge-num">3</div>
+          <h3>Pagamento & Entrega</h3>
+          <p>Combinamos a forma de pagamento segura (PIX/Cartão) e o envio direto para o seu endereço.</p>
+        </div>
+
+        <div class="receive-card">
+          <div class="receive-badge-num">4</div>
+          <h3>Receba e Ative</h3>
+          <p>Receba a TAG na sua residência, vincule o código no painel e cadastre seu pet em minutos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FAQ -->
+  <section class="section-pad" id="faq" style="background-color: #f1f8fa;">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-title">Perguntas Frequentes</h2>
+        <p class="section-subtitle">Tudo o que você precisa saber sobre a TAG NFC do Save Tag Pet.</p>
+      </div>
+
+      <div class="faq-wrapper">
+        <details class="faq-item">
+          <summary class="faq-question">1. A TAG funciona em qualquer celular?</summary>
+          <div class="faq-answer">
+            Sim! A imensa maioria dos smartphones modernos (Android e iPhone) possui leitor NFC integrado. Basta aproximar a parte traseira do celular da TAG para abrir instantaneamente a página do perfil do pet.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">2. A TAG precisa de bateria?</summary>
+          <div class="faq-answer">
+            Não! A TAG funciona por tecnologia passiva de indução magnética. A própria aproximação do smartphone alimenta o microchip da TAG, portanto ela nunca precisa de recarga ou troca de pilhas.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">3. A TAG é GPS?</summary>
+          <div class="faq-answer">
+            Não. A TAG Save Tag Pet é um sistema de identificação digital por aproximação NFC. Rastreadores GPS tradicionais exigem recargas frequentes na tomada, são pesados e demandam chips com assinaturas caras de operadoras. Nossa TAG é leve, eterna e funciona sem baterias.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">4. O pet precisa de internet?</summary>
+          <div class="faq-answer">
+            Não. O animal não precisa de nenhum sinal. O perfil do pet é exibido na tela do celular de quem encontrou e realizou a aproximação, utilizando a internet do próprio celular daquela pessoa.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">5. O que acontece se meu pet fugir?</summary>
+          <div class="faq-answer">
+            Você pode acessar sua Área do Tutor a qualquer momento e ativar o "Modo Pet Perdido". Isso colocará um aviso de urgência com destaque no topo do perfil público do seu pet quando alguém ler a TAG.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">6. A TAG funciona sem mensalidade?</summary>
+          <div class="faq-answer">
+            Sim! Na opção TAG Avulsa, você paga uma única vez pela TAG física e utiliza o perfil vitalício básico sem custo mensal. Nossos planos por assinatura oferecem benefícios extras como múltiplos pets e suporte prioritário.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">7. Posso ter mais de um pet?</summary>
+          <div class="faq-answer">
+            Com certeza! Nosso plano Save Tag contempla 2 pets e o plano Família atende até 4 pets em um único acesso administrativo.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">8. Posso trocar a TAG entre pets?</summary>
+          <div class="faq-answer">
+            Sim. Caso precise reatribuir uma TAG para outro pet ou substituir a coleira, basta realizar o remanejamento simples diretamente na sua Área do Tutor.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">9. Como recebo minha TAG?</summary>
+          <div class="faq-answer">
+            Após entrar em contato pelo nosso WhatsApp oficial, combinamos a quantidade, as cores, os dados de envio pelos Correios ou transportadora e o meio de pagamento.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">10. Meus dados ficam públicos?</summary>
+          <div class="faq-answer">
+            Não! Somente os contatos de emergência e as informações essenciais que você escolher exibir publicamente estarão acessíveis. Documentos e dados sensíveis ficam protegidos e criptografados sob seu login na Área do Tutor.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">11. O que acontece quando alguém encontra meu pet?</summary>
+          <div class="faq-answer">
+            A pessoa aproxima o celular da medalha na coleira. Uma notificação abre automaticamente o perfil do animalzinho com fotos, nome, recados do tutor e botões com ligação rápida e conversa de WhatsApp.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary class="faq-question">12. A localização é compartilhada automaticamente?</summary>
+          <div class="faq-answer">
+            Não de forma oculta. Por respeito à privacidade e às políticas de segurança dos navegadores, a localização do GPS do celular de quem encontrou só pode ser enviada ao tutor mediante consentimento e permissão explícita na tela.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. CTA FINAL -->
+  <section class="container">
+    <div class="final-cta-section">
+      <h2 class="final-cta-title">Pronto para proteger quem sempre esteve ao seu lado?</h2>
+      <p class="final-cta-desc">
+        Garanta a TAG inteligente do seu pet agora mesmo. Atendimento humanizado, envio rápido para todo o Brasil e a tranquilidade que a sua família merece.
+      </p>
+      <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+        🛒 Quero minha TAG →
+      </a>
+    </div>
+  </section>
+
+  <!-- 12. FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>🐾 Save Tag Pet</h3>
+          <p class="footer-slogan">Identifique. Encontre. Proteja.</p>
+          <p class="footer-text">
+            Tecnologia NFC inteligente a serviço do bem-estar e da segurança dos seus melhores amigos peludos em todo o Brasil.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navegação</h4>
+          <ul class="footer-links">
+            <li><a href="#inicio">Início</a></li>
+            <li><a href="#como-funciona">Como funciona</a></li>
+            <li><a href="#tags">Nossas TAGs</a></li>
+            <li><a href="#perfil-digital">Perfil Digital</a></li>
+            <li><a href="#planos">Planos</a></li>
+            <li><a href="#faq">Dúvidas Frequentes</a></li>
+            <li><a href="login.html">Área do Tutor</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Institucional & Suporte</h4>
+          <ul class="footer-links">
+            <li><a href="politica-privacidade.html">Política de Privacidade</a></li>
+            <li><a href="termos.html">Termos de Uso</a></li>
+            <li><a href="mailto:duvidas@savetagpet.com.br">✉️ duvidas@savetagpet.com.br</a></li>
+            <li><a href="https://wa.me/5513991118997" target="_blank" rel="noopener noreferrer">📱 WhatsApp: (13) 99111-8997</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Save Tag Pet — Todos os direitos reservados. Identifique. Encontre. Proteja.</p>
+      </div>
     </div>
   </footer>
 
-  <!-- Toast Notification Container -->
-  <div id="toast-container" aria-live="polite"></div>
+  <!-- BACK TO TOP BUTTON -->
+  <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo da página">⬆️</button>
 
-  <!-- CLIENT DATA & SUPABASE ADAPTER LOGIC -->
-  <!-- 2. The CDN script tag loads: https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2 -->
+  <!-- MINIMAL CLIENT-SIDE JAVASCRIPT -->
   <script>
-    /**
-     * Save Tag Pet - Static client-side mock & Supabase contract adapter.
-     * Implements full offline state persistence in localStorage while supporting
-     * the requested Supabase Auth & RPC signatures without remote dependencies.
-     */
-    (function() {
-      // Configuration details
-      // NOTE ON EMAIL CONFIRMATION:
-      // If users experience login issues or "Email not confirmed" errors blocking login:
-      // You may need to disable "Confirm email" in Supabase Dashboard → Authentication → Providers → Email settings,
-      // OR confirm their email first before attempting login.
-      const supabaseUrl = 'https://mqiwoubhivutavpnpeax.supabase.co';
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xaXdvdWJoaXZ1dGF2cG5wZWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5MzA2ODksImV4cCI6MjEwNDUwNjY4OX0.y0HFM4tTLdzBe5NfSbzCo66hz9YwdIlE989Kb_sQ-Zs';
-      window.supabaseUrl = supabaseUrl;
-      window.supabaseKey = supabaseKey;
-      const STORAGE_KEY_AUTH = "savetag_session_v2";
-      const STORAGE_KEY_DATA = "savetag_database_v2";
-
-      // Initial realistic dataset
-      const INITIAL_DB = {
-        tutors: [
-          {
-            id: "tutor-101",
-            name: "Camila Rodrigues",
-            email: "camila@savetagpet.com.br",
-            password: "senha",
-            phone: "(13) 99111-8997",
-            address: "Santos - SP",
-            created_at: new Date().toISOString()
-          }
-        ],
-        pets: [
-          {
-            id: "pet-201",
-            tutor_id: "tutor-101",
-            name: "Bento",
-            species: "Cão",
-            breed: "Golden Retriever",
-            age: "3 anos",
-            weight: "32 kg",
-            color: "Dourado",
-            photo_url: "https://img.usecurling.com/p/400/300?q=golden%20retriever",
-            notes: "Dócil, adora crianças. Alérgico a corante artificial.",
-            emergency_phone: "(13) 99111-8997",
-            emergency_whatsapp: "5513991118997",
-            emergency_email: "duvidas@savetagpet.com.br",
-            tag_code: "SAVE-BENT-2024",
-            is_lost: false,
-            lost_location: "",
-            lost_date: "",
-            created_at: new Date().toISOString()
-          },
-          {
-            id: "pet-202",
-            tutor_id: "tutor-101",
-            name: "Luna",
-            species: "Gato",
-            breed: "Siamês",
-            age: "2 anos",
-            weight: "4.1 kg",
-            color: "Bege com extremidades marrons",
-            photo_url: "https://img.usecurling.com/p/400/300?q=siamese%20cat",
-            notes: "Microchipada. Tímida com estranhos.",
-            emergency_phone: "(13) 99111-8997",
-            emergency_whatsapp: "5513991118997",
-            emergency_email: "duvidas@savetagpet.com.br",
-            tag_code: "SAVE-LUNA-9821",
-            is_lost: true,
-            lost_location: "Rua Euclides da Cunha, Gonzaga - Santos",
-            lost_date: "2025-05-12",
-            created_at: new Date().toISOString()
-          },
-          {
-            id: "pet-203",
-            tutor_id: "tutor-101",
-            name: "Pipoca",
-            species: "Cão",
-            breed: "Poodle Toy",
-            age: "1 ano",
-            weight: "4 kg",
-            color: "Branco",
-            photo_url: "https://img.usecurling.com/p/400/300?q=white%20poodle",
-            notes: "Muito brincalhão e ativo.",
-            emergency_phone: "(13) 99111-8997",
-            emergency_whatsapp: "5513991118997",
-            emergency_email: "duvidas@savetagpet.com.br",
-            tag_code: null,
-            is_lost: false,
-            lost_location: "",
-            lost_date: "",
-            created_at: new Date().toISOString()
-          }
-        ],
-        pet_vaccines: [
-          {
-            id: "vac-301",
-            pet_id: "pet-201",
-            vaccine_name: "V10 Múltipla Canina",
-            application_date: "2024-08-10",
-            next_dose_date: "2025-08-10",
-            veterinarian: "Dra. Carolina CRMV-SP 34120"
-          },
-          {
-            id: "vac-302",
-            pet_id: "pet-201",
-            vaccine_name: "Antirrábica",
-            application_date: "2024-09-15",
-            next_dose_date: "2025-09-15",
-            veterinarian: "Dr. Marcos CRMV-SP 21008"
-          },
-          {
-            id: "vac-303",
-            pet_id: "pet-202",
-            vaccine_name: "Quíntupla Felina (V5)",
-            application_date: "2024-11-02",
-            next_dose_date: "2025-11-02",
-            veterinarian: "Dra. Helena CRMV-SP 45911"
-          }
-        ]
-      };
-
-      // Storage helper
-      function getDb() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY_DATA);
-          if (!raw) {
-            localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(INITIAL_DB));
-            return INITIAL_DB;
-          }
-          return JSON.parse(raw);
-        } catch(e) {
-          return INITIAL_DB;
-        }
-      }
-
-      function saveDb(data) {
-        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
-      }
-
-      function buildSupabaseClient(url, key) {
-        const client = {
-          supabaseUrl: url,
-          supabaseKey: key,
-          authListeners: [],
-
-          auth: {
-            async getSession() {
-              try {
-                const raw = localStorage.getItem(STORAGE_KEY_AUTH);
-                if (!raw) return { data: { session: null }, error: null };
-                return { data: { session: JSON.parse(raw) }, error: null };
-              } catch(e) {
-                return { data: { session: null }, error: e };
-              }
-            },
-
-            async signInWithPassword({ email, password }) {
-              const db = getDb();
-              const tutor = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
-              if (!tutor) {
-                return { data: null, error: { message: "Usuário não encontrado. Verifique seu e-mail." } };
-              }
-              if (tutor.password && tutor.password !== password) {
-                return { data: null, error: { message: "Senha incorreta. Tente novamente." } };
-              }
-              const session = {
-                user: {
-                  id: tutor.id,
-                  email: tutor.email,
-                  user_metadata: { name: tutor.name, phone: tutor.phone }
-                },
-                access_token: "mock-jwt-" + Date.now()
-              };
-              localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
-              client._notifyAuth("SIGNED_IN", session);
-              return { data: { session, user: session.user }, error: null };
-            },
-
-            async signUp({ email, password, options }) {
-              const db = getDb();
-              const exists = db.tutors.find(t => t.email.toLowerCase() === email.toLowerCase());
-              if (exists) {
-                return { data: null, error: { message: "Este e-mail já possui cadastro. Faça login." } };
-              }
-              const newTutor = {
-                id: "tutor-" + Date.now(),
-                name: options?.data?.name || "Tutor",
-                email: email.toLowerCase(),
-                password: password,
-                phone: options?.data?.phone || "",
-                address: "",
-                created_at: new Date().toISOString()
-              };
-              db.tutors.push(newTutor);
-              saveDb(db);
-
-              const session = {
-                user: {
-                  id: newTutor.id,
-                  email: newTutor.email,
-                  user_metadata: { name: newTutor.name, phone: newTutor.phone }
-                },
-                access_token: "mock-jwt-" + Date.now()
-              };
-              localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
-              client._notifyAuth("SIGNED_IN", session);
-              return { data: { session, user: session.user }, error: null };
-            },
-
-            async signOut() {
-              localStorage.removeItem(STORAGE_KEY_AUTH);
-              client._notifyAuth("SIGNED_OUT", null);
-              return { error: null };
-            },
-
-            async resetPasswordForEmail(email, options) {
-              if (!email || !email.includes('@')) {
-                return { data: null, error: { message: 'Por favor, insira um e-mail válido.' } };
-              }
-              const db = getDb();
-              const tutor = db.tutors.find(t => t.email.toLowerCase() === (email || '').toLowerCase());
-              return { data: {}, error: null };
-            },
-
-            async updateUser(attributes) {
-              const sessionData = await this.getSession();
-              const user = sessionData?.data?.session?.user;
-              const db = getDb();
-              if (attributes && attributes.password) {
-                if (user) {
-                  const tutor = db.tutors.find(t => t.id === user.id || t.email.toLowerCase() === user.email.toLowerCase());
-                  if (tutor) {
-                    tutor.password = attributes.password;
-                    saveDb(db);
-                  }
-                } else if (db.tutors.length > 0) {
-                  db.tutors[0].password = attributes.password;
-                  saveDb(db);
-                }
-              }
-              return { data: { user: user || db.tutors[0] }, error: null };
-            },
-
-            onAuthStateChange(callback) {
-              client.authListeners.push(callback);
-              this.getSession().then(({ data }) => {
-                callback(data.session ? "INITIAL_SESSION" : "SIGNED_OUT", data.session);
-              });
-              return { data: { subscription: { unsubscribe: () => {} } } };
-            }
-          },
-
-          _notifyAuth(event, session) {
-            client.authListeners.forEach(cb => {
-              try { cb(event, session); } catch(e) { console.error(e); }
-            });
-          },
-
-          async rpc(funcName, params = {}) {
-            const db = getDb();
-
-            if (funcName === "fn_login_by_tag") {
-              const tagCode = (params.tag_code || "").trim().toUpperCase();
-              const pet = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode);
-              if (!pet) {
-                return { data: null, error: { message: "TAG não encontrada ou não vinculada a nenhum animal." } };
-              }
-              const tutor = db.tutors.find(t => t.id === pet.tutor_id) || db.tutors[0];
-              const session = {
-                user: {
-                  id: tutor.id,
-                  email: tutor.email,
-                  user_metadata: { name: tutor.name, phone: tutor.phone }
-                },
-                access_token: "mock-tag-jwt-" + Date.now()
-              };
-              localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(session));
-              client._notifyAuth("SIGNED_IN", session);
-              return { data: { success: true, tutor, pet }, error: null };
-            }
-
-            if (funcName === "fn_link_tag") {
-              const tagCode = (params.tag_code || "").trim().toUpperCase();
-              const petId = params.pet_id;
-              
-              const alreadyUsed = db.pets.find(p => (p.tag_code || "").toUpperCase() === tagCode && p.id !== petId);
-              if (alreadyUsed) {
-                return { data: null, error: { message: "Esta TAG já está vinculada ao pet " + alreadyUsed.name } };
-              }
-
-              const targetPet = db.pets.find(p => p.id === petId);
-              if (!targetPet) {
-                return { data: null, error: { message: "Pet selecionado não foi encontrado." } };
-              }
-
-              targetPet.tag_code = tagCode;
-              saveDb(db);
-              return { data: { success: true, pet: targetPet }, error: null };
-            }
-
-            if (funcName === "fn_set_lost_mode") {
-              const pet = db.pets.find(p => p.id === params.pet_id);
-              if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
-              
-              pet.is_lost = !!params.is_lost;
-              pet.lost_location = params.lost_location || "";
-              pet.lost_date = params.lost_date || "";
-              saveDb(db);
-              return { data: { success: true, pet }, error: null };
-            }
-
-            if (funcName === "fn_save_pet") {
-              let pet;
-              if (params.id) {
-                pet = db.pets.find(p => p.id === params.id);
-                if (!pet) return { data: null, error: { message: "Pet não encontrado." } };
-                Object.assign(pet, params);
-              } else {
-                pet = {
-                  id: "pet-" + Date.now(),
-                  created_at: new Date().toISOString(),
-                  is_lost: false,
-                  ...params
-                };
-                db.pets.push(pet);
-              }
-              saveDb(db);
-              return { data: pet, error: null };
-            }
-
-            if (funcName === "fn_save_vaccine") {
-              const vac = {
-                id: "vac-" + Date.now(),
-                ...params,
-                created_at: new Date().toISOString()
-              };
-              db.pet_vaccines.push(vac);
-              saveDb(db);
-              return { data: vac, error: null };
-            }
-
-            return { data: null, error: { message: "Função RPC desconhecida: " + funcName } };
-          },
-
-          from(tableName) {
-            return {
-              select: async () => {
-                const db = getDb();
-                return { data: db[tableName] || [], error: null };
-              },
-              delete: () => ({
-                eq: async (col, val) => {
-                  const db = getDb();
-                  if (db[tableName]) {
-                    db[tableName] = db[tableName].filter(row => row[col] !== val);
-                    saveDb(db);
-                  }
-                  return { error: null };
-                }
-              })
-            };
-          }
-        };
-
-        return client;
-      }
-
-      // Supabase factory initialization (v2 SDK support)
-      // 2. The CDN script tag loads: https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
-      window.supabase = window.supabase || {};
-      if (!window.supabase.createClient) {
-        window.supabase.createClient = function(url, key) {
-          return buildSupabaseClient(url, key);
-        };
-      }
-
-      // 1. The Supabase client is created with: supabase.createClient(url, key) — the v2 SDK from CDN
-      var supabase = window.supabase;
-      supabase = supabase.createClient(supabaseUrl, supabaseKey);
-      window.supabaseClient = supabase;
-
-      // UI CONTROLLER & APP LOGIC
-      let currentSession = null;
-      let currentPets = [];
-
-      // E) TOAST function — must work and stay visible for 6 seconds
-      function showToast(message, type) {
-        console.log('TOAST [' + type + ']:', message);
-        let toast = document.getElementById('toast');
-        if (!toast) {
-          toast = document.createElement('div');
-          toast.id = 'toast';
-          toast.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:1rem 1.5rem;border-radius:12px;font-weight:600;font-size:0.95rem;z-index:10000;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,0.15);transition:opacity 0.3s;';
-          document.body.appendChild(toast);
-        }
-        toast.textContent = message;
-        toast.style.opacity = '1';
-        toast.style.display = 'block';
-        if (type === 'error') { toast.style.background = '#dc2626'; toast.style.color = '#fff'; }
-        else if (type === 'success') { toast.style.background = '#07966b'; toast.style.color = '#fff'; }
-        setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => { toast.style.display = 'none'; }, 300); }, 6000);
-      }
-
-      // Tab switcher
-      const tabLoginBtn = document.getElementById("tabLoginBtn");
-      const tabRegisterBtn = document.getElementById("tabRegisterBtn");
-      const formEmailLogin = document.getElementById("formEmailLogin");
-      const formRegister = document.getElementById("formRegister");
-
-      tabLoginBtn.addEventListener("click", () => {
-        tabLoginBtn.classList.add("active");
-        tabRegisterBtn.classList.remove("active");
-        formEmailLogin.style.display = "block";
-        formRegister.style.display = "none";
-      });
-
-      tabRegisterBtn.addEventListener("click", () => {
-        tabRegisterBtn.classList.add("active");
-        tabLoginBtn.classList.remove("active");
-        formEmailLogin.style.display = "none";
-        formRegister.style.display = "block";
-      });
-
-      // Quick prefill demo login
-      document.getElementById("fillDemoLoginBtn").addEventListener("click", () => {
-        document.getElementById("loginEmail").value = "camila@savetagpet.com.br";
-        document.getElementById("loginPassword").value = "senha";
-        showToast("Dados de demonstração inseridos!", "warning");
-      });
-
-      document.getElementById("codeSnippet").addEventListener("click", () => {
-        document.getElementById("inputTagCodeLogin").value = "SAVE-BENT-2024";
-      });
-
-      // FORGOT PASSWORD MODAL HELPERS & LOGIC
-      function openForgotModal() {
-        const modal = document.getElementById('modalForgotPassword');
-        if (modal) {
-          document.getElementById('formForgotPassword')?.reset();
-          const currentEmail = document.getElementById('loginEmail')?.value.trim();
-          const forgotInput = document.getElementById('forgotEmail');
-          if (forgotInput && currentEmail) {
-            forgotInput.value = currentEmail;
-          }
-          modal.classList.add('open');
-          if (forgotInput) forgotInput.focus();
-        }
-      }
-
-      function closeForgotModal() {
-        const modal = document.getElementById('modalForgotPassword');
-        if (modal) modal.classList.remove('open');
-      }
-
-      function openResetModal() {
-        const modal = document.getElementById('modalResetPassword');
-        if (modal) {
-          document.getElementById('formResetPassword')?.reset();
-          const errDiv = document.getElementById('reset-error');
-          if (errDiv) errDiv.style.display = 'none';
-          modal.classList.add('open');
-        }
-      }
-
-      function closeResetModal() {
-        const modal = document.getElementById('modalResetPassword');
-        if (modal) modal.classList.remove('open');
-      }
-
-      async function handleForgotPassword(email) {
-        const btn = document.getElementById('forgot-btn');
-        if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
-        
-        try {
-          const { error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://www.savetagpet.com.br/login.html'
-          });
-          
-          if (error) {
-            console.error('Reset error:', error.message);
-            showToast(error.message, 'error');
-            if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
-            return;
-          }
-          
-          showToast('Link de recuperação enviado! Verifique seu email.', 'success');
-          closeForgotModal();
-          if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
-        } catch (err) {
-          showToast('Erro: ' + err.message, 'error');
-          if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
-        }
-      }
-
-      // Auth Handlers
-      function showDashboard(user) {
-        if (!user) return;
-        renderState({ user: user });
-      }
-
-      // A) LOGIN ERROR HANDLING — exact requested logic
-      async function handleLogin(email, password) {
-        console.log('=== LOGIN ATTEMPT ===');
-        console.log('Email:', email);
-        
-        const btn = document.getElementById('login-btn');
-        if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
-        
-        try {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password: password
-          });
-          
-          console.log('Login response:', { data, error });
-          
-          if (error) {
-            console.error('Supabase auth error:', error.message, error.status);
-            
-            let errorMsg = error.message || 'Erro desconhecido';
-            if (error.message.includes('Invalid login credentials')) {
-              errorMsg = 'Email ou senha incorretos. Verifique seus dados.';
-            } else if (error.message.includes('Email not confirmed')) {
-              errorMsg = 'Email não confirmado. Verifique sua caixa de entrada e clique no link de confirmação.';
-            } else if (error.message.includes('Too many requests')) {
-              errorMsg = 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
-            }
-            
-            // Show in BOTH toast AND visible error div
-            showToast(errorMsg, 'error');
-            const errorDiv = document.getElementById('login-error');
-            if (errorDiv) {
-              errorDiv.style.display = 'block';
-              errorDiv.textContent = errorMsg;
-            }
-            
-            if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
-            return;
-          }
-          
-          if (data.user) {
-            console.log('Login successful!');
-            showToast('Login realizado com sucesso!', 'success');
-            showDashboard(data.user);
-          }
-        } catch (err) {
-          console.error('Catch error:', err);
-          showToast('Erro de conexão: ' + (err.message || 'desconhecido'), 'error');
-          if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
-        }
-      }
-
-      // D) SIGNUP function — also show real errors
-      async function handleSignup(name, email, password, phone) {
-        const btn = document.getElementById('signup-btn');
-        if (btn) { btn.disabled = true; btn.textContent = 'Criando conta...'; }
-        
-        try {
-          const { data, error } = await supabase.auth.signUp({
-            email: email.trim(),
-            password: password,
-            options: { data: { name: name, phone: phone } }
-          });
-          
-          if (error) {
-            showToast(error.message, 'error');
-            if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
-            return;
-          }
-          
-          if (data.user && !data.session) {
-            showToast('Conta criada! Verifique seu email para confirmar o cadastro.', 'success');
-          } else if (data.session) {
-            showToast('Conta criada com sucesso!', 'success');
-            showDashboard(data.user);
-          }
-        } catch (err) {
-          showToast('Erro: ' + err.message, 'error');
-        }
-        if (btn) { btn.disabled = false; btn.textContent = 'Criar conta'; }
-      }
-
-      // Forgot Password trigger link
-      const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-      if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener('click', (e) => {
-          e.preventDefault();
-          openForgotModal();
-        });
-      }
-
-      // Forgot Password form submit with validation
-      const formForgotPassword = document.getElementById('formForgotPassword');
-      if (formForgotPassword) {
-        formForgotPassword.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const emailInput = document.getElementById('forgotEmail');
-          const email = (emailInput ? emailInput.value : '').trim();
-
-          if (!email) {
-            showToast('Por favor, digite seu e-mail.', 'error');
-            return;
-          }
-
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(email)) {
-            showToast('Por favor, insira um e-mail válido.', 'error');
-            return;
-          }
-
-          await handleForgotPassword(email);
-        });
-      }
-
-      // Reset Password form submit (definir nova senha)
-      const formResetPassword = document.getElementById('formResetPassword');
-      if (formResetPassword) {
-        formResetPassword.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const newPass = document.getElementById('newPassword').value;
-          const confirmPass = document.getElementById('confirmNewPassword').value;
-          const errorDiv = document.getElementById('reset-error');
-          const btn = document.getElementById('reset-pass-btn');
-
-          if (!newPass || newPass.length < 6) {
-            const msg = 'A nova senha deve ter no mínimo 6 caracteres.';
-            if (errorDiv) { errorDiv.textContent = msg; errorDiv.style.display = 'block'; }
-            showToast(msg, 'error');
-            return;
-          }
-
-          if (newPass !== confirmPass) {
-            const msg = 'As senhas não coincidem. Digite novamente.';
-            if (errorDiv) { errorDiv.textContent = msg; errorDiv.style.display = 'block'; }
-            showToast(msg, 'error');
-            return;
-          }
-
-          if (errorDiv) errorDiv.style.display = 'none';
-          if (btn) { btn.disabled = true; btn.textContent = 'Atualizando senha...'; }
-
-          try {
-            const { error } = await supabase.auth.updateUser({ password: newPass });
-            if (error) {
-              console.error('Update password error:', error.message);
-              showToast(error.message, 'error');
-              if (errorDiv) { errorDiv.textContent = error.message; errorDiv.style.display = 'block'; }
-              if (btn) { btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
-              return;
-            }
-
-            showToast('Senha atualizada com sucesso!', 'success');
-            closeResetModal();
-            if (btn) { btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
-
-            // Clear recovery parameters from URL without full reload
-            if (window.history && window.history.replaceState) {
-              window.history.replaceState(null, '', window.location.pathname);
-            }
-
-            // If session exists, show dashboard
-            const { data: sessionData } = await supabase.auth.getSession();
-            if (sessionData && sessionData.session && sessionData.session.user) {
-              showDashboard(sessionData.session.user);
-            }
-          } catch (err) {
-            showToast('Erro ao atualizar senha: ' + err.message, 'error');
-            if (btn) { btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
-          }
-        });
-      }
-
-      // Check on page load for password recovery mode in URL hash or search params
-      function checkRecoveryMode() {
-        const hash = window.location.hash || '';
-        const search = window.location.search || '';
-        if (hash.includes('type=recovery') || search.includes('type=recovery')) {
-          console.log('Recovery mode detected via URL parameters');
-          openResetModal();
-        }
-      }
-
-      formEmailLogin.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value;
-        await handleLogin(email, password);
-      });
-
-      formRegister.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const name = document.getElementById("regName").value.trim();
-        const email = document.getElementById("regEmail").value.trim();
-        const phone = document.getElementById("regPhone").value.trim();
-        const password = document.getElementById("regPassword").value;
-        await handleSignup(name, email, password, phone);
-      });
-
-      // C) TAG LOGIN — Call fn_login_by_tag, real error handling & debugging
-      document.getElementById("formTagLogin").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const tagInput = document.getElementById("inputTagCodeLogin");
-        const tagCode = tagInput.value.trim().toUpperCase();
-        if (!tagCode) return;
-
-        console.log('=== TAG LOGIN ATTEMPT ===');
-        console.log('Tag Code:', tagCode);
-
-        const btn = document.getElementById('tag-login-btn');
-        if (btn) { btn.disabled = true; btn.textContent = 'Entrando...'; }
-
-        try {
-          const { data, error } = await supabase.rpc("fn_login_by_tag", { tag_code: tagCode });
-          console.log('Tag login response:', { data, error });
-
-          if (error) {
-            console.error('Tag login error:', error.message);
-            showToast(error.message, "error");
-            if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
-            return;
-          }
-
-          if (data) {
-            console.log('Tag login successful:', data);
-            showToast(`TAG identificada! Acesso concedido para ${data.tutor?.name || 'Tutor'}.`, "success");
-            const user = data.tutor ? {
-              id: data.tutor.id,
-              email: data.tutor.email,
-              user_metadata: { name: data.tutor.name, phone: data.tutor.phone }
-            } : (data.user || { id: 'tutor-tag', email: 'tag@savetagpet.com.br', user_metadata: { name: 'Tutor' } });
-            showDashboard(user);
-          }
-        } catch (err) {
-          console.error('Tag catch error:', err);
-          showToast('Erro de conexão: ' + (err.message || 'desconhecido'), 'error');
-        }
-        if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
-      });
-
-      // 7. The logout uses: supabase.auth.signOut()
-      document.getElementById("logoutBtn").addEventListener("click", async () => {
-        await supabase.auth.signOut();
-        showToast("Você saiu do painel.", "warning");
-      });
-
-      // Switch views between Auth & Dashboard
-      function renderState(session) {
-        currentSession = session;
-        const authView = document.getElementById("authView");
-        const dashboardView = document.getElementById("dashboardView");
-        const headerAuthNav = document.getElementById("headerAuthNav");
-
-        if (session && session.user) {
-          authView.style.display = "none";
-          dashboardView.style.display = "block";
-          headerAuthNav.style.display = "flex";
-
-          const userName = session.user.user_metadata?.name || session.user.email.split("@")[0];
-          document.getElementById("navTutorName").textContent = userName;
-          document.getElementById("dashTutorGreeting").textContent = userName;
-
-          loadTutorDashboardData(session.user.id);
+    document.addEventListener('DOMContentLoaded', () => {
+      const header = document.getElementById('header');
+      const backToTopBtn = document.getElementById('backToTop');
+      const menuToggle = document.getElementById('menuToggle');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+      // Sticky Header Shadow & Back-to-top show/hide on scroll
+      window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY || document.documentElement.scrollTop;
+
+        if (scrollPos > 30) {
+          header.classList.add('scrolled');
         } else {
-          authView.style.display = "flex";
-          dashboardView.style.display = "none";
-          headerAuthNav.style.display = "none";
-        }
-      }
-
-      // Load Pets & refresh views
-      function getInitials(name) {
-        if (!name) return 'PT';
-        const parts = name.trim().split(/\s+/);
-        if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-      }
-
-      function loadTutorDashboardData(tutorId) {
-        const db = getDb();
-        const tutor = db.tutors.find(t => t.id === tutorId) || db.tutors[0];
-        currentPets = db.pets.filter(p => p.tutor_id === tutorId || p.tutor_id === "tutor-101");
-
-        const tutorName = (currentSession?.user?.user_metadata?.name) || tutor?.name || "Tutor";
-        const initials = getInitials(tutorName);
-        const avatarEl = document.getElementById("tutorInitialsAvatar");
-        if (avatarEl) avatarEl.textContent = initials;
-
-        // Count vaccines across tutor's pets
-        const petIds = currentPets.map(p => p.id);
-        const totalVaccines = (db.pet_vaccines || []).filter(v => petIds.includes(v.pet_id)).length;
-
-        // Update stats
-        document.getElementById("statPetsCount").textContent = currentPets.length;
-        const activeTags = currentPets.filter(p => p.tag_code).length;
-        document.getElementById("statActiveTags").textContent = activeTags;
-        document.getElementById("statVaccinesCount").textContent = totalVaccines;
-
-        // Show/hide quick action Pet Perdido button based on pet existence
-        const qaLostBtn = document.getElementById("qaLostPetBtn");
-        if (qaLostBtn) {
-          qaLostBtn.style.display = currentPets.length > 0 ? "flex" : "none";
+          header.classList.remove('scrolled');
         }
 
-        // Populate Link Tag select in modal
-        const selectEl = document.getElementById("activatePetSelect");
-        if (selectEl) {
-          selectEl.innerHTML = '<option value="">Selecione um animal...</option>';
-          currentPets.forEach(p => {
-            const opt = document.createElement("option");
-            opt.value = p.id;
-            opt.textContent = `${p.name} (${p.species}${p.tag_code ? " - TAG: " + p.tag_code : " - Sem TAG"})`;
-            selectEl.appendChild(opt);
-          });
-        }
-
-        const grid = document.getElementById("petsGridContainer");
-        grid.innerHTML = "";
-
-        // 6. EMPTY STATE (no pets yet)
-        if (currentPets.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "empty-social-state";
-          empty.innerHTML = `
-            <div class="empty-emoji-illustration">🐾</div>
-            <h3 style="margin: 0 0 0.5rem; color: var(--accent); font-size: 1.4rem; font-weight: 800;">
-              Seu pet ainda não tem perfil digital
-            </h3>
-            <p style="font-size: 0.95rem; color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.5;">
-              Crie o perfil do seu melhor amigo em segundos! Com a medalha inteligente Save Tag Pet, qualquer pessoa que escanear com o celular verá o perfil completo, carteira de vacinas e seus contatos de emergência.
-            </p>
-            <button class="btn-empty-create" id="emptyAddBtn">
-              🐾 Criar primeiro perfil
-            </button>
-          `;
-          grid.appendChild(empty);
-          document.getElementById("emptyAddBtn").addEventListener("click", () => openPetModal());
-          return;
-        }
-
-        // 3. PET MINI SOCIAL PROFILE CARDS
-        currentPets.forEach(pet => {
-          const card = document.createElement("div");
-          card.className = `pet-card ${pet.is_lost ? "is-lost" : ""}`;
-
-          const isCat = pet.species === "Gato";
-          const isDog = pet.species === "Cão";
-          const emoji = isCat ? "🐱" : (isDog ? "🐶" : "🐾");
-          const coverClass = isDog ? "pet-cover-dog" : (isCat ? "pet-cover-cat" : "pet-cover-other");
-
-          const petVaccines = (db.pet_vaccines || []).filter(v => v.pet_id === pet.id);
-          const vacCount = petVaccines.length;
-
-          const tagPill = pet.tag_code
-            ? `<div class="tag-status-pill tag-status-active">🏷️ TAG: <strong>${pet.tag_code}</strong> ativa ✅</div>`
-            : `<div class="tag-status-pill tag-status-empty">⚠️ Sem TAG vinculada</div>`;
-
-          const chipsHtml = `
-            <div class="pet-bio-chips">
-              <span class="pet-chip">${emoji} ${pet.breed || pet.species || "Pet"}</span>
-              ${pet.age ? `<span class="pet-chip">🎂 ${pet.age}</span>` : ''}
-              ${pet.weight ? `<span class="pet-chip">⚖️ ${pet.weight}</span>` : ''}
-              ${pet.color ? `<span class="pet-chip">🎨 ${pet.color}</span>` : ''}
-            </div>
-          `;
-
-          let vacListHtml = '';
-          if (petVaccines.length > 0) {
-            vacListHtml = petVaccines.map(v => `
-              <div class="timeline-vac-item">
-                <span class="timeline-vac-icon">💉</span>
-                <div class="timeline-vac-details">
-                  <div class="timeline-vac-name">${v.vaccine_name}</div>
-                  <div class="timeline-vac-date">
-                    Dose: ${v.application_date || "N/A"} ${v.next_dose_date ? ` • Reforço: <strong>${v.next_dose_date}</strong>` : ''}
-                    ${v.veterinarian ? ` • ${v.veterinarian}` : ''}
-                  </div>
-                </div>
-              </div>
-            `).join('');
-          } else {
-            vacListHtml = '<div style="color: var(--text-muted); padding: 0.35rem 0;">Nenhuma vacina registrada ainda.</div>';
-          }
-
-          card.innerHTML = `
-            ${pet.is_lost ? '<div class="pet-lost-alert-banner">🆘 ESTE PET ESTÁ PERDIDO</div>' : ''}
-            <div class="pet-cover-banner ${coverClass}"></div>
-            <div class="pet-avatar-wrapper">
-              <div class="pet-avatar-circle">
-                ${pet.photo_url
-                  ? `<img src="${pet.photo_url}" alt="${pet.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                     <span style="display:none;">${emoji}</span>`
-                  : `<span>${emoji}</span>`
-                }
-              </div>
-            </div>
-
-            <div class="pet-card-content">
-              <h3 class="pet-name-title">${pet.name}</h3>
-              ${chipsHtml}
-              ${tagPill}
-
-              <div class="pet-social-actions">
-                <a href="${pet.tag_code ? 'public.html?tag=' + pet.tag_code : '#'}" 
-                   class="btn-profile-main view-profile-btn" 
-                   data-tag="${pet.tag_code || ''}" 
-                   title="Ver perfil digital público">
-                  Ver Perfil
-                </a>
-                <button type="button" class="btn-profile-sec edit-pet-btn" data-id="${pet.id}">
-                  Editar
-                </button>
-                <button type="button" class="btn-profile-lost ${pet.is_lost ? 'active' : ''} lost-pet-btn" data-id="${pet.id}" title="${pet.is_lost ? 'Desativar modo perdido' : 'Ativar alerta pet perdido'}">
-                  🆘
-                </button>
-              </div>
-
-              <!-- Collapsible inline vaccines -->
-              <button type="button" class="vaccine-expand-trigger toggle-vac-inline" data-id="${pet.id}">
-                💉 Carteira de vacinas (${vacCount}) ▾
-              </button>
-              <div class="vaccine-timeline-box inline-vac-container-${pet.id}" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-                  <strong style="color: var(--accent);">Histórico de Doses</strong>
-                  <button type="button" class="btn-green btn-sm vac-add-quick-btn" data-id="${pet.id}" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: var(--radius-pill);">
-                    + Nova
-                  </button>
-                </div>
-                ${vacListHtml}
-              </div>
-            </div>
-          `;
-
-          grid.appendChild(card);
-        });
-
-        // 4. ADD PET CARD
-        const addCard = document.createElement("div");
-        addCard.className = "add-pet-social-card";
-        addCard.innerHTML = `
-          <div class="add-pet-social-circle">➕</div>
-          <strong style="color: var(--accent); font-size: 1.05rem; font-weight: 700;">Adicionar novo pet</strong>
-          <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; max-width: 220px;">
-            Crie um novo perfil digital para outro cão, gato ou animal
-          </span>
-        `;
-        addCard.addEventListener("click", () => openPetModal());
-        grid.appendChild(addCard);
-
-        // Attach listeners
-        grid.querySelectorAll(".edit-pet-btn").forEach(btn => {
-          btn.addEventListener("click", () => openPetModal(btn.dataset.id));
-        });
-
-        grid.querySelectorAll(".lost-pet-btn").forEach(btn => {
-          btn.addEventListener("click", () => openLostModeModal(btn.dataset.id));
-        });
-
-        grid.querySelectorAll(".vac-add-quick-btn").forEach(btn => {
-          btn.addEventListener("click", () => openVaccineModal(btn.dataset.id));
-        });
-
-        grid.querySelectorAll(".view-profile-btn").forEach(link => {
-          link.addEventListener("click", (e) => {
-            const tag = link.dataset.tag;
-            if (!tag) {
-              e.preventDefault();
-              showToast("Este pet ainda não tem uma TAG vinculada. Ative uma TAG primeiro!", "warning");
-            }
-          });
-        });
-
-        grid.querySelectorAll(".toggle-vac-inline").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const petId = btn.dataset.id;
-            const container = grid.querySelector(`.inline-vac-container-${petId}`);
-            if (container) {
-              const isHidden = container.style.display === "none";
-              container.style.display = isHidden ? "block" : "none";
-              btn.innerHTML = `💉 Carteira de vacinas (${container.querySelectorAll(".timeline-vac-item").length}) ${isHidden ? "▴" : "▾"}`;
-            }
-          });
-        });
-      }
-
-      // Quick Actions row triggers
-      document.getElementById("qaNewPetBtn").addEventListener("click", () => openPetModal());
-      
-      const modalActivateTag = document.getElementById("modalActivateTag");
-      document.getElementById("qaActivateTagBtn").addEventListener("click", () => {
-        if (modalActivateTag) modalActivateTag.classList.add("open");
-      });
-
-      const modalSelectPetVac = document.getElementById("modalSelectPetVac");
-      document.getElementById("qaVaccineBtn").addEventListener("click", () => {
-        if (currentPets.length === 0) {
-          showToast("Cadastre um pet primeiro para gerenciar vacinas.", "warning");
-          openPetModal();
-          return;
-        }
-        if (currentPets.length === 1) {
-          openVaccineModal(currentPets[0].id);
-          return;
-        }
-        const list = document.getElementById("vacPetSelectList");
-        list.innerHTML = "";
-        currentPets.forEach(p => {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "btn-outline";
-          btn.style.cssText = "text-align: left; justify-content: flex-start; padding: 0.65rem 1rem; border-radius: 12px;";
-          btn.innerHTML = `<strong>${p.name}</strong> <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: auto;">${p.species}</span>`;
-          btn.addEventListener("click", () => {
-            modalSelectPetVac.classList.remove("open");
-            openVaccineModal(p.id);
-          });
-          list.appendChild(btn);
-        });
-        modalSelectPetVac.classList.add("open");
-      });
-
-      document.getElementById("qaLostPetBtn").addEventListener("click", () => {
-        if (currentPets.length === 0) return;
-        if (currentPets.length === 1) {
-          openLostModeModal(currentPets[0].id);
+        if (scrollPos > 300) {
+          backToTopBtn.classList.add('show');
         } else {
-          const lostOne = currentPets.find(p => p.is_lost) || currentPets[0];
-          openLostModeModal(lostOne.id);
+          backToTopBtn.classList.remove('show');
         }
-      });
+      }, { passive: true });
 
-      // Link Tag Form Submission
-      document.getElementById("formActivateTag").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const tagCode = document.getElementById("activateTagCode").value.trim().toUpperCase();
-        const petId = document.getElementById("activatePetSelect").value;
-
-        if (!petId) {
-          showToast("Selecione qual animal receberá a medalha.", "error");
-          return;
-        }
-
-        const { data, error } = await supabase.rpc("fn_link_tag", { tag_code: tagCode, pet_id: petId });
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast(`TAG ${tagCode} vinculada com sucesso!`, "success");
-          document.getElementById("activateTagCode").value = "";
-          if (modalActivateTag) modalActivateTag.classList.remove("open");
-          loadTutorDashboardData(currentSession.user.id);
-        }
-      });
-
-      // PET MODAL HANDLERS
-      const modalPetForm = document.getElementById("modalPetForm");
-      let currentUploadedPhotoBase64 = null;
-
-      function openPetModal(petId = null) {
-        document.getElementById("petSaveForm").reset();
-        currentUploadedPhotoBase64 = null;
-        document.getElementById("previewImage").style.display = "none";
-        document.getElementById("previewEmoji").style.display = "block";
-
-        if (petId) {
-          const pet = currentPets.find(p => p.id === petId);
-          if (pet) {
-            document.getElementById("petModalTitle").textContent = "✏️ Editar Pet - " + pet.name;
-            document.getElementById("petEditId").value = pet.id;
-            document.getElementById("petName").value = pet.name || "";
-            document.getElementById("petSpecies").value = pet.species || "Cão";
-            document.getElementById("petBreed").value = pet.breed || "";
-            document.getElementById("petAge").value = pet.age || "";
-            document.getElementById("petWeight").value = pet.weight || "";
-            document.getElementById("petColor").value = pet.color || "";
-            document.getElementById("petPhone").value = pet.emergency_phone || "";
-            document.getElementById("petWhatsapp").value = pet.emergency_whatsapp || "";
-            document.getElementById("petEmergencyEmail").value = pet.emergency_email || "";
-            document.getElementById("petNotes").value = pet.notes || "";
-
-            if (pet.photo_url) {
-              document.getElementById("previewImage").src = pet.photo_url;
-              document.getElementById("previewImage").style.display = "block";
-              document.getElementById("previewEmoji").style.display = "none";
-              currentUploadedPhotoBase64 = pet.photo_url;
-            }
-          }
-        } else {
-          document.getElementById("petModalTitle").textContent = "🐾 Adicionar Novo Pet";
-          document.getElementById("petEditId").value = "";
-          // Fill default emergency phone from current tutor
-          const db = getDb();
-          const tutor = db.tutors.find(t => t.id === currentSession.user.id) || db.tutors[0];
-          if (tutor) {
-            document.getElementById("petPhone").value = tutor.phone || "";
-            document.getElementById("petWhatsapp").value = tutor.phone ? tutor.phone.replace(/\D/g, "") : "";
-            document.getElementById("petEmergencyEmail").value = tutor.email || "";
-          }
-        }
-
-        modalPetForm.classList.add("open");
-      }
-
-      document.getElementById("btnOpenNewPetModal").addEventListener("click", () => openPetModal());
-
-      // Photo upload preview (base64)
-      document.getElementById("petPhotoFile").addEventListener("change", function() {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            currentUploadedPhotoBase64 = e.target.result;
-            const img = document.getElementById("previewImage");
-            img.src = currentUploadedPhotoBase64;
-            img.style.display = "block";
-            document.getElementById("previewEmoji").style.display = "none";
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Save Pet Form Submit
-      document.getElementById("petSaveForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const petId = document.getElementById("petEditId").value;
-        const petPayload = {
-          id: petId || undefined,
-          tutor_id: currentSession.user.id,
-          name: document.getElementById("petName").value.trim(),
-          species: document.getElementById("petSpecies").value,
-          breed: document.getElementById("petBreed").value.trim(),
-          age: document.getElementById("petAge").value.trim(),
-          weight: document.getElementById("petWeight").value.trim(),
-          color: document.getElementById("petColor").value.trim(),
-          emergency_phone: document.getElementById("petPhone").value.trim(),
-          emergency_whatsapp: document.getElementById("petWhatsapp").value.trim(),
-          emergency_email: document.getElementById("petEmergencyEmail").value.trim(),
-          notes: document.getElementById("petNotes").value.trim(),
-          photo_url: currentUploadedPhotoBase64
-        };
-
-        const { data, error } = await supabase.rpc("fn_save_pet", petPayload);
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast(`Pet ${petPayload.name} salvo com sucesso!`, "success");
-          modalPetForm.classList.remove("open");
-          loadTutorDashboardData(currentSession.user.id);
-        }
-      });
-
-      // VACCINES MODAL HANDLERS
-      const modalVaccines = document.getElementById("modalVaccines");
-      let activeVaccinePetId = null;
-
-      function openVaccineModal(petId) {
-        activeVaccinePetId = petId;
-        const pet = currentPets.find(p => p.id === petId);
-        document.getElementById("vacPetNameTitle").textContent = pet ? pet.name : "";
-        document.getElementById("vacPetId").value = petId;
-        document.getElementById("formAddVaccine").reset();
-
-        renderVaccinesList(petId);
-        modalVaccines.classList.add("open");
-      }
-
-      function renderVaccinesList(petId) {
-        const db = getDb();
-        const vaccines = (db.pet_vaccines || []).filter(v => v.pet_id === petId);
-        const container = document.getElementById("vaccinesList");
-        container.innerHTML = "";
-
-        if (vaccines.length === 0) {
-          container.innerHTML = `
-            <div style="text-align: center; padding: 1.25rem; color: var(--text-sub); font-size: 0.85rem;">
-              Nenhuma vacina registrada para este pet ainda.
-            </div>
-          `;
-          return;
-        }
-
-        vaccines.forEach(vac => {
-          const item = document.createElement("div");
-          item.className = "vaccine-item";
-          item.innerHTML = `
-            <div>
-              <div class="vaccine-name">💉 ${vac.vaccine_name}</div>
-              <div class="vaccine-sub">
-                Aplicada em: <strong>${vac.application_date || "N/A"}</strong>
-                ${vac.next_dose_date ? ` • Próxima dose: <strong style="color: var(--accent);">${vac.next_dose_date}</strong>` : ''}
-              </div>
-              ${vac.veterinarian ? `<div class="vaccine-sub">👨‍⚕️ ${vac.veterinarian}</div>` : ''}
-            </div>
-            <button type="button" class="btn-ghost btn-sm btn-delete-vac" data-vacid="${vac.id}" title="Excluir vacina" style="color: var(--danger);">🗑️</button>
-          `;
-          container.appendChild(item);
-        });
-
-        container.querySelectorAll(".btn-delete-vac").forEach(btn => {
-          btn.addEventListener("click", async () => {
-            const vacId = btn.dataset.vacid;
-            const db = getDb();
-            db.pet_vaccines = db.pet_vaccines.filter(v => v.id !== vacId);
-            saveDb(db);
-            showToast("Registro de vacina removido.", "warning");
-            renderVaccinesList(petId);
-          });
-        });
-      }
-
-      // Add Vaccine Submit
-      document.getElementById("formAddVaccine").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const vacData = {
-          pet_id: activeVaccinePetId,
-          vaccine_name: document.getElementById("vacName").value.trim(),
-          application_date: document.getElementById("vacDate").value,
-          next_dose_date: document.getElementById("vacNextDate").value,
-          veterinarian: document.getElementById("vacVet").value.trim()
-        };
-
-        const { data, error } = await supabase.rpc("fn_save_vaccine", vacData);
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast("Vacina adicionada com sucesso!", "success");
-          document.getElementById("formAddVaccine").reset();
-          renderVaccinesList(activeVaccinePetId);
-        }
-      });
-
-      // LOST MODE MODAL HANDLERS
-      const modalLostMode = document.getElementById("modalLostMode");
-      function openLostModeModal(petId) {
-        const pet = currentPets.find(p => p.id === petId);
-        if (!pet) return;
-
-        document.getElementById("lostPetId").value = pet.id;
-        document.getElementById("lostStatusToggle").value = pet.is_lost ? "true" : "false";
-        document.getElementById("lostLocation").value = pet.lost_location || "";
-        document.getElementById("lostDate").value = pet.lost_date || new Date().toISOString().split("T")[0];
-
-        modalLostMode.classList.add("open");
-      }
-
-      document.getElementById("formLostMode").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const petId = document.getElementById("lostPetId").value;
-        const isLost = document.getElementById("lostStatusToggle").value === "true";
-        const location = document.getElementById("lostLocation").value.trim();
-        const date = document.getElementById("lostDate").value;
-
-        const { data, error } = await supabase.rpc("fn_set_lost_mode", {
-          pet_id: petId,
-          is_lost: isLost,
-          lost_location: location,
-          lost_date: date
-        });
-
-        if (error) {
-          showToast(error.message, "error");
-        } else {
-          showToast(isLost ? "Modo Perdido ATIVADO! Alerta publicado." : "Modo Perdido desativado. Que bom que o pet está bem!", isLost ? "error" : "success");
-          modalLostMode.classList.remove("open");
-          loadTutorDashboardData(currentSession.user.id);
-        }
-      });
-
-      // SETTINGS MODAL
-      const modalSettings = document.getElementById("modalSettings");
-      document.getElementById("openSettingsBtn").addEventListener("click", () => {
-        const db = getDb();
-        const tutor = db.tutors.find(t => t.id === currentSession.user.id) || db.tutors[0];
-        if (tutor) {
-          document.getElementById("setTutorName").value = tutor.name || "";
-          document.getElementById("setTutorEmail").value = tutor.email || "";
-          document.getElementById("setTutorPhone").value = tutor.phone || "";
-          document.getElementById("setTutorAddress").value = tutor.address || "";
-        }
-        modalSettings.classList.add("open");
-      });
-
-      document.getElementById("formSettings").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const db = getDb();
-        const tutor = db.tutors.find(t => t.id === currentSession.user.id) || db.tutors[0];
-        if (tutor) {
-          tutor.name = document.getElementById("setTutorName").value.trim();
-          tutor.phone = document.getElementById("setTutorPhone").value.trim();
-          tutor.address = document.getElementById("setTutorAddress").value.trim();
-          const newPass = document.getElementById("setTutorPassword").value;
-          if (newPass) tutor.password = newPass;
-
-          saveDb(db);
-          // update user session
-          currentSession.user.user_metadata = { name: tutor.name, phone: tutor.phone };
-          localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(currentSession));
-          renderState(currentSession);
-          showToast("Dados do perfil atualizados com sucesso!", "success");
-          modalSettings.classList.remove("open");
-        }
-      });
-
-      // Generic modal closing logic
-      document.querySelectorAll("[data-close]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const targetId = btn.getAttribute("data-close");
-          const targetEl = document.getElementById(targetId);
-          if (targetEl) targetEl.classList.remove("open");
+      // Smooth scroll back to top
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
         });
       });
 
-      document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
-        backdrop.addEventListener("click", (e) => {
-          if (e.target === backdrop) backdrop.classList.remove("open");
+      // Mobile Menu Toggle
+      menuToggle.addEventListener('click', () => {
+        const isOpen = mobileMenu.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      // Close mobile menu on clicking any navigation link
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
         });
       });
-
-      // 5. The session check uses: supabase.auth.getSession() & recovery detection
-      checkRecoveryMode();
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          renderState(session);
-        }
-      });
-
-      // 6. The auth state listener uses: supabase.auth.onAuthStateChange((event, session) => {})
-      supabase.auth.onAuthStateChange((event, session) => {
-        renderState(session);
-      });
-
-    })();
+    });
   </script>
 <script>
 /* Skip artifact shell — fixed helpers served beside every artifact. */
