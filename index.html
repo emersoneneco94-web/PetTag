@@ -224,62 +224,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       font-weight: 500;
       color: var(--text-main);
       background: var(--primary-light);
-      padding: 0.25rem 0.75rem 0.25rem 0.35rem;
+      padding: 0.35rem 0.75rem;
       border-radius: 20px;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-    }
-
-    .tutor-avatar-btn {
-      position: relative;
-      border: none;
-      background: transparent;
-      padding: 0;
-      cursor: pointer;
-      border-radius: 50%;
-      overflow: hidden;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .tutor-avatar-btn:hover .avatar-cam-overlay {
-      opacity: 1;
-    }
-
-    .avatar-cam-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(11, 85, 116, 0.72);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      border-radius: 50%;
-    }
-
-    .nav-avatar-circle {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--accent);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      overflow: hidden;
-      border: 1.5px solid #ffffff;
-    }
-    .nav-avatar-circle img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     /* Auth View Wrapper */
@@ -577,404 +526,6 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       margin-top: -46px;
       position: relative;
       z-index: 2;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .tutor-avatar-overlap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .tutor-avatar-overlap:hover .avatar-cam-overlay {
-      opacity: 1;
-    }
-
-    /* Dashboard Layout with Sidebar */
-    .dashboard-shell-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-      align-items: start;
-    }
-
-    @media (min-width: 900px) {
-      .dashboard-shell-grid {
-        grid-template-columns: 260px 1fr;
-      }
-    }
-
-    /* Left Sidebar */
-    .dash-sidebar {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      padding: 1.25rem 1rem;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .sidebar-mini-profile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding-bottom: 1.25rem;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 1.25rem;
-    }
-
-    .sidebar-avatar-wrap {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      position: relative;
-      margin-bottom: 0.65rem;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(11,85,116,0.15);
-      border: 3px solid #ffffff;
-      outline: 2px solid var(--primary-light);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--primary-light);
-      color: var(--accent);
-      font-size: 1.4rem;
-      font-weight: 800;
-    }
-    .sidebar-avatar-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .sidebar-avatar-wrap:hover .avatar-cam-overlay {
-      opacity: 1;
-    }
-
-    .sidebar-tutor-name {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-main);
-      margin: 0;
-    }
-    .sidebar-tutor-email {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin: 0.15rem 0 0;
-      word-break: break-all;
-    }
-
-    .sidebar-nav-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar-nav-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      width: 100%;
-      padding: 0.65rem 0.85rem;
-      border-radius: var(--radius-md);
-      border: none;
-      background: transparent;
-      color: var(--text-main);
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-align: left;
-    }
-    .sidebar-nav-btn:hover {
-      background: var(--primary-light);
-      color: var(--accent);
-    }
-    .sidebar-nav-btn.active {
-      background: linear-gradient(135deg, #0b5574 0%, #07966b 100%);
-      color: #ffffff;
-    }
-
-    .dash-main-content {
-      min-width: 0;
-    }
-
-    /* Views container */
-    .tab-view-section {
-      display: none;
-    }
-    .tab-view-section.active-view {
-      display: block;
-      animation: tabFadeIn 0.2s ease-out;
-    }
-
-    @keyframes tabFadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Health Section Styles */
-    .health-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-social);
-      margin-bottom: 1.75rem;
-    }
-
-    .health-header-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 1.25rem;
-    }
-
-    .alert-chips-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .alert-chip-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.45rem 0.95rem;
-      border-radius: var(--radius-pill);
-      border: 1.5px solid var(--border-color);
-      background: #f8fafc;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-main);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-    .alert-chip-toggle input {
-      accent-color: var(--danger);
-      cursor: pointer;
-    }
-    .alert-chip-toggle.active {
-      background: var(--danger-bg);
-      border-color: #fca5a5;
-      color: var(--danger);
-    }
-
-    .health-form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-    }
-    @media (min-width: 640px) {
-      .health-form-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .health-subcard {
-      background: #fbfdfc;
-      border: 1px solid #e2ece8;
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-      margin-top: 1.5rem;
-    }
-    .health-subcard h4 {
-      margin: 0 0 0.85rem;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    /* Consultas e Exames Table */
-    .exams-table-wrap {
-      overflow-x: auto;
-      margin-top: 0.75rem;
-    }
-    .exams-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-      text-align: left;
-    }
-    .exams-table th {
-      background: #eef6f5;
-      color: var(--accent);
-      padding: 0.55rem 0.75rem;
-      font-weight: 700;
-      border-bottom: 1px solid #d4e6e2;
-    }
-    .exams-table td {
-      padding: 0.55rem 0.75rem;
-      border-bottom: 1px solid #eef2f2;
-      color: var(--text-main);
-    }
-    .exams-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    /* Photo Gallery Section */
-    .gallery-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      padding: 1.5rem;
-      box-shadow: var(--shadow-social);
-    }
-
-    .gallery-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-      padding-bottom: 0.85rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .gallery-counter-badge {
-      background: var(--primary-light);
-      color: var(--accent);
-      font-weight: 700;
-      padding: 0.35rem 0.85rem;
-      border-radius: var(--radius-pill);
-      font-size: 0.85rem;
-    }
-
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-    @media (min-width: 768px) {
-      .gallery-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .gallery-slot {
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      overflow: hidden;
-      position: relative;
-      background: #f8fafc;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .gallery-slot:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .gallery-slot.empty {
-      border: 2px dashed #b5d5e2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--accent);
-      gap: 0.4rem;
-      padding: 1rem;
-      text-align: center;
-      background: #fafdfc;
-    }
-    .gallery-slot.empty:hover {
-      border-color: var(--accent);
-      background: var(--primary-light);
-    }
-
-    .gallery-slot.filled img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      cursor: pointer;
-      display: block;
-    }
-
-    .gallery-slot-actions {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      display: flex;
-      gap: 4px;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-    .gallery-slot:hover .gallery-slot-actions {
-      opacity: 1;
-    }
-    .btn-slot-action {
-      background: rgba(17, 24, 39, 0.75);
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .btn-slot-action:hover {
-      background: rgba(220, 38, 38, 0.9);
-    }
-
-    /* Lightbox Modal */
-    .lightbox-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.88);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      cursor: zoom-out;
-    }
-    .lightbox-backdrop.open {
-      display: flex;
-    }
-    .lightbox-img {
-      max-width: 90vw;
-      max-height: 85vh;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      object-fit: contain;
-      cursor: default;
-    }
-
-    /* Print styling for Health Card */
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #healthViewSection, #healthViewSection * {
-        visibility: visible;
-      }
-      #healthViewSection {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        display: block !important;
-      }
-      .no-print {
-        display: none !important;
-      }
     }
 
     .profile-meta-row {
@@ -1790,13 +1341,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
       <div class="user-nav-actions" id="headerAuthNav" style="display: none;">
         <div class="user-pill">
-          <button type="button" class="tutor-avatar-btn" id="navTutorAvatarBtn" title="Alterar foto do tutor">
-            <div class="nav-avatar-circle" id="navTutorAvatarCircle">
-              <span id="navTutorInitials">ES</span>
-            </div>
-            <div class="avatar-cam-overlay" style="font-size: 0.7rem;">📷</div>
-          </button>
-          <span id="navTutorName">Emerson dos Santos</span>
+          <span>👤</span>
+          <span id="navTutorName">Tutor</span>
         </div>
         <button type="button" class="btn-ghost" id="openSettingsBtn" title="Configurações da Conta">⚙️ Ajustes</button>
         <button type="button" class="btn-outline btn-sm" id="logoutBtn">Sair</button>
@@ -1894,281 +1440,76 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
   <!-- VIEW 2: TUTOR DASHBOARD (REDESIGNED SOCIAL NETWORK PROFILE STYLE) -->
   <main class="dashboard-layout" id="dashboardView" style="display: none;">
-    <!-- Hidden input for tutor photo upload -->
-    <input type="file" id="tutorPhotoFileInput" accept="image/*" style="display: none;">
 
-    <div class="dashboard-shell-grid">
-      <!-- LEFT SIDEBAR -->
-      <aside class="dash-sidebar">
-        <!-- Tutor Mini Profile -->
-        <div class="sidebar-mini-profile">
-          <div class="sidebar-avatar-wrap" id="sidebarTutorAvatarWrap" title="Clique para trocar foto do tutor">
-            <span id="sidebarTutorInitials">ES</span>
-            <div class="avatar-cam-overlay">📷</div>
+    <!-- 1. WELCOME HEADER (Facebook cover banner style) -->
+    <div class="social-profile-cover">
+      <div class="cover-banner"></div>
+      <div class="social-profile-body">
+        <div class="tutor-avatar-overlap" id="tutorInitialsAvatar">CR</div>
+        
+        <div class="profile-meta-row">
+          <div class="profile-title-area">
+            <h2>Olá, <span id="dashTutorGreeting">Tutor</span>! 👋</h2>
+            <p>Gerencie os perfis digitais dos seus pets</p>
           </div>
-          <h3 class="sidebar-tutor-name" id="sidebarTutorName">Emerson dos Santos</h3>
-          <p class="sidebar-tutor-email" id="sidebarTutorEmail">emerson@savetagpet.com.br</p>
+
+          <!-- Stats row (Instagram profile stats style) -->
+          <div class="social-stats-bar">
+            <div class="social-stat-item">
+              <span class="social-stat-num" id="statPetsCount">0</span>
+              <span class="social-stat-label">Pets</span>
+            </div>
+            <div class="social-stat-divider"></div>
+            <div class="social-stat-item">
+              <span class="social-stat-num" id="statActiveTags">0</span>
+              <span class="social-stat-label">TAGs Ativas</span>
+            </div>
+            <div class="social-stat-divider"></div>
+            <div class="social-stat-item">
+              <span class="social-stat-num" id="statVaccinesCount">0</span>
+              <span class="social-stat-label">Vacinas</span>
+            </div>
+          </div>
         </div>
-
-        <!-- Navigation items -->
-        <ul class="sidebar-nav-list">
-          <li>
-            <button type="button" class="sidebar-nav-btn active" data-tab="pets">
-              <span>🐾</span> Meus Pets
-            </button>
-          </li>
-          <li>
-            <button type="button" class="sidebar-nav-btn" data-tab="health">
-              <span>🏥</span> Saúde da Luna
-            </button>
-          </li>
-          <li>
-            <button type="button" class="sidebar-nav-btn" data-tab="photos">
-              <span>📷</span> Fotos do Pet
-            </button>
-          </li>
-          <li>
-            <button type="button" class="sidebar-nav-btn" data-tab="vaccines" id="sideNavVacBtn">
-              <span>💉</span> Vacinas
-            </button>
-          </li>
-          <li>
-            <button type="button" class="sidebar-nav-btn" data-tab="settings" id="sideNavSettingsBtn">
-              <span>⚙️</span> Ajustes
-            </button>
-          </li>
-        </ul>
-      </aside>
-
-      <!-- MAIN CONTENT TABS -->
-      <div class="dash-main-content">
-        <!-- TAB 1: MEUS PETS (DEFAULT) -->
-        <section class="tab-view-section active-view" id="petsViewSection">
-          <!-- 1. WELCOME HEADER (Facebook cover banner style) -->
-          <div class="social-profile-cover">
-            <div class="cover-banner"></div>
-            <div class="social-profile-body">
-              <div class="tutor-avatar-overlap" id="tutorInitialsAvatar" title="Clique para trocar foto do tutor">
-                <span id="coverTutorInitials">ES</span>
-                <div class="avatar-cam-overlay">📷</div>
-              </div>
-              
-              <div class="profile-meta-row">
-                <div class="profile-title-area">
-                  <h2>Olá, <span id="dashTutorGreeting">Emerson dos Santos</span>! 👋</h2>
-                  <p>Gerencie os perfis digitais e a saúde dos seus pets</p>
-                </div>
-
-                <!-- Stats row (Instagram profile stats style) -->
-                <div class="social-stats-bar">
-                  <div class="social-stat-item">
-                    <span class="social-stat-num" id="statPetsCount">0</span>
-                    <span class="social-stat-label">Pets</span>
-                  </div>
-                  <div class="social-stat-divider"></div>
-                  <div class="social-stat-item">
-                    <span class="social-stat-num" id="statActiveTags">0</span>
-                    <span class="social-stat-label">TAGs Ativas</span>
-                  </div>
-                  <div class="social-stat-divider"></div>
-                  <div class="social-stat-item">
-                    <span class="social-stat-num" id="statVaccinesCount">0</span>
-                    <span class="social-stat-label">Vacinas</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. QUICK ACTIONS ROW (Instagram story buttons style) -->
-          <div class="quick-actions-bar">
-            <div class="quick-actions-scroll">
-              <button type="button" class="quick-action-item" id="qaNewPetBtn">
-                <div class="quick-action-circle primary">➕</div>
-                <span class="quick-action-label">Novo Pet</span>
-              </button>
-
-              <button type="button" class="quick-action-item" id="qaActivateTagBtn">
-                <div class="quick-action-circle green">🏷️</div>
-                <span class="quick-action-label">Ativar TAG</span>
-              </button>
-
-              <button type="button" class="quick-action-item" id="qaVaccineBtn">
-                <div class="quick-action-circle blue">💉</div>
-                <span class="quick-action-label">Vacina</span>
-              </button>
-
-              <button type="button" class="quick-action-item" id="qaLostPetBtn" style="display: none;">
-                <div class="quick-action-circle danger">🆘</div>
-                <span class="quick-action-label">Pet Perdido</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- PETS GRID HEADER -->
-          <div class="section-head">
-            <h3 class="section-title">🐾 Perfis dos Pets</h3>
-            <button type="button" class="btn-brand btn-sm" id="btnOpenNewPetModal" style="border-radius: var(--radius-pill); padding: 0.45rem 1rem;">
-              ➕ Novo Pet
-            </button>
-          </div>
-
-          <!-- 3. PET PROFILE CARDS GRID -->
-          <div class="pets-grid" id="petsGridContainer"></div>
-        </section>
-
-        <!-- TAB 2: SAÚDE DO PET (NOVA SEÇÃO) -->
-        <section class="tab-view-section" id="healthViewSection">
-          <div class="health-card">
-            <div class="health-header-row">
-              <div>
-                <h2 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
-                  🏥 Ficha Médica & Saúde da Luna
-                </h2>
-                <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
-                  Informações vitais visíveis a quem escanear a TAG NFC em caso de emergência ou perda.
-                </p>
-              </div>
-              <div class="no-print" style="display: flex; gap: 0.5rem;">
-                <button type="button" class="btn-outline btn-sm" id="btnPrintHealthBtn" title="Imprimir ou Salvar PDF">
-                  🖨️ Imprimir / Salvar PDF
-                </button>
-                <button type="button" class="btn-green btn-sm" id="btnSaveHealthBtn">
-                  💾 Salvar Alterações
-                </button>
-              </div>
-            </div>
-
-            <!-- Alert Flags Row (Chips with toggle-style checkboxes) -->
-            <label class="form-label" style="margin-bottom: 0.5rem;">Alertas de Emergência Ativos na TAG:</label>
-            <div class="alert-chips-row">
-              <label class="alert-chip-toggle" id="chipToggleAlergias">
-                <input type="checkbox" id="chkAlertAlergias">
-                <span>⚠️ Alergias Graves</span>
-              </label>
-
-              <label class="alert-chip-toggle" id="chipToggleDoencas">
-                <input type="checkbox" id="chkAlertDoencas">
-                <span>⚠️ Doenças Crônicas</span>
-              </label>
-
-              <label class="alert-chip-toggle" id="chipToggleMedicamentos">
-                <input type="checkbox" id="chkAlertMedicamentos">
-                <span>⚠️ Medicamentos Contínuos</span>
-              </label>
-            </div>
-
-            <!-- Editable Fields Form Grid -->
-            <div class="health-form-grid">
-              <div class="form-group">
-                <label class="form-label" for="healthAlergias">Alergias</label>
-                <input type="text" id="healthAlergias" class="form-input" placeholder="Ex: Nenhuma conhecida ou Frango / Dipirona">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="healthDoencas">Doenças / Condições Crônicas</label>
-                <input type="text" id="healthDoencas" class="form-input" placeholder="Ex: Doença renal em estágio inicial / Nenhuma">
-              </div>
-
-              <div class="form-group" style="grid-column: 1 / -1;">
-                <label class="form-label" for="healthMedicamentos">Medicamentos de uso contínuo</label>
-                <textarea id="healthMedicamentos" class="form-textarea" rows="2" placeholder="Nome do medicamento + dose + horário (Ex: Enalapril 5mg, 1 cp a cada 12h às 08h e 20h)"></textarea>
-              </div>
-
-              <div class="form-group" style="grid-column: 1 / -1;">
-                <label class="form-label" for="healthObservacoes">Observações importantes</label>
-                <textarea id="healthObservacoes" class="form-textarea" rows="2" placeholder="Temperamento, medos, cuidados especiais (Ex: Dócil mas assustada, não tentar pegar à força, medo de trovões)"></textarea>
-              </div>
-            </div>
-
-            <!-- Subsection: Consultas e Exames -->
-            <div class="health-subcard">
-              <h4>
-                <span>📋 Consultas e Exames</span>
-                <button type="button" class="btn-brand btn-sm no-print" id="btnAddExamRowBtn" style="border-radius: var(--radius-pill); font-size: 0.75rem;">
-                  + Adicionar Registro
-                </button>
-              </h4>
-              <div class="exams-table-wrap">
-                <table class="exams-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 110px;">Data</th>
-                      <th style="width: 110px;">Tipo</th>
-                      <th>Descrição</th>
-                      <th>Veterinário</th>
-                      <th class="no-print" style="width: 45px;"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="examsTableBody">
-                    <!-- Populated dynamically -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Subsection: Veterinário de confiança -->
-            <div class="health-subcard">
-              <h4>
-                <span>🏥 Veterinário de Confiança</span>
-                <a href="tel:(13)3289-4000" class="btn-green btn-sm" id="btnCallVet" style="text-decoration: none; border-radius: var(--radius-pill); font-size: 0.78rem;">
-                  📞 Ligar Agora
-                </a>
-              </h4>
-              <div class="grid-2">
-                <div class="form-group">
-                  <label class="form-label" for="vetNome">Nome do(a) Veterinário(a)</label>
-                  <input type="text" id="vetNome" class="form-input" placeholder="Ex: Dra. Helena Vasconcelos CRMV 45911">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="vetClinica">Nome da Clínica / Hospital</label>
-                  <input type="text" id="vetClinica" class="form-input" placeholder="Ex: Hospital Veterinário Gonzaga 24h">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="vetTelefone">Telefone</label>
-                  <input type="tel" id="vetTelefone" class="form-input" placeholder="(13) 3289-4000">
-                </div>
-                <div class="form-group">
-                  <label class="form-label" for="vetEndereco">Endereço da Clínica</label>
-                  <input type="text" id="vetEndereco" class="form-input" placeholder="Av. Ana Costa, 350 - Gonzaga, Santos - SP">
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- TAB 3: GALERIA DE FOTOS DO PET (NOVA SEÇÃO) -->
-        <section class="tab-view-section" id="photosViewSection">
-          <div class="gallery-card">
-            <div class="gallery-head">
-              <div>
-                <h2 style="margin: 0; font-size: 1.35rem; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
-                  📷 Galeria de Fotos da Luna
-                </h2>
-                <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-muted);">
-                  Fotos salvas para identificação imediata na TAG e comprovação de tutoria.
-                </p>
-              </div>
-              <span class="gallery-counter-badge" id="galleryCountBadge">0/6 fotos</span>
-            </div>
-
-            <!-- Hidden input for pet gallery uploads -->
-            <input type="file" id="galleryFileInput" accept="image/*" style="display: none;">
-
-            <!-- 6 slots grid -->
-            <div class="gallery-grid" id="petGalleryGrid">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-        </section>
       </div>
     </div>
-  </main>
 
-  <!-- LIGHTBOX MODAL FOR PET GALLERY -->
-  <div class="lightbox-backdrop" id="lightboxModal" aria-hidden="true">
-    <img src="" alt="Foto do Pet Ampliada" class="lightbox-img" id="lightboxImage">
-  </div>
+    <!-- 2. QUICK ACTIONS ROW (Instagram story buttons style) -->
+    <div class="quick-actions-bar">
+      <div class="quick-actions-scroll">
+        <button type="button" class="quick-action-item" id="qaNewPetBtn">
+          <div class="quick-action-circle primary">➕</div>
+          <span class="quick-action-label">Novo Pet</span>
+        </button>
+
+        <button type="button" class="quick-action-item" id="qaActivateTagBtn">
+          <div class="quick-action-circle green">🏷️</div>
+          <span class="quick-action-label">Ativar TAG</span>
+        </button>
+
+        <button type="button" class="quick-action-item" id="qaVaccineBtn">
+          <div class="quick-action-circle blue">💉</div>
+          <span class="quick-action-label">Vacina</span>
+        </button>
+
+        <button type="button" class="quick-action-item" id="qaLostPetBtn" style="display: none;">
+          <div class="quick-action-circle danger">🆘</div>
+          <span class="quick-action-label">Pet Perdido</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PETS GRID HEADER -->
+    <div class="section-head">
+      <h3 class="section-title">🐾 Perfis dos Pets</h3>
+      <button type="button" class="btn-brand btn-sm" id="btnOpenNewPetModal" style="border-radius: var(--radius-pill); padding: 0.45rem 1rem;">
+        ➕ Novo Pet
+      </button>
+    </div>
+
+    <!-- 3. PET PROFILE CARDS GRID -->
+    <div class="pets-grid" id="petsGridContainer"></div>
+  </main>
 
   <!-- MODAL: ADD / EDIT PET -->
   <div class="modal-backdrop" id="modalPetForm">
@@ -2527,12 +1868,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         tutors: [
           {
             id: "tutor-101",
-            name: "Emerson dos Santos",
-            email: "emerson@savetagpet.com.br",
+            name: "Camila Rodrigues",
+            email: "camila@savetagpet.com.br",
             password: "senha",
             phone: "(13) 99111-8997",
             address: "Santos - SP",
-            photo: "",
             created_at: new Date().toISOString()
           }
         ],
@@ -2889,413 +2229,6 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       // UI CONTROLLER & APP LOGIC
       let currentSession = null;
       let currentPets = [];
-
-      // TUTOR PHOTO UPLOAD & SYNC (localStorage: "tutorPhoto")
-      function getTutorPhoto() {
-        return localStorage.getItem("tutorPhoto") || "";
-      }
-
-      function updateTutorPhotoEverywhere(photoBase64) {
-        if (photoBase64) {
-          localStorage.setItem("tutorPhoto", photoBase64);
-        } else {
-          localStorage.removeItem("tutorPhoto");
-        }
-        renderTutorAvatarElements(photoBase64);
-      }
-
-      function renderTutorAvatarElements(photoBase64) {
-        const photo = photoBase64 || getTutorPhoto();
-        const currentName = "Emerson dos Santos";
-        const initials = "ES";
-
-        // 1. Top bar avatar
-        const topCircle = document.getElementById("navTutorAvatarCircle");
-        if (topCircle) {
-          if (photo) {
-            topCircle.innerHTML = `<img src="${photo}" alt="${currentName}">`;
-          } else {
-            topCircle.innerHTML = `<span id="navTutorInitials">${initials}</span>`;
-          }
-        }
-
-        // 2. Sidebar avatar
-        const sideWrap = document.getElementById("sidebarTutorAvatarWrap");
-        if (sideWrap) {
-          if (photo) {
-            sideWrap.innerHTML = `<img src="${photo}" alt="${currentName}"><div class="avatar-cam-overlay">📷</div>`;
-          } else {
-            sideWrap.innerHTML = `<span id="sidebarTutorInitials">${initials}</span><div class="avatar-cam-overlay">📷</div>`;
-          }
-        }
-
-        // 3. Cover overlap avatar
-        const coverAvatar = document.getElementById("tutorInitialsAvatar");
-        if (coverAvatar) {
-          if (photo) {
-            coverAvatar.innerHTML = `<img src="${photo}" alt="${currentName}"><div class="avatar-cam-overlay">📷</div>`;
-          } else {
-            coverAvatar.innerHTML = `<span id="coverTutorInitials">${initials}</span><div class="avatar-cam-overlay">📷</div>`;
-          }
-        }
-      }
-
-      // Wire up file input for Tutor Photo
-      const tutorFileInput = document.getElementById("tutorPhotoFileInput");
-      if (tutorFileInput) {
-        tutorFileInput.addEventListener("change", (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            const base64 = evt.target.result;
-            updateTutorPhotoEverywhere(base64);
-            showToast("Foto do tutor atualizada com sucesso!", "success");
-          };
-          reader.readAsDataURL(file);
-          tutorFileInput.value = "";
-        });
-      }
-
-      function triggerTutorPhotoUpload() {
-        if (tutorFileInput) tutorFileInput.click();
-      }
-
-      document.getElementById("navTutorAvatarBtn")?.addEventListener("click", triggerTutorPhotoUpload);
-      document.getElementById("sidebarTutorAvatarWrap")?.addEventListener("click", triggerTutorPhotoUpload);
-      document.getElementById("tutorInitialsAvatar")?.addEventListener("click", triggerTutorPhotoUpload);
-
-      // TAB NAVIGATION (Pets, Saúde, Fotos, Vacinas, Ajustes)
-      const tabButtons = document.querySelectorAll(".sidebar-nav-btn[data-tab]");
-      function switchDashboardTab(tabName) {
-        tabButtons.forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.tab === tabName);
-        });
-
-        document.getElementById("petsViewSection")?.classList.toggle("active-view", tabName === "pets");
-        document.getElementById("healthViewSection")?.classList.toggle("active-view", tabName === "health");
-        document.getElementById("photosViewSection")?.classList.toggle("active-view", tabName === "photos");
-
-        if (tabName === "vaccines") {
-          document.getElementById("qaVaccineBtn")?.click();
-        } else if (tabName === "settings") {
-          document.getElementById("openSettingsBtn")?.click();
-        }
-      }
-
-      tabButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const tab = btn.dataset.tab;
-          if (tab !== "vaccines" && tab !== "settings") {
-            switchDashboardTab(tab);
-          } else if (tab === "vaccines") {
-            document.getElementById("qaVaccineBtn")?.click();
-          } else if (tab === "settings") {
-            document.getElementById("openSettingsBtn")?.click();
-          }
-        });
-      });
-
-      // ================= PET HEALTH AREA (STORAGE KEY: "petHealth_Luna") =================
-      const HEALTH_STORAGE_KEY = "petHealth_Luna";
-      const DEFAULT_HEALTH = {
-        alertAlergias: false,
-        alertDoencas: true,
-        alertMedicamentos: true,
-        alergias: "Nenhuma conhecida",
-        doencas: "Doença renal crônica estágio inicial",
-        medicamentos: "Fortekor 2.5mg (1 comprimido ao dia às 09h)\nSuplemento Renal Cat (1 sachê à noite)",
-        observacoes: "Tímida com estranhos. Não segurar com força. Microchipada.",
-        exams: [
-          { id: 1, date: "2025-01-15", type: "Consulta", desc: "Check-up semestral e aferição de pressão", vet: "Dra. Helena Vasconcelos" },
-          { id: 2, date: "2025-01-16", type: "Exame", desc: "Painel Renal completo (Creatinina/Ureia) + USG Abdominal", vet: "LabVet Santos" }
-        ],
-        vetNome: "Dra. Helena Vasconcelos (CRMV 45911)",
-        vetClinica: "Hospital Veterinário Gonzaga 24h",
-        vetTelefone: "(13) 3289-4000",
-        vetEndereco: "Av. Ana Costa, 350 - Gonzaga, Santos - SP"
-      };
-
-      function getHealthData() {
-        try {
-          const raw = localStorage.getItem(HEALTH_STORAGE_KEY);
-          if (!raw) {
-            localStorage.setItem(HEALTH_STORAGE_KEY, JSON.stringify(DEFAULT_HEALTH));
-            return DEFAULT_HEALTH;
-          }
-          return JSON.parse(raw);
-        } catch(e) {
-          return DEFAULT_HEALTH;
-        }
-      }
-
-      function saveHealthData(data) {
-        localStorage.setItem(HEALTH_STORAGE_KEY, JSON.stringify(data));
-      }
-
-      function renderHealthArea() {
-        const h = getHealthData();
-
-        // Checkboxes & chips
-        const chkAlergias = document.getElementById("chkAlertAlergias");
-        const chkDoencas = document.getElementById("chkAlertDoencas");
-        const chkMedicamentos = document.getElementById("chkAlertMedicamentos");
-
-        if (chkAlergias) {
-          chkAlergias.checked = !!h.alertAlergias;
-          document.getElementById("chipToggleAlergias")?.classList.toggle("active", !!h.alertAlergias);
-        }
-        if (chkDoencas) {
-          chkDoencas.checked = !!h.alertDoencas;
-          document.getElementById("chipToggleDoencas")?.classList.toggle("active", !!h.alertDoencas);
-        }
-        if (chkMedicamentos) {
-          chkMedicamentos.checked = !!h.alertMedicamentos;
-          document.getElementById("chipToggleMedicamentos")?.classList.toggle("active", !!h.alertMedicamentos);
-        }
-
-        // Form fields
-        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ""; };
-        setVal("healthAlergias", h.alergias);
-        setVal("healthDoencas", h.doencas);
-        setVal("healthMedicamentos", h.medicamentos);
-        setVal("healthObservacoes", h.observacoes);
-        setVal("vetNome", h.vetNome);
-        setVal("vetClinica", h.vetClinica);
-        setVal("vetTelefone", h.vetTelefone);
-        setVal("vetEndereco", h.vetEndereco);
-
-        // Update Call button tel:
-        const callBtn = document.getElementById("btnCallVet");
-        if (callBtn) {
-          const cleanPhone = (h.vetTelefone || "").replace(/\D/g, "");
-          callBtn.href = cleanPhone ? `tel:${cleanPhone}` : "tel:1332894000";
-        }
-
-        // Render exams table
-        renderExamsTable(h.exams || []);
-      }
-
-      function renderExamsTable(exams) {
-        const tbody = document.getElementById("examsTableBody");
-        if (!tbody) return;
-        tbody.innerHTML = "";
-
-        if (exams.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:1rem;">Nenhum registro cadastrado.</td></tr>`;
-          return;
-        }
-
-        exams.forEach(item => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td><strong>${item.date || "—"}</strong></td>
-            <td><span class="brand-badge">${item.type}</span></td>
-            <td>${item.desc || "—"}</td>
-            <td>${item.vet || "—"}</td>
-            <td class="no-print" style="text-align: right;">
-              <button type="button" class="btn-ghost btn-sm btn-delete-exam" data-id="${item.id}" title="Excluir" style="color:var(--danger); padding:0.2rem 0.4rem;">🗑️</button>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        tbody.querySelectorAll(".btn-delete-exam").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const id = Number(btn.dataset.id);
-            const h = getHealthData();
-            h.exams = (h.exams || []).filter(ex => ex.id !== id);
-            saveHealthData(h);
-            renderExamsTable(h.exams);
-            showToast("Registro removido.", "warning");
-          });
-        });
-      }
-
-      // Chip toggles
-      ["Alergias", "Doencas", "Medicamentos"].forEach(type => {
-        const chk = document.getElementById(`chkAlert${type}`);
-        const chip = document.getElementById(`chipToggle${type}`);
-        if (chk && chip) {
-          chk.addEventListener("change", () => {
-            chip.classList.toggle("active", chk.checked);
-            const h = getHealthData();
-            h[`alert${type}`] = chk.checked;
-            saveHealthData(h);
-          });
-        }
-      });
-
-      // Save health button
-      document.getElementById("btnSaveHealthBtn")?.addEventListener("click", () => {
-        const h = getHealthData();
-        h.alergias = document.getElementById("healthAlergias").value.trim();
-        h.doencas = document.getElementById("healthDoencas").value.trim();
-        h.medicamentos = document.getElementById("healthMedicamentos").value.trim();
-        h.observacoes = document.getElementById("healthObservacoes").value.trim();
-        h.vetNome = document.getElementById("vetNome").value.trim();
-        h.vetClinica = document.getElementById("vetClinica").value.trim();
-        h.vetTelefone = document.getElementById("vetTelefone").value.trim();
-        h.vetEndereco = document.getElementById("vetEndereco").value.trim();
-        saveHealthData(h);
-
-        const callBtn = document.getElementById("btnCallVet");
-        if (callBtn) {
-          const cleanPhone = h.vetTelefone.replace(/\D/g, "");
-          callBtn.href = cleanPhone ? `tel:${cleanPhone}` : "#";
-        }
-        showToast("Ficha de Saúde da Luna salva com sucesso!", "success");
-      });
-
-      // Print / PDF Button
-      document.getElementById("btnPrintHealthBtn")?.addEventListener("click", () => {
-        window.print();
-      });
-
-      // Add Exam row prompt
-      document.getElementById("btnAddExamRowBtn")?.addEventListener("click", () => {
-        const date = prompt("Data (AAAA-MM-DD):", new Date().toISOString().split("T")[0]);
-        if (!date) return;
-        const type = prompt("Tipo (Consulta ou Exame):", "Consulta");
-        if (!type) return;
-        const desc = prompt("Descrição do procedimento:");
-        if (!desc) return;
-        const vet = prompt("Veterinário / Clínica:", "Dra. Helena");
-
-        const h = getHealthData();
-        h.exams = h.exams || [];
-        h.exams.push({
-          id: Date.now(),
-          date,
-          type,
-          desc,
-          vet: vet || ""
-        });
-        saveHealthData(h);
-        renderExamsTable(h.exams);
-        showToast("Novo registro adicionado!", "success");
-      });
-
-      // ================= PET PHOTO GALLERY (STORAGE KEY: "petPhotos") =================
-      const GALLERY_STORAGE_KEY = "petPhotos";
-      const DEFAULT_PET_PHOTOS = [
-        "https://img.usecurling.com/p/500/500?q=siamese%20cat",
-        "https://img.usecurling.com/p/500/500?q=siamese%20kitten",
-        "https://img.usecurling.com/p/500/500?q=cat%20face"
-      ];
-
-      function getPetPhotos() {
-        try {
-          const raw = localStorage.getItem(GALLERY_STORAGE_KEY);
-          if (!raw) {
-            localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(DEFAULT_PET_PHOTOS));
-            return DEFAULT_PET_PHOTOS;
-          }
-          return JSON.parse(raw);
-        } catch(e) {
-          return DEFAULT_PET_PHOTOS;
-        }
-      }
-
-      function savePetPhotos(arr) {
-        localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(arr));
-      }
-
-      let targetGallerySlotIndex = null;
-      const galleryFileInput = document.getElementById("galleryFileInput");
-
-      function renderPetGallery() {
-        const photos = getPetPhotos();
-        const grid = document.getElementById("petGalleryGrid");
-        const countBadge = document.getElementById("galleryCountBadge");
-        if (!grid) return;
-
-        grid.innerHTML = "";
-        const total = 6;
-        const currentCount = photos.filter(p => !!p).length;
-        if (countBadge) countBadge.textContent = `${currentCount}/${total} fotos`;
-
-        for (let i = 0; i < total; i++) {
-          const photoUrl = photos[i];
-          const slot = document.createElement("div");
-
-          if (photoUrl) {
-            slot.className = "gallery-slot filled";
-            slot.innerHTML = `
-              <img src="${photoUrl}" alt="Foto da Luna ${i + 1}" data-index="${i}">
-              <div class="gallery-slot-actions">
-                <button type="button" class="btn-slot-action btn-del-photo" data-index="${i}" title="Remover foto">✕</button>
-              </div>
-            `;
-
-            // Open enlarged lightbox
-            slot.querySelector("img").addEventListener("click", () => {
-              openLightbox(photoUrl);
-            });
-
-            // Delete photo
-            slot.querySelector(".btn-del-photo").addEventListener("click", (e) => {
-              e.stopPropagation();
-              photos.splice(i, 1);
-              savePetPhotos(photos);
-              renderPetGallery();
-              showToast("Foto removida da galeria.", "warning");
-            });
-          } else {
-            slot.className = "gallery-slot empty";
-            slot.innerHTML = `
-              <span style="font-size: 2rem;">📷</span>
-              <strong style="font-size: 0.88rem;">+ Adicionar foto</strong>
-              <span style="font-size: 0.72rem; color: var(--text-muted);">Slot ${i + 1}</span>
-            `;
-            slot.addEventListener("click", () => {
-              targetGallerySlotIndex = i;
-              if (galleryFileInput) galleryFileInput.click();
-            });
-          }
-
-          grid.appendChild(slot);
-        }
-      }
-
-      if (galleryFileInput) {
-        galleryFileInput.addEventListener("change", (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-
-          const reader = new FileReader();
-          reader.onload = function(evt) {
-            const base64 = evt.target.result;
-            const photos = getPetPhotos();
-            if (targetGallerySlotIndex !== null && targetGallerySlotIndex < 6) {
-              photos[targetGallerySlotIndex] = base64;
-            } else {
-              photos.push(base64);
-            }
-            savePetPhotos(photos);
-            renderPetGallery();
-            showToast("Foto adicionada à galeria com sucesso!", "success");
-          };
-          reader.readAsDataURL(file);
-          galleryFileInput.value = "";
-        });
-      }
-
-      // Lightbox logic
-      const lightboxModal = document.getElementById("lightboxModal");
-      const lightboxImg = document.getElementById("lightboxImage");
-
-      function openLightbox(url) {
-        if (!lightboxModal || !lightboxImg) return;
-        lightboxImg.src = url;
-        lightboxModal.classList.add("open");
-      }
-
-      if (lightboxModal) {
-        lightboxModal.addEventListener("click", () => {
-          lightboxModal.classList.remove("open");
-        });
-      }
 
       // E) TOAST function — must work and stay visible for 6 seconds
       function showToast(message, type) {
@@ -3669,15 +2602,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           dashboardView.style.display = "block";
           headerAuthNav.style.display = "flex";
 
-          const userName = "Emerson dos Santos";
+          const userName = session.user.user_metadata?.name || session.user.email.split("@")[0];
           document.getElementById("navTutorName").textContent = userName;
           document.getElementById("dashTutorGreeting").textContent = userName;
-          document.getElementById("sidebarTutorName").textContent = userName;
-          document.getElementById("sidebarTutorEmail").textContent = session.user.email || "emerson@savetagpet.com.br";
-
-          renderTutorAvatarElements();
-          renderHealthArea();
-          renderPetGallery();
 
           loadTutorDashboardData(session.user.id);
         } else {
