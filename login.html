@@ -980,17 +980,13 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <button type="submit" id="btnLoginSubmit" class="btn-action btn-primary">
               <span>Acessar Painel</span>
             </button>
-            <div style="margin-top: 14px; font-size: 0.75rem; color: var(--text-muted); text-align: center; background: #f1f5f9; padding: 6px; border-radius: 6px;">
-              💡 <strong>Conta prévia para teste:</strong><br>
-              <code>tutor@savetagpet.com.br</code> / <code>senha123</code>
-            </div>
           </form>
 
           <!-- FORMULÁRIO 2: CADASTRO -->
           <form id="formRegister" onsubmit="handleRegisterSubmit(event)" style="display: none;">
             <div class="form-group">
               <label class="form-label" for="regName">Nome Completo</label>
-              <input type="text" id="regName" class="form-input" placeholder="Ex: Mariana Albuquerque" required autocomplete="name">
+              <input type="text" id="regName" class="form-input" placeholder="Seu nome completo" required autocomplete="name">
             </div>
             <div class="form-group">
               <label class="form-label" for="regEmail">E-mail</label>
@@ -1042,7 +1038,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         <div class="tutor-cover paw-pattern"></div>
         <div class="profile-body">
           <div class="avatar-wrapper">
-            <img id="tutorAvatarImg" class="avatar-img" src="https://img.usecurling.com/ppl/medium?gender=female&seed=4" alt="Avatar do Tutor">
+            <img id="tutorAvatarImg" class="avatar-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%235c727a'><circle cx='50' cy='38' r='20'/><path d='M20,85 C20,68 34,58 50,58 C66,58 80,68 80,85 Z'/></svg>" alt="Avatar do Tutor">
             <label class="avatar-badge-btn" title="Alterar foto">
               📷
               <input type="file" accept="image/*" style="display:none" onchange="uploadTutorAvatar(this)">
@@ -1051,8 +1047,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
           <div class="profile-header-meta">
             <div>
-              <h2 id="tutorNameDisplay" class="profile-name">Mariana Albuquerque</h2>
-              <p id="tutorEmailDisplay" class="profile-meta-sub">tutor@savetagpet.com.br</p>
+              <h2 id="tutorNameDisplay" class="profile-name">—</h2>
+              <p id="tutorEmailDisplay" class="profile-meta-sub">—</p>
               <div style="margin-top: 6px;">
                 <span class="badge-status active-tag">🐾 Tutor Save Tag Pet</span>
               </div>
@@ -1116,7 +1112,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
         <div class="profile-body">
           <div class="avatar-wrapper">
-            <img id="petProfileAvatar" class="avatar-img" src="https://img.usecurling.com/p/200/200?q=cute%20golden%20retriever" alt="Foto do Pet">
+            <img id="petProfileAvatar" class="avatar-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" alt="Foto do Pet">
             <label class="avatar-badge-btn" title="Alterar foto">
               📷
               <input type="file" accept="image/*" style="display:none" onchange="uploadPetAvatar(this)">
@@ -1125,11 +1121,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
           <div class="profile-header-meta">
             <div>
-              <h2 id="petProfileName" class="profile-name">Thor</h2>
-              <p id="petProfileBio" class="profile-meta-sub">Cachorro • Golden Retriever • 2 anos • 31 kg</p>
-              <div id="petStatusBadgeContainer" style="margin-top: 6px;">
-                <span class="badge-status active-tag">🏷️ TAG Ativa: STP-8842</span>
-              </div>
+              <h2 id="petProfileName" class="profile-name">—</h2>
+              <p id="petProfileBio" class="profile-meta-sub">—</p>
+              <div id="petStatusBadgeContainer" style="margin-top: 6px;"></div>
             </div>
 
             <div style="display:flex; gap: 8px; flex-wrap: wrap;">
@@ -1448,22 +1442,26 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     let pendingPostImageBase64 = '';
     let isServerOnline = false;
 
-    // Cache local em memória caso as tabelas remotas não existam no schema do Supabase
+    // Cache de exibição (sempre regenerado do banco via GET - sem degradação silenciosa)
     let localCachePets = [];
     let localCacheVaccines = [];
     let localCachePosts = [];
+    let petsLoadError = false;
+    let vaccinesLoadError = false;
+    let postsLoadError = false;
 
     // 2. CAMADA DE AUTH VIA REST NATIVO (api helper)
     const api = {
-      getHeaders(customHeaders = {}) {
+      getHeaders(customHeaders = {}, overrideToken) {
         const headers = {
           'apikey': SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
           ...customHeaders
         };
         const sess = this.loadSession();
-        if (sess && sess.access_token) {
-          headers['Authorization'] = 'Bearer ' + sess.access_token;
+        const token = overrideToken || sess?.access_token;
+        if (token) {
+          headers['Authorization'] = 'Bearer ' + token;
         }
         return headers;
       },
@@ -1570,7 +1568,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             data: {
               full_name: nome,
               whatsapp: whatsapp,
-              avatar_url: 'https://img.usecurling.com/ppl/medium?gender=female&seed=4'
+              avatar_url: ''
             }
           })
         });
@@ -1666,89 +1664,51 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
     };
 
-    // 3. CAMADA DE BANCO VIA REST NATIVO (db helper PostgREST)
-    const db = {
-      async listar(tabela, filtros = {}) {
-        const headers = api.getHeaders();
-        let queryParams = ['select=*'];
-        for (const [k, v] of Object.entries(filtros)) {
-          if (v !== undefined && v !== null) {
-            queryParams.push(`${encodeURIComponent(k)}=eq.${encodeURIComponent(v)}`);
-          }
-        }
-        const url = `${SUPABASE_URL}/rest/v1/${tabela}?${queryParams.join('&')}`;
-        try {
-          const res = await fetch(url, { method: 'GET', headers });
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            return { data: null, error: errData };
-          }
-          const list = await res.json();
-          return { data: list, error: null };
-        } catch (e) {
-          return { data: null, error: e };
-        }
-      },
+    // VALIDAÇÃO RIGOROSA DE SESSÃO LOCAL ANTES DE QUALQUER OPERAÇÃO DE BANCO
+    async function getValidatedSession() {
+      const sess = await api.getValidSession();
+      if (!sess || !sess.access_token || !sess.user || !sess.user.id) {
+        console.error('[SaveTagPet] Sessão ausente ou expirada. Redirecionando para login.');
+        await api.signOut();
+        showToast('Sessão expirada. Faça login novamente.', 'error');
+        showView('viewAuth');
+        return null;
+      }
+      return sess;
+    }
 
-      async inserir(tabela, obj) {
-        const headers = api.getHeaders({
-          'Prefer': 'return=representation'
-        });
-        const url = `${SUPABASE_URL}/rest/v1/${tabela}`;
-        try {
-          const res = await fetch(url, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(obj)
-          });
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            return { data: null, error: errData };
-          }
-          const created = await res.json();
-          return { data: Array.isArray(created) ? created[0] : created, error: null };
-        } catch (e) {
-          return { data: null, error: e };
-        }
-      },
-
-      async atualizar(tabela, obj, filtroColuna, filtroValor) {
-        const headers = api.getHeaders({
-          'Prefer': 'return=representation'
-        });
-        const url = `${SUPABASE_URL}/rest/v1/${tabela}?${encodeURIComponent(filtroColuna)}=eq.${encodeURIComponent(filtroValor)}`;
-        try {
-          const res = await fetch(url, {
-            method: 'PATCH',
-            headers,
-            body: JSON.stringify(obj)
-          });
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            return { data: null, error: errData };
-          }
-          const updated = await res.json();
-          return { data: Array.isArray(updated) ? updated[0] : updated, error: null };
-        } catch (e) {
-          return { data: null, error: e };
-        }
-      },
-
-      async excluir(tabela, coluna, valor) {
-        const headers = api.getHeaders();
-        const url = `${SUPABASE_URL}/rest/v1/${tabela}?${encodeURIComponent(coluna)}=eq.${encodeURIComponent(valor)}`;
-        try {
-          const res = await fetch(url, { method: 'DELETE', headers });
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            return { error: errData };
-          }
-          return { error: null };
-        } catch (e) {
-          return { error: e };
+    // UTILITÁRIO DE DIAGNÓSTICO E LOG TÉCNICO (NÃO SENSÍVEL)
+    function sanitizePayloadForLog(payload) {
+      if (!payload || typeof payload !== 'object') return payload;
+      const clean = { ...payload };
+      for (const key of Object.keys(clean)) {
+        if (typeof clean[key] === 'string' && clean[key].startsWith('data:image')) {
+          clean[key] = `[base64 image (${Math.round(clean[key].length / 1024)} KB)]`;
         }
       }
-    };
+      return clean;
+    }
+
+    function logDiagnosticError(contextMsg, status, url, body, payload) {
+      const diagnostic = {
+        status: status,
+        url: url,
+        body: body,
+        payloadEnviado: sanitizePayloadForLog(payload)
+      };
+      if (body) {
+        if (body.message) diagnostic.supabaseMessage = body.message;
+        if (body.error) diagnostic.supabaseError = body.error;
+        if (body.hint) diagnostic.supabaseHint = body.hint;
+        if (body.details) diagnostic.supabaseDetails = body.details;
+      }
+      if (status === 403) {
+        diagnostic.dica = "RLS: verifique política INSERT em public.pets com with check (auth.uid() = tutor_id)";
+      } else if (status === 400 && (body?.code === 'PGRST204' || (typeof body?.message === 'string' && body.message.toLowerCase().includes('column')))) {
+        diagnostic.dica = "coluna inexistente na tabela pets";
+      }
+      console.error(`[SaveTagPet] ${contextMsg}`, diagnostic);
+    }
 
     // 4. INICIALIZAÇÃO DA APLICAÇÃO
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1930,7 +1890,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
 
       if (data && data.user && !data.session) {
-        showToast('Conta criada! Confirme pelo e-mail enviado antes de acessar.', 'success');
+        showToast('Conta criada! Verifique seu e-mail e clique no link de confirmação para entrar.', 'success');
         switchAuthTab('login');
       } else {
         showToast('Conta criada com sucesso! Bem-vindo(a) ao Save Tag Pet.', 'success');
@@ -1993,18 +1953,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       showView('viewAuth');
     }
 
-    // CARREGAMENTO DO DASHBOARD E DADOS
+    // CARREGAMENTO DO DASHBOARD E DADOS (SEMPRE DO BANCO VIA GET COM BEARER)
     async function loadTutorDashboard() {
-      const sess = await api.getValidSession();
-      if (!sess) {
-        showView('viewAuth');
-        return;
-      }
+      const sess = await getValidatedSession();
+      if (!sess) return;
 
       const meta = sess.user?.user_metadata || {};
-      const tutorName = meta.full_name || 'Tutor Save Tag';
-      const tutorEmail = sess.user?.email || 'tutor@savetagpet.com.br';
-      const tutorAvatar = meta.avatar_url || 'https://img.usecurling.com/ppl/medium?gender=female&seed=4';
+      const tutorName = meta.full_name || sess.user?.email?.split('@')[0] || 'Tutor';
+      const tutorEmail = sess.user?.email || '';
+      const tutorAvatar = meta.avatar_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%235c727a'><circle cx='50' cy='38' r='20'/><path d='M20,85 C20,68 34,58 50,58 C66,58 80,68 80,85 Z'/></svg>";
 
       document.getElementById('tutorNameDisplay').textContent = tutorName;
       document.getElementById('tutorEmailDisplay').textContent = tutorEmail;
@@ -2018,106 +1975,111 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       await fetchAllUserData(sess.user.id);
     }
 
-    // BUSCA DE PETS, VACINAS E POSTS VIA REST COM DEGRADAÇÃO GRACIOSA
+    // BUSCA DE PETS, VACINAS E POSTS SEM DEGRADAÇÃO SILENCIOSA
     async function fetchAllUserData(userId) {
-      // 1. Pets
-      const petsRes = await db.listar('pets', { tutor_id: userId });
-      if (petsRes.error) {
-        // Degradação graciosa: se tabela não existe no Supabase, usar cache em memória
-        if (!localCachePets.length) {
-          localCachePets = [
-            {
-              id: 'pet_thor',
-              tutor_id: userId,
-              name: 'Thor',
-              species: 'Cachorro',
-              breed: 'Golden Retriever',
-              birth: '2 anos',
-              weight: '31 kg',
-              color: 'Dourado',
-              photo_url: 'https://img.usecurling.com/p/300/300?q=golden%20retriever',
-              cover_url: '',
-              notes: 'Muito amigável. Possui alergia a picada de abelha.',
-              emergency_phone: '(11) 98765-4321',
-              tag_code: 'STP-8842',
-              is_lost: false,
-              last_scan: '15/04/2025 às 14:32 no Parque Ibirapuera'
-            },
-            {
-              id: 'pet_luna',
-              tutor_id: userId,
-              name: 'Luna',
-              species: 'Gato',
-              breed: 'Siamês',
-              birth: '1 ano e meio',
-              weight: '4 kg',
-              color: 'Branco e Marrom',
-              photo_url: 'https://img.usecurling.com/p/300/300?q=siamese%20cat',
-              cover_url: '',
-              notes: 'Castrada, assustada com barulhos altos.',
-              emergency_phone: '(11) 98765-4321',
-              tag_code: 'STP-9011',
-              is_lost: false,
-              last_scan: 'Aguardando primeira leitura'
-            }
-          ];
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+
+      petsLoadError = false;
+      vaccinesLoadError = false;
+      postsLoadError = false;
+
+      // 1. Pets via GET com Bearer
+      const petsUrl = `${SUPABASE_URL}/rest/v1/pets?tutor_id=eq.${encodeURIComponent(userId)}&select=*`;
+      try {
+        const res = await fetch(petsUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => null);
+          logDiagnosticError('Falha ao carregar lista de pets', res.status, petsUrl, errBody, { tutor_id: userId });
+          petsLoadError = true;
+          localCachePets = [];
+        } else {
+          localCachePets = await res.json();
         }
-      } else {
-        localCachePets = petsRes.data || [];
+      } catch (err) {
+        logDiagnosticError('Falha ao carregar lista de pets', 0, petsUrl, { message: err.message }, { tutor_id: userId });
+        petsLoadError = true;
+        localCachePets = [];
       }
 
-      // 2. Vacinas
-      const vacRes = await db.listar('vaccines', { tutor_id: userId });
-      if (vacRes.error) {
-        if (!localCacheVaccines.length) {
-          localCacheVaccines = [
-            {
-              id: 'vac_1',
-              tutor_id: userId,
-              pet_id: 'pet_thor',
-              name: 'V10 Óctupla',
-              applied_at: '2025-01-15',
-              next_due: '2026-01-15',
-              vet: 'Dra. Beatriz Santos - CRMV 22104'
-            },
-            {
-              id: 'vac_2',
-              tutor_id: userId,
-              pet_id: 'pet_thor',
-              name: 'Antirrábica Canina',
-              applied_at: '2024-11-20',
-              next_due: '2025-11-20',
-              vet: 'Clínica PetCare SP'
-            }
-          ];
+      // 2. Vacinas via GET com Bearer
+      const vacUrl = `${SUPABASE_URL}/rest/v1/vaccines?tutor_id=eq.${encodeURIComponent(userId)}&select=*`;
+      try {
+        const res = await fetch(vacUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => null);
+          logDiagnosticError('Falha ao carregar lista de vacinas', res.status, vacUrl, errBody, { tutor_id: userId });
+          vaccinesLoadError = true;
+          localCacheVaccines = [];
+        } else {
+          localCacheVaccines = await res.json();
         }
-      } else {
-        localCacheVaccines = vacRes.data || [];
+      } catch (err) {
+        logDiagnosticError('Falha ao carregar lista de vacinas', 0, vacUrl, { message: err.message }, { tutor_id: userId });
+        vaccinesLoadError = true;
+        localCacheVaccines = [];
       }
 
-      // 3. Posts
-      const postsRes = await db.listar('pet_posts', { tutor_id: userId });
-      if (postsRes.error) {
-        if (!localCachePosts.length) {
-          localCachePosts = [
-            {
-              id: 'post_1',
-              tutor_id: userId,
-              pet_id: 'pet_thor',
-              caption: 'Passeio matinal no parque! Thor aproveitando o dia de sol ☀️🐾',
-              image_url: 'https://img.usecurling.com/p/600/400?q=happy%20dog%20park',
-              created_at: new Date(Date.now() - 3600000 * 24).toISOString()
-            }
-          ];
+      // 3. Posts via GET com Bearer
+      const postsUrl = `${SUPABASE_URL}/rest/v1/pet_posts?tutor_id=eq.${encodeURIComponent(userId)}&select=*`;
+      try {
+        const res = await fetch(postsUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => null);
+          logDiagnosticError('Falha ao carregar lista de posts', res.status, postsUrl, errBody, { tutor_id: userId });
+          postsLoadError = true;
+          localCachePosts = [];
+        } else {
+          localCachePosts = await res.json();
         }
-      } else {
-        localCachePosts = postsRes.data || [];
+      } catch (err) {
+        logDiagnosticError('Falha ao carregar lista de posts', 0, postsUrl, { message: err.message }, { tutor_id: userId });
+        postsLoadError = true;
+        localCachePosts = [];
       }
 
       renderDashboardPets();
     }
 
     function renderDashboardPets() {
+      const grid = document.getElementById('petsGrid');
+      grid.innerHTML = '';
+
+      if (petsLoadError) {
+        document.getElementById('statTotalPets').textContent = '—';
+        document.getElementById('statActiveTags').textContent = '—';
+        document.getElementById('statVaccinesCount').textContent = '—';
+        document.getElementById('petsSectionTitle').textContent = '🐾 Meus Pets';
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 36px 20px; background: #fff; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+            <div style="font-size: 2rem; margin-bottom: 8px;">⚠️</div>
+            <h4 style="margin: 0 0 6px; color: var(--text);">Erro ao carregar os pets</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 16px;">Não foi possível buscar a lista de pets no servidor.</p>
+            <button class="btn-action btn-primary" style="width: auto; padding: 8px 22px; display: inline-flex;" onclick="loadTutorDashboard()">🔄 Tentar novamente</button>
+          </div>
+        `;
+        return;
+      }
+
       const userPets = localCachePets;
       const userVaccines = localCacheVaccines;
       const activeTagsCount = userPets.filter(p => p.tag_code && p.tag_code.trim() !== '').length;
@@ -2128,9 +2090,6 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       document.getElementById('petsSectionTitle').textContent = `🐾 Meus Pets (${userPets.length})`;
 
       populatePetSelects(userPets);
-
-      const grid = document.getElementById('petsGrid');
-      grid.innerHTML = '';
 
       if (userPets.length === 0) {
         grid.innerHTML = `
@@ -2161,7 +2120,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         card.innerHTML = `
           <div class="pet-card-banner paw-pattern"></div>
           <div class="pet-card-content">
-            <img class="pet-card-avatar" src="${escapeHtml(pet.photo_url || 'https://img.usecurling.com/p/200/200?q=cute%20pet')}" alt="${escapeHtml(pet.name)}">
+            <img class="pet-card-avatar" src="${escapeHtml(pet.photo_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>")}" alt="${escapeHtml(pet.name)}">
             <h4 class="pet-card-name">${escapeHtml(pet.name)}</h4>
             <p class="pet-card-sub">${escapeHtml(pet.species)} • ${escapeHtml(pet.breed)}</p>
             <div style="margin-bottom: 12px;">${badgeHtml}</div>
@@ -2199,7 +2158,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
       document.getElementById('petProfileName').textContent = pet.name;
       document.getElementById('petProfileBio').textContent = `${pet.species} • ${pet.breed} • ${pet.birth || 'Idade n/d'} • ${pet.weight || 'Peso n/d'}`;
-      document.getElementById('petProfileAvatar').src = pet.photo_url || 'https://img.usecurling.com/p/200/200?q=cute%20pet';
+      document.getElementById('petProfileAvatar').src = pet.photo_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>";
 
       const banner = document.getElementById('petCoverBanner');
       if (pet.cover_url) {
@@ -2234,8 +2193,12 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
 
       const emailContainer = document.getElementById('techEmail');
-      const userMail = currentSession?.user?.email || 'tutor@savetagpet.com.br';
-      emailContainer.innerHTML = `<a href="mailto:${userMail}" style="color:var(--primary); text-decoration:underline;">${userMail}</a>`;
+      const userMail = currentSession?.user?.email || '';
+      if (userMail) {
+        emailContainer.innerHTML = `<a href="mailto:${escapeHtml(userMail)}" style="color:var(--primary); text-decoration:underline;">${escapeHtml(userMail)}</a>`;
+      } else {
+        emailContainer.textContent = 'Não informado';
+      }
 
       const tagStatusText = pet.tag_code
         ? `Código Ativo: <strong>${escapeHtml(pet.tag_code)}</strong><br>Última leitura registrada: ${escapeHtml(pet.last_scan || 'Aguardando primeira leitura')}`
@@ -2274,12 +2237,23 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       if (content) content.style.display = 'block';
     }
 
-    // MURAL E POSTS (REST)
+    // MURAL E POSTS (REST FAIL-CLOSED)
     function loadPetPosts(petId) {
-      const posts = localCachePosts.filter(p => p.pet_id === petId);
       const container = document.getElementById('postsFeedContainer');
       container.innerHTML = '';
 
+      if (postsLoadError) {
+        document.getElementById('petStatPosts').textContent = '—';
+        container.innerHTML = `
+          <div style="text-align: center; padding: 24px; background: #fff; border-radius: var(--radius-md); border: 1px solid var(--border);">
+            <p style="margin: 0 0 10px; color: var(--red); font-size: 0.875rem; font-weight: 600;">⚠️ Erro ao carregar as publicações do mural.</p>
+            <button class="btn-action btn-primary" style="width: auto; padding: 6px 16px; font-size: 0.8125rem; display: inline-flex;" onclick="loadTutorDashboard()">🔄 Tentar novamente</button>
+          </div>
+        `;
+        return;
+      }
+
+      const posts = localCachePosts.filter(p => String(p.pet_id) === String(petId));
       document.getElementById('petStatPosts').textContent = posts.length;
 
       if (posts.length === 0) {
@@ -2300,7 +2274,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         card.className = 'post-card';
         card.innerHTML = `
           <div class="post-header">
-            <img class="post-avatar" src="${escapeHtml(pet?.photo_url || 'https://img.usecurling.com/p/200/200?q=cute%20pet')}" alt="${escapeHtml(pet?.name || 'Pet')}">
+            <img class="post-avatar" src="${escapeHtml(pet?.photo_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>")}" alt="${escapeHtml(pet?.name || 'Pet')}">
             <div class="post-meta">
               <p class="post-author">${escapeHtml(pet?.name || 'Pet')}</p>
               <p class="post-time">${dateStr}</p>
@@ -2325,43 +2299,113 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     async function handleCreatePost(e) {
       e.preventDefault();
-      const caption = document.getElementById('postCaptionInput').value.trim();
-      if (!caption) return;
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
 
-      const newPost = {
-        id: 'post_' + Date.now(),
-        tutor_id: currentSession.user.id,
+      const caption = document.getElementById('postCaptionInput').value.trim();
+      if (!caption || !currentSelectedPetId) return;
+
+      const newPostPayload = {
+        tutor_id: userId,
         pet_id: currentSelectedPetId,
         caption: caption,
         image_url: pendingPostImageBase64 || '',
         created_at: new Date().toISOString()
       };
 
-      // Tenta REST
-      const res = await db.inserir('pet_posts', newPost);
-      if (res.error) {
-        showToast('Nota: Post salvo na sessão atual (tabela pet_posts não criada no Supabase).', 'warning');
+      const endpoint = `${SUPABASE_URL}/rest/v1/pet_posts`;
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(newPostPayload)
+        });
+
+        const resBody = await res.json().catch(() => null);
+        if ((res.status !== 200 && res.status !== 201) || !resBody) {
+          logDiagnosticError('Falha ao salvar post', res.status, endpoint, resBody, newPostPayload);
+          showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+          return;
+        }
+
+        const createdPost = Array.isArray(resBody) ? resBody[0] : resBody;
+        if (!createdPost || !createdPost.id) {
+          logDiagnosticError('Falha ao salvar post (sem id retornado)', res.status, endpoint, resBody, newPostPayload);
+          showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+          return;
+        }
+
+        // Confirmação via GET
+        const confirmUrl = `${SUPABASE_URL}/rest/v1/pet_posts?id=eq.${encodeURIComponent(createdPost.id)}&select=*`;
+        const confirmRes = await fetch(confirmUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const confirmData = await confirmRes.json().catch(() => []);
+        if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
+          logDiagnosticError('Falha ao salvar post (confirmação falhou)', confirmRes.status, confirmUrl, confirmData, newPostPayload);
+          showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+          return;
+        }
+
+        const verifiedPost = confirmData[0];
+        localCachePosts.unshift(verifiedPost);
+
+        document.getElementById('postCaptionInput').value = '';
+        document.getElementById('postPhotoInput').value = '';
+        document.getElementById('postPhotoSelectedNote').textContent = '';
+        pendingPostImageBase64 = '';
+
+        showToast('Publicação criada no mural!', 'success');
+        loadPetPosts(currentSelectedPetId);
+        loadPetPhotos(currentSelectedPetId);
+      } catch (err) {
+        logDiagnosticError('Falha ao salvar post', 0, endpoint, { message: err.message }, newPostPayload);
+        showToast('Não foi possível salvar o post. Tente novamente.', 'error');
       }
-
-      localCachePosts.unshift(newPost);
-
-      document.getElementById('postCaptionInput').value = '';
-      document.getElementById('postPhotoInput').value = '';
-      document.getElementById('postPhotoSelectedNote').textContent = '';
-      pendingPostImageBase64 = '';
-
-      showToast('Publicação criada no mural!', 'success');
-      loadPetPosts(currentSelectedPetId);
-      loadPetPhotos(currentSelectedPetId);
     }
 
     async function deletePost(postId) {
       if (!confirm('Deseja excluir esta publicação?')) return;
-      await db.excluir('pet_posts', 'id', postId);
-      localCachePosts = localCachePosts.filter(p => p.id !== postId);
-      showToast('Publicação removida.', 'success');
-      loadPetPosts(currentSelectedPetId);
-      loadPetPhotos(currentSelectedPetId);
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
+      const endpoint = `${SUPABASE_URL}/rest/v1/pet_posts?id=eq.${encodeURIComponent(postId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+      try {
+        const res = await fetch(endpoint, {
+          method: 'DELETE',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => null);
+          logDiagnosticError('Falha ao excluir publicação', res.status, endpoint, errData, { id: postId });
+          showToast('Não foi possível excluir a publicação. Tente novamente.', 'error');
+          return;
+        }
+        localCachePosts = localCachePosts.filter(p => String(p.id) !== String(postId));
+        showToast('Publicação removida.', 'success');
+        loadPetPosts(currentSelectedPetId);
+        loadPetPhotos(currentSelectedPetId);
+      } catch (err) {
+        logDiagnosticError('Falha ao excluir publicação', 0, endpoint, { message: err.message }, { id: postId });
+        showToast('Não foi possível excluir a publicação. Tente novamente.', 'error');
+      }
     }
 
     // FOTOS
@@ -2394,10 +2438,21 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     // SAÚDE / VACINAS
     function loadPetVaccines(petId) {
-      const list = localCacheVaccines.filter(v => v.pet_id === petId);
       const container = document.getElementById('vaccineListContainer');
       container.innerHTML = '';
 
+      if (vaccinesLoadError) {
+        document.getElementById('petStatVaccines').textContent = '—';
+        container.innerHTML = `
+          <div style="text-align: center; padding: 24px; background: #fff; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <p style="margin: 0 0 10px; color: var(--red); font-size: 0.875rem; font-weight: 600;">⚠️ Erro ao carregar as vacinas do servidor.</p>
+            <button class="btn-action btn-primary" style="width: auto; padding: 6px 16px; font-size: 0.8125rem; display: inline-flex;" onclick="loadTutorDashboard()">🔄 Tentar novamente</button>
+          </div>
+        `;
+        return;
+      }
+
+      const list = localCacheVaccines.filter(v => String(v.pet_id) === String(petId));
       document.getElementById('petStatVaccines').textContent = list.length;
 
       if (list.length === 0) {
@@ -2472,28 +2527,78 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     async function uploadPetAvatar(input) {
       if (!currentSelectedPetId || !input.files || !input.files[0]) return;
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
       resizeImageFile(input.files[0], 400, async (base64) => {
-        const pet = localCachePets.find(p => p.id === currentSelectedPetId);
-        if (pet) {
-          pet.photo_url = base64;
-          await db.atualizar('pets', { photo_url: base64 }, 'id', pet.id);
+        const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(currentSelectedPetId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+        const payload = { photo_url: base64 };
+        try {
+          const res = await fetch(endpoint, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(payload)
+          });
+          const resBody = await res.json().catch(() => null);
+          if (!res.ok) {
+            logDiagnosticError('Falha ao atualizar foto do pet', res.status, endpoint, resBody, payload);
+            showToast('Não foi possível atualizar a foto do pet. Tente novamente.', 'error');
+            return;
+          }
+          const pet = localCachePets.find(p => String(p.id) === String(currentSelectedPetId));
+          if (pet) pet.photo_url = base64;
           document.getElementById('petProfileAvatar').src = base64;
           showToast('Foto do pet atualizada!', 'success');
-          loadPetPhotos(pet.id);
+          loadPetPhotos(currentSelectedPetId);
+        } catch (err) {
+          logDiagnosticError('Falha ao atualizar foto do pet', 0, endpoint, { message: err.message }, payload);
+          showToast('Não foi possível atualizar a foto do pet. Tente novamente.', 'error');
         }
       });
     }
 
     async function uploadPetCover(input) {
       if (!currentSelectedPetId || !input.files || !input.files[0]) return;
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
       resizeImageFile(input.files[0], 1280, async (base64) => {
-        const pet = localCachePets.find(p => p.id === currentSelectedPetId);
-        if (pet) {
-          pet.cover_url = base64;
-          await db.atualizar('pets', { cover_url: base64 }, 'id', pet.id);
+        const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(currentSelectedPetId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+        const payload = { cover_url: base64 };
+        try {
+          const res = await fetch(endpoint, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(payload)
+          });
+          const resBody = await res.json().catch(() => null);
+          if (!res.ok) {
+            logDiagnosticError('Falha ao atualizar capa do pet', res.status, endpoint, resBody, payload);
+            showToast('Não foi possível atualizar a capa do pet. Tente novamente.', 'error');
+            return;
+          }
+          const pet = localCachePets.find(p => String(p.id) === String(currentSelectedPetId));
+          if (pet) pet.cover_url = base64;
           document.getElementById('petCoverBanner').style.backgroundImage = `url(${base64})`;
           showToast('Capa do perfil atualizada!', 'success');
-          loadPetPhotos(pet.id);
+          loadPetPhotos(currentSelectedPetId);
+        } catch (err) {
+          logDiagnosticError('Falha ao atualizar capa do pet', 0, endpoint, { message: err.message }, payload);
+          showToast('Não foi possível atualizar a capa do pet. Tente novamente.', 'error');
         }
       });
     }
@@ -2501,6 +2606,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     // MODAL ACTIONS
     async function handleSaveTutorProfile(e) {
       e.preventDefault();
+      const sess = await getValidatedSession();
+      if (!sess) return;
+
       const name = document.getElementById('editTutorName').value.trim();
       const whatsapp = document.getElementById('editTutorWhatsapp').value.trim();
       const city = document.getElementById('editTutorCity').value.trim();
@@ -2510,7 +2618,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       });
 
       if (error) {
-        showToast(error.message, 'error');
+        logDiagnosticError('Falha ao atualizar perfil do tutor', 400, `${SUPABASE_URL}/auth/v1/user`, error, { full_name: name, whatsapp, city });
+        showToast('Não foi possível atualizar o perfil. Tente novamente.', 'error');
       } else {
         showToast('Perfil atualizado com sucesso!', 'success');
         closeModal('modalTutorProfile');
@@ -2554,8 +2663,16 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       openModal('modalPetForm');
     }
 
+    // CADASTRO / EDIÇÃO DE PET — FLUXO FAIL-CLOSED DEFINITIVO
     async function handleSavePetForm(e) {
       e.preventDefault();
+
+      // (a) Validar sessão/token antes de qualquer gravação
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id; // tutor_id SEMPRE = user.id do usuário autenticado
+
       const petId = document.getElementById('petFormId').value;
       const name = document.getElementById('petFormName').value.trim();
       const species = document.getElementById('petFormSpecies').value;
@@ -2566,24 +2683,12 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const notes = document.getElementById('petFormNotes').value.trim();
       const emergencyPhone = document.getElementById('petFormEmergencyPhone').value.trim();
 
-      if (petId) {
-        const p = localCachePets.find(x => x.id === petId);
-        if (p) {
-          p.name = name;
-          p.species = species;
-          p.breed = breed;
-          p.birth = birth;
-          p.weight = weight;
-          p.color = color;
-          p.notes = notes;
-          p.emergency_phone = emergencyPhone;
-          await db.atualizar('pets', p, 'id', petId);
-          showToast('Pet atualizado com sucesso!', 'success');
-        }
-      } else {
-        const newPet = {
-          id: 'pet_' + Date.now(),
-          tutor_id: currentSession?.user?.id || 'usr_tutor',
+      const isEditing = Boolean(petId);
+
+      if (isEditing) {
+        // FLUXO DE EDIÇÃO DE PET (FAIL-CLOSED)
+        const updatePayload = {
+          tutor_id: userId,
           name,
           species,
           breed,
@@ -2591,91 +2696,302 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           weight,
           color,
           notes,
-          emergency_phone: emergencyPhone,
-          photo_url: species === 'Gato' ? 'https://img.usecurling.com/p/300/300?q=cat' : 'https://img.usecurling.com/p/300/300?q=cute%20dog',
-          cover_url: '',
-          tag_code: '',
-          is_lost: false,
-          last_scan: 'Aguardando primeira leitura'
+          emergency_phone: emergencyPhone
         };
-        await db.inserir('pets', newPet);
-        localCachePets.push(newPet);
-        showToast('Novo pet cadastrado com sucesso!', 'success');
+
+        const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+        try {
+          const res = await fetch(endpoint, {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(updatePayload)
+          });
+
+          const resBody = await res.json().catch(() => null);
+
+          if (!res.ok) {
+            logDiagnosticError('Falha ao salvar pet', res.status, endpoint, resBody, updatePayload);
+            showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+            return;
+          }
+
+          let updatedObj = Array.isArray(resBody) ? resBody[0] : resBody;
+          if (!updatedObj || !updatedObj.id) {
+            // Confirmação via GET caso a representação não retorne diretamente
+            const confirmUrl = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&select=*`;
+            const confirmRes = await fetch(confirmUrl, {
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + token
+              }
+            });
+            const confirmList = await confirmRes.json().catch(() => []);
+            if (!confirmRes.ok || !Array.isArray(confirmList) || confirmList.length === 0) {
+              logDiagnosticError('Falha ao salvar pet (confirmação falhou)', confirmRes.status, confirmUrl, confirmList, updatePayload);
+              showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+              return;
+            }
+            updatedObj = confirmList[0];
+          }
+
+          // Atualização local somente após confirmação do Supabase
+          const idx = localCachePets.findIndex(p => String(p.id) === String(petId));
+          if (idx !== -1) {
+            localCachePets[idx] = updatedObj;
+          } else {
+            localCachePets.push(updatedObj);
+          }
+
+          closeModal('modalPetForm');
+          showToast('Pet atualizado com sucesso!', 'success');
+
+          if (currentSelectedPetId === petId) {
+            openPetProfile(petId);
+          } else {
+            renderDashboardPets();
+          }
+        } catch (err) {
+          logDiagnosticError('Falha ao salvar pet', 0, endpoint, { message: err.message }, updatePayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+        }
+        return;
       }
 
-      closeModal('modalPetForm');
+      // FLUXO DE CADASTRO NOVO PET (FAIL-CLOSED)
+      // (b) Montar payload com tutor_id = user.id autenticado
+      const newPetPayload = {
+        tutor_id: userId,
+        name,
+        species,
+        breed,
+        birth,
+        weight,
+        color,
+        notes,
+        emergency_phone: emergencyPhone,
+        photo_url: '',
+        cover_url: '',
+        tag_code: '',
+        is_lost: false,
+        last_scan: 'Aguardando primeira leitura'
+      };
 
-      if (currentSelectedPetId) {
-        openPetProfile(currentSelectedPetId);
-      } else {
+      const endpoint = `${SUPABASE_URL}/rest/v1/pets`;
+
+      try {
+        // (c) POST {URL}/rest/v1/pets com headers apikey + Authorization Bearer + Content-Type + Prefer return=representation
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(newPetPayload)
+        });
+
+        const resBody = await res.json().catch(() => null);
+
+        // (d) Só considerar sucesso se resposta HTTP 200/201 E corpo contiver o objeto retornado com id
+        if ((res.status !== 200 && res.status !== 201) || !resBody) {
+          logDiagnosticError('Falha ao salvar pet', res.status, endpoint, resBody, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          return;
+        }
+
+        const createdPet = Array.isArray(resBody) ? resBody[0] : resBody;
+        if (!createdPet || !createdPet.id) {
+          logDiagnosticError('Falha ao salvar pet (resposta sem id)', res.status, endpoint, resBody, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          return;
+        }
+
+        // (e) APÓS o INSERT, fazer consulta de confirmação: GET /rest/v1/pets?id=eq.{id}&select=*
+        const confirmEndpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(createdPet.id)}&select=*`;
+        const confirmRes = await fetch(confirmEndpoint, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (!confirmRes.ok) {
+          const confirmErr = await confirmRes.json().catch(() => null);
+          logDiagnosticError('Falha ao salvar pet (confirmação GET falhou)', confirmRes.status, confirmEndpoint, confirmErr, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          return;
+        }
+
+        const confirmData = await confirmRes.json().catch(() => null);
+        if (!Array.isArray(confirmData) || confirmData.length === 0 || !confirmData[0]?.id) {
+          logDiagnosticError('Falha ao salvar pet (registro não confirmado via GET)', confirmRes.status, confirmEndpoint, confirmData, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          return;
+        }
+
+        const verifiedPet = confirmData[0];
+
+        // (f) Somente então atualizar a interface usando o registro retornado pelo Supabase
+        localCachePets.push(verifiedPet);
+        closeModal('modalPetForm');
+        showToast('Pet cadastrado com sucesso!', 'success');
         renderDashboardPets();
+
+      } catch (netErr) {
+        logDiagnosticError('Falha ao salvar pet (erro de rede/execução)', 0, endpoint, { message: netErr.message }, newPetPayload);
+        showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
       }
     }
 
-    // ATIVAÇÃO DE TAG NFC
+    // ATIVAÇÃO DE TAG NFC (FAIL-CLOSED)
     async function handleActivateTagSubmit(e) {
       e.preventDefault();
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
       const code = document.getElementById('tagCodeInput').value.trim().toUpperCase();
       const petId = document.getElementById('tagPetSelect').value;
 
-      if (!code) return;
+      if (!code || !petId) return;
 
-      const existing = localCachePets.find(p => p.tag_code && p.tag_code.toUpperCase() === code && p.id !== petId);
+      const existing = localCachePets.find(p => p.tag_code && p.tag_code.toUpperCase() === code && String(p.id) !== String(petId));
       if (existing) {
         showToast(`A TAG ${code} já está vinculada ao pet "${existing.name}".`, 'error');
         return;
       }
 
-      const pet = localCachePets.find(p => p.id === petId);
-      if (pet) {
-        pet.tag_code = code;
-        await db.atualizar('pets', { tag_code: code }, 'id', pet.id);
-        showToast(`TAG ${code} ativada com sucesso para ${pet.name}!`, 'success');
+      const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+      const payload = { tag_code: code };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(payload)
+        });
+        const resBody = await res.json().catch(() => null);
+        if (!res.ok) {
+          logDiagnosticError('Falha ao ativar TAG', res.status, endpoint, resBody, payload);
+          showToast('Não foi possível ativar a TAG. Tente novamente.', 'error');
+          return;
+        }
+        const pet = localCachePets.find(p => String(p.id) === String(petId));
+        if (pet) {
+          pet.tag_code = code;
+        }
         closeModal('modalActivateTag');
         document.getElementById('tagCodeInput').value = '';
+        showToast(`TAG ${code} ativada com sucesso para ${pet ? pet.name : 'o pet'}!`, 'success');
         renderDashboardPets();
         if (currentSelectedPetId === petId) {
           openPetProfile(petId);
         }
+      } catch (err) {
+        logDiagnosticError('Falha ao ativar TAG', 0, endpoint, { message: err.message }, payload);
+        showToast('Não foi possível ativar a TAG. Tente novamente.', 'error');
       }
     }
 
-    // REGISTRAR VACINA
+    // REGISTRAR VACINA (FAIL-CLOSED)
     async function handleSaveVaccine(e) {
       e.preventDefault();
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
       const petId = document.getElementById('vacPetSelect').value;
       const name = document.getElementById('vacName').value.trim();
       const appliedAt = document.getElementById('vacDate').value;
       const nextDue = document.getElementById('vacNextDate').value;
       const vet = document.getElementById('vacVet').value.trim();
 
-      const newVac = {
-        id: 'vac_' + Date.now(),
-        tutor_id: currentSession?.user?.id || 'usr_tutor',
+      const newVacPayload = {
+        tutor_id: userId,
         pet_id: petId,
         name,
         applied_at: appliedAt,
-        next_due: nextDue,
-        vet
+        next_due: nextDue || null,
+        vet: vet || null
       };
 
-      await db.inserir('vaccines', newVac);
-      localCacheVaccines.push(newVac);
+      const endpoint = `${SUPABASE_URL}/rest/v1/vaccines`;
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(newVacPayload)
+        });
 
-      showToast('Vacina registrada no prontuário!', 'success');
-      closeModal('modalVaccine');
-      document.getElementById('vacName').value = '';
-      document.getElementById('vacDate').value = '';
-      document.getElementById('vacNextDate').value = '';
-      document.getElementById('vacVet').value = '';
+        const resBody = await res.json().catch(() => null);
+        if ((res.status !== 200 && res.status !== 201) || !resBody) {
+          logDiagnosticError('Falha ao salvar vacina', res.status, endpoint, resBody, newVacPayload);
+          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+          return;
+        }
 
-      renderDashboardPets();
-      if (currentSelectedPetId === petId) {
-        loadPetVaccines(petId);
+        const createdVac = Array.isArray(resBody) ? resBody[0] : resBody;
+        if (!createdVac || !createdVac.id) {
+          logDiagnosticError('Falha ao salvar vacina (sem id)', res.status, endpoint, resBody, newVacPayload);
+          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+          return;
+        }
+
+        // Confirmação via GET
+        const confirmUrl = `${SUPABASE_URL}/rest/v1/vaccines?id=eq.${encodeURIComponent(createdVac.id)}&select=*`;
+        const confirmRes = await fetch(confirmUrl, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        const confirmData = await confirmRes.json().catch(() => []);
+        if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
+          logDiagnosticError('Falha ao salvar vacina (confirmação falhou)', confirmRes.status, confirmUrl, confirmData, newVacPayload);
+          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+          return;
+        }
+
+        const verifiedVac = confirmData[0];
+        localCacheVaccines.push(verifiedVac);
+
+        closeModal('modalVaccine');
+        document.getElementById('vacName').value = '';
+        document.getElementById('vacDate').value = '';
+        document.getElementById('vacNextDate').value = '';
+        document.getElementById('vacVet').value = '';
+
+        showToast('Vacina registrada no prontuário!', 'success');
+        renderDashboardPets();
+        if (currentSelectedPetId === petId) {
+          loadPetVaccines(petId);
+        }
+      } catch (err) {
+        logDiagnosticError('Falha ao salvar vacina', 0, endpoint, { message: err.message }, newVacPayload);
+        showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
       }
     }
 
-    // MODO PERDIDO
+    // MODO PERDIDO (FAIL-CLOSED)
     function updateLostToggleState() {
       const select = document.getElementById('lostPetSelect');
       const petId = select?.value;
@@ -2683,7 +2999,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const btn = document.getElementById('btnToggleLost');
       if (!petId || !indicator || !btn) return;
 
-      const pet = localCachePets.find(p => p.id === petId);
+      const pet = localCachePets.find(p => String(p.id) === String(petId));
       if (!pet) return;
 
       if (pet.is_lost) {
@@ -2700,24 +3016,51 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
 
     async function executeToggleLost() {
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
       const petId = document.getElementById('lostPetSelect').value;
-      const pet = localCachePets.find(p => p.id === petId);
+      const pet = localCachePets.find(p => String(p.id) === String(petId));
       if (!pet) return;
 
-      pet.is_lost = !pet.is_lost;
-      await db.atualizar('pets', { is_lost: pet.is_lost }, 'id', pet.id);
+      const nextStatus = !pet.is_lost;
+      const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+      const payload = { is_lost: nextStatus };
 
-      if (pet.is_lost) {
-        showToast(`🚨 Alerta ativado! A página de ${pet.name} está em Modo Perdido.`, 'error');
-      } else {
-        showToast(`Ótima notícia! Modo perdido de ${pet.name} desativado.`, 'success');
-      }
-
-      updateLostToggleState();
-      closeModal('modalLostToggle');
-      renderDashboardPets();
-      if (currentSelectedPetId === petId) {
-        openPetProfile(petId);
+      try {
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(payload)
+        });
+        const resBody = await res.json().catch(() => null);
+        if (!res.ok) {
+          logDiagnosticError('Falha ao alternar modo perdido', res.status, endpoint, resBody, payload);
+          showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error');
+          return;
+        }
+        pet.is_lost = nextStatus;
+        if (pet.is_lost) {
+          showToast(`🚨 Alerta ativado! A página de ${pet.name} está em Modo Perdido.`, 'error');
+        } else {
+          showToast(`Ótima notícia! Modo perdido de ${pet.name} desativado.`, 'success');
+        }
+        updateLostToggleState();
+        closeModal('modalLostToggle');
+        renderDashboardPets();
+        if (currentSelectedPetId === petId) {
+          openPetProfile(petId);
+        }
+      } catch (err) {
+        logDiagnosticError('Falha ao alternar modo perdido', 0, endpoint, { message: err.message }, payload);
+        showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error');
       }
     }
 
