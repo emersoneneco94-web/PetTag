@@ -853,7 +853,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-width: 380px;
+      max-width: 420px;
     }
     .toast {
       padding: 12px 18px;
@@ -861,11 +861,33 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       font-size: 0.875rem;
       font-weight: 600;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       box-shadow: 0 6px 16px rgba(0,0,0,0.18);
       animation: slideInToast 0.3s ease-out;
       color: #fff;
+      word-break: break-word;
+    }
+    .toast-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toast-title {
+      font-weight: 600;
+      line-height: 1.35;
+    }
+    .toast-detail {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.95;
+      line-height: 1.35;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 2px;
+      font-family: monospace, system-ui, sans-serif;
     }
     @keyframes slideInToast {
       from { transform: translateX(100%); opacity: 0; }
@@ -1280,6 +1302,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         <h3 id="modalPetFormTitle" class="modal-title">Cadastrar Pet</h3>
         <button class="modal-close-btn" onclick="closeModal('modalPetForm')">&times;</button>
       </div>
+      <div id="petFormAlert" class="critical-alert" style="display: none; margin-bottom: 12px;"></div>
       <form onsubmit="handleSavePetForm(event)">
         <input type="hidden" id="petFormId">
         <div class="form-group">
@@ -1708,6 +1731,82 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         diagnostic.dica = "coluna inexistente na tabela pets";
       }
       console.error(`[SaveTagPet] ${contextMsg}`, diagnostic);
+    }
+
+    // EXTRAÇÃO DE DETALHE DE ERRO PARA TOAST DIAGNÓSTICO
+    async function parseResponseError(res) {
+      let body = null;
+      let rawText = '';
+      try {
+        rawText = await res.text();
+        try {
+          body = JSON.parse(rawText);
+        } catch (_) {
+          body = null;
+        }
+      } catch (_) {
+        rawText = '';
+      }
+
+      let detailMsg = '';
+      if (body && typeof body === 'object') {
+        detailMsg = body.message || body.msg || body.error_description || body.error || body.details || body.hint || '';
+      }
+      if (!detailMsg && rawText) {
+        detailMsg = rawText.trim().substring(0, 140);
+      }
+
+      const statusStr = res.status ? `status ${res.status}` : 'status desconhecido';
+      const detail = detailMsg ? `Detalhe: ${statusStr} — ${detailMsg}` : `Detalhe: ${statusStr}`;
+      return { body, rawText, detail };
+    }
+
+    // SANITIZAÇÃO DE DADOS DO PET ANTES DO ENVIO
+    function parseBirthDate(val) {
+      if (!val || typeof val !== 'string') return null;
+      const str = val.trim();
+      if (!str) return null;
+
+      const isoMatch = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if (isoMatch) {
+        const y = parseInt(isoMatch[1], 10);
+        const m = parseInt(isoMatch[2], 10);
+        const d = parseInt(isoMatch[3], 10);
+        if (m >= 1 && m <= 12 && d >= 1 && d <= 31 && y >= 1900 && y <= 2100) {
+          return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        }
+        return null;
+      }
+
+      const brMatch = str.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+      if (brMatch) {
+        const d = parseInt(brMatch[1], 10);
+        const m = parseInt(brMatch[2], 10);
+        const y = parseInt(brMatch[3], 10);
+        if (m >= 1 && m <= 12 && d >= 1 && d <= 31 && y >= 1900 && y <= 2100) {
+          return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        }
+        return null;
+      }
+
+      return null;
+    }
+
+    function parseWeight(val) {
+      if (val === null || val === undefined) return null;
+      const str = String(val).trim().replace(',', '.');
+      const match = str.match(/(\d+(?:\.\d+)?)/);
+      if (match) {
+        const num = parseFloat(match[1]);
+        return isNaN(num) ? null : num;
+      }
+      return null;
+    }
+
+    function cleanText(val) {
+      if (val === null || val === undefined) return null;
+      const s = String(val).trim();
+      return s.length > 0 ? s : null;
     }
 
     // 4. INICIALIZAÇÃO DA APLICAÇÃO
@@ -2157,7 +2256,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       if (!pet) return;
 
       document.getElementById('petProfileName').textContent = pet.name;
-      document.getElementById('petProfileBio').textContent = `${pet.species} • ${pet.breed} • ${pet.birth || 'Idade n/d'} • ${pet.weight || 'Peso n/d'}`;
+      const birthDisplay = pet.birth_date ? formatDateBR(pet.birth_date) : (pet.birth || 'Idade n/d');
+      const weightDisplay = pet.weight != null ? `${pet.weight} kg` : (pet.weight || 'Peso n/d');
+      document.getElementById('petProfileBio').textContent = `${pet.species || ''} • ${pet.breed || ''} • ${birthDisplay} • ${weightDisplay}`;
       document.getElementById('petProfileAvatar').src = pet.photo_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>";
 
       const banner = document.getElementById('petCoverBanner');
@@ -2176,12 +2277,12 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         statusBadgeContainer.innerHTML = '<span class="badge-status no-tag" style="font-size:0.875rem; padding: 4px 10px;">Sem TAG NFC Ativa</span>';
       }
 
-      document.getElementById('techSpeciesBreed').textContent = `${pet.species} • ${pet.breed}`;
-      document.getElementById('techAge').textContent = pet.birth || 'Não informado';
-      document.getElementById('techWeight').textContent = pet.weight || 'Não informado';
+      document.getElementById('techSpeciesBreed').textContent = `${pet.species || '-'} • ${pet.breed || '-'}`;
+      document.getElementById('techAge').textContent = pet.birth_date ? formatDateBR(pet.birth_date) : (pet.birth || 'Não informado');
+      document.getElementById('techWeight').textContent = pet.weight != null ? `${pet.weight} kg` : (pet.weight || 'Não informado');
       document.getElementById('techColor').textContent = pet.color || 'Não informado';
-      document.getElementById('techNotes').textContent = pet.notes || 'Nenhuma observação informada.';
-      document.getElementById('techPhone').textContent = pet.emergency_phone || 'Não cadastrado';
+      document.getElementById('techNotes').textContent = pet.observations || pet.notes || 'Nenhuma observação informada.';
+      document.getElementById('techPhone').textContent = pet.phone || pet.emergency_phone || 'Não cadastrado';
 
       const meta = currentSession?.user?.user_metadata || {};
       const waNumber = (pet.emergency_phone || meta.whatsapp || '').replace(/\D/g, '');
@@ -2328,17 +2429,17 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           body: JSON.stringify(newPostPayload)
         });
 
-        const resBody = await res.json().catch(() => null);
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
         if ((res.status !== 200 && res.status !== 201) || !resBody) {
-          logDiagnosticError('Falha ao salvar post', res.status, endpoint, resBody, newPostPayload);
-          showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar post', res.status, endpoint, resBody || rawText, newPostPayload);
+          showToast('Não foi possível salvar o post. Tente novamente.', 'error', detail);
           return;
         }
 
         const createdPost = Array.isArray(resBody) ? resBody[0] : resBody;
         if (!createdPost || !createdPost.id) {
-          logDiagnosticError('Falha ao salvar post (sem id retornado)', res.status, endpoint, resBody, newPostPayload);
-          showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar post (sem id retornado)', res.status, endpoint, resBody || rawText, newPostPayload);
+          showToast('Não foi possível salvar o post. Tente novamente.', 'error', detail);
           return;
         }
 
@@ -2352,10 +2453,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           }
         });
 
-        const confirmData = await confirmRes.json().catch(() => []);
+        const { body: confirmData, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
         if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
-          logDiagnosticError('Falha ao salvar post (confirmação falhou)', confirmRes.status, confirmUrl, confirmData, newPostPayload);
-          showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar post (confirmação falhou)', confirmRes.status, confirmUrl, confirmData || confText, newPostPayload);
+          showToast('Não foi possível salvar o post. Tente novamente.', 'error', confDetail);
           return;
         }
 
@@ -2371,8 +2472,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         loadPetPosts(currentSelectedPetId);
         loadPetPhotos(currentSelectedPetId);
       } catch (err) {
+        const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
         logDiagnosticError('Falha ao salvar post', 0, endpoint, { message: err.message }, newPostPayload);
-        showToast('Não foi possível salvar o post. Tente novamente.', 'error');
+        showToast('Não foi possível salvar o post. Tente novamente.', 'error', errDetail);
       }
     }
 
@@ -2393,9 +2495,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           }
         });
         if (!res.ok) {
-          const errData = await res.json().catch(() => null);
-          logDiagnosticError('Falha ao excluir publicação', res.status, endpoint, errData, { id: postId });
-          showToast('Não foi possível excluir a publicação. Tente novamente.', 'error');
+          const { body: errData, rawText, detail } = await parseResponseError(res);
+          logDiagnosticError('Falha ao excluir publicação', res.status, endpoint, errData || rawText, { id: postId });
+          showToast('Não foi possível excluir a publicação. Tente novamente.', 'error', detail);
           return;
         }
         localCachePosts = localCachePosts.filter(p => String(p.id) !== String(postId));
@@ -2546,10 +2648,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             },
             body: JSON.stringify(payload)
           });
-          const resBody = await res.json().catch(() => null);
+          const { body: resBody, rawText, detail } = await parseResponseError(res);
           if (!res.ok) {
-            logDiagnosticError('Falha ao atualizar foto do pet', res.status, endpoint, resBody, payload);
-            showToast('Não foi possível atualizar a foto do pet. Tente novamente.', 'error');
+            logDiagnosticError('Falha ao atualizar foto do pet', res.status, endpoint, resBody || rawText, payload);
+            showToast('Não foi possível atualizar a foto do pet. Tente novamente.', 'error', detail);
             return;
           }
           const pet = localCachePets.find(p => String(p.id) === String(currentSelectedPetId));
@@ -2558,8 +2660,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           showToast('Foto do pet atualizada!', 'success');
           loadPetPhotos(currentSelectedPetId);
         } catch (err) {
+          const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
           logDiagnosticError('Falha ao atualizar foto do pet', 0, endpoint, { message: err.message }, payload);
-          showToast('Não foi possível atualizar a foto do pet. Tente novamente.', 'error');
+          showToast('Não foi possível atualizar a foto do pet. Tente novamente.', 'error', errDetail);
         }
       });
     }
@@ -2585,10 +2688,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             },
             body: JSON.stringify(payload)
           });
-          const resBody = await res.json().catch(() => null);
+          const { body: resBody, rawText, detail } = await parseResponseError(res);
           if (!res.ok) {
-            logDiagnosticError('Falha ao atualizar capa do pet', res.status, endpoint, resBody, payload);
-            showToast('Não foi possível atualizar a capa do pet. Tente novamente.', 'error');
+            logDiagnosticError('Falha ao atualizar capa do pet', res.status, endpoint, resBody || rawText, payload);
+            showToast('Não foi possível atualizar a capa do pet. Tente novamente.', 'error', detail);
             return;
           }
           const pet = localCachePets.find(p => String(p.id) === String(currentSelectedPetId));
@@ -2597,8 +2700,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           showToast('Capa do perfil atualizada!', 'success');
           loadPetPhotos(currentSelectedPetId);
         } catch (err) {
+          const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
           logDiagnosticError('Falha ao atualizar capa do pet', 0, endpoint, { message: err.message }, payload);
-          showToast('Não foi possível atualizar a capa do pet. Tente novamente.', 'error');
+          showToast('Não foi possível atualizar a capa do pet. Tente novamente.', 'error', errDetail);
         }
       });
     }
@@ -2628,6 +2732,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
 
     function openNewPetModal() {
+      const alertEl = document.getElementById('petFormAlert');
+      if (alertEl) alertEl.style.display = 'none';
       document.getElementById('modalPetFormTitle').textContent = 'Cadastrar Novo Pet';
       document.getElementById('petFormId').value = '';
       document.getElementById('petFormName').value = '';
@@ -2650,20 +2756,22 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const pet = localCachePets.find(p => p.id === petId);
       if (!pet) return;
 
+      const alertEl = document.getElementById('petFormAlert');
+      if (alertEl) alertEl.style.display = 'none';
       document.getElementById('modalPetFormTitle').textContent = `Editar Pet: ${pet.name}`;
       document.getElementById('petFormId').value = pet.id;
-      document.getElementById('petFormName').value = pet.name;
-      document.getElementById('petFormSpecies').value = pet.species;
-      document.getElementById('petFormBreed').value = pet.breed;
-      document.getElementById('petFormBirth').value = pet.birth || '';
-      document.getElementById('petFormWeight').value = pet.weight || '';
+      document.getElementById('petFormName').value = pet.name || '';
+      document.getElementById('petFormSpecies').value = pet.species || 'Cachorro';
+      document.getElementById('petFormBreed').value = pet.breed || '';
+      document.getElementById('petFormBirth').value = pet.birth_date ? formatDateBR(pet.birth_date) : (pet.birth || '');
+      document.getElementById('petFormWeight').value = pet.weight != null ? pet.weight : '';
       document.getElementById('petFormColor').value = pet.color || '';
-      document.getElementById('petFormNotes').value = pet.notes || '';
-      document.getElementById('petFormEmergencyPhone').value = pet.emergency_phone || '';
+      document.getElementById('petFormNotes').value = pet.observations || pet.notes || '';
+      document.getElementById('petFormEmergencyPhone').value = pet.phone || pet.emergency_phone || '';
       openModal('modalPetForm');
     }
 
-    // CADASTRO / EDIÇÃO DE PET — FLUXO FAIL-CLOSED DEFINITIVO
+    // CADASTRO / EDIÇÃO DE PET — COM SANITIZAÇÃO E DIAGNÓSTICO TÉCNICO NO TOAST
     async function handleSavePetForm(e) {
       e.preventDefault();
 
@@ -2671,33 +2779,60 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const sess = await getValidatedSession();
       if (!sess) return;
       const token = sess.access_token;
-      const userId = sess.user.id; // tutor_id SEMPRE = user.id do usuário autenticado
+      const userId = sess.user.id;
 
       const petId = document.getElementById('petFormId').value;
-      const name = document.getElementById('petFormName').value.trim();
-      const species = document.getElementById('petFormSpecies').value;
-      const breed = document.getElementById('petFormBreed').value.trim();
-      const birth = document.getElementById('petFormBirth').value.trim();
-      const weight = document.getElementById('petFormWeight').value.trim();
-      const color = document.getElementById('petFormColor').value.trim();
-      const notes = document.getElementById('petFormNotes').value.trim();
-      const emergencyPhone = document.getElementById('petFormEmergencyPhone').value.trim();
+      const rawName = document.getElementById('petFormName').value;
+      const name = rawName ? rawName.trim() : '';
+
+      // CORREÇÃO 2: name trim; obrigatório (se vazio, mostrar aviso no modal e não enviar)
+      if (!name) {
+        const alertEl = document.getElementById('petFormAlert');
+        if (alertEl) {
+          alertEl.textContent = 'O nome do pet é obrigatório.';
+          alertEl.style.display = 'block';
+        }
+        document.getElementById('petFormName').focus();
+        showToast('O nome do pet é obrigatório.', 'warning');
+        return;
+      }
+      const alertEl = document.getElementById('petFormAlert');
+      if (alertEl) alertEl.style.display = 'none';
+
+      // Sanitização estrita dos campos conforme o esquema
+      const birthVal = document.getElementById('petFormBirth').value;
+      const weightVal = document.getElementById('petFormWeight').value;
+      const birthDate = parseBirthDate(birthVal);
+      const weight = parseWeight(weightVal);
+      const species = cleanText(document.getElementById('petFormSpecies').value);
+      const breed = cleanText(document.getElementById('petFormBreed').value);
+      const color = cleanText(document.getElementById('petFormColor').value);
+      const observations = cleanText(document.getElementById('petFormNotes').value);
+      const phone = cleanText(document.getElementById('petFormEmergencyPhone').value);
 
       const isEditing = Boolean(petId);
 
       if (isEditing) {
-        // FLUXO DE EDIÇÃO DE PET (FAIL-CLOSED)
+        // FLUXO DE EDIÇÃO DE PET
         const updatePayload = {
           tutor_id: userId,
           name,
           species,
           breed,
-          birth,
+          birth_date: birthDate,
           weight,
           color,
-          notes,
-          emergency_phone: emergencyPhone
+          observations,
+          phone
         };
+
+        const existingPet = localCachePets.find(p => String(p.id) === String(petId));
+        if (existingPet?.photo_url) updatePayload.photo_url = existingPet.photo_url;
+        if (existingPet?.cover_url) updatePayload.cover_url = existingPet.cover_url;
+        if (existingPet?.tag_code) updatePayload.tag_code = cleanText(existingPet.tag_code);
+        if (existingPet?.whatsapp) updatePayload.whatsapp = cleanText(existingPet.whatsapp);
+        if (existingPet?.email) updatePayload.email = cleanText(existingPet.email);
+        if (existingPet?.city) updatePayload.city = cleanText(existingPet.city);
 
         const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
         try {
@@ -2712,17 +2847,16 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             body: JSON.stringify(updatePayload)
           });
 
-          const resBody = await res.json().catch(() => null);
+          const { body: resBody, rawText, detail } = await parseResponseError(res);
 
           if (!res.ok) {
-            logDiagnosticError('Falha ao salvar pet', res.status, endpoint, resBody, updatePayload);
-            showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+            logDiagnosticError('Falha ao salvar pet', res.status, endpoint, resBody || rawText, updatePayload);
+            showToast('Não foi possível salvar o pet. Tente novamente.', 'error', detail);
             return;
           }
 
           let updatedObj = Array.isArray(resBody) ? resBody[0] : resBody;
           if (!updatedObj || !updatedObj.id) {
-            // Confirmação via GET caso a representação não retorne diretamente
             const confirmUrl = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&select=*`;
             const confirmRes = await fetch(confirmUrl, {
               headers: {
@@ -2730,16 +2864,15 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
                 'Authorization': 'Bearer ' + token
               }
             });
-            const confirmList = await confirmRes.json().catch(() => []);
+            const { body: confirmList, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
             if (!confirmRes.ok || !Array.isArray(confirmList) || confirmList.length === 0) {
-              logDiagnosticError('Falha ao salvar pet (confirmação falhou)', confirmRes.status, confirmUrl, confirmList, updatePayload);
-              showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+              logDiagnosticError('Falha ao salvar pet (confirmação falhou)', confirmRes.status, confirmUrl, confirmList || confText, updatePayload);
+              showToast('Não foi possível salvar o pet. Tente novamente.', 'error', confDetail);
               return;
             }
             updatedObj = confirmList[0];
           }
 
-          // Atualização local somente após confirmação do Supabase
           const idx = localCachePets.findIndex(p => String(p.id) === String(petId));
           if (idx !== -1) {
             localCachePets[idx] = updatedObj;
@@ -2756,35 +2889,35 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             renderDashboardPets();
           }
         } catch (err) {
+          const errDetail = `Detalhe: status 0 — ${err.message || 'falha de rede'}`;
           logDiagnosticError('Falha ao salvar pet', 0, endpoint, { message: err.message }, updatePayload);
-          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error', errDetail);
         }
         return;
       }
 
-      // FLUXO DE CADASTRO NOVO PET (FAIL-CLOSED)
-      // (b) Montar payload com tutor_id = user.id autenticado
+      // FLUXO DE CADASTRO NOVO PET
       const newPetPayload = {
         tutor_id: userId,
         name,
         species,
         breed,
-        birth,
+        birth_date: birthDate,
         weight,
         color,
-        notes,
-        emergency_phone: emergencyPhone,
-        photo_url: '',
-        cover_url: '',
-        tag_code: '',
-        is_lost: false,
-        last_scan: 'Aguardando primeira leitura'
+        observations,
+        phone,
+        whatsapp: null,
+        email: null,
+        tag_code: null,
+        city: null,
+        is_lost: false
       };
+      // cover_url / photo_url: se não houver imagem, omitir a chave do payload (não enviar null)
 
       const endpoint = `${SUPABASE_URL}/rest/v1/pets`;
 
       try {
-        // (c) POST {URL}/rest/v1/pets com headers apikey + Authorization Bearer + Content-Type + Prefer return=representation
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -2796,23 +2929,21 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           body: JSON.stringify(newPetPayload)
         });
 
-        const resBody = await res.json().catch(() => null);
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
 
-        // (d) Só considerar sucesso se resposta HTTP 200/201 E corpo contiver o objeto retornado com id
         if ((res.status !== 200 && res.status !== 201) || !resBody) {
-          logDiagnosticError('Falha ao salvar pet', res.status, endpoint, resBody, newPetPayload);
-          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar pet', res.status, endpoint, resBody || rawText, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error', detail);
           return;
         }
 
         const createdPet = Array.isArray(resBody) ? resBody[0] : resBody;
         if (!createdPet || !createdPet.id) {
-          logDiagnosticError('Falha ao salvar pet (resposta sem id)', res.status, endpoint, resBody, newPetPayload);
-          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar pet (resposta sem id)', res.status, endpoint, resBody || rawText, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error', detail);
           return;
         }
 
-        // (e) APÓS o INSERT, fazer consulta de confirmação: GET /rest/v1/pets?id=eq.{id}&select=*
         const confirmEndpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(createdPet.id)}&select=*`;
         const confirmRes = await fetch(confirmEndpoint, {
           method: 'GET',
@@ -2823,30 +2954,29 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         });
 
         if (!confirmRes.ok) {
-          const confirmErr = await confirmRes.json().catch(() => null);
-          logDiagnosticError('Falha ao salvar pet (confirmação GET falhou)', confirmRes.status, confirmEndpoint, confirmErr, newPetPayload);
-          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          const { body: confirmErr, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
+          logDiagnosticError('Falha ao salvar pet (confirmação GET falhou)', confirmRes.status, confirmEndpoint, confirmErr || confText, newPetPayload);
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error', confDetail);
           return;
         }
 
         const confirmData = await confirmRes.json().catch(() => null);
         if (!Array.isArray(confirmData) || confirmData.length === 0 || !confirmData[0]?.id) {
           logDiagnosticError('Falha ao salvar pet (registro não confirmado via GET)', confirmRes.status, confirmEndpoint, confirmData, newPetPayload);
-          showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+          showToast('Não foi possível salvar o pet. Tente novamente.', 'error', 'Detalhe: registro não confirmado');
           return;
         }
 
         const verifiedPet = confirmData[0];
-
-        // (f) Somente então atualizar a interface usando o registro retornado pelo Supabase
         localCachePets.push(verifiedPet);
         closeModal('modalPetForm');
         showToast('Pet cadastrado com sucesso!', 'success');
         renderDashboardPets();
 
       } catch (netErr) {
+        const errDetail = `Detalhe: status 0 — ${netErr.message || 'falha de conexão'}`;
         logDiagnosticError('Falha ao salvar pet (erro de rede/execução)', 0, endpoint, { message: netErr.message }, newPetPayload);
-        showToast('Não foi possível salvar o pet. Tente novamente.', 'error');
+        showToast('Não foi possível salvar o pet. Tente novamente.', 'error', errDetail);
       }
     }
 
@@ -2883,10 +3013,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           },
           body: JSON.stringify(payload)
         });
-        const resBody = await res.json().catch(() => null);
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
         if (!res.ok) {
-          logDiagnosticError('Falha ao ativar TAG', res.status, endpoint, resBody, payload);
-          showToast('Não foi possível ativar a TAG. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao ativar TAG', res.status, endpoint, resBody || rawText, payload);
+          showToast('Não foi possível ativar a TAG. Tente novamente.', 'error', detail);
           return;
         }
         const pet = localCachePets.find(p => String(p.id) === String(petId));
@@ -2901,8 +3031,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           openPetProfile(petId);
         }
       } catch (err) {
+        const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
         logDiagnosticError('Falha ao ativar TAG', 0, endpoint, { message: err.message }, payload);
-        showToast('Não foi possível ativar a TAG. Tente novamente.', 'error');
+        showToast('Não foi possível ativar a TAG. Tente novamente.', 'error', errDetail);
       }
     }
 
@@ -2942,17 +3073,17 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           body: JSON.stringify(newVacPayload)
         });
 
-        const resBody = await res.json().catch(() => null);
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
         if ((res.status !== 200 && res.status !== 201) || !resBody) {
-          logDiagnosticError('Falha ao salvar vacina', res.status, endpoint, resBody, newVacPayload);
-          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar vacina', res.status, endpoint, resBody || rawText, newVacPayload);
+          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error', detail);
           return;
         }
 
         const createdVac = Array.isArray(resBody) ? resBody[0] : resBody;
         if (!createdVac || !createdVac.id) {
-          logDiagnosticError('Falha ao salvar vacina (sem id)', res.status, endpoint, resBody, newVacPayload);
-          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar vacina (sem id)', res.status, endpoint, resBody || rawText, newVacPayload);
+          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error', detail);
           return;
         }
 
@@ -2964,10 +3095,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             'Authorization': 'Bearer ' + token
           }
         });
-        const confirmData = await confirmRes.json().catch(() => []);
+        const { body: confirmData, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
         if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
-          logDiagnosticError('Falha ao salvar vacina (confirmação falhou)', confirmRes.status, confirmUrl, confirmData, newVacPayload);
-          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao salvar vacina (confirmação falhou)', confirmRes.status, confirmUrl, confirmData || confText, newVacPayload);
+          showToast('Não foi possível registrar a vacina. Tente novamente.', 'error', confDetail);
           return;
         }
 
@@ -2986,8 +3117,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           loadPetVaccines(petId);
         }
       } catch (err) {
+        const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
         logDiagnosticError('Falha ao salvar vacina', 0, endpoint, { message: err.message }, newVacPayload);
-        showToast('Não foi possível registrar a vacina. Tente novamente.', 'error');
+        showToast('Não foi possível registrar a vacina. Tente novamente.', 'error', errDetail);
       }
     }
 
@@ -3040,10 +3172,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           },
           body: JSON.stringify(payload)
         });
-        const resBody = await res.json().catch(() => null);
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
         if (!res.ok) {
-          logDiagnosticError('Falha ao alternar modo perdido', res.status, endpoint, resBody, payload);
-          showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error');
+          logDiagnosticError('Falha ao alternar modo perdido', res.status, endpoint, resBody || rawText, payload);
+          showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error', detail);
           return;
         }
         pet.is_lost = nextStatus;
@@ -3059,8 +3191,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           openPetProfile(petId);
         }
       } catch (err) {
+        const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
         logDiagnosticError('Falha ao alternar modo perdido', 0, endpoint, { message: err.message }, payload);
-        showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error');
+        showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error', errDetail);
       }
     }
 
@@ -3091,21 +3224,28 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       if (m) m.classList.remove('active');
     }
 
-    // NOTIFICAÇÕES (TOAST)
-    function showToast(msg, type = 'success') {
+    // NOTIFICAÇÕES (TOAST) — COM SUPORTE A DETALHE TÉCNICO SECUNDÁRIO
+    function showToast(msg, type = 'success', detail = null) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
       toast.className = `toast toast-${type}`;
       const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : '⚠️';
-      toast.innerHTML = `<span>${icon}</span><span>${escapeHtml(msg)}</span>`;
+
+      let inner = `<span>${icon}</span><div class="toast-content"><div class="toast-title">${escapeHtml(msg)}</div>`;
+      if (detail) {
+        inner += `<div class="toast-detail">${escapeHtml(detail)}</div>`;
+      }
+      inner += `</div>`;
+      toast.innerHTML = inner;
       container.appendChild(toast);
 
+      const duration = (type === 'error' && detail) ? 9000 : 5500;
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateX(100%)';
         toast.style.transition = 'all 0.3s ease-in';
         setTimeout(() => toast.remove(), 300);
-      }, 5500);
+      }, duration);
     }
 
     // MÁSCARA DE TELEFONE
