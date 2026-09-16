@@ -1124,6 +1124,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         <button class="quick-btn" onclick="goToDashboard()">← Voltar ao painel</button>
       </div>
 
+      <!-- Banner de Urgência de Pet Perdido (perfil público / leitor TAG) -->
+      <div id="petLostBanner" style="display: none; margin-bottom: 16px;"></div>
+
       <div class="tutor-hero">
         <div id="petCoverBanner" class="pet-cover paw-pattern">
           <label class="cover-btn" title="Alterar capa">
@@ -1409,24 +1412,56 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
   <!-- MODAL: MODO PERDIDO TOGGLE -->
   <div id="modalLostToggle" class="modal-backdrop">
-    <div class="modal-box">
+    <div class="modal-box" style="max-width: 520px;">
       <div class="modal-header">
         <h3 class="modal-title" style="color: var(--red);">🚨 Alerta de Pet Perdido</h3>
         <button class="modal-close-btn" onclick="closeModal('modalLostToggle')">&times;</button>
       </div>
-      <p style="font-size: 0.875rem; color: var(--text-muted);">
-        Ao ativar o modo perdido, a página pública da TAG passa a exibir um aviso de urgência com destaque para quem encontrar seu pet entrar em contato com você.
-      </p>
-      <div class="form-group">
-        <label class="form-label" for="lostPetSelect">Selecione o Pet:</label>
-        <select id="lostPetSelect" class="form-select" onchange="updateLostToggleState()"></select>
+
+      <!-- Status atual no topo do modal -->
+      <div style="text-align: center; margin-bottom: 14px;">
+        <span id="lostStateIndicator" class="badge-status no-tag" style="font-size: 0.92rem; padding: 6px 16px; border-radius: 20px;">
+          Carregando status...
+        </span>
       </div>
-      <div style="margin: 18px 0; text-align: center;">
-        <span id="lostStateIndicator" class="badge-status no-tag" style="font-size: 0.95rem; padding: 6px 14px;">Status Atual: Seguro</span>
-      </div>
-      <button type="button" id="btnToggleLost" class="btn-action btn-primary" onclick="executeToggleLost()">
-        Alternar Status de Perigo
-      </button>
+
+      <div id="lostFormAlert" class="critical-alert" style="display: none; margin-bottom: 12px;"></div>
+
+      <form id="formLostPet" onsubmit="event.preventDefault()">
+        <div class="form-group">
+          <label class="form-label" for="lostPetSelect">Selecione o Pet *</label>
+          <select id="lostPetSelect" class="form-select" onchange="updateLostToggleState()" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lostLocationInput">Última localização vista *</label>
+          <input type="text" id="lostLocationInput" class="form-input" placeholder="Ex.: Rua das Flores, 123 — Santos/SP">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label class="form-label" for="lostDateInput">Visto pela última vez em *</label>
+            <input type="date" id="lostDateInput" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="lostContactInput">Telefone de contato *</label>
+            <input type="tel" id="lostContactInput" class="form-input" placeholder="(13) 99999-9999" oninput="maskPhone(this)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lostNotesInput">Descrição do desaparecimento</label>
+          <textarea id="lostNotesInput" class="form-textarea" rows="2" placeholder="Ex.: usa coleira azul, é dócil, responde pelo nome Mel"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lostRewardInput">Recompensa</label>
+          <input type="text" id="lostRewardInput" class="form-input" placeholder="Ex.: R$ 200 para quem encontrar">
+        </div>
+
+        <!-- Botões dinâmicos de ação -->
+        <div id="lostActionsContainer" style="display: flex; flex-direction: column; gap: 8px; margin-top: 18px;"></div>
+      </form>
     </div>
   </div>
 
@@ -2254,6 +2289,48 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       currentSelectedPetId = petId;
       const pet = localCachePets.find(p => p.id === petId);
       if (!pet) return;
+
+      // Banner vermelho de urgência no topo se pet estiver marcado como perdido
+      const lostBanner = document.getElementById('petLostBanner');
+      if (lostBanner) {
+        if (pet.is_lost) {
+          const rawDate = pet.lost_since ? pet.lost_since.split('T')[0] : '';
+          const dateStr = rawDate ? formatDateBR(rawDate) : 'Data não informada';
+          const cleanPhone = (pet.lost_contact || '').replace(/\D/g, '');
+          const telHref = cleanPhone ? `tel:${cleanPhone}` : '#';
+
+          let bannerHtml = `
+            <div style="background: var(--red); color: #ffffff; padding: 20px; border-radius: var(--radius-md); box-shadow: 0 6px 18px rgba(220,38,38,0.25); border: 2px solid #b91c1c;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+                <div>
+                  <h3 style="margin: 0 0 4px; font-size: 1.35rem; font-weight: 800; color: #ffffff;">🚨 PET PERDIDO — ${escapeHtml(pet.name)}</h3>
+                  <p style="margin: 0; font-size: 0.9rem; opacity: 0.95;">Por favor, ajude este companheiro a voltar para casa são e salvo!</p>
+                </div>
+                ${pet.lost_contact ? `
+                  <a href="${telHref}" class="btn-action" style="background: #ffffff; color: var(--red); font-weight: 700; width: auto; padding: 10px 20px; text-decoration: none; border-radius: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                    📞 Ligar para ${escapeHtml(pet.lost_contact)}
+                  </a>
+                ` : ''}
+              </div>
+              <div style="background: rgba(0,0,0,0.18); border-radius: var(--radius-sm); padding: 12px 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 0.875rem;">
+                <div><strong>📍 Última localização:</strong> ${escapeHtml(pet.last_scan_location || 'Não informada')}</div>
+                <div><strong>📅 Visto em:</strong> ${escapeHtml(dateStr)}</div>
+                ${pet.lost_reward ? `<div><strong>🎁 Recompensa:</strong> ${escapeHtml(pet.lost_reward)}</div>` : ''}
+              </div>
+              ${pet.lost_notes ? `
+                <div style="margin-top: 10px; font-size: 0.875rem; background: rgba(0,0,0,0.18); border-radius: var(--radius-sm); padding: 10px 14px;">
+                  <strong>📝 Informações adicionais:</strong> ${escapeHtml(pet.lost_notes)}
+                </div>
+              ` : ''}
+            </div>
+          `;
+          lostBanner.innerHTML = bannerHtml;
+          lostBanner.style.display = 'block';
+        } else {
+          lostBanner.innerHTML = '';
+          lostBanner.style.display = 'none';
+        }
+      }
 
       document.getElementById('petProfileName').textContent = pet.name;
       const birthDisplay = pet.birth_date ? formatDateBR(pet.birth_date) : (pet.birth || 'Idade n/d');
@@ -3123,43 +3200,152 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
     }
 
-    // MODO PERDIDO (FAIL-CLOSED)
+    // MODO PERDIDO EXPANDIDO (FAIL-CLOSED)
     function updateLostToggleState() {
+      const alertEl = document.getElementById('lostFormAlert');
+      if (alertEl) alertEl.style.display = 'none';
+
       const select = document.getElementById('lostPetSelect');
       const petId = select?.value;
       const indicator = document.getElementById('lostStateIndicator');
-      const btn = document.getElementById('btnToggleLost');
-      if (!petId || !indicator || !btn) return;
+      const actionsContainer = document.getElementById('lostActionsContainer');
+      if (!petId || !indicator || !actionsContainer) return;
 
       const pet = localCachePets.find(p => String(p.id) === String(petId));
       if (!pet) return;
 
+      const locInput = document.getElementById('lostLocationInput');
+      const dateInput = document.getElementById('lostDateInput');
+      const contactInput = document.getElementById('lostContactInput');
+      const notesInput = document.getElementById('lostNotesInput');
+      const rewardInput = document.getElementById('lostRewardInput');
+
       if (pet.is_lost) {
+        const rawDate = pet.lost_since ? pet.lost_since.split('T')[0] : '';
+        const formattedDate = rawDate ? formatDateBR(rawDate) : 'data recente';
         indicator.className = 'badge-status lost';
-        indicator.textContent = 'Status Atual: 🚨 PERDIDO';
-        btn.textContent = 'Desativar Alerta (Pet Seguro em Casa)';
-        btn.className = 'btn-action btn-green';
+        indicator.textContent = `🚨 PERDIDO desde ${formattedDate}`;
+
+        locInput.value = pet.last_scan_location || '';
+        dateInput.value = rawDate;
+        contactInput.value = pet.lost_contact || '';
+        notesInput.value = pet.lost_notes || '';
+        rewardInput.value = pet.lost_reward || '';
+
+        actionsContainer.innerHTML = `
+          <button type="button" id="btnDeactivateLost" class="btn-action" style="background-color: var(--red); color: #ffffff;" onclick="executeDeactivateLost()">
+            Desativar Alerta (Pet Seguro em Casa)
+          </button>
+          <button type="button" id="btnSaveLostChanges" class="btn-action btn-primary" onclick="executeSaveLostChanges()">
+            Salvar alterações
+          </button>
+        `;
       } else {
         indicator.className = 'badge-status active-tag';
-        indicator.textContent = 'Status Atual: Seguro';
-        btn.textContent = 'Ativar Modo Perdido Imediatamente';
-        btn.className = 'btn-action btn-primary';
+        indicator.textContent = '✅ Seguro em casa';
+
+        locInput.value = '';
+        dateInput.value = '';
+        contactInput.value = '';
+        notesInput.value = '';
+        rewardInput.value = '';
+
+        actionsContainer.innerHTML = `
+          <button type="button" id="btnActivateLost" class="btn-action" style="background-color: var(--red); color: #ffffff;" onclick="executeActivateLost()">
+            🚨 Ativar Alerta de Pet Perdido
+          </button>
+        `;
       }
     }
 
-    async function executeToggleLost() {
+    function validateLostFormInputs() {
+      const alertEl = document.getElementById('lostFormAlert');
+      const petId = document.getElementById('lostPetSelect')?.value;
+      const locVal = document.getElementById('lostLocationInput')?.value.trim();
+      const dateVal = document.getElementById('lostDateInput')?.value.trim();
+      const contactVal = document.getElementById('lostContactInput')?.value.trim();
+      const notesVal = document.getElementById('lostNotesInput')?.value.trim();
+      const rewardVal = document.getElementById('lostRewardInput')?.value.trim();
+
+      if (!petId) {
+        if (alertEl) {
+          alertEl.textContent = 'Por favor, selecione o pet.';
+          alertEl.style.display = 'block';
+        }
+        return null;
+      }
+      if (!locVal) {
+        if (alertEl) {
+          alertEl.textContent = 'Por favor, informe a última localização onde o pet foi visto.';
+          alertEl.style.display = 'block';
+        }
+        document.getElementById('lostLocationInput')?.focus();
+        return null;
+      }
+      if (!dateVal) {
+        if (alertEl) {
+          alertEl.textContent = 'Por favor, informe a data em que o pet foi visto pela última vez.';
+          alertEl.style.display = 'block';
+        }
+        document.getElementById('lostDateInput')?.focus();
+        return null;
+      }
+      if (!contactVal) {
+        if (alertEl) {
+          alertEl.textContent = 'Por favor, informe o telefone de contato para emergência.';
+          alertEl.style.display = 'block';
+        }
+        document.getElementById('lostContactInput')?.focus();
+        return null;
+      }
+
+      if (alertEl) alertEl.style.display = 'none';
+
+      return {
+        petId,
+        last_scan_location: locVal,
+        lost_since: new Date(dateVal + 'T12:00:00Z').toISOString(),
+        lost_contact: contactVal,
+        lost_notes: notesVal.length > 0 ? notesVal : null,
+        lost_reward: rewardVal.length > 0 ? rewardVal : null
+      };
+    }
+
+    function checkColumnMissingDiagnostic(status, body, rawText) {
+      if (status !== 400) return null;
+      const combined = (typeof body === 'object' && body ? JSON.stringify(body) : (rawText || ''));
+      const match = combined.match(/column\s+["']?([a-zA-Z0-9_]+)["']?/i) || combined.match(/'([a-zA-Z0-9_]+)'\s+column/i);
+      if (match) {
+        return `coluna inexistente na tabela pets (${match[1]})`;
+      }
+      if (combined.toLowerCase().includes('column')) {
+        return 'coluna inexistente na tabela pets';
+      }
+      return null;
+    }
+
+    async function executeActivateLost() {
+      const validated = validateLostFormInputs();
+      if (!validated) return;
+
       const sess = await getValidatedSession();
       if (!sess) return;
       const token = sess.access_token;
       const userId = sess.user.id;
 
-      const petId = document.getElementById('lostPetSelect').value;
-      const pet = localCachePets.find(p => String(p.id) === String(petId));
-      if (!pet) return;
+      const btn = document.getElementById('btnActivateLost');
+      if (btn) btn.disabled = true;
 
-      const nextStatus = !pet.is_lost;
-      const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
-      const payload = { is_lost: nextStatus };
+      const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(validated.petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+      const payload = {
+        is_lost: true,
+        lost_since: validated.lost_since,
+        last_scan_location: validated.last_scan_location,
+        lost_contact: validated.lost_contact,
+        lost_notes: validated.lost_notes,
+        lost_reward: validated.lost_reward,
+        updated_at: new Date().toISOString()
+      };
 
       try {
         const res = await fetch(endpoint, {
@@ -3172,28 +3358,244 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           },
           body: JSON.stringify(payload)
         });
+
         const { body: resBody, rawText, detail } = await parseResponseError(res);
+
         if (!res.ok) {
-          logDiagnosticError('Falha ao alternar modo perdido', res.status, endpoint, resBody || rawText, payload);
-          showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error', detail);
+          const colHint = checkColumnMissingDiagnostic(res.status, resBody, rawText);
+          const diagnosticData = {
+            status: res.status,
+            url: endpoint,
+            body: resBody || rawText,
+            payloadEnviado: sanitizePayloadForLog(payload)
+          };
+          if (colHint) diagnosticData.dica = colHint;
+          console.error('[SaveTagPet] Falha ao ativar alerta de pet perdido', diagnosticData);
+          showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', detail);
+          if (btn) btn.disabled = false;
           return;
         }
-        pet.is_lost = nextStatus;
-        if (pet.is_lost) {
-          showToast(`🚨 Alerta ativado! A página de ${pet.name} está em Modo Perdido.`, 'error');
-        } else {
-          showToast(`Ótima notícia! Modo perdido de ${pet.name} desativado.`, 'success');
+
+        // Confirmação obrigatória por GET fail-closed
+        const confirmUrl = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(validated.petId)}&select=*`;
+        const confirmRes = await fetch(confirmUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const { body: confirmData, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
+        if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
+          console.error('[SaveTagPet] Falha na confirmação do alerta via GET', { status: confirmRes.status, url: confirmUrl, body: confirmData || confText });
+          showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', confDetail);
+          if (btn) btn.disabled = false;
+          return;
         }
-        updateLostToggleState();
+
+        const verifiedPet = confirmData[0];
+        const idx = localCachePets.findIndex(p => String(p.id) === String(validated.petId));
+        if (idx !== -1) {
+          localCachePets[idx] = verifiedPet;
+        } else {
+          localCachePets.push(verifiedPet);
+        }
+
+        showToast('Alerta ativado! A página pública da TAG agora mostra o aviso de urgência.', 'success');
         closeModal('modalLostToggle');
         renderDashboardPets();
+
+        if (currentSelectedPetId === validated.petId) {
+          openPetProfile(validated.petId);
+        }
+      } catch (err) {
+        const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
+        console.error('[SaveTagPet] Falha ao ativar alerta de pet perdido', { status: 0, endpoint, message: err.message, payloadEnviado: sanitizePayloadForLog(payload) });
+        showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', errDetail);
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function executeSaveLostChanges() {
+      const validated = validateLostFormInputs();
+      if (!validated) return;
+
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
+      const btn = document.getElementById('btnSaveLostChanges');
+      if (btn) btn.disabled = true;
+
+      const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(validated.petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+      const payload = {
+        is_lost: true,
+        lost_since: validated.lost_since,
+        last_scan_location: validated.last_scan_location,
+        lost_contact: validated.lost_contact,
+        lost_notes: validated.lost_notes,
+        lost_reward: validated.lost_reward,
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
+
+        if (!res.ok) {
+          const colHint = checkColumnMissingDiagnostic(res.status, resBody, rawText);
+          const diagnosticData = {
+            status: res.status,
+            url: endpoint,
+            body: resBody || rawText,
+            payloadEnviado: sanitizePayloadForLog(payload)
+          };
+          if (colHint) diagnosticData.dica = colHint;
+          console.error('[SaveTagPet] Falha ao salvar alterações do alerta', diagnosticData);
+          showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', detail);
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        // Confirmação por GET
+        const confirmUrl = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(validated.petId)}&select=*`;
+        const confirmRes = await fetch(confirmUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const { body: confirmData, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
+        if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
+          console.error('[SaveTagPet] Falha na confirmação de alteração do alerta via GET', { status: confirmRes.status, url: confirmUrl, body: confirmData || confText });
+          showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', confDetail);
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        const verifiedPet = confirmData[0];
+        const idx = localCachePets.findIndex(p => String(p.id) === String(validated.petId));
+        if (idx !== -1) {
+          localCachePets[idx] = verifiedPet;
+        }
+
+        showToast('Alterações do alerta salvas com sucesso!', 'success');
+        closeModal('modalLostToggle');
+        renderDashboardPets();
+
+        if (currentSelectedPetId === validated.petId) {
+          openPetProfile(validated.petId);
+        }
+      } catch (err) {
+        const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
+        console.error('[SaveTagPet] Falha ao salvar alterações do alerta', { status: 0, endpoint, message: err.message, payloadEnviado: sanitizePayloadForLog(payload) });
+        showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', errDetail);
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function executeDeactivateLost() {
+      const sess = await getValidatedSession();
+      if (!sess) return;
+      const token = sess.access_token;
+      const userId = sess.user.id;
+
+      const petId = document.getElementById('lostPetSelect')?.value;
+      if (!petId) return;
+
+      const btn = document.getElementById('btnDeactivateLost');
+      if (btn) btn.disabled = true;
+
+      const endpoint = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&tutor_id=eq.${encodeURIComponent(userId)}`;
+      const payload = {
+        is_lost: false,
+        last_scan_location: null,
+        lost_contact: null,
+        lost_notes: null,
+        lost_reward: null,
+        lost_since: null,
+        updated_at: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const { body: resBody, rawText, detail } = await parseResponseError(res);
+
+        if (!res.ok) {
+          const colHint = checkColumnMissingDiagnostic(res.status, resBody, rawText);
+          const diagnosticData = {
+            status: res.status,
+            url: endpoint,
+            body: resBody || rawText,
+            payloadEnviado: sanitizePayloadForLog(payload)
+          };
+          if (colHint) diagnosticData.dica = colHint;
+          console.error('[SaveTagPet] Falha ao desativar alerta de pet perdido', diagnosticData);
+          showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', detail);
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        // Confirmação por GET
+        const confirmUrl = `${SUPABASE_URL}/rest/v1/pets?id=eq.${encodeURIComponent(petId)}&select=*`;
+        const confirmRes = await fetch(confirmUrl, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const { body: confirmData, rawText: confText, detail: confDetail } = await parseResponseError(confirmRes);
+        if (!confirmRes.ok || !Array.isArray(confirmData) || confirmData.length === 0) {
+          console.error('[SaveTagPet] Falha na confirmação de desativação do alerta via GET', { status: confirmRes.status, url: confirmUrl, body: confirmData || confText });
+          showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', confDetail);
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        const verifiedPet = confirmData[0];
+        const idx = localCachePets.findIndex(p => String(p.id) === String(petId));
+        if (idx !== -1) {
+          localCachePets[idx] = verifiedPet;
+        }
+
+        showToast('Ótima notícia! Modo de pet perdido desativado com sucesso.', 'success');
+        closeModal('modalLostToggle');
+        renderDashboardPets();
+
         if (currentSelectedPetId === petId) {
           openPetProfile(petId);
         }
       } catch (err) {
         const errDetail = `Detalhe: status 0 — ${err.message || 'falha de conexão'}`;
-        logDiagnosticError('Falha ao alternar modo perdido', 0, endpoint, { message: err.message }, payload);
-        showToast('Não foi possível alterar o status de perda. Tente novamente.', 'error', errDetail);
+        console.error('[SaveTagPet] Falha ao desativar alerta de pet perdido', { status: 0, endpoint, message: err.message, payloadEnviado: sanitizePayloadForLog(payload) });
+        showToast('Não foi possível salvar o alerta. Tente novamente.', 'error', errDetail);
+        if (btn) btn.disabled = false;
       }
     }
 
@@ -3201,7 +3603,6 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       if (!currentSelectedPetId) return;
       const sel = document.getElementById('lostPetSelect');
       if (sel) sel.value = currentSelectedPetId;
-      updateLostToggleState();
       openModal('modalLostToggle');
     }
 
@@ -3218,6 +3619,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     function openModal(id) {
       const m = document.getElementById(id);
       if (m) m.classList.add('active');
+      if (id === 'modalLostToggle') {
+        updateLostToggleState();
+      }
     }
     function closeModal(id) {
       const m = document.getElementById(id);
