@@ -1508,6 +1508,48 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     let vaccinesLoadError = false;
     let postsLoadError = false;
 
+    // LIMPEZA TOTAL DE STORAGE DO APP (LOCALSTORAGE + SESSIONSTORAGE)
+    // Garante que nenhum vestígio de sessão ou cache de usuário permaneça salvo
+    function clearAppStorage() {
+      currentSession = null;
+      localCachePets = [];
+      localCacheVaccines = [];
+      localCachePosts = [];
+      currentSelectedPetId = null;
+
+      const appPrefixes = ['savetagpet_', 'sb-', 'stp_', 'supabase'];
+      const shouldRemoveKey = (k) => {
+        if (!k) return false;
+        const lower = k.toLowerCase();
+        return appPrefixes.some(p => lower.startsWith(p)) ||
+               lower.includes('session') ||
+               lower.includes('tutor') ||
+               lower.includes('profile');
+      };
+
+      try {
+        const localKeys = Object.keys(localStorage);
+        for (const k of localKeys) {
+          if (shouldRemoveKey(k)) {
+            localStorage.removeItem(k);
+          }
+        }
+      } catch (e) {
+        console.warn('Erro ao limpar localStorage:', e);
+      }
+
+      try {
+        const sessionKeys = Object.keys(sessionStorage);
+        for (const k of sessionKeys) {
+          if (shouldRemoveKey(k)) {
+            sessionStorage.removeItem(k);
+          }
+        }
+      } catch (e) {
+        console.warn('Erro ao limpar sessionStorage:', e);
+      }
+    }
+
     // 2. CAMADA DE AUTH VIA REST NATIVO (api helper)
     const api = {
       getHeaders(customHeaders = {}, overrideToken) {
@@ -1552,6 +1594,29 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         };
         localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(cleanSession));
         currentSession = cleanSession;
+      },
+
+      // REGRA 1 & 3: Destruição obrigatória da sessão anterior
+      // Chama DELETE {SUPABASE_URL}/auth/v1/logout com apikey + Bearer token anterior (se existir)
+      // e remove TODAS as chaves de dados do app do storage local e de sessão.
+      async destroyPreviousSession() {
+        const sess = this.loadSession();
+        const token = sess?.access_token;
+        if (token) {
+          try {
+            await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
+              method: 'DELETE',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+              }
+            });
+          } catch (e) {
+            // Silencioso em caso de falha de rede/offline
+          }
+        }
+        clearAppStorage();
       },
 
       async refreshToken(refreshToken) {
@@ -1613,7 +1678,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         return { data, error: null };
       },
 
+      // REGRA 1 (CRIAR CONTA): Destruir sempre a sessão anterior antes de chamar /auth/v1/signup
+      // Não reusar sessão antiga. Se resposta trouxer session nova, usá-la; se não, manter sem sessão.
       async signUp(nome, email, whatsapp, password) {
+        await this.destroyPreviousSession();
+
         const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
           method: 'POST',
           headers: {
@@ -1635,8 +1704,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           const msg = data.error_description || data.msg || data.message || 'Erro ao criar conta';
           return { error: { message: msg } };
         }
-        if (data.session) {
+        if (data.session && data.session.access_token) {
           this.saveSession(data.session);
+        } else {
+          this.saveSession(null);
         }
         return { data, error: null };
       },
@@ -1689,23 +1760,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         return { data, error: null };
       },
 
+      // REGRA 3 (SAIR): Disparar DELETE /auth/v1/logout com Bearer token atual e limpar todo o storage
       async signOut() {
-        const sess = this.loadSession();
-        if (sess && sess.access_token) {
-          try {
-            await fetch(`${SUPABASE_URL}/auth/v1/logout`, {
-              method: 'POST',
-              headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': 'Bearer ' + sess.access_token,
-                'Content-Type': 'application/json'
-              }
-            });
-          } catch (e) {
-            // Silencioso em logout offline
-          }
-        }
-        this.saveSession(null);
+        await this.destroyPreviousSession();
       },
 
       async checkHealth() {
@@ -1992,6 +2049,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       showView('viewDashboard');
     }
 
+    // REGRA 1 (CRIAR CONTA):
+    // Destrói sessão anterior e limpa caches do storage antes de chamar signUp.
+    // Após signUp: se vier session nova, acessa painel; se trouxer apenas user sem session (confirmação pendente),
+    // mostra o aviso "Verifique seu e-mail" e permanece na tela de login sem entrar no painel.
     async function handleRegisterSubmit(e) {
       e.preventDefault();
       if (!isServerOnline) {
@@ -2013,6 +2074,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       btn.disabled = true;
       btn.innerHTML = '<span>Criando conta...</span>';
 
+      // Destrói explicitamente qualquer sessão e limpa caches antes da criação
+      await api.destroyPreviousSession();
+
       const { data, error } = await api.signUp(name, email, whatsapp, password);
 
       btn.disabled = false;
@@ -2023,13 +2087,23 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         return;
       }
 
-      if (data && data.user && !data.session) {
-        showToast('Conta criada! Verifique seu e-mail e clique no link de confirmação para entrar.', 'success');
+      // Se a resposta trouxer apenas user sem session (confirmação por e-mail ativa)
+      if (data && data.user && (!data.session || !data.session.access_token)) {
+        showToast('Verifique seu e-mail e clique no link de confirmação para ativar sua conta.', 'warning');
+        document.getElementById('formRegister').reset();
         switchAuthTab('login');
-      } else {
+        return;
+      }
+
+      // Se a resposta trouxer a session válida do usuário novo
+      if (data && data.session && data.session.access_token) {
         showToast('Conta criada com sucesso! Bem-vindo(a) ao Save Tag Pet.', 'success');
         await loadTutorDashboard();
         showView('viewDashboard');
+      } else {
+        showToast('Verifique seu e-mail para ativar sua conta.', 'warning');
+        document.getElementById('formRegister').reset();
+        switchAuthTab('login');
       }
     }
 
@@ -2081,20 +2155,68 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
     }
 
+    // REGRA 3 (SAIR):
+    // Dispara DELETE /auth/v1/logout com o Bearer token atual e limpa todas as chaves
+    // do app do localStorage e sessionStorage, garantindo que nada do usuário permaneça no storage.
     async function handleLogout() {
       await api.signOut();
       showToast('Sessão encerrada com segurança.', 'success');
       showView('viewAuth');
     }
 
-    // CARREGAMENTO DO DASHBOARD E DADOS (SEMPRE DO BANCO VIA GET COM BEARER)
+    // REGRA 2 (ENTRAR NO PAINEL):
+    // Nome, e-mail e avatar exibidos no painel vêm SEMPRE do usuário da sessão ATUAL (GET /auth/v1/user ou user da session).
+    // Se houver cache no localStorage, valida se o user_id do cache é idêntico ao user.id da sessão atual.
+    // Se for diferente, descarta o cache e utiliza os dados da sessão atual.
+    // A listagem de pets SEMPRE filtra tutor_id = user.id da sessão atual.
     async function loadTutorDashboard() {
       const sess = await getValidatedSession();
-      if (!sess) return;
+      if (!sess || !sess.user || !sess.user.id) return;
 
-      const meta = sess.user?.user_metadata || {};
-      const tutorName = meta.full_name || sess.user?.email?.split('@')[0] || 'Tutor';
-      const tutorEmail = sess.user?.email || '';
+      const currentUserId = sess.user.id;
+
+      // Validação de integridade do cache local: descartar caso pertença a outro usuário
+      try {
+        const cachedProfileRaw = localStorage.getItem('savetagpet_tutor_profile');
+        if (cachedProfileRaw) {
+          const cachedProfile = JSON.parse(cachedProfileRaw);
+          if (!cachedProfile || cachedProfile.user_id !== currentUserId) {
+            console.warn('[SaveTagPet] Cache de tutor não coincide com o usuário da sessão atual. Descartando cache.');
+            localStorage.removeItem('savetagpet_tutor_profile');
+            localCachePets = [];
+            localCacheVaccines = [];
+            localCachePosts = [];
+          }
+        }
+      } catch (_) {
+        localStorage.removeItem('savetagpet_tutor_profile');
+      }
+
+      // Obter dados atualizados diretamente da sessão ATUAL via GET /auth/v1/user
+      let currentUser = sess.user;
+      try {
+        const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          method: 'GET',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + sess.access_token
+          }
+        });
+        if (userRes.ok) {
+          const freshUser = await userRes.json();
+          if (freshUser && freshUser.id === currentUserId) {
+            currentUser = freshUser;
+            sess.user = freshUser;
+            api.saveSession(sess);
+          }
+        }
+      } catch (_) {
+        // Fallback para os dados da sessão atual autenticada
+      }
+
+      const meta = currentUser.user_metadata || {};
+      const tutorName = meta.full_name || currentUser.email?.split('@')[0] || 'Tutor';
+      const tutorEmail = currentUser.email || '';
       const tutorAvatar = meta.avatar_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%235c727a'><circle cx='50' cy='38' r='20'/><path d='M20,85 C20,68 34,58 50,58 C66,58 80,68 80,85 Z'/></svg>";
 
       document.getElementById('tutorNameDisplay').textContent = tutorName;
@@ -2106,10 +2228,20 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       document.getElementById('editTutorWhatsapp').value = meta.whatsapp || '';
       document.getElementById('editTutorCity').value = meta.city || '';
 
-      await fetchAllUserData(sess.user.id);
+      // Atualiza o cache do perfil estritamente associado ao user_id da sessão ATUAL
+      try {
+        localStorage.setItem('savetagpet_tutor_profile', JSON.stringify({
+          user_id: currentUserId,
+          name: tutorName,
+          email: tutorEmail
+        }));
+      } catch (_) {}
+
+      // A listagem de pets SEMPRE filtra tutor_id = user.id da sessão atual
+      await fetchAllUserData(currentUserId);
     }
 
-    // BUSCA DE PETS, VACINAS E POSTS SEM DEGRADAÇÃO SILENCIOSA
+    // REGRA 2: BUSCA DE PETS, VACINAS E POSTS FILTRADOS ESTREITAMENTE POR TUTOR_ID DA SESSÃO ATUAL
     async function fetchAllUserData(userId) {
       const sess = await getValidatedSession();
       if (!sess) return;
@@ -2119,7 +2251,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       vaccinesLoadError = false;
       postsLoadError = false;
 
-      // 1. Pets via GET com Bearer
+      // 1. Pets via GET com Bearer filtrando estritamente pelo tutor_id da sessão atual
       const petsUrl = `${SUPABASE_URL}/rest/v1/pets?tutor_id=eq.${encodeURIComponent(userId)}&select=*`;
       try {
         const res = await fetch(petsUrl, {
@@ -2135,7 +2267,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           petsLoadError = true;
           localCachePets = [];
         } else {
-          localCachePets = await res.json();
+          const fetchedPets = await res.json();
+          localCachePets = Array.isArray(fetchedPets) ? fetchedPets.filter(p => String(p.tutor_id) === String(userId)) : [];
         }
       } catch (err) {
         logDiagnosticError('Falha ao carregar lista de pets', 0, petsUrl, { message: err.message }, { tutor_id: userId });
@@ -2143,7 +2276,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         localCachePets = [];
       }
 
-      // 2. Vacinas via GET com Bearer
+      // 2. Vacinas via GET com Bearer filtrando estritamente pelo tutor_id da sessão atual
       const vacUrl = `${SUPABASE_URL}/rest/v1/vaccines?tutor_id=eq.${encodeURIComponent(userId)}&select=*`;
       try {
         const res = await fetch(vacUrl, {
@@ -2159,7 +2292,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           vaccinesLoadError = true;
           localCacheVaccines = [];
         } else {
-          localCacheVaccines = await res.json();
+          const fetchedVac = await res.json();
+          localCacheVaccines = Array.isArray(fetchedVac) ? fetchedVac.filter(v => String(v.tutor_id) === String(userId)) : [];
         }
       } catch (err) {
         logDiagnosticError('Falha ao carregar lista de vacinas', 0, vacUrl, { message: err.message }, { tutor_id: userId });
@@ -2167,7 +2301,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         localCacheVaccines = [];
       }
 
-      // 3. Posts via GET com Bearer
+      // 3. Posts via GET com Bearer filtrando estritamente pelo tutor_id da sessão atual
       const postsUrl = `${SUPABASE_URL}/rest/v1/pet_posts?tutor_id=eq.${encodeURIComponent(userId)}&select=*`;
       try {
         const res = await fetch(postsUrl, {
@@ -2183,7 +2317,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           postsLoadError = true;
           localCachePosts = [];
         } else {
-          localCachePosts = await res.json();
+          const fetchedPosts = await res.json();
+          localCachePosts = Array.isArray(fetchedPosts) ? fetchedPosts.filter(p => String(p.tutor_id) === String(userId)) : [];
         }
       } catch (err) {
         logDiagnosticError('Falha ao carregar lista de posts', 0, postsUrl, { message: err.message }, { tutor_id: userId });
