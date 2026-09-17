@@ -1152,6 +1152,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             </div>
 
             <div style="display:flex; gap: 8px; flex-wrap: wrap;">
+              <!-- Botão para copiar link público da TAG NFC (aponta para public.html SEM exigir login) -->
+              <button class="quick-btn" onclick="copyCurrentPetPublicLink()" title="Copiar link público gravado na TAG NFC">🔗 Link da TAG</button>
+              <button class="quick-btn" onclick="openCurrentPetPublicView()" title="Visualizar página pública como quem lê a TAG">👁️ Ver Perfil Público</button>
               <button class="quick-btn" onclick="editCurrentPet()">✏️ Editar Perfil</button>
               <button class="quick-btn" onclick="openModal('modalVaccine')">💉 Saúde</button>
               <button class="quick-btn danger" onclick="toggleCurrentPetLostMode()">🚨 Alternar Modo Perdido</button>
@@ -1258,8 +1261,19 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             </div>
 
             <div style="background: #f8fafc; border: 1px dashed var(--border); padding: 16px; border-radius: var(--radius-sm); margin-top: 14px;">
-              <p style="font-size: 0.8125rem; font-weight: 700; color: var(--primary); margin: 0 0 4px;">📍 Status da TAG NFC / QR Code</p>
-              <p id="techTagStatus" style="font-size: 0.875rem; margin: 0; color: var(--text-muted);">Aguardando a primeira leitura da TAG NFC.</p>
+              <p style="font-size: 0.8125rem; font-weight: 700; color: var(--primary); margin: 0 0 4px;">📍 Link Público da TAG NFC & QR Code</p>
+              <p id="techTagStatus" style="font-size: 0.875rem; margin: 0 0 10px; color: var(--text-muted);">Aguardando a primeira leitura da TAG NFC.</p>
+              <div id="techTagLinkContainer" style="display: none; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-top: 8px;">
+                <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 0 0 4px;">Link público gravado na TAG NFC (SEM login):</p>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                  <input type="text" id="techTagLinkInput" readonly style="flex: 1; min-width: 200px; padding: 6px 10px; font-size: 0.8125rem; background: #f1f5f9; border: 1px solid var(--border); border-radius: 4px; font-family: monospace; color: var(--primary);" value="">
+                  <button type="button" class="btn-action btn-primary" style="width: auto; padding: 6px 14px; font-size: 0.8125rem;" onclick="copyCurrentPetPublicLink()">📋 Copiar Link</button>
+                  <button type="button" class="quick-btn" style="font-size: 0.8125rem; padding: 6px 12px;" onclick="openCurrentPetPublicView()">🔗 Abrir</button>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 0;">
+                  ℹ️ Grave este link na TAG NFC do seu pet. Ao aproximar o smartphone, qualquer pessoa verá a página pública instantaneamente sem login.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -2900,9 +2914,13 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <p class="pet-card-sub">${escapeHtml(pet.species)} • ${escapeHtml(pet.breed)}</p>
             <div style="margin-bottom: ${pet.is_lost ? '6px' : '12px'};">${badgeHtml}</div>
             ${lostScanHtml}
-            <div style="display:flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px;" onclick="event.stopPropagation()">
-              <button class="btn-link" style="font-size:0.8125rem;" onclick="editPetById('${pet.id}')">✏️ Editar</button>
-              <button class="btn-link" style="font-size:0.8125rem;" onclick="openPetProfile('${pet.id}', 'saude')">💉 Carteira</button>
+            <div style="display:flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 10px;" onclick="event.stopPropagation()">
+              <div style="display:flex; gap: 10px;">
+                <button class="btn-link" style="font-size:0.8125rem;" onclick="editPetById('${pet.id}')">✏️ Editar</button>
+                <button class="btn-link" style="font-size:0.8125rem;" onclick="openPetProfile('${pet.id}', 'saude')">💉 Carteira</button>
+              </div>
+              <!-- Botão para copiar link público da TAG (aponta para public.html SEM login) -->
+              <button class="btn-link" style="font-size:0.8125rem; color: var(--primary); font-weight: 700;" onclick="copyPetPublicLink('${pet.id}')" title="Copiar link da TAG para gravação ou compartilhamento">🔗 Copiar Link TAG</button>
             </div>
           </div>
         `;
@@ -3018,6 +3036,17 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         emailContainer.innerHTML = `<a href="mailto:${escapeHtml(userMail)}" style="color:var(--primary); text-decoration:underline;">${escapeHtml(userMail)}</a>`;
       } else {
         emailContainer.textContent = 'Não informado';
+      }
+
+      // Configuração do link público da TAG NFC (aponta para public.html?pet=ID)
+      // O link gravado na TAG NFC e compartilhado deve SEMPRE direcionar para a página pública
+      // (public.html), onde qualquer estranho que encoste o celular na TAG visualiza o pet SEM tela de login.
+      const petPublicUrl = getPetPublicUrl(pet.id);
+      const tagLinkContainer = document.getElementById('techTagLinkContainer');
+      const tagLinkInput = document.getElementById('techTagLinkInput');
+      if (tagLinkContainer && tagLinkInput) {
+        tagLinkInput.value = petPublicUrl;
+        tagLinkContainer.style.display = 'block';
       }
 
       const tagStatusText = pet.tag_code
@@ -3744,7 +3773,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         }
         closeModal('modalActivateTag');
         document.getElementById('tagCodeInput').value = '';
-        showToast(`TAG ${code} ativada com sucesso para ${pet ? pet.name : 'o pet'}!`, 'success');
+        // Notificação com lembrete de que o link público da TAG é public.html?pet=ID
+        showToast(`TAG ${code} ativada para ${pet ? pet.name : 'o pet'}! O link público é https://www.savetagpet.com.br/public.html?pet=${petId}`, 'success');
         renderDashboardPets();
         if (currentSelectedPetId === petId) {
           openPetProfile(petId);
@@ -4481,6 +4511,54 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         clearInterval(tagScansPollingInterval);
         tagScansPollingInterval = null;
       }
+    }
+
+    // =========================================================================
+    // GERADOR DO LINK PÚBLICO DOS PETS (TAG NFC & COMPARTILHAMENTO)
+    // Regra: O link público de qualquer pet e o link gravado na TAG NFC deve
+    // SEMPRE apontar para https://www.savetagpet.com.br/public.html?pet=ID_DO_PET
+    // para que qualquer pessoa que aproxime o smartphone da TAG ou leia o QR Code
+    // acesse instantaneamente a página pública SEM cair na tela de login (login.html).
+    // =========================================================================
+    function getPetPublicUrl(petId) {
+      if (!petId) return 'https://www.savetagpet.com.br/public.html';
+      return `https://www.savetagpet.com.br/public.html?pet=${encodeURIComponent(petId)}`;
+    }
+
+    // Copia o link público para a área de transferência e notifica o tutor
+    async function copyPetPublicLink(petId) {
+      const url = getPetPublicUrl(petId);
+      const pet = localCachePets.find(p => String(p.id) === String(petId));
+      const petName = pet ? pet.name : 'pet';
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(url);
+        } else {
+          // Fallback para navegadores sem Clipboard API
+          const tempInput = document.createElement('input');
+          tempInput.value = url;
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+        }
+        showToast(`Link da TAG do ${petName} copiado! Use-o para gravar a TAG NFC (abre sem login).`, 'success');
+      } catch (err) {
+        // Se falhar ou estiver em ambiente restrito, mostra prompt
+        window.prompt('Copie o link público da TAG NFC abaixo:', url);
+      }
+    }
+
+    function copyCurrentPetPublicLink() {
+      if (!currentSelectedPetId) return;
+      copyPetPublicLink(currentSelectedPetId);
+    }
+
+    function openCurrentPetPublicView() {
+      if (!currentSelectedPetId) return;
+      const url = getPetPublicUrl(currentSelectedPetId);
+      window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     // FORMATADORES
