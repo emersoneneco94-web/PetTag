@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
+    <script>
+  /* REDIRECT DE AUTENTICACAO: se a home receber um codigo de redefinicao de senha
+     (?code=) ou token de recovery, encaminha para o login.html que sabe processar */
+  (function () {
+    var q = window.location.search || '';
+    var h = window.location.hash || '';
+    if (q.indexOf('code=') !== -1 || h.indexOf('access_token=') !== -1 || h.indexOf('type=recovery') !== -1) {
+      window.location.replace('https://www.savetagpet.com.br/login.html' + q + h);
+    }
+  })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Save Tag Pet | Identifique. Encontre. Proteja.</title>
