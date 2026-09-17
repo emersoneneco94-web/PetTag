@@ -1497,6 +1497,28 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 14px;">
         Crie uma nova senha de acesso segura para a sua conta (mínimo de 6 caracteres).
       </p>
+
+      <!-- Fallback à prova de troca de navegador: código de 6 dígitos -->
+      <div id="otpFallbackContainer" style="margin-bottom: 16px; background: #f8fafc; border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8125rem; font-weight: 600; color: var(--text);">Já tem o código de 6 dígitos?</span>
+          <button type="button" class="btn-link" id="toggleOtpBtn" onclick="toggleOtpMode()" style="font-size: 0.8125rem;">Inserir código</button>
+        </div>
+        <div id="otpInputSection" style="display: none; margin-top: 10px;">
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label class="form-label" for="resetOtpInput">Código de 6 dígitos (recebido por e-mail)</label>
+            <input type="text" id="resetOtpInput" class="form-input" placeholder="Ex.: 123456" maxlength="10" style="font-family: monospace; letter-spacing: 2px; font-weight: 700;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="resetOtpEmail">E-mail da conta</label>
+            <input type="email" id="resetOtpEmail" class="form-input" placeholder="seu@email.com">
+          </div>
+          <p style="font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 0;">
+            Use este campo caso o link tenha sido aberto em outro navegador ou aplicativo.
+          </p>
+        </div>
+      </div>
+
       <form id="formSetNewPasswordModal" onsubmit="handleConfirmNewPassword(event)">
         <div class="form-group">
           <label class="form-label" for="resetNewPassInput">Nova senha</label>
@@ -1555,8 +1577,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const appPrefixes = ['savetagpet_', 'sb-', 'stp_', 'supabase'];
       const shouldRemoveKey = (k) => {
         if (!k) return false;
-        // Preserva o code_verifier do fluxo PKCE de redefinição de senha
-        if (k === 'savetagpet_reset_verifier') return false;
+        // Preserva o code_verifier do fluxo PKCE e o e-mail para fallback por código de 6 dígitos
+        if (k === 'savetagpet_reset_verifier' || k === 'savetagpet_reset_email') return false;
         const lower = k.toLowerCase();
         return appPrefixes.some(p => lower.startsWith(p)) ||
                lower.includes('session') ||
@@ -1751,15 +1773,16 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
       // 1. NO ENVIO DO E-MAIL (Esqueci minha senha):
       // Antes do POST /auth/v1/recover, gera code_verifier (64 chars) e code_challenge (SHA-256 base64url),
-      // armazena o verifier no localStorage (savetagpet_reset_verifier) e envia challenge no payload.
+      // armazena o verifier e o e-mail no localStorage e envia challenge no payload.
       async resetPassword(email) {
         const verifier = generateCodeVerifier(64);
         const challenge = await generateCodeChallenge(verifier);
 
         try {
           localStorage.setItem('savetagpet_reset_verifier', verifier);
+          localStorage.setItem('savetagpet_reset_email', email);
         } catch (e) {
-          console.warn('[SaveTagPet] Falha ao persistir code_verifier:', e);
+          console.warn('[SaveTagPet] Falha ao persistir code_verifier ou email:', e);
         }
 
         const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
@@ -1982,6 +2005,76 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     // Contexto em memória da recuperação em andamento (PKCE ou Implicit)
     let pendingResetAuth = null;
 
+    // CAMADA DE SUPORTE SUPABASE AUTH
+    // PKCE exige o mesmo navegador que pediu o reset; o fallback por código de 6 dígitos resolve a troca de navegador.
+    const supabase = {
+      auth: {
+        async exchangeCodeForSession(searchOrCode) {
+          // PKCE exige o mesmo navegador que pediu o reset para ter o code_verifier.
+          let code = searchOrCode;
+          if (typeof searchOrCode === 'string' && searchOrCode.includes('code=')) {
+            const sp = new URLSearchParams(searchOrCode.startsWith('?') ? searchOrCode : '?' + searchOrCode);
+            code = sp.get('code');
+          }
+          if (!code) throw new Error('Código de autorização não encontrado');
+
+          const verifier = localStorage.getItem('savetagpet_reset_verifier') || '';
+          const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              auth_code: code,
+              code_verifier: verifier
+            })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || data.error) {
+            const errorMsg = data.error_description || data.msg || data.message || 'invalid flow state';
+            const err = new Error(errorMsg);
+            err.status = res.status;
+            err.data = data;
+            throw err;
+          }
+          return { data: { session: data }, error: null };
+        },
+
+        async verifyOtp(params) {
+          // Fallback à prova de fluxo por código de 6 dígitos ou token_hash:
+          // Resolve a troca de navegador onde o PKCE perde o code_verifier.
+          const payload = {
+            type: params.type || 'recovery'
+          };
+          if (params.token_hash) {
+            payload.token_hash = params.token_hash;
+          } else {
+            payload.email = params.email;
+            payload.token = params.token;
+          }
+
+          const res = await fetch(`${SUPABASE_URL}/auth/v1/verify`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || data.error) {
+            const errorMsg = data.error_description || data.msg || data.message || 'Falha ao validar código OTP';
+            const err = new Error(errorMsg);
+            err.status = res.status;
+            err.data = data;
+            return { data: null, error: err };
+          }
+          return { data, error: null };
+        }
+      }
+    };
+
     // 4. INICIALIZAÇÃO DA APLICAÇÃO
     window.addEventListener('DOMContentLoaded', async () => {
       /*
@@ -2070,6 +2163,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const hashParams = new URLSearchParams(hashString);
 
       const pkceCode = searchParams.get('code');
+      const tokenHash = searchParams.get('token_hash');
       const hashAccessToken = hashParams.get('access_token');
       const hashRefreshToken = hashParams.get('refresh_token');
       const hashType = hashParams.get('type');
@@ -2109,25 +2203,75 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         return true;
       }
 
-      // 2. REDEFINIÇÃO DE SENHA (Recovery via PKCE ?code= OU Implicit #access_token=...&type=recovery)
+      // 2. REDEFINIÇÃO DE SENHA — TRATAMENTO DOS FORMATOS:
+      // Formato A: ?token_hash=...&type=recovery (novo formato do Supabase)
+      // Formato B: ?code=... (PKCE)
+      // Formato C: #access_token=...&type=recovery (Implicit)
+      const isTokenHashRecovery = Boolean(tokenHash && queryType === 'recovery');
       const isImplicitRecovery = Boolean(hashAccessToken && hashType === 'recovery');
       const isPkceRecovery = Boolean(pkceCode && !isEmailConfirm);
 
+      if (isTokenHashRecovery) {
+        await api.destroyPreviousSession();
+        try {
+          const res = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' });
+          if (res.data?.access_token) {
+            pendingResetAuth = {
+              type: 'verified',
+              accessToken: res.data.access_token
+            };
+            openResetPasswordActionModal();
+            return true;
+          }
+        } catch (e) {
+          console.warn('[SaveTagPet] Falha ao verificar token_hash:', e);
+        }
+        pendingResetAuth = { type: 'token_hash_pending', tokenHash };
+        openResetPasswordActionModal();
+        toggleOtpMode(true);
+        return true;
+      }
+
       if (isImplicitRecovery || isPkceRecovery) {
-        // REGRA DE PRIORIDADE:
-        // 1. Destruir IMEDIATAMENTE a sessão atual do navegador
+        // REGRA DE PRIORIDADE: Destruir IMEDIATAMENTE a sessão anterior
         await api.destroyPreviousSession();
 
-        // 2. Preparar credenciais de redefinição
+        let acquiredToken = hashAccessToken || null;
+
+        // PKCE exige o mesmo navegador que pediu o reset; se o usuário abriu em outro navegador,
+        // o code_verifier não estará disponível e retornará erro de flow state.
+        // Tentar primeiro a troca explícita do código por sessão chamando exchangeCodeForSession dentro de try/catch:
+        if (isPkceRecovery && !acquiredToken) {
+          try {
+            const exRes = await supabase.auth.exchangeCodeForSession(window.location.search);
+            if (exRes.data?.session?.access_token) {
+              acquiredToken = exRes.data.session.access_token;
+            }
+          } catch (flowErr) {
+            // Se falhar com erro de flow state (ou qualquer erro), NÃO mostrar erro ao usuário nem travar: seguir para o FALLBACK
+            console.warn('[SaveTagPet] Troca de código PKCE falhou (possível troca de navegador / flow state):', flowErr);
+          }
+        }
+
+        // Preparar credenciais de redefinição
         pendingResetAuth = {
-          type: isPkceRecovery ? 'pkce' : 'implicit',
+          type: acquiredToken ? 'verified' : (isPkceRecovery ? 'pkce' : 'implicit'),
           code: pkceCode,
-          accessToken: hashAccessToken || null,
+          accessToken: acquiredToken,
           refreshToken: hashRefreshToken || null
         };
 
-        // 3. Exibir o modal "Definir nova senha" imediatamente — NUNCA renderizar o painel
+        // Exibir o modal "Definir nova senha" imediatamente — NUNCA renderizar o painel
         openResetPasswordActionModal();
+
+        // Se a validação automática não obteve sessão (ex.: troca de navegador sem code_verifier),
+        // abre o modo com o campo de código de 6 dígitos
+        if (isPkceRecovery && !acquiredToken) {
+          const verifier = localStorage.getItem('savetagpet_reset_verifier');
+          if (!verifier) {
+            toggleOtpMode(true);
+          }
+        }
         return true;
       }
 
@@ -2142,8 +2286,31 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         authCard.style.display = 'none';
       }
       openModal('modalResetPasswordAction');
+      const savedEmail = localStorage.getItem('savetagpet_reset_email') || '';
+      const emailInput = document.getElementById('resetOtpEmail');
+      if (emailInput && savedEmail) {
+        emailInput.value = savedEmail;
+      }
       const passInput = document.getElementById('resetNewPassInput');
       if (passInput) passInput.focus();
+    }
+
+    // Alterna a exibição do modo avançado com código de 6 dígitos
+    function toggleOtpMode(forceShow) {
+      const section = document.getElementById('otpInputSection');
+      const btn = document.getElementById('toggleOtpBtn');
+      if (!section) return;
+      const isHidden = section.style.display === 'none';
+      const show = typeof forceShow === 'boolean' ? forceShow : isHidden;
+      section.style.display = show ? 'block' : 'none';
+      if (btn) btn.textContent = show ? 'Ocultar código' : 'Inserir código';
+      if (show) {
+        const savedEmail = localStorage.getItem('savetagpet_reset_email') || '';
+        const emailInput = document.getElementById('resetOtpEmail');
+        if (emailInput && !emailInput.value && savedEmail) {
+          emailInput.value = savedEmail;
+        }
+      }
     }
 
     // Fecha o modal de redefinição, restaura a visibilidade do login e limpa tokens
@@ -2166,11 +2333,14 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     }
 
     // 3. CONFIRMAR NOVA SENHA:
-    // Troca o código PKCE por access_token (se aplicável), chama PUT /auth/v1/user e atualiza a interface.
+    // Suporta troca de navegador via código OTP de 6 dígitos (fallback à prova de fluxo)
+    // ou validação de sessão da URL, chama PUT /auth/v1/user e atualiza a interface.
     async function handleConfirmNewPassword(e) {
       e.preventDefault();
       const newPass = document.getElementById('resetNewPassInput').value;
       const confirmPass = document.getElementById('resetConfirmPassInput').value;
+      const otpCode = document.getElementById('resetOtpInput')?.value.trim();
+      const otpEmailInput = document.getElementById('resetOtpEmail')?.value.trim();
       const btn = document.getElementById('btnSubmitResetPass');
 
       if (!newPass || newPass.length < 6) {
@@ -2183,56 +2353,74 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         return;
       }
 
-      if (!pendingResetAuth) {
-        showToast('Token de recuperação não encontrado. Solicite um novo link.', 'error');
-        return;
-      }
-
       btn.disabled = true;
       btn.textContent = 'Salvando nova senha...';
 
-      let accessToken = pendingResetAuth.accessToken;
+      let accessToken = pendingResetAuth?.accessToken || null;
 
-      // Fluxo PKCE (?code=): buscar code_verifier do localStorage e POST /auth/v1/token?grant_type=pkce
-      if (pendingResetAuth.type === 'pkce' && !accessToken) {
-        const verifier = localStorage.getItem('savetagpet_reset_verifier');
+      // FALLBACK À PROVA DE FLUXO (novo):
+      // Se o campo de 6 dígitos estiver preenchido, usar supabase.auth.verifyOtp({ email: emailDoReset, token: codigoDigitado, type: 'recovery' })
+      // PKCE exige o mesmo navegador que pediu o reset; o fallback por código de 6 dígitos resolve a troca de navegador.
+      if (otpCode) {
+        const resetEmail = otpEmailInput || localStorage.getItem('savetagpet_reset_email') || '';
+        if (!resetEmail) {
+          btn.disabled = false;
+          btn.textContent = 'Salvar nova senha';
+          toggleOtpMode(true);
+          document.getElementById('resetOtpEmail')?.focus();
+          showToast('Informe o e-mail da sua conta para validar o código de 6 dígitos.', 'warning');
+          return;
+        }
+
         try {
-          const tokenRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
-            method: 'POST',
-            headers: {
-              'apikey': SUPABASE_ANON_KEY,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              auth_code: pendingResetAuth.code,
-              code_verifier: verifier || ''
-            })
+          const otpRes = await supabase.auth.verifyOtp({
+            email: resetEmail,
+            token: otpCode,
+            type: 'recovery'
           });
 
-          const { body: tokenData, rawText, detail } = await parseResponseError(tokenRes);
-
-          if (!tokenRes.ok || !tokenData?.access_token) {
-            console.error('[SaveTagPet] Falha ao obter access_token via PKCE:', {
-              status: tokenRes.status,
-              response: tokenData || rawText
-            });
+          if (otpRes.error || !otpRes.data?.access_token) {
+            console.error('[SaveTagPet] Falha ao verificar OTP de recuperação:', otpRes.error);
             btn.disabled = false;
             btn.textContent = 'Salvar nova senha';
-            showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', detail);
+            showToast('Não conseguimos validar o link automaticamente. Peça um novo e-mail de redefinição e use o código de 6 dígitos no campo acima.', 'error');
             return;
           }
 
-          accessToken = tokenData.access_token;
-          pendingResetAuth.accessToken = accessToken;
-          // Após usar com sucesso, remove o verifier do localStorage
-          localStorage.removeItem('savetagpet_reset_verifier');
-        } catch (netErr) {
-          console.error('[SaveTagPet] Erro de rede ao trocar código PKCE:', netErr);
+          accessToken = otpRes.data.access_token;
+          if (pendingResetAuth) {
+            pendingResetAuth.accessToken = accessToken;
+          }
+        } catch (otpErr) {
+          console.error('[SaveTagPet] Erro de rede ao validar OTP:', otpErr);
           btn.disabled = false;
           btn.textContent = 'Salvar nova senha';
-          showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', `Detalhe: status 0 — ${netErr.message || 'falha de conexão'}`);
+          showToast('Não conseguimos validar o link automaticamente. Peça um novo e-mail de redefinição e use o código de 6 dígitos no campo acima.', 'error');
           return;
         }
+      }
+
+      // Se ainda não temos accessToken e há código PKCE na URL:
+      if (!accessToken && pendingResetAuth?.code) {
+        try {
+          const exRes = await supabase.auth.exchangeCodeForSession(pendingResetAuth.code);
+          if (exRes.data?.session?.access_token) {
+            accessToken = exRes.data.session.access_token;
+            pendingResetAuth.accessToken = accessToken;
+            localStorage.removeItem('savetagpet_reset_verifier');
+          }
+        } catch (pkceErr) {
+          console.error('[SaveTagPet] Falha na troca PKCE ao salvar senha:', pkceErr);
+        }
+      }
+
+      // Se ambos os caminhos falharem em obter o access_token:
+      if (!accessToken) {
+        btn.disabled = false;
+        btn.textContent = 'Salvar nova senha';
+        toggleOtpMode(true);
+        showToast('Não conseguimos validar o link automaticamente. Peça um novo e-mail de redefinição e use o código de 6 dígitos no campo acima.', 'error');
+        return;
       }
 
       // Com o access_token em mãos: PUT /auth/v1/user com { password: novaSenha }
@@ -2257,12 +2445,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             status: updateRes.status,
             response: updateData || upText
           });
-          // Modal continua aberto para tentar de novo
           showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', upDetail);
           return;
         }
 
-        // Sucesso (200): limpar URL, fechar modal, restaurar login e exibir toast verde
+        // Sucesso: limpar tokens da URL, fechar modal, restaurar login e exibir toast verde
         cleanUrlTokens();
         closeModal('modalResetPasswordAction');
         const authCard = document.querySelector('.auth-card');
@@ -2270,6 +2457,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           authCard.style.display = 'block';
         }
         document.getElementById('formSetNewPasswordModal').reset();
+        const otpInput = document.getElementById('resetOtpInput');
+        if (otpInput) otpInput.value = '';
         switchAuthTab('login');
         pendingResetAuth = null;
         showToast('Senha atualizada com sucesso! Faça login com a nova senha.', 'success');
@@ -2417,6 +2606,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       e.preventDefault();
       const email = document.getElementById('forgotEmailInput').value.trim();
       const btn = document.getElementById('btnForgotSubmit');
+
+      // Guarda o e-mail do reset em localStorage (chave savetagpet_reset_email) para o fallback do verifyOtp
+      try {
+        localStorage.setItem('savetagpet_reset_email', email);
+      } catch (_) {}
 
       btn.disabled = true;
       btn.textContent = 'Enviando...';
