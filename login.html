@@ -1487,6 +1487,32 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     </div>
   </div>
 
+  <!-- MODAL: DEFINIR NOVA SENHA (RECUPERAÇÃO / LINK SUPABASE) -->
+  <div id="modalResetPasswordAction" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🔑 Definir nova senha</h3>
+        <button class="modal-close-btn" onclick="closeResetPasswordActionModal()">&times;</button>
+      </div>
+      <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 14px;">
+        Crie uma nova senha de acesso segura para a sua conta (mínimo de 6 caracteres).
+      </p>
+      <form id="formSetNewPasswordModal" onsubmit="handleConfirmNewPassword(event)">
+        <div class="form-group">
+          <label class="form-label" for="resetNewPassInput">Nova senha</label>
+          <input type="password" id="resetNewPassInput" class="form-input" placeholder="Mínimo 6 caracteres" minlength="6" required autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="resetConfirmPassInput">Confirmar nova senha</label>
+          <input type="password" id="resetConfirmPassInput" class="form-input" placeholder="Repita a nova senha" minlength="6" required autocomplete="new-password">
+        </div>
+        <button type="submit" id="btnSubmitResetPass" class="btn-action btn-primary">
+          Salvar nova senha
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- SCRIPT PRINCIPAL AUTOCONTIDO (REST NATIVO FETCH - SEM SDK/CDN) -->
   <script>
     // 1. CONFIGURAÇÕES FIXAS DO SUPABASE
@@ -1520,6 +1546,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const appPrefixes = ['savetagpet_', 'sb-', 'stp_', 'supabase'];
       const shouldRemoveKey = (k) => {
         if (!k) return false;
+        // Preserva o code_verifier do fluxo PKCE de redefinição de senha
+        if (k === 'savetagpet_reset_verifier') return false;
         const lower = k.toLowerCase();
         return appPrefixes.some(p => lower.startsWith(p)) ||
                lower.includes('session') ||
@@ -1712,8 +1740,19 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         return { data, error: null };
       },
 
+      // 1. NO ENVIO DO E-MAIL (Esqueci minha senha):
+      // Antes do POST /auth/v1/recover, gera code_verifier (64 chars) e code_challenge (SHA-256 base64url),
+      // armazena o verifier no localStorage (savetagpet_reset_verifier) e envia challenge no payload.
       async resetPassword(email) {
-        const redirectUrl = window.location.origin + window.location.pathname + '?reset=1';
+        const verifier = generateCodeVerifier(64);
+        const challenge = await generateCodeChallenge(verifier);
+
+        try {
+          localStorage.setItem('savetagpet_reset_verifier', verifier);
+        } catch (e) {
+          console.warn('[SaveTagPet] Falha ao persistir code_verifier:', e);
+        }
+
         const res = await fetch(`${SUPABASE_URL}/auth/v1/recover`, {
           method: 'POST',
           headers: {
@@ -1722,7 +1761,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
           },
           body: JSON.stringify({
             email,
-            redirect_to: redirectUrl
+            code_challenge: challenge,
+            code_challenge_method: 'S256'
           })
         });
         const data = await res.json().catch(() => ({}));
@@ -1901,27 +1941,54 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       return s.length > 0 ? s : null;
     }
 
+    // --- UTILITÁRIOS PKCE PARA REDEFINIÇÃO DE SENHA ---
+    // Gera string aleatória de 64 caracteres seguros para URL
+    function generateCodeVerifier(length = 64) {
+      const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+      const randomValues = new Uint8Array(length);
+      window.crypto.getRandomValues(randomValues);
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += charset[randomValues[i] % charset.length];
+      }
+      return result;
+    }
+
+    // Calcula SHA-256 e converte em formato base64url sem padding '='
+    async function generateCodeChallenge(verifier) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(verifier);
+      const digest = await window.crypto.subtle.digest('SHA-256', data);
+      const bytes = new Uint8Array(digest);
+      let binary = '';
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary)
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+
+    // Contexto em memória da recuperação em andamento (PKCE ou Implicit)
+    let pendingResetAuth = null;
+
     // 4. INICIALIZAÇÃO DA APLICAÇÃO
     window.addEventListener('DOMContentLoaded', async () => {
       // 1. Diagnóstico de Conexão com trava fail-closed
       await performServerHealthCheck();
 
-      // 2. Checar hash de recuperação de senha do Supabase (#access_token=...&type=recovery) ou query ?reset=1
-      checkRecoveryTokensInUrl();
+      // 2. DETECÇÃO DO LINK SUPABASE: PKCE (?code=) ou Implicit (#access_token=...&type=recovery) ou alteração de e-mail
+      const isHandlingRecovery = await checkRecoveryTokensInUrl();
 
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('reset') === '1') {
-        showResetPasswordView();
-      }
-
-      // 3. Restaurar sessão ativa se existir e não expirada
-      const validSession = await api.getValidSession();
-      if (validSession && isServerOnline) {
-        currentSession = validSession;
-        await loadTutorDashboard();
-        showView('viewDashboard');
-      } else {
-        if (!urlParams.get('reset')) {
+      // 3. Se não houver link de recuperação pendente, segue o fluxo padrão de sessão / login
+      if (!isHandlingRecovery) {
+        const validSession = await api.getValidSession();
+        if (validSession && isServerOnline) {
+          currentSession = validSession;
+          await loadTutorDashboard();
+          showView('viewDashboard');
+        } else {
           showView('viewAuth');
         }
       }
@@ -1929,8 +1996,13 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       // Fechar modal com tecla ESC
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
-          closeLightbox();
+          const resetModal = document.getElementById('modalResetPasswordAction');
+          if (resetModal && resetModal.classList.contains('active')) {
+            closeResetPasswordActionModal();
+          } else {
+            document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
+            closeLightbox();
+          }
         }
       });
     });
@@ -1960,23 +2032,219 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
     }
 
-    function checkRecoveryTokensInUrl() {
-      if (window.location.hash) {
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-        const type = hashParams.get('type');
-        if (accessToken) {
-          api.saveSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            expires_in: parseInt(hashParams.get('expires_in') || '3600', 10),
-            user: {}
-          });
-          if (type === 'recovery') {
-            showResetPasswordView();
+    // 2. DETECÇÃO DO LINK (ao carregar a página):
+    // Verifica a URL por:
+    // a) hash contendo access_token e type=recovery (fluxo implicit) OU
+    // b) querystring ?code=... (fluxo PKCE — caso mais comum).
+    // Se detectado, exibe modal "Definir nova senha" e oculta o formulário de login por baixo.
+    async function checkRecoveryTokensInUrl() {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashString = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+      const hashParams = new URLSearchParams(hashString);
+
+      const pkceCode = searchParams.get('code');
+      const hashAccessToken = hashParams.get('access_token');
+      const hashRefreshToken = hashParams.get('refresh_token');
+      const hashType = hashParams.get('type');
+      const queryType = searchParams.get('type');
+
+      // Se o link vier de "alterar email" (type=email_change)
+      if (hashType === 'email_change' || queryType === 'email_change') {
+        if (pkceCode) {
+          const verifier = localStorage.getItem('savetagpet_reset_verifier');
+          try {
+            const tokenRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
+              method: 'POST',
+              headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ auth_code: pkceCode, code_verifier: verifier || '' })
+            });
+            localStorage.removeItem('savetagpet_reset_verifier');
+            cleanUrlTokens();
+            if (tokenRes.ok) {
+              showToast('E-mail confirmado com sucesso!', 'success');
+              showView('viewAuth');
+              switchAuthTab('login');
+              return true;
+            }
+          } catch (e) {
+            console.error('[SaveTagPet] Erro ao confirmar troca de e-mail PKCE:', e);
           }
+        } else if (hashAccessToken) {
+          cleanUrlTokens();
+          showToast('E-mail confirmado com sucesso!', 'success');
+          showView('viewAuth');
+          switchAuthTab('login');
+          return true;
         }
+      }
+
+      // Detecção de link de redefinição de senha: PKCE (?code=) ou Implicit (hash recovery)
+      const isPkce = Boolean(pkceCode);
+      const isImplicitRecovery = Boolean(hashAccessToken && hashType === 'recovery');
+
+      if (isPkce || isImplicitRecovery) {
+        pendingResetAuth = {
+          type: isPkce ? 'pkce' : 'implicit',
+          code: pkceCode,
+          accessToken: hashAccessToken || null,
+          refreshToken: hashRefreshToken || null
+        };
+
+        openResetPasswordActionModal();
+        return true;
+      }
+
+      return false;
+    }
+
+    // Abre o modal "Definir nova senha" e oculta completamente o formulário de login por baixo
+    function openResetPasswordActionModal() {
+      showView('viewAuth');
+      const authCard = document.querySelector('.auth-card');
+      if (authCard) {
+        authCard.style.display = 'none';
+      }
+      openModal('modalResetPasswordAction');
+      const passInput = document.getElementById('resetNewPassInput');
+      if (passInput) passInput.focus();
+    }
+
+    // Fecha o modal de redefinição, restaura a visibilidade do login e limpa tokens
+    function closeResetPasswordActionModal() {
+      closeModal('modalResetPasswordAction');
+      const authCard = document.querySelector('.auth-card');
+      if (authCard) {
+        authCard.style.display = 'block';
+      }
+      switchAuthTab('login');
+      cleanUrlTokens();
+      pendingResetAuth = null;
+    }
+
+    // 4. LIMPEZA DA URL via history.replaceState para não reprocessar o token ao recarregar a página
+    function cleanUrlTokens() {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    // 3. CONFIRMAR NOVA SENHA:
+    // Troca o código PKCE por access_token (se aplicável), chama PUT /auth/v1/user e atualiza a interface.
+    async function handleConfirmNewPassword(e) {
+      e.preventDefault();
+      const newPass = document.getElementById('resetNewPassInput').value;
+      const confirmPass = document.getElementById('resetConfirmPassInput').value;
+      const btn = document.getElementById('btnSubmitResetPass');
+
+      if (!newPass || newPass.length < 6) {
+        showToast('A nova senha deve ter no mínimo 6 caracteres.', 'error');
+        return;
+      }
+
+      if (newPass !== confirmPass) {
+        showToast('As senhas digitadas não coincidem. Digite novamente.', 'error');
+        return;
+      }
+
+      if (!pendingResetAuth) {
+        showToast('Token de recuperação não encontrado. Solicite um novo link.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Salvando nova senha...';
+
+      let accessToken = pendingResetAuth.accessToken;
+
+      // Fluxo PKCE (?code=): buscar code_verifier do localStorage e POST /auth/v1/token?grant_type=pkce
+      if (pendingResetAuth.type === 'pkce' && !accessToken) {
+        const verifier = localStorage.getItem('savetagpet_reset_verifier');
+        try {
+          const tokenRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              auth_code: pendingResetAuth.code,
+              code_verifier: verifier || ''
+            })
+          });
+
+          const { body: tokenData, rawText, detail } = await parseResponseError(tokenRes);
+
+          if (!tokenRes.ok || !tokenData?.access_token) {
+            console.error('[SaveTagPet] Falha ao obter access_token via PKCE:', {
+              status: tokenRes.status,
+              response: tokenData || rawText
+            });
+            btn.disabled = false;
+            btn.textContent = 'Salvar nova senha';
+            showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', detail);
+            return;
+          }
+
+          accessToken = tokenData.access_token;
+          pendingResetAuth.accessToken = accessToken;
+          // Após usar com sucesso, remove o verifier do localStorage
+          localStorage.removeItem('savetagpet_reset_verifier');
+        } catch (netErr) {
+          console.error('[SaveTagPet] Erro de rede ao trocar código PKCE:', netErr);
+          btn.disabled = false;
+          btn.textContent = 'Salvar nova senha';
+          showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', `Detalhe: status 0 — ${netErr.message || 'falha de conexão'}`);
+          return;
+        }
+      }
+
+      // Com o access_token em mãos: PUT /auth/v1/user com { password: novaSenha }
+      try {
+        const updateRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+          method: 'PUT',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + accessToken,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password: newPass })
+        });
+
+        const { body: updateData, rawText: upText, detail: upDetail } = await parseResponseError(updateRes);
+
+        btn.disabled = false;
+        btn.textContent = 'Salvar nova senha';
+
+        if (!updateRes.ok) {
+          console.error('[SaveTagPet] Falha ao atualizar senha via PUT /auth/v1/user:', {
+            status: updateRes.status,
+            response: updateData || upText
+          });
+          // Modal continua aberto para tentar de novo
+          showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', upDetail);
+          return;
+        }
+
+        // Sucesso (200): limpar URL, fechar modal, restaurar login e exibir toast verde
+        cleanUrlTokens();
+        closeModal('modalResetPasswordAction');
+        const authCard = document.querySelector('.auth-card');
+        if (authCard) {
+          authCard.style.display = 'block';
+        }
+        document.getElementById('formSetNewPasswordModal').reset();
+        switchAuthTab('login');
+        pendingResetAuth = null;
+        showToast('Senha atualizada com sucesso! Faça login com a nova senha.', 'success');
+
+      } catch (err) {
+        console.error('[SaveTagPet] Erro de rede ao redefinir senha:', err);
+        btn.disabled = false;
+        btn.textContent = 'Salvar nova senha';
+        showToast('Não foi possível redefinir a senha. Tente novamente.', 'error', `Detalhe: status 0 — ${err.message || 'falha de conexão'}`);
       }
     }
 
