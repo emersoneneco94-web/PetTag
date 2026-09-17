@@ -1984,14 +1984,33 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
     // 4. INICIALIZAÇÃO DA APLICAÇÃO
     window.addEventListener('DOMContentLoaded', async () => {
-      // 1. Diagnóstico de Conexão com trava fail-closed
+      /*
+       * =========================================================================
+       * REGRA DE PRIORIDADE ABSOLUTA DE FLUXO (Save Tag Pet):
+       * 1. ANTES de qualquer verificação de sessão do usuário ou renderização do painel,
+       *    executamos checkRecoveryTokensInUrl() em PRIMEIRO lugar.
+       * 2. Se a URL trouxer token de recovery (hash com access_token e type=recovery,
+       *    OU querystring ?code=):
+       *    - Destruímos IMEDIATAMENTE a sessão atual (logout no Supabase + limpeza de storage).
+       *    - Exibimos o modal "Definir nova senha" imediatamente.
+       *    - O painel do tutor NUNCA é renderizado nesse estado, mesmo se havia sessão ativa.
+       *    - O token da URL tem prioridade absoluta sobre qualquer sessão do navegador.
+       * 3. Se a URL contiver confirmação de e-mail (type=email_change, type=signup ou token):
+       *    - Destruímos a sessão anterior, confirmamos o e-mail, exibimos toast verde
+       *      e mostramos a tela de login normal — nunca abrindo o painel por cima.
+       * 4. SÓ DEPOIS que checkRecoveryTokensInUrl() terminar SEM encontrar nenhum token
+       *    é que a aplicação segue o fluxo normal (verificar sessão -> painel ou login).
+       * =========================================================================
+       */
+
+      // REGRA DE PRIORIDADE: Executar SEMPRE primeiro antes de qualquer checagem de sessão
+      const isHandlingRecoveryOrToken = await checkRecoveryTokensInUrl();
+
+      // Checagem de integridade e conectividade com a API
       await performServerHealthCheck();
 
-      // 2. DETECÇÃO DO LINK SUPABASE: PKCE (?code=) ou Implicit (#access_token=...&type=recovery) ou alteração de e-mail
-      const isHandlingRecovery = await checkRecoveryTokensInUrl();
-
-      // 3. Se não houver link de recuperação pendente, segue o fluxo padrão de sessão / login
-      if (!isHandlingRecovery) {
+      // Só segue o fluxo normal de sessão se nenhum token de URL estiver sendo processado
+      if (!isHandlingRecoveryOrToken) {
         const validSession = await api.getValidSession();
         if (validSession && isServerOnline) {
           currentSession = validSession;
@@ -2041,11 +2060,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       }
     }
 
-    // 2. DETECÇÃO DO LINK (ao carregar a página):
-    // Verifica a URL por:
-    // a) hash contendo access_token e type=recovery (fluxo implicit) OU
-    // b) querystring ?code=... (fluxo PKCE — caso mais comum).
-    // Se detectado, exibe modal "Definir nova senha" e oculta o formulário de login por baixo.
+    // PROCESSAMENTO DE TOKENS NA URL COM PRIORIDADE ABSOLUTA SOBRE A SESSÃO:
+    // Verifica a URL por tokens de recuperação de senha ou confirmação de e-mail.
+    // Se existir qualquer token, anula e destrói imediatamente qualquer sessão ativa anterior,
+    // garantindo que o usuário nunca caia no painel por engano ao clicar no link de redefinição.
     async function checkRecoveryTokensInUrl() {
       const searchParams = new URLSearchParams(window.location.search);
       const hashString = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
@@ -2057,12 +2075,20 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
       const hashType = hashParams.get('type');
       const queryType = searchParams.get('type');
 
-      // Se o link vier de "alterar email" (type=email_change)
-      if (hashType === 'email_change' || queryType === 'email_change') {
+      // 1. CONFIRMAÇÃO DE E-MAIL (type=email_change, type=signup ou token de confirmação)
+      const isEmailConfirm = hashType === 'email_change' || queryType === 'email_change' ||
+                             hashType === 'signup' || queryType === 'signup' ||
+                             hashType === 'invite' || queryType === 'invite' ||
+                             searchParams.has('confirmation_token');
+
+      if (isEmailConfirm) {
+        // Prioridade: destruir imediatamente a sessão anterior e limpar o storage
+        await api.destroyPreviousSession();
+
         if (pkceCode) {
           const verifier = localStorage.getItem('savetagpet_reset_verifier');
           try {
-            const tokenRes = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
+            await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=pkce`, {
               method: 'POST',
               headers: {
                 'apikey': SUPABASE_ANON_KEY,
@@ -2071,37 +2097,36 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
               body: JSON.stringify({ auth_code: pkceCode, code_verifier: verifier || '' })
             });
             localStorage.removeItem('savetagpet_reset_verifier');
-            cleanUrlTokens();
-            if (tokenRes.ok) {
-              showToast('E-mail confirmado com sucesso!', 'success');
-              showView('viewAuth');
-              switchAuthTab('login');
-              return true;
-            }
           } catch (e) {
-            console.error('[SaveTagPet] Erro ao confirmar troca de e-mail PKCE:', e);
+            console.error('[SaveTagPet] Erro ao confirmar e-mail PKCE:', e);
           }
-        } else if (hashAccessToken) {
-          cleanUrlTokens();
-          showToast('E-mail confirmado com sucesso!', 'success');
-          showView('viewAuth');
-          switchAuthTab('login');
-          return true;
         }
+
+        cleanUrlTokens();
+        showToast('E-mail confirmado com sucesso! Faça login para continuar.', 'success');
+        showView('viewAuth');
+        switchAuthTab('login');
+        return true;
       }
 
-      // Detecção de link de redefinição de senha: PKCE (?code=) ou Implicit (hash recovery)
-      const isPkce = Boolean(pkceCode);
+      // 2. REDEFINIÇÃO DE SENHA (Recovery via PKCE ?code= OU Implicit #access_token=...&type=recovery)
       const isImplicitRecovery = Boolean(hashAccessToken && hashType === 'recovery');
+      const isPkceRecovery = Boolean(pkceCode && !isEmailConfirm);
 
-      if (isPkce || isImplicitRecovery) {
+      if (isImplicitRecovery || isPkceRecovery) {
+        // REGRA DE PRIORIDADE:
+        // 1. Destruir IMEDIATAMENTE a sessão atual do navegador
+        await api.destroyPreviousSession();
+
+        // 2. Preparar credenciais de redefinição
         pendingResetAuth = {
-          type: isPkce ? 'pkce' : 'implicit',
+          type: isPkceRecovery ? 'pkce' : 'implicit',
           code: pkceCode,
           accessToken: hashAccessToken || null,
           refreshToken: hashRefreshToken || null
         };
 
+        // 3. Exibir o modal "Definir nova senha" imediatamente — NUNCA renderizar o painel
         openResetPasswordActionModal();
         return true;
       }
