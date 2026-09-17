@@ -782,7 +782,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     // Cole aqui a sua chave anon do Supabase (Authentication → API → anon public key). É segura para páginas públicas.
     // ============================================================================
     const SUPABASE_URL = 'https://mqiwoubhivutavpnpeax.supabase.co';
-    const SUPABASE_ANON_KEY = 'COLE_AQUI_SUA_CHAVE_ANON';
+    const SUPABASE_ANON_KEY = 'sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll';
 
     // Base de dados mock / fallback para demonstração end-to-end e resiliência offline
     const MOCK_PETS = {
@@ -988,18 +988,18 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     async function fetchPetById(id) {
       const normalizedId = String(id).trim().toLowerCase();
 
-      // Se a chave não foi configurada ainda ou estiver em teste, busca no mock
-      if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === 'COLE_AQUI_SUA_CHAVE_ANON') {
-        // Simula pequeno delay de rede para experiência fluida
-        await new Promise(r => setTimeout(r, 260));
-        if (MOCK_PETS[normalizedId]) {
-          return MOCK_PETS[normalizedId];
-        }
-        // Tenta achar em IDs numéricos fictícios
-        if (normalizedId === '1' || normalizedId === '123') return MOCK_PETS['thor'];
-        if (normalizedId === '2') return MOCK_PETS['luna'];
-        return null;
-      }
+      // Se a chave não foi configurada, busca no mock
+if (!SUPABASE_ANON_KEY) {
+    // Simula pequeno delay de rede para experiência fluida
+    await new Promise(r => setTimeout(r, 260));
+    if (MOCK_PETS[normalizedId]) {
+        return MOCK_PETS[normalizedId];
+    }
+    // Tenta achar em IDs numéricos fictícios
+    if (normalizedId === '1' || normalizedId === '123') return MOCK_PETS['thor'];
+    if (normalizedId === '2') return MOCK_PETS['luna'];
+    return null;
+}
 
       // Consulta real ao Supabase usando a API REST oficial (compatível e segura para páginas estáticas)
       try {
