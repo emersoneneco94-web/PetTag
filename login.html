@@ -1526,6 +1526,11 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     let pendingPostImageBase64 = '';
     let isServerOnline = false;
 
+    // Monitoramento de Leituras de TAG (Geolocalização)
+    let tagScansPollingInterval = null;
+    const knownPetScans = new Map(); // petId -> last known scan_at (string | null)
+    const latestPetScanData = new Map(); // petId -> scan record object
+
     // Cache de exibição (sempre regenerado do banco via GET - sem degradação silenciosa)
     let localCachePets = [];
     let localCacheVaccines = [];
@@ -1537,6 +1542,10 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     // LIMPEZA TOTAL DE STORAGE DO APP (LOCALSTORAGE + SESSIONSTORAGE)
     // Garante que nenhum vestígio de sessão ou cache de usuário permaneça salvo
     function clearAppStorage() {
+      stopTagScansPolling();
+      knownPetScans.clear();
+      latestPetScanData.clear();
+
       currentSession = null;
       localCachePets = [];
       localCacheVaccines = [];
@@ -2427,6 +2436,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
     // Dispara DELETE /auth/v1/logout com o Bearer token atual e limpa todas as chaves
     // do app do localStorage e sessionStorage, garantindo que nada do usuário permaneça no storage.
     async function handleLogout() {
+      stopTagScansPolling();
       await api.signOut();
       showToast('Sessão encerrada com segurança.', 'success');
       showView('viewAuth');
@@ -2507,6 +2517,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
       // A listagem de pets SEMPRE filtra tutor_id = user.id da sessão atual
       await fetchAllUserData(currentUserId);
+
+      // Inicia monitoramento de leituras de TAG para pets perdidos
+      startTagScansPolling();
     }
 
     // REGRA 2: BUSCA DE PETS, VACINAS E POSTS FILTRADOS ESTREITAMENTE POR TUTOR_ID DA SESSÃO ATUAL
@@ -2642,8 +2655,14 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
       userPets.forEach(pet => {
         let badgeHtml = '';
+        let lostScanHtml = '';
         if (pet.is_lost) {
           badgeHtml = '<span class="badge-status lost">🚨 MODO PERDIDO ATIVO</span>';
+          lostScanHtml = `
+            <div id="lost-pet-scan-${pet.id}" style="margin: 8px 0 12px; font-size: 0.8125rem; background: var(--red-bg); color: var(--red); padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid #fecaca; line-height: 1.35;">
+              ${renderLostPetScanLine(pet.id)}
+            </div>
+          `;
         } else if (pet.tag_code) {
           badgeHtml = `<span class="badge-status active-tag">🏷️ TAG: ${escapeHtml(pet.tag_code)}</span>`;
         } else {
@@ -2660,7 +2679,8 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <img class="pet-card-avatar" src="${escapeHtml(pet.photo_url || "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>")}" alt="${escapeHtml(pet.name)}">
             <h4 class="pet-card-name">${escapeHtml(pet.name)}</h4>
             <p class="pet-card-sub">${escapeHtml(pet.species)} • ${escapeHtml(pet.breed)}</p>
-            <div style="margin-bottom: 12px;">${badgeHtml}</div>
+            <div style="margin-bottom: ${pet.is_lost ? '6px' : '12px'};">${badgeHtml}</div>
+            ${lostScanHtml}
             <div style="display:flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px;" onclick="event.stopPropagation()">
               <button class="btn-link" style="font-size:0.8125rem;" onclick="editPetById('${pet.id}')">✏️ Editar</button>
               <button class="btn-link" style="font-size:0.8125rem;" onclick="openPetProfile('${pet.id}', 'saude')">💉 Carteira</button>
@@ -3808,6 +3828,7 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         showToast('Alerta ativado! A página pública da TAG agora mostra o aviso de urgência.', 'success');
         closeModal('modalLostToggle');
         renderDashboardPets();
+        pollLostPetScans();
 
         if (currentSelectedPetId === validated.petId) {
           openPetProfile(validated.petId);
@@ -4067,6 +4088,179 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
         input.value = v.replace(/^(\d{2})(\d{0,5})$/, '($1) $2');
       } else {
         input.value = v;
+      }
+    }
+
+    // FORMATADORES DE DATA E HORA DE LEITURA
+    function formatScanDateTimeBR(isoStr) {
+      if (!isoStr) return '';
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return isoStr;
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      return `${day}/${month} ${hours}:${minutes}`;
+    }
+
+    // RENDERIZADOR DA LINHA DE STATUS DO SCAN NO CARD DO PET PERDIDO
+    function renderLostPetScanLine(petId) {
+      const scan = latestPetScanData.get(String(petId));
+      if (!scan || !scan.scan_at) {
+        return '📍 TAG ainda não foi lida desde o alerta';
+      }
+
+      const formatted = formatScanDateTimeBR(scan.scan_at);
+      let content = `📍 Última leitura da TAG: ${formatted}`;
+
+      if (scan.latitude != null && scan.longitude != null) {
+        const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(scan.latitude)},${encodeURIComponent(scan.longitude)}`;
+        content += ` <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline; font-weight: 700; margin-left: 4px;" onclick="event.stopPropagation()">Ver no mapa</a>`;
+      }
+
+      return content;
+    }
+
+    function updateLostPetScanCards() {
+      const lostPets = localCachePets.filter(p => p.is_lost);
+      lostPets.forEach(p => {
+        const el = document.getElementById(`lost-pet-scan-${p.id}`);
+        if (el) {
+          el.innerHTML = renderLostPetScanLine(p.id);
+        }
+      });
+    }
+
+    // ALERTA DE NOVA LEITURA DE TAG (TOAST VERMELHO DE URGÊNCIA QUE NÃO FECHA SOZINHO)
+    function showUrgentScanToast(petName, scan) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-error';
+      toast.style.position = 'relative';
+      toast.style.paddingRight = '32px';
+      toast.style.border = '2px solid #b91c1c';
+      toast.style.boxShadow = '0 8px 24px rgba(220, 38, 38, 0.4)';
+
+      const hasCoords = scan.latitude != null && scan.longitude != null;
+      let locHtml = '';
+
+      if (hasCoords) {
+        const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(scan.latitude)},${encodeURIComponent(scan.longitude)}`;
+        locHtml = `
+          <div style="margin-top: 6px;">
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; background: #ffffff; color: var(--red); padding: 5px 12px; border-radius: 4px; font-weight: 700; text-decoration: none; font-size: 0.8125rem; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+              📍 Ver localização no Google Maps
+            </a>
+          </div>
+        `;
+      } else {
+        locHtml = `
+          <div style="margin-top: 6px; font-size: 0.8125rem; opacity: 0.95; font-weight: 400;">
+            Leitura registrada sem localização (permissão negada pelo leitor)
+          </div>
+        `;
+      }
+
+      toast.innerHTML = `
+        <button type="button" aria-label="Fechar alerta" onclick="this.closest('.toast').remove()" style="position: absolute; top: 8px; right: 8px; background: transparent; border: none; color: #ffffff; font-size: 1.15rem; cursor: pointer; padding: 2px 6px; line-height: 1; opacity: 0.85;">✕</button>
+        <span style="font-size: 1.25rem;">🚨</span>
+        <div class="toast-content" style="flex: 1;">
+          <div class="toast-title" style="font-size: 0.95rem; font-weight: 700;">
+            🚨 ${escapeHtml(petName)} foi visto! Alguém escaneou a TAG.
+          </div>
+          ${locHtml}
+        </div>
+      `;
+
+      container.appendChild(toast);
+
+      // Vibração se disponível
+      if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+        try {
+          navigator.vibrate([250, 100, 250, 100, 300]);
+        } catch (_) {}
+      }
+    }
+
+    // MONITORAMENTO DE LEITURAS DE TAG (POLLING A CADA 30 SEGUNDOS)
+    async function pollLostPetScans() {
+      const sess = await api.getValidSession();
+      if (!sess || !sess.access_token) return;
+
+      const lostPets = localCachePets.filter(p => Boolean(p.is_lost));
+      if (lostPets.length === 0) return;
+
+      const token = sess.access_token;
+
+      for (const pet of lostPets) {
+        const petKey = String(pet.id);
+        const url = `${SUPABASE_URL}/rest/v1/pet_scans?pet_id=eq.${encodeURIComponent(pet.id)}&order=scan_at.desc&limit=1`;
+
+        try {
+          const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + token,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => null);
+            console.error(`[SaveTagPet] Falha ao consultar leituras da TAG do pet ${pet.id}`, {
+              status: res.status,
+              url,
+              body: errBody
+            });
+            continue;
+          }
+
+          const scans = await res.json().catch(() => []);
+          const latestScan = Array.isArray(scans) && scans.length > 0 ? scans[0] : null;
+
+          if (latestScan && latestScan.scan_at) {
+            const hasKnownRecord = knownPetScans.has(petKey);
+            const lastKnownScanAt = knownPetScans.get(petKey);
+
+            // Alerta se for a primeira leitura vista ou leitura mais recente que a conhecida
+            const isFirstSeen = !hasKnownRecord;
+            const isNewer = lastKnownScanAt && new Date(latestScan.scan_at) > new Date(lastKnownScanAt);
+
+            if (isFirstSeen || isNewer) {
+              showUrgentScanToast(pet.name, latestScan);
+            }
+
+            knownPetScans.set(petKey, latestScan.scan_at);
+            latestPetScanData.set(petKey, latestScan);
+          } else {
+            // Nenhum scan registrado para este pet ainda
+            if (!knownPetScans.has(petKey)) {
+              knownPetScans.set(petKey, null);
+            }
+            latestPetScanData.delete(petKey);
+          }
+        } catch (netErr) {
+          // Fail-closed: apenas logar erro de rede no console, nunca travar o painel
+          console.error(`[SaveTagPet] Erro de rede ao buscar leituras da TAG do pet ${pet.id}:`, netErr);
+        }
+      }
+
+      updateLostPetScanCards();
+    }
+
+    function startTagScansPolling() {
+      stopTagScansPolling();
+      pollLostPetScans();
+      tagScansPollingInterval = setInterval(pollLostPetScans, 30000);
+    }
+
+    function stopTagScansPolling() {
+      if (tagScansPollingInterval) {
+        clearInterval(tagScansPollingInterval);
+        tagScansPollingInterval = null;
       }
     }
 
