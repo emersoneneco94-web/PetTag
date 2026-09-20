@@ -5010,4 +5010,203 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   window.verificarAlertas = function (pid) { origAlertas(pid || window.__getPetIdSmart()); };
 })();
 </script>
+  <style>
+/* ===== SAVE TAG PET — ESTILO DO HISTÓRICO DE SAÚDE ===== */
+/* Seção */
+#saudeListContainer .vaccine-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #07966b !important;
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.9rem;
+  box-shadow: 0 2px 8px rgba(11,85,116,0.06);
+}
+#saudeListContainer .vaccine-item strong {
+  color: #0b5574;
+  font-size: 1.05rem;
+}
+#saudeListContainer .stat-label {
+  background: #dff8ee;
+  color: #067d59;
+  padding: 0.25rem 0.7rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+#saudeListContainer .vaccine-item p {
+  color: #6d8187;
+  font-size: 0.9rem;
+  margin: 0.3rem 0;
+}
+#saudeListContainer .vaccine-item .btn {
+  border-radius: 50px;
+  font-weight: 700;
+}
+
+/* Modal bonito e centralizado */
+#modalSaude.modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(11,85,116,0.55) !important;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999 !important;
+  padding: 1rem;
+  overflow-y: auto;
+}
+#modalSaude .modal-box {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 16px 48px rgba(11,85,116,0.25);
+  position: relative;
+}
+#modalSaude h3 {
+  color: #0b5574;
+  font-size: 1.3rem;
+  margin-bottom: 1.1rem;
+  padding-right: 2rem;
+}
+#modalSaude .saude-fechar-x {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #6d8187;
+}
+#modalSaude label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #0b5574;
+  margin: 0.75rem 0 0.3rem;
+}
+#modalSaude select,
+#modalSaude input {
+  width: 100% !important;
+  padding: 0.7rem 0.9rem !important;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  background: #f8fcfb;
+  outline: none;
+}
+#modalSaude select:focus,
+#modalSaude input:focus {
+  border-color: #07966b;
+  background: #ffffff;
+}
+#modalSaude .modal-acoes {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+#modalSaude .modal-acoes .btn {
+  flex: 1;
+  border-radius: 50px;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border: none;
+}
+#modalSaude .modal-acoes .btn-salvar {
+  background: #07966b;
+  color: #fff;
+}
+#modalSaude .modal-acoes .btn-salvar:hover { background: #067d59; }
+#modalSaude .modal-acoes .btn-fechar {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* Banner de alertas estilizado */
+#bannerAlertas {
+  background: linear-gradient(90deg, #fef3c7, #fde68a) !important;
+  border: 1px solid #f59e0b !important;
+  border-radius: 16px !important;
+  padding: 0.9rem 1.25rem !important;
+  margin: 1rem 0 1.25rem !important;
+  color: #92400e !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+</style>
+<script>
+(function () {
+  // Recria o modal com rótulos e botões elegantes (mantém os mesmos IDs)
+  function montarModalBonito() {
+    var m = document.getElementById('modalSaude');
+    if (!m) return;
+    m.innerHTML = '<div class="modal-box">'
+      + '<button class="saude-fechar-x" type="button" onclick="fecharModalSaude()">\u2715</button>'
+      + '<h3>Novo Registro de Sa\u00fade</h3>'
+      + '<label>Tipo de registro</label>'
+      + '<select id="saudeTipo">'
+      + '<option value="consulta">Consulta</option>'
+      + '<option value="exame">Exame</option>'
+      + '<option value="medicamento">Rem\u00e9dio controlado</option>'
+      + '<option value="veterinario">Veterin\u00e1rio</option>'
+      + '<option value="plano_saude">Plano de sa\u00fade</option>'
+      + '<option value="clinica">Cl\u00ednica veterin\u00e1ria</option>'
+      + '</select>'
+      + '<label>T\u00edtulo</label>'
+      + '<input id="saudeTitulo" placeholder="Ex: Cl\u00ednica Vet Vida, Ultrassom...">'
+      + '<label>Detalhes / observa\u00e7\u00f5es</label>'
+      + '<input id="saudeDetalhes" placeholder="Opcional">'
+      + '<label>Data do evento</label>'
+      + '<input id="saudeData" type="date">'
+      + '<label>Pr\u00f3xima data (gera alerta)</label>'
+      + '<input id="saudeProxima" type="date">'
+      + '<label>Telefone / contato</label>'
+      + '<input id="saudeContato" placeholder="Opcional">'
+      + '<label>Endere\u00e7o</label>'
+      + '<input id="saudeEndereco" placeholder="Opcional">'
+      + '<div class="modal-acoes">'
+      + '<button type="button" class="btn btn-fechar" onclick="fecharModalSaude()">Cancelar</button>'
+      + '<button type="button" class="btn btn-salvar" onclick="salvarSaude()">Salvar</button>'
+      + '</div></div>';
+  }
+
+  window.fecharModalSaude = function () {
+    var m = document.getElementById('modalSaude');
+    if (m) m.style.display = 'none';
+  };
+  window.abrirModalSaude = function () {
+    var m = document.getElementById('modalSaude');
+    if (!m) return;
+    montarModalBonito();
+    m.style.display = 'flex';
+  };
+
+  // Botão "+ Adicionar Registro" agora chama o modal bonito
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('button');
+    if (!b) return;
+    var txt = (b.textContent || '').toLowerCase();
+    if (txt.indexOf('adicionar registro') !== -1) {
+      e.stopPropagation();
+      window.abrirModalSaude();
+    }
+  }, true);
+
+  // Recria o modal já na carga da página
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', montarModalBonito);
+  } else {
+    montarModalBonito();
+  }
+})();
+</script>
 </html>
