@@ -5300,4 +5300,99 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   };
 })();
 </script>
+  <script>
+(function () {
+  // ===== CONEXÃO EXTRAÍDA DO PRÓPRIO CÓDIGO-FONTE DA PÁGINA =====
+  var __sb = null;
+  var __esperando = [];
+  function quandoPronto(fn) { if (__sb) { fn(__sb); } else { __esperando.push(fn); } }
+
+  fetch(location.href).then(function (r) { return r.text(); }).then(function (html) {
+    // Procura a linha createClient('URL', 'KEY') no código da página
+    var m = html.match(/createClient\(\s*['"]([^'"]+supabase[^'"]+)['"]\s*,\s*['"]([^'"]{20,})['"]/);
+    if (m && window.supabase && typeof window.supabase.createClient === 'function') {
+      __sb = window.supabase.createClient(m[1], m[2]);
+      var fila = __esperando.slice(); __esperando = [];
+      fila.forEach(function (fn) { fn(__sb); });
+    } else {
+      // Fallback: tenta as variáveis globais conhecidas
+      var cand = ['sb','sbClient','supabaseClient','client','db','_supabase'];
+      for (var i = 0; i < cand.length; i++) {
+        var v = window[cand[i]];
+        if (v && typeof v.from === 'function') { __sb = v; break; }
+      }
+      var fila = __esperando.slice(); __esperando = [];
+      fila.forEach(function (fn) { fn(__sb); });
+    }
+  }).catch(function () {
+    var fila = __esperando.slice(); __esperando = [];
+    fila.forEach(function (fn) { fn(null); });
+  });
+
+  // ===== CARREGAR SAÚDE (aguarda a conexão) =====
+  window.carregarSaude = function (pid) {
+    if (window.__getPetIdSmart) pid = pid || window.__getPetIdSmart();
+    var lista = document.getElementById('saudeListContainer');
+    if (!lista) return;
+    lista.innerHTML = '<p style="color:#6d8187;">Carregando...</p>';
+    quandoPronto(function (sb) {
+      if (!sb) { lista.innerHTML = '<p style="color:#dc2626;">N\u00e3o achei a conex\u00e3o do banco. Me mande print da linha createClient.</p>'; return; }
+      if (!pid) { lista.innerHTML = '<p style="color:#6d8187;">Abra o perfil de um pet.</p>'; return; }
+      sb.from('saude_pet').select('*').eq('pet_id', pid).order('created_at', { ascending: false })
+        .then(function (res) {
+          if (res.error) { lista.innerHTML = '<p style="color:#dc2626;">Erro: ' + res.error.message + '</p>'; return; }
+          var data = res.data;
+          if (!data || !data.length) { lista.innerHTML = '<p style="color:#6d8187;">Nenhum registro de sa\u00fade ainda. Use "+ Adicionar Registro".</p>'; return; }
+          var nomes = { consulta:'Consulta', exame:'Exame', medicamento:'Rem\u00e9dio controlado', veterinario:'Veterin\u00e1rio', plano_saude:'Plano de sa\u00fade', clinica:'Cl\u00ednica veterin\u00e1ria' };
+          var html = '';
+          data.forEach(function (r) {
+            html += '<div class="vaccine-item" style="border-left:4px solid #07966b;">'
+              + '<div style="display:flex;justify-content:space-between;align-items:center;"><strong>' + (r.titulo || '(sem t\u00edtulo)') + '</strong>'
+              + '<span class="stat-label">' + (nomes[r.tipo] || r.tipo) + '</span></div>'
+              + (r.data_evento ? '<p>Evento em: ' + formatarDataBR(r.data_evento) + '</p>' : '')
+              + (r.proxima_data ? '<p>Pr\u00f3xima data: ' + formatarDataBR(r.proxima_data) + '</p>' : '')
+              + (r.contato ? '<p>Contato: ' + r.contato + '</p>' : '')
+              + (r.endereco ? '<p>Endere\u00e7o: ' + r.endereco + '</p>' : '')
+              + (r.detalhes ? '<p style="color:#6d8187;">' + r.detalhes + '</p>' : '')
+              + '<button class="btn" style="background:#dc2626;color:#fff;padding:0.3rem 0.8rem;font-size:0.8rem;" onclick="excluirSaude(\'' + r.id + '\')">Excluir</button>'
+              + '</div>';
+          });
+          lista.innerHTML = html;
+        });
+    });
+  };
+
+  // ===== SALVAR (aguarda a conexão) =====
+  window.salvarSaude = function () {
+    var pid = window.__getPetIdSmart ? window.__getPetIdSmart() : null;
+    if (!pid) { alert('N\u00e3o encontrei o pet aberto.'); return; }
+    quandoPronto(function (sb) {
+      if (!sb) { alert('N\u00e3o achei a conex\u00e3o do banco.'); return; }
+      sb.from('saude_pet').insert({
+        pet_id: pid,
+        tipo: document.getElementById('saudeTipo').value,
+        titulo: document.getElementById('saudeTitulo').value,
+        detalhes: document.getElementById('saudeDetalhes').value || null,
+        data_evento: document.getElementById('saudeData').value || null,
+        proxima_data: document.getElementById('saudeProxima').value || null,
+        contato: document.getElementById('saudeContato').value || null,
+        endereco: document.getElementById('saudeEndereco').value || null
+      }).then(function (res) {
+        if (res.error) { alert('Erro ao salvar: ' + res.error.message); return; }
+        if (typeof fecharModalSaude === 'function') fecharModalSaude();
+        carregarSaude(pid);
+      });
+    });
+  };
+
+  // ===== EXCLUIR (aguarda a conexão) =====
+  window.excluirSaude = function (id) {
+    if (!confirm('Excluir este registro?')) return;
+    quandoPronto(function (sb) {
+      if (!sb) return;
+      sb.from('saude_pet').delete().eq('id', id).then(function () { carregarSaude(); });
+    });
+  };
+})();
+</script>
 </html>
