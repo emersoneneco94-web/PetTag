@@ -789,8 +789,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
           <strong id="statusTitle" style="display: block; font-size: 0.92rem; margin-bottom: 2px;">Este é a Mel!</strong>
           <span id="statusDesc">O pet está com sua TAG Save Tag Pet ativa e protegida.</span>
           <div id="lostDetailsBox" class="lost-details-card" style="display: none;">
-            <div><strong>📍 Região:</strong> <span id="lostLoc">Santos/SP</span></div>
-            <div><strong>⏰ Data do desaparecimento:</strong> <span id="lostDate">Hoje</span></div>
+            <div id="lostLocRow"><strong>📍 Região:</strong> <span id="lostLoc">Santos/SP</span></div>
+            <div id="lostDateRow"><strong>⏰ Data do desaparecimento:</strong> <span id="lostDate">Hoje</span></div>
+            <div id="lostNotesRow" style="margin-top: 4px; display: none;"><strong>ℹ️ Informações:</strong> <span id="lostNotes"></span></div>
             <div id="lostRewardRow" style="margin-top: 4px; font-weight: 700; color: #dc2626;">🎁 Oferece-se recompensa</div>
           </div>
         </div>
@@ -1004,27 +1005,78 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
     }
 
-    // Garante que JAMAIS exiba endereços com rua, número, coordenadas ou CEP
-    function extractBroadCity(cityStr) {
-      if (!cityStr) return 'Santos/SP';
-      let clean = String(cityStr).trim();
-      
-      // Se contiver delimitadores de endereço (vírgula, ponto e vírgula, traço, quebra de linha)
-      const parts = clean.split(/[,;\n]/).map(s => s.trim()).filter(Boolean);
-      let broad = parts[parts.length - 1] || clean;
-      
-      // Se vier formato "Cidade - UF" ou "Cidade/UF", padroniza
-      if (broad.includes(' - ')) {
-        const sub = broad.split(' - ');
-        broad = `${sub[0]}/${sub[1]}`;
+    // Formata datas para o formato dd/mm/aaaa
+    function formatDateBR(val) {
+      if (!val) return null;
+      const str = String(val).trim();
+      if (!str) return null;
+
+      // Se já for formato dd/mm/aaaa
+      if (/^\d{2}\/\d{2}\/\d{4}$/.test(str)) {
+        return str;
       }
-      
-      // Remove qualquer menção a rua, número ou CEP se porventura vier junto
-      broad = broad.replace(/^(rua|av\.?|avenida|travessa|alameda|rodovia|bairro|n[º°]?\s*\d+).*$/i, '').trim();
-      if (!broad) {
-        broad = 'Santos/SP';
+
+      // Parse YYYY-MM-DD
+      const match = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        return `${match[3]}/${match[2]}/${match[1]}`;
       }
-      return broad.replace(/\s+/g, ' ').replace(/\s*\/\s*/g, '/');
+
+      // Tentar Date geral
+      const d = new Date(str);
+      if (!isNaN(d.getTime())) {
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+
+      return str;
+    }
+
+    // Deriva APENAS a cidade/região ampla — NUNCA exibe rua, número, coordenadas ou CEP
+    function extractBroadLocation(locStr) {
+      if (!locStr) return null;
+      let clean = String(locStr).trim();
+      if (!clean) return null;
+
+      // Se contiver delimitador ' - ' (ex: "Vila Antártica - Praia Grande")
+      if (clean.includes(' - ')) {
+        const parts = clean.split(' - ').map(s => s.trim()).filter(Boolean);
+        if (parts.length >= 2) {
+          const last = parts[parts.length - 1];
+          // Se o último for sigla de estado (ex: "SP", "RJ")
+          if (/^[a-zA-Z]{2}$/.test(last)) {
+            const prev = parts[parts.length - 2];
+            const cityPart = prev.includes(',') ? prev.split(',').pop().trim() : prev;
+            clean = `${cityPart}/${last.toUpperCase()}`;
+          } else {
+            clean = last;
+          }
+        }
+      } else if (clean.includes(',')) {
+        const parts = clean.split(',').map(s => s.trim()).filter(Boolean);
+        clean = parts[parts.length - 1];
+      }
+
+      // Remove qualquer menção a rua, número, avenida ou CEP
+      clean = clean.replace(/^(rua|r\.|av\.?|avenida|travessa|alameda|rodovia|estrada|bairro|n[º°]?\s*\d+).*?(-|,|\/)/i, '').trim();
+      clean = clean.replace(/^(rua|r\.|av\.?|avenida|travessa|alameda|rodovia|estrada)\s+[^\/,\-]+/i, '').trim();
+      clean = clean.replace(/\bcep\s*\d{5}-?\d{3}\b/i, '').trim();
+
+      // Normalizações comuns para manter o padrão amigável da região
+      if (/^praia grande$/i.test(clean)) {
+        clean = 'Praia Grande/SP';
+      } else if (/^santos$/i.test(clean)) {
+        clean = 'Santos/SP';
+      } else if (/^s[aã]o vicente$/i.test(clean)) {
+        clean = 'São Vicente/SP';
+      } else if (/^s[aã]o paulo$/i.test(clean)) {
+        clean = 'São Paulo/SP';
+      }
+
+      clean = clean.replace(/\s+/g, ' ').replace(/\s*\/\s*/g, '/');
+      return clean || null;
     }
 
     function formatApproximateAge(ageInput) {
@@ -1052,7 +1104,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       foto_url: 'https://img.usecurling.com/p/400/400?q=golden%20labrador',
       temperamento: 'Dócil',
       perdido: false,
-      mensagem_perdido: 'Nos ajude a encontrar a Mel! Ela se desencontrou de casa e a família procura com urgência.',
+      informacoes_adicionais: 'Nos ajude a encontrar a Mel! Ela se desencontrou de casa e a família procura com urgência.',
       regiao_ampla: 'Santos/SP',
       data_desaparecimento: 'Hoje',
       recompensa: true,
@@ -1144,6 +1196,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       const bannerDesc = document.getElementById('statusDesc');
       const lostBox = document.getElementById('lostDetailsBox');
       const chipLost = document.getElementById('chipPerdidoBadge');
+      const locRow = document.getElementById('lostLocRow');
+      const dateRow = document.getElementById('lostDateRow');
+      const notesRow = document.getElementById('lostNotesRow');
       const rewardRow = document.getElementById('lostRewardRow');
       const btnFound = document.getElementById('btnFoundPet');
 
@@ -1153,10 +1208,44 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         bannerTitle.textContent = `PET PERDIDO — ${pet.nome}`;
         bannerDesc.textContent = 'Este animal está desaparecido. Por favor, entre em contato imediatamente com o tutor!';
         lostBox.style.display = 'block';
-        // Apenas cidade/região ampla — NUNCA endereço exato ou coordenadas
-        document.getElementById('lostLoc').textContent = pet.regiao_ampla || broadCity;
-        document.getElementById('lostDate').textContent = pet.data_desaparecimento || 'Recente';
-        rewardRow.style.display = pet.recompensa ? 'block' : 'none';
+
+        // Região ampla — ocultar se não existir
+        if (pet.regiao_ampla) {
+          locRow.style.display = 'block';
+          document.getElementById('lostLoc').textContent = pet.regiao_ampla;
+        } else {
+          locRow.style.display = 'none';
+        }
+
+        // Data do desaparecimento — ocultar se não existir
+        if (pet.data_desaparecimento) {
+          dateRow.style.display = 'block';
+          document.getElementById('lostDate').textContent = pet.data_desaparecimento;
+        } else {
+          dateRow.style.display = 'none';
+        }
+
+        // Informações adicionais — ocultar se não existir
+        if (pet.informacoes_adicionais) {
+          notesRow.style.display = 'block';
+          document.getElementById('lostNotes').textContent = pet.informacoes_adicionais;
+        } else {
+          notesRow.style.display = 'none';
+        }
+
+        // Recompensa — ocultar se não existir
+        const hasReward = pet.recompensa === true || (typeof pet.recompensa === 'string' && pet.recompensa.trim() !== '' && pet.recompensa.toLowerCase() !== 'false') || (typeof pet.recompensa === 'number' && pet.recompensa > 0);
+        if (hasReward) {
+          rewardRow.style.display = 'block';
+          if (typeof pet.recompensa === 'string' && pet.recompensa.trim() !== '' && pet.recompensa.toLowerCase() !== 'true') {
+            rewardRow.textContent = `🎁 Recompensa: ${pet.recompensa}`;
+          } else {
+            rewardRow.textContent = '🎁 Oferece-se recompensa';
+          }
+        } else {
+          rewardRow.style.display = 'none';
+        }
+
         chipLost.style.display = 'inline-flex';
         // Botão "Encontrou meu pet?" VISÍVEL APENAS QUANDO perdido=true
         btnFound.style.display = 'flex';
@@ -1274,7 +1363,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       const petId = urlParams.get('pet');
       // Suporte a leitura estática de estado em caso de testes/mock via query param seguro
       const statusParam = urlParams.get('status') || urlParams.get('modo');
-      if (statusParam === 'perdido' || urlParams.get('perdido') === 'true') {
+      if (statusParam === 'perdido' || urlParams.get('perdido') === 'true' || urlParams.get('is_lost') === 'true') {
         currentPet.perdido = true;
       }
 
@@ -1300,28 +1389,56 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         const data = await response.json();
         if (data && data.length > 0) {
-          const row = data[0];
-          // Higienização estrita: NUNCA exibe rua, número, coordenadas ou endereço exato
-          // Se o campo de cidade ou último local vier preenchido com endereço completo, reduz APENAS à cidade
-          const rawCity = row.cidade || row.tutor_cidade || 'Santos/SP';
-          const sanitizedCity = extractBroadCity(rawCity);
-          const sanitizedTutorFirst = extractFirstName(row.tutor_nome || row.tutor || 'Emerson');
+          const p = data[0];
+
+          // 1. Verificar AMBOS os campos: se QUALQUER um dos dois for true, ativa modo perdido
+          const isLost = (p.perdido === true) || (p.is_lost === true);
+
+          // 2. Preencher dados do banner de perdido com fallback inteligente (campo novo primeiro, depois antigo)
+          // Data: p.last_since -> senão p.data_perdido -> senão ocultar a linha
+          const rawDate = p.last_since || p.data_perdido || null;
+          const formattedLostDate = formatDateBR(rawDate);
+
+          // Informações adicionais: p.lost_notes -> senão p.mensagem_perdido -> senão ocultar
+          const lostNotes = (p.lost_notes && String(p.lost_notes).trim()) || (p.mensagem_perdido && String(p.mensagem_perdido).trim()) || null;
+
+          // Recompensa: p.last_reward -> senão p.recompensa -> senão ocultar
+          let rewardVal = null;
+          if (p.last_reward !== undefined && p.last_reward !== null && p.last_reward !== false && p.last_reward !== '') {
+            rewardVal = p.last_reward;
+          } else if (p.recompensa !== undefined && p.recompensa !== null && p.recompensa !== false && p.recompensa !== '') {
+            rewardVal = p.recompensa;
+          }
+
+          // Cidade/região ampla: derivar APENAS o trecho da cidade de p.last_scan_location se existir -> senão p.city ou p.cidade -> senão ocultar
+          let broadLostLocation = null;
+          if (p.last_scan_location) {
+            broadLostLocation = extractBroadLocation(p.last_scan_location);
+          }
+          if (!broadLostLocation && (p.city || p.cidade)) {
+            broadLostLocation = extractBroadLocation(p.city || p.cidade);
+          }
+
+          // Higienização de dados gerais para exibição no perfil
+          const rawCity = p.cidade || p.city || p.tutor_cidade || 'Santos/SP';
+          const sanitizedCity = extractBroadLocation(rawCity) || 'Santos/SP';
+          const sanitizedTutorFirst = extractFirstName(p.tutor_nome || p.tutor || 'Emerson');
 
           currentPet = {
-            nome: row.nome || row.name || defaultPetData.nome,
-            especie: row.especie || row.species || defaultPetData.especie,
-            raca: row.raca || row.breed || defaultPetData.raca,
-            peso: row.peso || row.weight || defaultPetData.peso,
-            cor: row.cor || row.color || defaultPetData.cor,
-            idade_aproximada: formatApproximateAge(row.idade || row.birth_date || defaultPetData.idade_aproximada),
-            foto_url: row.foto_url || row.photo_url || defaultPetData.foto_url,
-            temperamento: row.temperamento || defaultPetData.temperamento,
-            // Estado somente leitura vindo do banco:
-            perdido: Boolean(row.perdido),
-            regiao_ampla: sanitizedCity,
-            data_desaparecimento: row.data_perdido ? String(row.data_perdido).split('T')[0] : 'Hoje',
-            recompensa: Boolean(row.recompensa),
-            sobre: row.observacoes || row.notes || defaultPetData.sobre,
+            nome: p.nome || p.name || defaultPetData.nome,
+            especie: p.especie || p.species || defaultPetData.especie,
+            raca: p.raca || p.breed || defaultPetData.raca,
+            peso: p.peso || p.weight || defaultPetData.peso,
+            cor: p.cor || p.color || defaultPetData.cor,
+            idade_aproximada: formatApproximateAge(p.idade || p.birth_date || defaultPetData.idade_aproximada),
+            foto_url: p.foto_url || p.photo_url || defaultPetData.foto_url,
+            temperamento: p.temperamento || defaultPetData.temperamento,
+            perdido: isLost,
+            regiao_ampla: broadLostLocation,
+            data_desaparecimento: formattedLostDate,
+            informacoes_adicionais: lostNotes,
+            recompensa: rewardVal,
+            sobre: p.observacoes || p.notes || defaultPetData.sobre,
             tutor_primeiro_nome: sanitizedTutorFirst,
             tutor_cidade_ampla: sanitizedCity
           };
