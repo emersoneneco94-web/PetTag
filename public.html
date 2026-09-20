@@ -372,6 +372,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       margin-top: 10px;
     }
 
+    /* Privacy Banner */
+    .privacy-notice-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: #065f46;
+      background-color: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin-top: 4px;
+    }
+
     .chip {
       padding: 4px 10px;
       border-radius: 9999px;
@@ -580,74 +594,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       font-weight: 700;
       color: #0f172a;
       margin-top: 2px;
-    }
-
-    /* Vacinas Table */
-    .custom-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-      text-align: left;
-    }
-
-    .custom-table th {
-      background-color: #f1f5f9;
-      color: #475569;
-      font-weight: 700;
-      padding: 8px 6px;
-      border-bottom: 1px solid #cbd5e1;
-    }
-
-    .custom-table td {
-      padding: 8px 6px;
-      border-bottom: 1px solid #f1f5f9;
-      color: #334155;
-    }
-
-    .custom-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .badge-vac {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-
-    /* Health List */
-    .health-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .health-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding-bottom: 6px;
-      border-bottom: 1px dashed #e2e8f0;
-      font-size: 0.84rem;
-    }
-
-    .health-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .health-key {
-      font-weight: 600;
-      color: #334155;
-    }
-
-    .health-val {
-      color: #64748b;
-      text-align: right;
-      max-width: 60%;
     }
 
     /* Gallery Grid 3x2 */
@@ -875,11 +821,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <section id="statusBanner" class="status-banner normal" aria-live="polite">
         <div id="statusIcon" class="status-icon">🛡️</div>
         <div>
-          <strong id="statusTitle" style="display: block; font-size: 0.92rem; margin-bottom: 2px;">Este é o Mel!</strong>
+          <strong id="statusTitle" style="display: block; font-size: 0.92rem; margin-bottom: 2px;">Este é a Mel!</strong>
           <span id="statusDesc">O pet está com sua TAG Save Tag Pet ativa e protegida.</span>
           <div id="lostDetailsBox" class="lost-details-card" style="display: none;">
-            <div><strong>📍 Visto por último:</strong> <span id="lostLoc">Canal 3, Gonzaga — Santos/SP</span></div>
-            <div><strong>⏰ Data do sumiço:</strong> <span id="lostDate">Hoje às 14:30</span></div>
+            <div><strong>📍 Região aproximada:</strong> <span id="lostLoc">Santos/SP</span></div>
+            <div><strong>⏰ Desaparecimento:</strong> <span id="lostDate">Hoje</span></div>
             <div id="lostRewardRow" style="margin-top: 4px; font-weight: 700; color: #dc2626;">🎁 Oferece-se recompensa com gratidão!</div>
           </div>
         </div>
@@ -900,7 +846,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         <div class="chips-row">
           <span class="chip chip-active">TAG Ativa ✓</span>
-          <span class="chip chip-neutral" id="chipCastrado">Castrado</span>
           <span class="chip chip-neutral" id="chipTemperamento">Dócil</span>
           <span class="chip chip-emergency" id="chipPerdidoBadge" style="display: none;">🚨 MODO PERDIDO</span>
         </div>
@@ -941,7 +886,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         </p>
       </section>
 
-      <!-- Card Tutor -->
+      <!-- Card Tutor (Apenas primeiro nome e cidade ampla — privacidade rigorosa) -->
       <section class="info-card">
         <h2 class="card-title">
           <span class="card-title-icon">👤</span>
@@ -949,17 +894,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         </h2>
         <div class="tutor-info-box">
           <div>
-            <div id="tutorName" class="tutor-meta-name">Emerson dos Santos</div>
-            <div id="tutorCity" class="tutor-meta-location">
-              <span>📍</span>
-              <span>Santos / SP</span>
+            <div id="tutorSummary" class="tutor-meta-name">Emerson • Santos/SP</div>
+            <div class="tutor-meta-location">
+              <span>🔒</span>
+              <span>Contato direto protegido</span>
             </div>
           </div>
           <span class="tutor-shield">Identidade Verificada</span>
         </div>
       </section>
 
-      <!-- Card Dados Básicos -->
+      <!-- Card Dados Básicos (Apenas dados visuais essenciais para identificação) -->
       <section class="info-card">
         <h2 class="card-title">
           <span class="card-title-icon">📋</span>
@@ -967,12 +912,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         </h2>
         <div class="metrics-grid">
           <div class="metric-cell">
-            <div class="metric-label">Espécie / Raça</div>
-            <div id="metricBreed" class="metric-value">Labrador</div>
+            <div class="metric-label">Espécie</div>
+            <div id="metricSpecies" class="metric-value">Cachorro</div>
           </div>
           <div class="metric-cell">
-            <div class="metric-label">Idade</div>
-            <div id="metricAge" class="metric-value">3 anos</div>
+            <div class="metric-label">Raça</div>
+            <div id="metricBreed" class="metric-value">Labrador</div>
           </div>
           <div class="metric-cell">
             <div class="metric-label">Cor</div>
@@ -982,86 +927,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             <div class="metric-label">Peso</div>
             <div id="metricWeight" class="metric-value">12 kg</div>
           </div>
-        </div>
-      </section>
-
-      <!-- BLOCO 2 — INFORMAÇÕES PARA QUEM ENCONTROU -->
-      
-      <!-- Card Vacinas -->
-      <section class="info-card">
-        <h2 class="card-title">
-          <span class="card-title-icon">📅</span>
-          <span>Controle de vacinas</span>
-        </h2>
-        <table class="custom-table" aria-label="Histórico de vacinação">
-          <thead>
-            <tr>
-              <th>Vacina</th>
-              <th>Data</th>
-              <th>Dose</th>
-              <th>Reforço</th>
-            </tr>
-          </thead>
-          <tbody id="vaccinesTableBody">
-            <tr>
-              <td><strong>V8 Múltipla</strong></td>
-              <td>15/01/2024</td>
-              <td><span class="badge-vac">Anual</span></td>
-              <td>15/01/2025</td>
-            </tr>
-            <tr>
-              <td><strong>Antirrábica</strong></td>
-              <td>15/01/2024</td>
-              <td><span class="badge-vac">Dose Única</span></td>
-              <td>15/01/2025</td>
-            </tr>
-            <tr>
-              <td><strong>Gripe Canina</strong></td>
-              <td>02/03/2024</td>
-              <td><span class="badge-vac">Anual</span></td>
-              <td>02/03/2025</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Card Saúde -->
-      <section class="info-card">
-        <h2 class="card-title">
-          <span class="card-title-icon">⚕️</span>
-          <span>Saúde e Cuidados</span>
-        </h2>
-        <div class="health-list">
-          <div class="health-row">
-            <span class="health-key">Alergias:</span>
-            <span id="healthAllergies" class="health-val">Nenhuma registrada</span>
+          <div class="metric-cell">
+            <div class="metric-label">Cidade</div>
+            <div id="metricCity" class="metric-value">Santos/SP</div>
           </div>
-          <div class="health-row">
-            <span class="health-key">Condições prévias:</span>
-            <span id="healthConditions" class="health-val">Nenhuma registrada</span>
+          <div class="metric-cell">
+            <div class="metric-label">Temperamento</div>
+            <div id="metricTemperament" class="metric-value">Dócil</div>
           </div>
-          <div class="health-row">
-            <span class="health-key">Medicamentos em uso:</span>
-            <span id="healthMeds" class="health-val">Nenhum registrado</span>
-          </div>
-          <div class="health-row">
-            <span class="health-key">Alimentação especial:</span>
-            <span id="healthDiet" class="health-val">Ração padrão para adultos</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Card Veterinário -->
-      <section class="info-card">
-        <h2 class="card-title">
-          <span class="card-title-icon">🏥</span>
-          <span>Veterinário de Referência</span>
-        </h2>
-        <div style="font-size: 0.88rem; line-height: 1.45; color: #334155;">
-          <div style="font-weight: 700; color: #0b5574; font-size: 0.95rem;">Clínica Veterinária PetCare Santos</div>
-          <div style="color: #64748b; margin-top: 2px;">Dra. Camila Nogueira (CRMV-SP 28.490)</div>
-          <div style="margin-top: 6px;">📞 Telefone: <strong>(13) 3289-4000</strong></div>
-          <div>📍 Av. Ana Costa, 290 — Gonzaga, Santos/SP</div>
         </div>
       </section>
 
@@ -1095,7 +968,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     </main>
 
-    <!-- Rodapé Institucional Conforme Referência -->
+    <!-- Rodapé Institucional Conforme Referência com Privacidade Reforçada -->
     <footer class="institutional-footer">
       <div class="footer-grid-features">
         <div class="feature-card">
@@ -1107,8 +980,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
           <span>Contato direto</span>
         </div>
         <div class="feature-card">
-          <span class="feature-icon">💉</span>
-          <span>Controle de vacinas</span>
+          <span class="feature-icon">🔒</span>
+          <span>Dados blindados</span>
         </div>
         <div class="feature-card">
           <span class="feature-icon">🐕</span>
@@ -1118,10 +991,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
       <div class="footer-qr-container">
         <div class="qr-box" id="qrcodePlaceholder" title="QR Code da TAG Save Tag Pet"></div>
-        <div class="footer-brand-title">Protegido por Save Tag Pet®</div>
-        <div style="font-size: 0.78rem; opacity: 0.85; margin-bottom: 8px;">Tecnologia NFC & Identificação Inteligente</div>
-        <div class="footer-disclaimer">
-          Este perfil é público e mostra apenas as informações necessárias para devolver o pet com segurança e agilidade ao seu tutor.
+        <div class="footer-brand-title">Protegido por Save Tag Pet® — Tecnologia NFC</div>
+        <div class="footer-disclaimer" style="margin-top: 8px; line-height: 1.45;">
+          🔒 <strong>Privacidade protegida:</strong> este perfil público mostra apenas o essencial para devolver o pet. Dados de saúde, endereço e contato completo ficam protegidos e visíveis somente ao tutor.
         </div>
       </div>
     </footer>
@@ -1155,30 +1027,60 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     // Configurações do Supabase e Tutor
     const SUPABASE_URL = 'https://mqiwoubhivutavpnpeax.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll';
+    // O número de telefone NUNCA é renderizado como texto visível na página
     const WHATSAPP_TUTOR = '5513991118997';
 
-    // Mock inicial e fallback de segurança de "Mel"
+    // Higienização de privacidade rigorosa para nomes e cidades
+    function extractFirstName(fullName) {
+      if (!fullName) return 'Tutor';
+      const clean = fullName.trim().split(/\s+/)[0];
+      return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
+    }
+
+    function extractBroadCity(cityStr) {
+      if (!cityStr) return 'Santos/SP';
+      // Se contiver delimitadores de endereço (vírgula, travessão, bairro), extrai apenas cidade/estado
+      const parts = cityStr.split(/[-—,]/).map(s => s.trim()).filter(Boolean);
+      // Pega o último ou penúltimo fragmento amplo (ex: Santos/SP)
+      let broad = parts[parts.length - 1] || cityStr;
+      if (parts.length >= 2 && !broad.includes('/')) {
+        broad = `${parts[parts.length - 2]}/${parts[parts.length - 1]}`;
+      }
+      return broad.replace(/\s+/g, ' ').replace(/\s*\/\s*/g, '/');
+    }
+
+    function formatApproximateAge(ageInput) {
+      if (!ageInput) return 'Não informada';
+      const str = String(ageInput).trim();
+      // Se for formato de data completa ISO (ex: 2021-04-12), calcula anos aproximados
+      if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+        const birthYear = parseInt(str.slice(0, 4), 10);
+        const currentYear = new Date().getFullYear();
+        const diff = Math.max(0, currentYear - birthYear);
+        return diff === 0 ? 'Menos de 1 ano' : diff === 1 ? '1 ano' : `${diff} anos`;
+      }
+      // Se já for descrição aproximada ("3 anos"), retorna limpo
+      return str;
+    }
+
+    // Mock inicial e fallback de segurança estrito da Mel
     const defaultPetData = {
       nome: 'Mel',
       especie: 'Cachorro',
       raca: 'Labrador',
       peso: '12 kg',
       cor: 'Caramelo',
-      idade: '3 anos',
+      idade_aproximada: '3 anos',
       foto_url: 'https://img.usecurling.com/p/400/400?q=golden%20labrador',
-      castrado: true,
       temperamento: 'Dócil',
       perdido: false,
-      mensagem_perdido: 'Nos ajude a encontrar o Mel! Ele fugiu perto de casa e a família está muito preocupada.',
-      ultimo_local_perdido: 'Canal 3, Gonzaga — Santos/SP',
-      data_perdido: 'Hoje às 14:30',
+      mensagem_perdido: 'Nos ajude a encontrar a Mel! Ela se desencontrou de casa e a família procura com urgência.',
+      regiao_ampla: 'Santos/SP',
+      data_desaparecimento: 'Hoje',
       recompensa: true,
-      observacoes: 'Dócil, adora brincar, muito querido e amigável com crianças e outros animais. Costuma atender ao ser chamado pelo nome.',
-      alergias: 'Nenhuma registrada',
-      medicamentos: 'Nenhum registrado',
-      condicoes: 'Nenhuma registrada',
-      tutor_nome: 'Emerson dos Santos',
-      tutor_cidade: 'Santos / SP'
+      sobre: 'Dócil, adora brincar, muito querida e amigável com pessoas. Costuma atender carinhosamente ao ser chamada pelo nome.',
+      tutor_primeiro_nome: 'Emerson',
+      tutor_cidade_ampla: 'Santos/SP'
     };
 
     let currentPet = { ...defaultPetData };
@@ -1205,88 +1107,99 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     });
     document.getElementById('btnEmergencyModal').addEventListener('click', openModal);
 
-    // Atualiza a visualização com base no objeto de dados
+    // Atualiza a visualização com base no objeto de dados com política estrita
     function renderPet(pet) {
       document.title = `${pet.nome} | Save Tag Pet`;
 
-      // Foto
+      // Foto principal
       const photoEl = document.getElementById('petPhoto');
       if (pet.foto_url) {
         photoEl.src = pet.foto_url;
       }
 
-      // Nomes e textos
-      document.getElementById('petName').textContent = pet.nome || 'Pet Sem Nome';
-      const racaDesc = pet.raca || pet.breed || 'Labrador';
-      const espDesc = pet.especie || pet.species || 'Cachorro';
+      // Nome do pet
+      document.getElementById('petName').textContent = pet.nome || 'Mel';
+      const racaDesc = pet.raca || 'Labrador';
+      const espDesc = pet.especie || 'Cachorro';
       const pesoDesc = pet.peso ? (String(pet.peso).includes('kg') ? pet.peso : `${pet.peso} kg`) : '12 kg';
       document.getElementById('petSubhead').textContent = `${espDesc} • ${racaDesc} • ${pesoDesc}`;
 
-      // Chips
-      document.getElementById('chipCastrado').textContent = pet.castrado === false ? 'Não Castrado' : 'Castrado';
-      document.getElementById('chipTemperamento').textContent = pet.temperamento || 'Dócil';
+      // Chips de status permitidos: TAG Ativa e Temperamento
+      const chipTemp = document.getElementById('chipTemperamento');
+      if (pet.temperamento) {
+        chipTemp.textContent = pet.temperamento;
+        chipTemp.style.display = 'inline-flex';
+      } else {
+        chipTemp.style.display = 'none';
+      }
 
-      // Dados básicos
+      // Dados básicos estritos (Apenas os essenciais)
+      document.getElementById('metricSpecies').textContent = espDesc;
       document.getElementById('metricBreed').textContent = racaDesc;
-      document.getElementById('metricAge').textContent = pet.idade || pet.birth_date || '3 anos';
-      document.getElementById('metricColor').textContent = pet.cor || pet.color || 'Caramelo';
+      document.getElementById('metricColor').textContent = pet.cor || 'Caramelo';
       document.getElementById('metricWeight').textContent = pesoDesc;
+      document.getElementById('metricCity').textContent = pet.tutor_cidade_ampla || 'Santos/SP';
+      document.getElementById('metricTemperament').textContent = pet.temperamento || 'Dócil';
 
-      // Sobre e Tutor
-      document.getElementById('petBio').textContent = pet.observacoes || defaultPetData.observacoes;
-      document.getElementById('tutorName').textContent = pet.tutor_nome || 'Emerson dos Santos';
-      document.getElementById('tutorCity').querySelector('span:nth-child(2)').textContent = pet.tutor_cidade || 'Santos / SP';
+      // Bloco Sobre: apenas descrição comportamental
+      document.getElementById('petBio').textContent = pet.sobre || defaultPetData.sobre;
 
-      // Saúde
-      document.getElementById('healthAllergies').textContent = pet.alergias || 'Nenhuma registrada';
-      document.getElementById('healthMeds').textContent = pet.medicamentos || 'Nenhum registrado';
-      document.getElementById('healthConditions').textContent = pet.condicoes || 'Nenhuma registrada';
+      // Tutor: Primeiro nome + cidade ampla apenas (nunca sobrenome completo, telefone visível ou email)
+      const firstName = pet.tutor_primeiro_nome || 'Emerson';
+      const broadCity = pet.tutor_cidade_ampla || 'Santos/SP';
+      document.getElementById('tutorSummary').textContent = `${firstName} • ${broadCity}`;
 
-      // Links diretos
+      // Configuração dos links de contato (Modo Direto)
+      // O telefone NUNCA aparece visível na tela, apenas nos atributos href
       const cleanTel = WHATSAPP_TUTOR.replace(/\D/g, '');
       const whatsMsg = pet.perdido 
-        ? encodeURIComponent(`🚨 Olá ${pet.tutor_nome || 'Emerson'}! Encontrei o pet ${pet.nome} que está perdido! Vi a TAG NFC dele.`) 
-        : encodeURIComponent(`Olá ${pet.tutor_nome || 'Emerson'}! Encontrei o pet ${pet.nome} pela TAG Save Tag Pet.`);
+        ? encodeURIComponent(`🚨 Olá ${firstName}! Encontrei a ${pet.nome} pela TAG Save Tag Pet! Estou com o pet em segurança.`) 
+        : encodeURIComponent(`Olá ${firstName}! Encontrei a ${pet.nome} pela TAG Save Tag Pet.`);
       
       document.getElementById('btnWhatsapp').href = `https://wa.me/${cleanTel}?text=${whatsMsg}`;
       document.getElementById('btnCall').href = `tel:+${cleanTel}`;
 
-      // Estado Normal vs Perdido
+      // Estado Normal vs Modo Perdido 🚨
       const banner = document.getElementById('statusBanner');
       const bannerIcon = document.getElementById('statusIcon');
       const bannerTitle = document.getElementById('statusTitle');
       const bannerDesc = document.getElementById('statusDesc');
       const lostBox = document.getElementById('lostDetailsBox');
       const chipLost = document.getElementById('chipPerdidoBadge');
+      const rewardRow = document.getElementById('lostRewardRow');
 
       if (pet.perdido) {
         banner.className = 'status-banner lost';
         bannerIcon.textContent = '🚨';
         bannerTitle.textContent = `PET PERDIDO — ${pet.nome}`;
-        bannerDesc.textContent = pet.mensagem_perdido || 'Este animal foi declarado desaparecido pelo tutor. Por favor, entre em contato com urgência!';
+        bannerDesc.textContent = pet.mensagem_perdido || 'Este animal foi declarado desaparecido pelo tutor. Toque nos botões abaixo para avisar!';
         lostBox.style.display = 'block';
-        document.getElementById('lostLoc').textContent = pet.ultimo_local_perdido || 'Santos / SP';
-        document.getElementById('lostDate').textContent = pet.data_perdido || 'Recente';
+        // Apenas cidade/região ampla — nunca endereço exato ou coordenadas
+        document.getElementById('lostLoc').textContent = pet.regiao_ampla || broadCity;
+        document.getElementById('lostDate').textContent = pet.data_desaparecimento || 'Hoje';
+        rewardRow.style.display = pet.recompensa ? 'block' : 'none';
         chipLost.style.display = 'inline-flex';
       } else {
         banner.className = 'status-banner normal';
         bannerIcon.textContent = '🛡️';
-        bannerTitle.textContent = `Este é o ${pet.nome}!`;
+        bannerTitle.textContent = `Esta é a ${pet.nome}!`;
         bannerDesc.textContent = 'O pet está com sua TAG Save Tag Pet ativa e protegida.';
         lostBox.style.display = 'none';
         chipLost.style.display = 'none';
       }
     }
 
-    // Ação: "Encontrou meu pet? Toque aqui" (Geolocalização -> WhatsApp)
+    // Ação: "Encontrou meu pet? Toque aqui" (Geolocalização gerada no momento por quem achou -> WhatsApp do tutor)
+    // A localização nunca é exibida na tela pública
     function triggerFoundAction() {
       const btn = document.getElementById('btnFoundPet');
       const originalText = btn.innerHTML;
+      const firstName = currentPet.tutor_primeiro_nome || 'Emerson';
       btn.innerHTML = '<span>📍 Obtendo localização GPS...</span>';
       btn.style.opacity = '0.7';
 
       if (!navigator.geolocation) {
-        fallbackGeoRedirect();
+        fallbackGeoRedirect(firstName);
         return;
       }
 
@@ -1300,26 +1213,26 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
           const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
           
           const msg = encodeURIComponent(
-            `🚨 Olá Emerson! Acabei de encontrar o pet ${currentPet.nome} pela TAG Save Tag Pet!\n\n` +
-            `📍 Minha localização aproximada:\n${mapsUrl}\n(Precisão de cerca de ${accuracy} metros).\n\n` +
-            `Por favor, me responda por aqui para combinarmos o reencontro!`
+            `🚨 Olá ${firstName}! Acabei de encontrar a ${currentPet.nome} pela TAG Save Tag Pet!\n\n` +
+            `📍 Minha localização atual (onde estou com o pet):\n${mapsUrl}\n(Precisão GPS de ~${accuracy}m).\n\n` +
+            `Podemos combinar a devolução por aqui!`
           );
 
           window.open(`https://wa.me/${WHATSAPP_TUTOR}?text=${msg}`, '_blank');
         },
-        (error) => {
+        () => {
           btn.innerHTML = originalText;
           btn.style.opacity = '1';
-          showToast('Permissão de GPS não concedida. Abrindo WhatsApp...');
-          fallbackGeoRedirect();
+          showToast('GPS não disponível. Abrindo WhatsApp direto...');
+          fallbackGeoRedirect(firstName);
         },
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
     }
 
-    function fallbackGeoRedirect() {
+    function fallbackGeoRedirect(firstName) {
       const msg = encodeURIComponent(
-        `🚨 Olá Emerson! Encontrei o pet ${currentPet.nome} pela TAG Save Tag Pet.\nEstou com ele em segurança! Por favor, me responda para combinarmos a devolução.`
+        `🚨 Olá ${firstName}! Encontrei a ${currentPet.nome} pela TAG Save Tag Pet.\nEstou com o pet em segurança! Por favor me responda para combinarmos a devolução.`
       );
       window.open(`https://wa.me/${WHATSAPP_TUTOR}?text=${msg}`, '_blank');
     }
@@ -1379,20 +1292,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       }
     }
 
-    // Carregamento de dados (Supabase REST se houver ?pet=)
+    // Carregamento de dados (Supabase REST se houver ?pet=ID)
+    // Filtro estrito: dados sensíveis de saúde, veterinário, endereço completo e IDs NUNCA são carregados na UI
     async function loadPetData() {
       const urlParams = new URLSearchParams(window.location.search);
       const petId = urlParams.get('pet');
 
       if (!petId) {
-        // Renderiza com fallback padrão do Mel
         renderPet(currentPet);
         initQrCode();
         return;
       }
 
       try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/pets?select=*&id=eq.${petId}`, {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/pets?select=*&id=eq.${encodeURIComponent(petId)}`, {
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
@@ -1406,38 +1319,35 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const data = await response.json();
         if (data && data.length > 0) {
           const row = data[0];
+          // Higienização estrita: apenas dados autorizados
+          const sanitizedCity = extractBroadCity(row.cidade || row.tutor_cidade || 'Santos/SP');
+          const sanitizedTutorFirst = extractFirstName(row.tutor_nome || row.tutor || 'Emerson');
+
           currentPet = {
             nome: row.nome || row.name || defaultPetData.nome,
             especie: row.especie || row.species || defaultPetData.especie,
             raca: row.raca || row.breed || defaultPetData.raca,
             peso: row.peso || row.weight || defaultPetData.peso,
             cor: row.cor || row.color || defaultPetData.cor,
-            idade: row.idade || row.birth_date || defaultPetData.idade,
+            idade_aproximada: formatApproximateAge(row.idade || row.birth_date || defaultPetData.idade_aproximada),
             foto_url: row.foto_url || row.photo_url || defaultPetData.foto_url,
-            castrado: row.castrado ?? defaultPetData.castrado,
             temperamento: row.temperamento || defaultPetData.temperamento,
             perdido: Boolean(row.perdido),
             mensagem_perdido: row.mensagem_perdido || defaultPetData.mensagem_perdido,
-            ultimo_local_perdido: row.ultimo_local_perdido || defaultPetData.ultimo_local_perdido,
-            data_perdido: row.data_perdido || defaultPetData.data_perdido,
-            observacoes: row.observacoes || row.notes || defaultPetData.observacoes,
-            alergias: row.alergias || defaultPetData.alergias,
-            medicamentos: row.medicamentos || defaultPetData.medicamentos,
-            condicoes: row.condicoes || defaultPetData.condicoes,
-            tutor_nome: row.tutor_nome || defaultPetData.tutor_nome,
-            tutor_cidade: row.tutor_cidade || defaultPetData.tutor_cidade
+            regiao_ampla: sanitizedCity,
+            data_desaparecimento: row.data_perdido ? String(row.data_perdido).split('T')[0] : 'Hoje',
+            recompensa: Boolean(row.recompensa),
+            sobre: row.observacoes || row.notes || defaultPetData.sobre,
+            tutor_primeiro_nome: sanitizedTutorFirst,
+            tutor_cidade_ampla: sanitizedCity
           };
           renderPet(currentPet);
         } else {
-          // Pet não encontrado no banco com este ID: usa o Mel como referência de demonstração
           renderPet(currentPet);
-          showToast('Pet específico não localizado, exibindo perfil modelo.');
         }
       } catch (err) {
-        console.warn('Erro ao consultar Supabase:', err);
-        // Fallback robusto sem travar a tela
+        // Fallback seguro sem expor erros técnicos
         renderPet(currentPet);
-        showToast('Exibindo dados locais de demonstração.');
       }
 
       initQrCode();
