@@ -1217,6 +1217,36 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
               <button class="btn-action btn-green" style="width: auto; padding: 6px 14px; font-size: 0.8125rem;" onclick="openModal('modalVaccine')">➕ Registrar Vacina</button>
             </div>
             <div id="vaccineListContainer" class="vaccine-list"></div>
+            <!-- SEÇÃO: HISTÓRICO DE SAÚDE -->
+<div style="margin-top:1.5rem;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+    <h4>🏥 Histórico de Saúde</h4>
+    <button class="btn-action btn-green" onclick="openModal('modalSaude')">✚ Adicionar Registro</button>
+  </div>
+  <div id="saudeListContainer" class="vaccine-list"></div>
+</div>
+<!-- MODAL: REGISTRO DE SAÚDE -->
+<div id="modalSaude" class="modal-overlay" style="display:none;">
+  <div class="modal-box">
+    <h3>Novo Registro de Saúde</h3>
+    <select id="saudeTipo" required>
+      <option value="consulta">🩺 Consulta</option>
+      <option value="exame">🔬 Exame</option>
+      <option value="medicamento">💊 Remédio controlado</option>
+      <option value="veterinario">👨‍⚕️ Veterinário</option>
+      <option value="plano_saude">🛡️ Plano de saúde</option>
+      <option value="clinica">🏠 Clínica veterinária</option>
+    </select>
+    <input id="saudeTitulo" placeholder="Título (ex: Clínica Vet Vida, Ultra som...)">
+    <input id="saudeDetalhes" placeholder="Detalhes / observações">
+    <input id="saudeData" type="date" title="Data do evento">
+    <input id="saudeProxima" type="date" title="Próxima data (gera alerta)">
+    <input id="saudeContato" placeholder="Telefone / contato">
+    <input id="saudeEndereco" placeholder="Endereço (clínica)">
+    <button class="btn btn-green btn-block" onclick="salvarSaude()">Salvar Registro</button>
+    <button class="btn btn-block" onclick="closeModal('modalSaude')" style="background:#e2e8f0;">Fechar</button>
+  </div>
+</div>
           </div>
 
           <!-- ABA 4: SOBRE -->
