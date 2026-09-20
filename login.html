@@ -5395,4 +5395,124 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   };
 })();
 </script>
+  <script>
+(function () {
+  var __sb = null;
+  var fila = [];
+  function pronto(fn) { if (__sb) { fn(__sb); } else { fila.push(fn); } }
+  function resolver(sb) {
+    __sb = sb;
+    var f = fila.slice(); fila = [];
+    f.forEach(function (fn) { fn(sb); });
+  }
+
+  // Extrai URL + chave do código-fonte da página e cria a conexão
+  fetch(location.href).then(function (r) { return r.text(); }).then(function (html) {
+    var um = html.match(/https:\/\/[a-z0-9\-\.]+\.supabase\.co/i);
+    var km = html.match(/eyJ[A-Za-z0-9_\-\.]{40,}/);
+    if (!km) { km = html.match(/sb_publishable_[A-Za-z0-9_\-]{20,}/); }
+    if (um && km && window.supabase && typeof window.supabase.createClient === 'function') {
+      try { resolver(window.supabase.createClient(um[0], km[0])); }
+      catch (e) { resolver(null); }
+    } else { resolver(null); }
+  }).catch(function () { resolver(null); });
+
+  // ===== CARREGAR SAÚDE =====
+  window.carregarSaude = function (pid) {
+    if (window.__getPetIdSmart) pid = pid || window.__getPetIdSmart();
+    var lista = document.getElementById('saudeListContainer');
+    if (!lista) return;
+    lista.innerHTML = '<p style="color:#6d8187;">Carregando...</p>';
+    pronto(function (sb) {
+      if (!sb) { lista.innerHTML = '<p style="color:#dc2626;">Conex\u00e3o n\u00e3o encontrada. Me mande print da linha createClient no GitHub.</p>'; return; }
+      if (!pid) { lista.innerHTML = '<p style="color:#6d8187;">Abra o perfil de um pet.</p>'; return; }
+      sb.from('saude_pet').select('*').eq('pet_id', pid).order('created_at', { ascending: false })
+        .then(function (res) {
+          if (res.error) { lista.innerHTML = '<p style="color:#dc2626;">Erro: ' + res.error.message + '</p>'; return; }
+          var data = res.data;
+          if (!data || !data.length) { lista.innerHTML = '<p style="color:#6d8187;">Nenhum registro de sa\u00fade ainda. Use "+ Adicionar Registro".</p>'; return; }
+          var nomes = { consulta:'Consulta', exame:'Exame', medicamento:'Rem\u00e9dio controlado', veterinario:'Veterin\u00e1rio', plano_saude:'Plano de sa\u00fade', clinica:'Cl\u00ednica veterin\u00e1ria' };
+          var html = '';
+          data.forEach(function (r) {
+            html += '<div class="vaccine-item" style="border-left:4px solid #07966b;">'
+              + '<div style="display:flex;justify-content:space-between;align-items:center;"><strong>' + (r.titulo || '(sem t\u00edtulo)') + '</strong>'
+              + '<span class="stat-label">' + (nomes[r.tipo] || r.tipo) + '</span></div>'
+              + (r.data_evento ? '<p>Evento em: ' + formatarDataBR(r.data_evento) + '</p>' : '')
+              + (r.proxima_data ? '<p>Pr\u00f3xima data: ' + formatarDataBR(r.proxima_data) + '</p>' : '')
+              + (r.contato ? '<p>Contato: ' + r.contato + '</p>' : '')
+              + (r.endereco ? '<p>Endere\u00e7o: ' + r.endereco + '</p>' : '')
+              + (r.detalhes ? '<p style="color:#6d8187;">' + r.detalhes + '</p>' : '')
+              + '<button class="btn" style="background:#dc2626;color:#fff;padding:0.3rem 0.8rem;font-size:0.8rem;" onclick="excluirSaude(\'' + r.id + '\')">Excluir</button>'
+              + '</div>';
+          });
+          lista.innerHTML = html;
+        });
+    });
+  };
+
+  // ===== SALVAR =====
+  window.salvarSaude = function () {
+    var pid = window.__getPetIdSmart ? window.__getPetIdSmart() : null;
+    if (!pid) { alert('N\u00e3o encontrei o pet aberto.'); return; }
+    pronto(function (sb) {
+      if (!sb) { alert('Conex\u00e3o n\u00e3o encontrada.'); return; }
+      sb.from('saude_pet').insert({
+        pet_id: pid,
+        tipo: document.getElementById('saudeTipo').value,
+        titulo: document.getElementById('saudeTitulo').value,
+        detalhes: document.getElementById('saudeDetalhes').value || null,
+        data_evento: document.getElementById('saudeData').value || null,
+        proxima_data: document.getElementById('saudeProxima').value || null,
+        contato: document.getElementById('saudeContato').value || null,
+        endereco: document.getElementById('saudeEndereco').value || null
+      }).then(function (res) {
+        if (res.error) { alert('Erro ao salvar: ' + res.error.message); return; }
+        if (typeof fecharModalSaude === 'function') fecharModalSaude();
+        carregarSaude(pid);
+      });
+    });
+  };
+
+  // ===== EXCLUIR =====
+  window.excluirSaude = function (id) {
+    if (!confirm('Excluir este registro?')) return;
+    pronto(function (sb) {
+      if (!sb) return;
+      sb.from('saude_pet').delete().eq('id', id).then(function () { carregarSaude(); });
+    });
+  };
+
+  // ===== VERIFICAR ALERTAS (corrige o erro vermelho do console) =====
+  window.verificarAlertas = function (pid) {
+    if (window.__getPetIdSmart) pid = pid || window.__getPetIdSmart();
+    var banner = document.getElementById('bannerAlertas');
+    if (!banner || !pid) return;
+    var hoje = new Date();
+    var avisos = [];
+    pronto(function (sb) {
+      if (!sb) return;
+      sb.from('vacinas').select('*').eq('pet_id', pid).then(function (r1) {
+        (r1.data || []).forEach(function (v) {
+          var d = v.data_proxima || v.proxima_dose || v.data_reforco;
+          if (!d) return;
+          var dias = Math.ceil((new Date(d) - hoje) / 86400000);
+          if (dias <= 7) {
+            var nome = v.nome || v.nome_vacina || 'Vacina';
+            avisos.push(dias < 0 ? nome + ' — refor\u00e7o ATRASADO' : nome + ' — refor\u00e7o em ' + dias + ' dia(s)');
+          }
+        });
+        sb.from('saude_pet').select('*').eq('pet_id', pid).then(function (r2) {
+          (r2.data || []).forEach(function (s) {
+            if (!s.proxima_data) return;
+            var dias = Math.ceil((new Date(s.proxima_data) - hoje) / 86400000);
+            if (dias <= 7) avisos.push(s.titulo + ' — ' + (dias < 0 ? 'data passou' : 'em ' + dias + ' dia(s)'));
+          });
+          if (avisos.length) { banner.innerHTML = 'ALERTAS: ' + avisos.join(' \u00b7 '); banner.style.display = 'block'; }
+          else { banner.style.display = 'none'; }
+        });
+      });
+    });
+  };
+})();
+</script>
 </html>
