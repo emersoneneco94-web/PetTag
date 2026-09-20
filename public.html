@@ -2,13 +2,9 @@
 <html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>🐾 Carregando Pet... | Save Tag Pet</title>
-  
-  <!-- Basecoat CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mel | Save Tag Pet</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/basecoat-css@1.0.2/dist/basecoat.cdn.min.css">
-  
-  <!-- Fixed Shell -->
   <style>
 /* Skip artifact shell — fixed styles served beside every artifact.
    Complements basecoat; artifacts override --accent for their own identity. */
@@ -118,1283 +114,1338 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 }
 
 </style>
+  <script>
+var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this.parsedData=[];for(var b=[],d=0,e=this.data.length;e>d;d++){var f=this.data.charCodeAt(d);f>65536?(b[0]=240|(1835008&f)>>>18,b[1]=128|(258048&f)>>>12,b[2]=128|(4032&f)>>>6,b[3]=128|63&f):f>2048?(b[0]=224|(61440&f)>>>12,b[1]=128|(4032&f)>>>6,b[2]=128|63&f):f>128?(b[0]=192|(1984&f)>>>6,b[1]=128|63&f):b[0]=f,this.parsedData=this.parsedData.concat(b)}this.parsedData.length!=this.data.length&&(this.parsedData.unshift(191),this.parsedData.unshift(187),this.parsedData.unshift(239))}function b(a,b){this.typeNumber=a,this.errorCorrectLevel=b,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}function i(a,b){if(void 0==a.length)throw new Error(a.length+"/"+b);for(var c=0;c<a.length&&0==a[c];)c++;this.num=new Array(a.length-c+b);for(var d=0;d<a.length-c;d++)this.num[d]=a[d+c]}function j(a,b){this.totalCount=a,this.dataCount=b}function k(){this.buffer=[],this.length=0}function m(){return"undefined"!=typeof CanvasRenderingContext2D}function n(){var a=!1,b=navigator.userAgent;return/android/i.test(b)&&(a=!0,aMat=b.toString().match(/android ([0-9]\.[0-9])/i),aMat&&aMat[1]&&(a=parseFloat(aMat[1]))),a}function r(a,b){for(var c=1,e=s(a),f=0,g=l.length;g>=f;f++){var h=0;switch(b){case d.L:h=l[f][0];break;case d.M:h=l[f][1];break;case d.Q:h=l[f][2];break;case d.H:h=l[f][3]}if(h>=e)break;c++}if(c>l.length)throw new Error("Too long data");return c}function s(a){var b=encodeURI(a).toString().replace(/\%[0-9a-fA-F]{2}/g,"a");return b.length+(b.length!=a?3:0)}a.prototype={getLength:function(){return this.parsedData.length},write:function(a){for(var b=0,c=this.parsedData.length;c>b;b++)a.put(this.parsedData[b],8)}},b.prototype={addData:function(b){var c=new a(b);this.dataList.push(c),this.dataCache=null},isDark:function(a,b){if(0>a||this.moduleCount<=a||0>b||this.moduleCount<=b)throw new Error(a+","+b);return this.modules[a][b]},getModuleCount:function(){return this.moduleCount},make:function(){this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(a,c){this.moduleCount=4*this.typeNumber+17,this.modules=new Array(this.moduleCount);for(var d=0;d<this.moduleCount;d++){this.modules[d]=new Array(this.moduleCount);for(var e=0;e<this.moduleCount;e++)this.modules[d][e]=null}this.setupPositionProbePattern(0,0),this.setupPositionProbePattern(this.moduleCount-7,0),this.setupPositionProbePattern(0,this.moduleCount-7),this.setupPositionAdjustPattern(),this.setupTimingPattern(),this.setupTypeInfo(a,c),this.typeNumber>=7&&this.setupTypeNumber(a),null==this.dataCache&&(this.dataCache=b.createData(this.typeNumber,this.errorCorrectLevel,this.dataList)),this.mapData(this.dataCache,c)},setupPositionProbePattern:function(a,b){for(var c=-1;7>=c;c++)if(!(-1>=a+c||this.moduleCount<=a+c))for(var d=-1;7>=d;d++)-1>=b+d||this.moduleCount<=b+d||(this.modules[a+c][b+d]=c>=0&&6>=c&&(0==d||6==d)||d>=0&&6>=d&&(0==c||6==c)||c>=2&&4>=c&&d>=2&&4>=d?!0:!1)},getBestMaskPattern:function(){for(var a=0,b=0,c=0;8>c;c++){this.makeImpl(!0,c);var d=f.getLostPoint(this);(0==c||a>d)&&(a=d,b=c)}return b},createMovieClip:function(a,b,c){var d=a.createEmptyMovieClip(b,c),e=1;this.make();for(var f=0;f<this.modules.length;f++)for(var g=f*e,h=0;h<this.modules[f].length;h++){var i=h*e,j=this.modules[f][h];j&&(d.beginFill(0,100),d.moveTo(i,g),d.lineTo(i+e,g),d.lineTo(i+e,g+e),d.lineTo(i,g+e),d.endFill())}return d},setupTimingPattern:function(){for(var a=8;a<this.moduleCount-8;a++)null==this.modules[a][6]&&(this.modules[a][6]=0==a%2);for(var b=8;b<this.moduleCount-8;b++)null==this.modules[6][b]&&(this.modules[6][b]=0==b%2)},setupPositionAdjustPattern:function(){for(var a=f.getPatternPosition(this.typeNumber),b=0;b<a.length;b++)for(var c=0;c<a.length;c++){var d=a[b],e=a[c];if(null==this.modules[d][e])for(var g=-2;2>=g;g++)for(var h=-2;2>=h;h++)this.modules[d+g][e+h]=-2==g||2==g||-2==h||2==h||0==g&&0==h?!0:!1}},setupTypeNumber:function(a){for(var b=f.getBCHTypeNumber(this.typeNumber),c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[Math.floor(c/3)][c%3+this.moduleCount-8-3]=d}for(var c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[c%3+this.moduleCount-8-3][Math.floor(c/3)]=d}},setupTypeInfo:function(a,b){for(var c=this.errorCorrectLevel<<3|b,d=f.getBCHTypeInfo(c),e=0;15>e;e++){var g=!a&&1==(1&d>>e);6>e?this.modules[e][8]=g:8>e?this.modules[e+1][8]=g:this.modules[this.moduleCount-15+e][8]=g}for(var e=0;15>e;e++){var g=!a&&1==(1&d>>e);8>e?this.modules[8][this.moduleCount-e-1]=g:9>e?this.modules[8][15-e-1+1]=g:this.modules[8][15-e-1]=g}this.modules[this.moduleCount-8][8]=!a},mapData:function(a,b){for(var c=-1,d=this.moduleCount-1,e=7,g=0,h=this.moduleCount-1;h>0;h-=2)for(6==h&&h--;;){for(var i=0;2>i;i++)if(null==this.modules[d][h-i]){var j=!1;g<a.length&&(j=1==(1&a[g]>>>e));var k=f.getMask(b,d,h-i);k&&(j=!j),this.modules[d][h-i]=j,e--,-1==e&&(g++,e=7)}if(d+=c,0>d||this.moduleCount<=d){d-=c,c=-c;break}}}},b.PAD0=236,b.PAD1=17,b.createData=function(a,c,d){for(var e=j.getRSBlocks(a,c),g=new k,h=0;h<d.length;h++){var i=d[h];g.put(i.mode,4),g.put(i.getLength(),f.getLengthInBits(i.mode,a)),i.write(g)}for(var l=0,h=0;h<e.length;h++)l+=e[h].dataCount;if(g.getLengthInBits()>8*l)throw new Error("code length overflow. ("+g.getLengthInBits()+">"+8*l+")");for(g.getLengthInBits()+4<=8*l&&g.put(0,4);0!=g.getLengthInBits()%8;)g.putBit(!1);for(;;){if(g.getLengthInBits()>=8*l)break;if(g.put(b.PAD0,8),g.getLengthInBits()>=8*l)break;g.put(b.PAD1,8)}return b.createBytes(g,e)},b.createBytes=function(a,b){for(var c=0,d=0,e=0,g=new Array(b.length),h=new Array(b.length),j=0;j<b.length;j++){var k=b[j].dataCount,l=b[j].totalCount-k;d=Math.max(d,k),e=Math.max(e,l),g[j]=new Array(k);for(var m=0;m<g[j].length;m++)g[j][m]=255&a.buffer[m+c];c+=k;var n=f.getErrorCorrectPolynomial(l),o=new i(g[j],n.getLength()-1),p=o.mod(n);h[j]=new Array(n.getLength()-1);for(var m=0;m<h[j].length;m++){var q=m+p.getLength()-h[j].length;h[j][m]=q>=0?p.get(q):0}}for(var r=0,m=0;m<b.length;m++)r+=b[m].totalCount;for(var s=new Array(r),t=0,m=0;d>m;m++)for(var j=0;j<b.length;j++)m<g[j].length&&(s[t++]=g[j][m]);for(var m=0;e>m;m++)for(var j=0;j<b.length;j++)m<h[j].length&&(s[t++]=h[j][m]);return s};for(var c={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},d={L:1,M:0,Q:3,H:2},e={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7},f={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15_MASK:21522,getBCHTypeInfo:function(a){for(var b=a<<10;f.getBCHDigit(b)-f.getBCHDigit(f.G15)>=0;)b^=f.G15<<f.getBCHDigit(b)-f.getBCHDigit(f.G15);return(a<<10|b)^f.G15_MASK},getBCHTypeNumber:function(a){for(var b=a<<12;f.getBCHDigit(b)-f.getBCHDigit(f.G18)>=0;)b^=f.G18<<f.getBCHDigit(b)-f.getBCHDigit(f.G18);return a<<12|b},getBCHDigit:function(a){for(var b=0;0!=a;)b++,a>>>=1;return b},getPatternPosition:function(a){return f.PATTERN_POSITION_TABLE[a-1]},getMask:function(a,b,c){switch(a){case e.PATTERN000:return 0==(b+c)%2;case e.PATTERN001:return 0==b%2;case e.PATTERN010:return 0==c%3;case e.PATTERN011:return 0==(b+c)%3;case e.PATTERN100:return 0==(Math.floor(b/2)+Math.floor(c/3))%2;case e.PATTERN101:return 0==b*c%2+b*c%3;case e.PATTERN110:return 0==(b*c%2+b*c%3)%2;case e.PATTERN111:return 0==(b*c%3+(b+c)%2)%2;default:throw new Error("bad maskPattern:"+a)}},getErrorCorrectPolynomial:function(a){for(var b=new i([1],0),c=0;a>c;c++)b=b.multiply(new i([1,g.gexp(c)],0));return b},getLengthInBits:function(a,b){if(b>=1&&10>b)switch(a){case c.MODE_NUMBER:return 10;case c.MODE_ALPHA_NUM:return 9;case c.MODE_8BIT_BYTE:return 8;case c.MODE_KANJI:return 8;default:throw new Error("mode:"+a)}else if(27>b)switch(a){case c.MODE_NUMBER:return 12;case c.MODE_ALPHA_NUM:return 11;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 10;default:throw new Error("mode:"+a)}else{if(!(41>b))throw new Error("type:"+b);switch(a){case c.MODE_NUMBER:return 14;case c.MODE_ALPHA_NUM:return 13;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 12;default:throw new Error("mode:"+a)}}},getLostPoint:function(a){for(var b=a.getModuleCount(),c=0,d=0;b>d;d++)for(var e=0;b>e;e++){for(var f=0,g=a.isDark(d,e),h=-1;1>=h;h++)if(!(0>d+h||d+h>=b))for(var i=-1;1>=i;i++)0>e+i||e+i>=b||(0!=h||0!=i)&&g==a.isDark(d+h,e+i)&&f++;f>5&&(c+=3+f-5)}for(var d=0;b-1>d;d++)for(var e=0;b-1>e;e++){var j=0;a.isDark(d,e)&&j++,a.isDark(d+1,e)&&j++,a.isDark(d,e+1)&&j++,a.isDark(d+1,e+1)&&j++,(0==j||4==j)&&(c+=3)}for(var d=0;b>d;d++)for(var e=0;b-6>e;e++)a.isDark(d,e)&&!a.isDark(d,e+1)&&a.isDark(d,e+2)&&a.isDark(d,e+3)&&a.isDark(d,e+4)&&!a.isDark(d,e+5)&&a.isDark(d,e+6)&&(c+=40);for(var e=0;b>e;e++)for(var d=0;b-6>d;d++)a.isDark(d,e)&&!a.isDark(d+1,e)&&a.isDark(d+2,e)&&a.isDark(d+3,e)&&a.isDark(d+4,e)&&!a.isDark(d+5,e)&&a.isDark(d+6,e)&&(c+=40);for(var k=0,e=0;b>e;e++)for(var d=0;b>d;d++)a.isDark(d,e)&&k++;var l=Math.abs(100*k/b/b-50)/5;return c+=10*l}},g={glog:function(a){if(1>a)throw new Error("glog("+a+")");return g.LOG_TABLE[a]},gexp:function(a){for(;0>a;)a+=255;for(;a>=256;)a-=255;return g.EXP_TABLE[a]},EXP_TABLE:new Array(256),LOG_TABLE:new Array(256)},h=0;8>h;h++)g.EXP_TABLE[h]=1<<h;for(var h=8;256>h;h++)g.EXP_TABLE[h]=g.EXP_TABLE[h-4]^g.EXP_TABLE[h-5]^g.EXP_TABLE[h-6]^g.EXP_TABLE[h-8];for(var h=0;255>h;h++)g.LOG_TABLE[g.EXP_TABLE[h]]=h;i.prototype={get:function(a){return this.num[a]},getLength:function(){return this.num.length},multiply:function(a){for(var b=new Array(this.getLength()+a.getLength()-1),c=0;c<this.getLength();c++)for(var d=0;d<a.getLength();d++)b[c+d]^=g.gexp(g.glog(this.get(c))+g.glog(a.get(d)));return new i(b,0)},mod:function(a){if(this.getLength()-a.getLength()<0)return this;for(var b=g.glog(this.get(0))-g.glog(a.get(0)),c=new Array(this.getLength()),d=0;d<this.getLength();d++)c[d]=this.get(d);for(var d=0;d<a.getLength();d++)c[d]^=g.gexp(g.glog(a.get(d))+b);return new i(c,0).mod(a)}},j.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],j.getRSBlocks=function(a,b){var c=j.getRsBlockTable(a,b);if(void 0==c)throw new Error("bad rs block @ typeNumber:"+a+"/errorCorrectLevel:"+b);for(var d=c.length/3,e=[],f=0;d>f;f++)for(var g=c[3*f+0],h=c[3*f+1],i=c[3*f+2],k=0;g>k;k++)e.push(new j(h,i));return e},j.getRsBlockTable=function(a,b){switch(b){case d.L:return j.RS_BLOCK_TABLE[4*(a-1)+0];case d.M:return j.RS_BLOCK_TABLE[4*(a-1)+1];case d.Q:return j.RS_BLOCK_TABLE[4*(a-1)+2];case d.H:return j.RS_BLOCK_TABLE[4*(a-1)+3];default:return void 0}},k.prototype={get:function(a){var b=Math.floor(a/8);return 1==(1&this.buffer[b]>>>7-a%8)},put:function(a,b){for(var c=0;b>c;c++)this.putBit(1==(1&a>>>b-c-1))},getLengthInBits:function(){return this.length},putBit:function(a){var b=Math.floor(this.length/8);this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>this.length%8),this.length++}};var l=[[17,14,11,7],[32,26,20,14],[53,42,32,24],[78,62,46,34],[106,84,60,44],[134,106,74,58],[154,122,86,64],[192,152,108,84],[230,180,130,98],[271,213,151,119],[321,251,177,137],[367,287,203,155],[425,331,241,177],[458,362,258,194],[520,412,292,220],[586,450,322,250],[644,504,364,280],[718,560,394,310],[792,624,442,338],[858,666,482,382],[929,711,509,403],[1003,779,565,439],[1091,857,611,461],[1171,911,661,511],[1273,997,715,535],[1367,1059,751,593],[1465,1125,805,625],[1528,1190,868,658],[1628,1264,908,698],[1732,1370,982,742],[1840,1452,1030,790],[1952,1538,1112,842],[2068,1628,1168,898],[2188,1722,1228,958],[2303,1809,1283,983],[2431,1911,1351,1051],[2563,1989,1423,1093],[2699,2099,1499,1139],[2809,2213,1579,1219],[2953,2331,1663,1273]],o=function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){function g(a,b){var c=document.createElementNS("http://www.w3.org/2000/svg",a);for(var d in b)b.hasOwnProperty(d)&&c.setAttribute(d,b[d]);return c}var b=this._htOption,c=this._el,d=a.getModuleCount();Math.floor(b.width/d),Math.floor(b.height/d),this.clear();var h=g("svg",{viewBox:"0 0 "+String(d)+" "+String(d),width:"100%",height:"100%",fill:b.colorLight});h.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink"),c.appendChild(h),h.appendChild(g("rect",{fill:b.colorDark,width:"1",height:"1",id:"template"}));for(var i=0;d>i;i++)for(var j=0;d>j;j++)if(a.isDark(i,j)){var k=g("use",{x:String(i),y:String(j)});k.setAttributeNS("http://www.w3.org/1999/xlink","href","#template"),h.appendChild(k)}},a.prototype.clear=function(){for(;this._el.hasChildNodes();)this._el.removeChild(this._el.lastChild)},a}(),p="svg"===document.documentElement.tagName.toLowerCase(),q=p?o:m()?function(){function a(){this._elImage.src=this._elCanvas.toDataURL("image/png"),this._elImage.style.display="block",this._elCanvas.style.display="none"}function d(a,b){var c=this;if(c._fFail=b,c._fSuccess=a,null===c._bSupportDataURI){var d=document.createElement("img"),e=function(){c._bSupportDataURI=!1,c._fFail&&_fFail.call(c)},f=function(){c._bSupportDataURI=!0,c._fSuccess&&c._fSuccess.call(c)};return d.onabort=e,d.onerror=e,d.onload=f,d.src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",void 0}c._bSupportDataURI===!0&&c._fSuccess?c._fSuccess.call(c):c._bSupportDataURI===!1&&c._fFail&&c._fFail.call(c)}if(this._android&&this._android<=2.1){var b=1/window.devicePixelRatio,c=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(a,d,e,f,g,h,i,j){if("nodeName"in a&&/img/i.test(a.nodeName))for(var l=arguments.length-1;l>=1;l--)arguments[l]=arguments[l]*b;else"undefined"==typeof j&&(arguments[1]*=b,arguments[2]*=b,arguments[3]*=b,arguments[4]*=b);c.apply(this,arguments)}}var e=function(a,b){this._bIsPainted=!1,this._android=n(),this._htOption=b,this._elCanvas=document.createElement("canvas"),this._elCanvas.width=b.width,this._elCanvas.height=b.height,a.appendChild(this._elCanvas),this._el=a,this._oContext=this._elCanvas.getContext("2d"),this._bIsPainted=!1,this._elImage=document.createElement("img"),this._elImage.style.display="none",this._el.appendChild(this._elImage),this._bSupportDataURI=null};return e.prototype.draw=function(a){var b=this._elImage,c=this._oContext,d=this._htOption,e=a.getModuleCount(),f=d.width/e,g=d.height/e,h=Math.round(f),i=Math.round(g);b.style.display="none",this.clear();for(var j=0;e>j;j++)for(var k=0;e>k;k++){var l=a.isDark(j,k),m=k*f,n=j*g;c.strokeStyle=l?d.colorDark:d.colorLight,c.lineWidth=1,c.fillStyle=l?d.colorDark:d.colorLight,c.fillRect(m,n,f,g),c.strokeRect(Math.floor(m)+.5,Math.floor(n)+.5,h,i),c.strokeRect(Math.ceil(m)-.5,Math.ceil(n)-.5,h,i)}this._bIsPainted=!0},e.prototype.makeImage=function(){this._bIsPainted&&d.call(this,a)},e.prototype.isPainted=function(){return this._bIsPainted},e.prototype.clear=function(){this._oContext.clearRect(0,0,this._elCanvas.width,this._elCanvas.height),this._bIsPainted=!1},e.prototype.round=function(a){return a?Math.floor(1e3*a)/1e3:a},e}():function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){for(var b=this._htOption,c=this._el,d=a.getModuleCount(),e=Math.floor(b.width/d),f=Math.floor(b.height/d),g=['<table style="border:0;border-collapse:collapse;">'],h=0;d>h;h++){g.push("<tr>");for(var i=0;d>i;i++)g.push('<td style="border:0;border-collapse:collapse;padding:0;margin:0;width:'+e+"px;height:"+f+"px;background-color:"+(a.isDark(h,i)?b.colorDark:b.colorLight)+';"></td>');g.push("</tr>")}g.push("</table>"),c.innerHTML=g.join("");var j=c.childNodes[0],k=(b.width-j.offsetWidth)/2,l=(b.height-j.offsetHeight)/2;k>0&&l>0&&(j.style.margin=l+"px "+k+"px")},a.prototype.clear=function(){this._el.innerHTML=""},a}();QRCode=function(a,b){if(this._htOption={width:256,height:256,typeNumber:4,colorDark:"#000000",colorLight:"#ffffff",correctLevel:d.H},"string"==typeof b&&(b={text:b}),b)for(var c in b)this._htOption[c]=b[c];"string"==typeof a&&(a=document.getElementById(a)),this._android=n(),this._el=a,this._oQRCode=null,this._oDrawing=new q(this._el,this._htOption),this._htOption.text&&this.makeCode(this._htOption.text)},QRCode.prototype.makeCode=function(a){this._oQRCode=new b(r(a,this._htOption.correctLevel),this._htOption.correctLevel),this._oQRCode.addData(a),this._oQRCode.make(),this._el.title=a,this._oDrawing.draw(this._oQRCode),this.makeImage()},QRCode.prototype.makeImage=function(){"function"==typeof this._oDrawing.makeImage&&(!this._android||this._android>=3)&&this._oDrawing.makeImage()},QRCode.prototype.clear=function(){this._oDrawing.clear()},QRCode.CorrectLevel=d}();
+</script>
   
-
   <style>
     :root {
-      --accent: #0b5574;
-      --stp-primary: #0b5574;
-      --stp-primary-dark: #083e55;
-      --stp-green: #07966b;
-      --stp-green-hover: #057a55;
-      --stp-red: #dc2626;
-      --stp-red-light: #fee2e2;
-      --stp-red-text: #991b1b;
-      --stp-bg: #f8fcfb;
-      --stp-surface: #ffffff;
-      --stp-border: #e2e8f0;
-      --stp-text-muted: #64748b;
-      --stp-text: #1e293b;
+      --accent: #07966b;
+      --accent-text: #066d4e;
+      --accent-contrast: #ffffff;
+      --brand-blue: #0b5574;
+      --brand-blue-hover: #083f56;
+      --brand-green: #07966b;
+      --brand-green-hover: #057a56;
+      --emergency-red: #dc2626;
+      --emergency-bg: #fef2f2;
+      --emergency-border: #fca5a5;
     }
 
     body {
-      background-color: var(--stp-bg);
-      color: var(--stp-text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       padding: 0;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .app-viewport {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 12px 16px 36px 16px;
+      min-height: 100vh;
     }
 
-    .pet-container {
+    /* Container mobile mock-up */
+    .pet-wrapper {
       width: 100%;
       max-width: 480px;
+      min-height: 100vh;
+      background-color: #ffffff;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header Bar */
+    .pet-header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e2e8f0;
+      background-color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--brand-blue);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .brand-slogan {
+      font-size: 0.68rem;
+      color: #64748b;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    .nfc-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--brand-green);
+      background-color: #ecfdf5;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Demo switcher bar */
+    .demo-toolbar {
+      background-color: #0b5574;
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    .demo-toggle-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #ffffff;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .demo-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    /* Content body */
+    .pet-content {
+      padding: 16px;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    /* Top demo bar for testing */
-    .demo-bar {
-      background: #e0f2fe;
-      border: 1px solid #bae6fd;
+    /* Status Alert Banner */
+    .status-banner {
       border-radius: 12px;
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      color: #0369a1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .demo-bar a {
-      color: #0284c7;
-      font-weight: 600;
-      text-decoration: underline;
-      cursor: pointer;
-    }
-
-    /* Header */
-    .stp-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 18px;
-      background: var(--stp-surface);
-      border-radius: 20px;
-      box-shadow: 0 2px 10px rgba(11, 85, 116, 0.04);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-    }
-
-    .stp-brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      color: var(--stp-primary);
-      font-weight: 700;
-      font-size: 1.05rem;
-    }
-
-    .stp-brand-icon {
-      font-size: 1.35rem;
-      line-height: 1;
-    }
-
-    .stp-tagline {
-      font-size: 0.72rem;
-      color: var(--stp-green);
-      font-weight: 600;
-      background: #ecfdf5;
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: 0.02em;
-    }
-
-    /* Cards */
-    .stp-card {
-      background: var(--stp-surface);
-      border-radius: 22px;
-      border: 1px solid rgba(226, 232, 240, 0.85);
-      box-shadow: 0 4px 20px rgba(11, 85, 116, 0.06);
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* Lost Pet Alert Banner */
-    .lost-alert-banner {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #ffffff;
-      padding: 16px 18px;
-      border-radius: 20px;
-      box-shadow: 0 6px 20px rgba(220, 38, 38, 0.25);
-      position: relative;
-      overflow: hidden;
-      animation: pulseAlert 2.5s infinite ease-in-out;
-    }
-
-    @keyframes pulseAlert {
-      0%, 100% { box-shadow: 0 6px 20px rgba(220, 38, 38, 0.25); }
-      50% { box-shadow: 0 8px 28px rgba(220, 38, 38, 0.45); }
-    }
-
-    .lost-badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(255, 255, 255, 0.22);
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-      backdrop-filter: blur(4px);
-    }
-
-    .lost-title {
-      font-size: 1.28rem;
-      font-weight: 800;
-      margin: 0 0 10px 0;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-    }
-
-    .lost-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.12);
       padding: 12px 14px;
-      border-radius: 14px;
-      font-size: 0.88rem;
-    }
-
-    .lost-item {
+      font-size: 0.85rem;
+      line-height: 1.35;
       display: flex;
       align-items: flex-start;
-      gap: 8px;
-      line-height: 1.4;
+      gap: 10px;
+      transition: all 0.25s ease;
     }
 
-    .lost-item-icon {
-      font-size: 1rem;
+    .status-banner.normal {
+      background-color: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+
+    .status-banner.lost {
+      background-color: var(--emergency-bg);
+      border: 2px solid var(--emergency-red);
+      color: #991b1b;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.18);
+      animation: pulse-border 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { border-color: #dc2626; }
+      50% { border-color: #f87171; }
+    }
+
+    .status-icon {
+      font-size: 1.3rem;
       flex-shrink: 0;
       margin-top: 1px;
     }
 
-    .lost-item-label {
-      font-weight: 600;
-      opacity: 0.9;
-    }
-
-    .reward-box {
-      margin-top: 12px;
+    .lost-details-card {
+      margin-top: 8px;
       background: #ffffff;
-      color: #991b1b;
-      font-weight: 800;
-      font-size: 1.05rem;
-      padding: 10px 14px;
-      border-radius: 14px;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      border: 1px dashed var(--emergency-red);
+      color: #7f1d1d;
+    }
+
+    /* Pet Avatar & Identity */
+    .profile-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      padding-top: 4px;
     }
 
-    /* Normal Status Banner */
-    .normal-status-banner {
-      background: linear-gradient(135deg, #0b5574, #083e55);
-      color: #ffffff;
-      padding: 14px 18px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 4px 14px rgba(11, 85, 116, 0.18);
-    }
-
-    .normal-status-icon {
-      font-size: 1.8rem;
-      flex-shrink: 0;
-    }
-
-    .normal-status-text h2 {
-      margin: 0 0 2px 0;
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-
-    .normal-status-text p {
-      margin: 0;
-      font-size: 0.82rem;
-      opacity: 0.9;
-    }
-
-    /* Pet Profile Photo */
-    .pet-photo-wrapper {
-      position: relative;
-      width: 100%;
-      height: 290px;
-      background: #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .avatar-frame {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid #ffffff;
+      box-shadow: 0 4px 16px rgba(11, 85, 116, 0.15);
       overflow: hidden;
+      background-color: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
 
-    .pet-photo-img {
+    .avatar-frame img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.3s ease;
     }
 
-    .pet-photo-fallback {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, #f1f5f9 0%, #cbd5e1 100%);
-      color: #64748b;
-      gap: 10px;
-    }
-
-    .pet-photo-fallback-icon {
-      font-size: 4.8rem;
+    .avatar-fallback {
+      font-size: 4rem;
       line-height: 1;
     }
 
-    .nfc-indicator {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(6px);
-      color: var(--stp-primary);
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
+    .pet-name-row {
       display: flex;
       align-items: center;
-      gap: 5px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-    }
-
-    /* Pet Details Body */
-    .pet-body {
-      padding: 20px 20px 24px 20px;
-    }
-
-    .pet-header-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 12px;
     }
 
     .pet-name {
-      font-size: 1.85rem;
+      font-size: 1.75rem;
       font-weight: 800;
-      color: var(--stp-primary);
-      margin: 0;
-      line-height: 1.15;
+      color: #0f172a;
       letter-spacing: -0.02em;
+      line-height: 1.1;
     }
 
-    .pet-species-pill {
-      background: #e6f6f2;
-      color: var(--stp-green);
-      font-size: 0.76rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .pet-summary-line {
-      font-size: 0.94rem;
-      color: var(--stp-text-muted);
-      font-weight: 500;
-      margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pet-summary-line .bullet {
-      color: #cbd5e1;
-      font-weight: bold;
-    }
-
-    /* Info Chips Grid */
-    .chips-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .info-chip {
-      background: #f8fafc;
-      border: 1px solid #edf2f7;
-      padding: 10px 12px;
-      border-radius: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .info-chip-label {
-      font-size: 0.72rem;
-      color: var(--stp-text-muted);
-      text-transform: uppercase;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-
-    .info-chip-val {
-      font-size: 0.95rem;
-      color: var(--stp-text);
-      font-weight: 700;
-    }
-
-    /* Notes / Medical Card */
-    .notes-box {
-      background: #f1f5f9;
-      border-left: 4px solid var(--stp-primary);
-      padding: 12px 14px;
-      border-radius: 8px 14px 14px 8px;
-      margin-bottom: 20px;
-      font-size: 0.88rem;
-      color: #334155;
-      line-height: 1.45;
-    }
-
-    .notes-title {
-      font-weight: 700;
-      color: var(--stp-primary);
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.85rem;
-    }
-
-    /* Primary Action Buttons */
-    .actions-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .btn-action {
+    .verified-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 16px;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-      box-sizing: border-box;
-      min-height: 52px;
-    }
-
-    .btn-action:focus-visible {
-      outline: 3px solid #38bdf8;
-      outline-offset: 2px;
-    }
-
-    /* Geo Action Button - Core of the product */
-    .btn-geo {
-      background: linear-gradient(135deg, #07966b, #047857);
+      width: 20px;
+      height: 20px;
+      background-color: var(--brand-green);
       color: #ffffff;
-      font-size: 1.05rem;
-      box-shadow: 0 4px 16px rgba(7, 150, 107, 0.35);
-    }
-
-    .btn-geo:hover:not(:disabled) {
-      background: linear-gradient(135deg, #057a55, #065f46);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(7, 150, 107, 0.45);
-    }
-
-    .btn-geo:active:not(:disabled) {
-      transform: translateY(1px);
-    }
-
-    .btn-geo:disabled {
-      opacity: 0.75;
-      cursor: not-allowed;
-      filter: grayscale(20%);
-    }
-
-    .btn-whatsapp {
-      background: #25d366;
-      color: #064e3b;
-      font-weight: 700;
-    }
-
-    .btn-whatsapp:hover {
-      background: #20ba59;
-      color: #064e3b;
-      transform: translateY(-1px);
-    }
-
-    .btn-call {
-      background: #f8fafc;
-      color: var(--stp-primary);
-      border: 1.5px solid #cbd5e1;
-    }
-
-    .btn-call:hover {
-      background: #f1f5f9;
-      border-color: #94a3b8;
-    }
-
-    /* State Views: Loading, Error, Not Found */
-    .state-card {
-      background: var(--stp-surface);
-      border-radius: 22px;
-      padding: 40px 24px;
-      text-align: center;
-      border: 1px solid rgba(226, 232, 240, 0.85);
-      box-shadow: 0 4px 20px rgba(11, 85, 116, 0.06);
-    }
-
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid #e2e8f0;
-      border-top-color: var(--stp-primary);
       border-radius: 50%;
-      animation: spin 0.9s linear infinite;
-      margin: 0 auto 16px auto;
+      font-size: 0.75rem;
+      font-weight: 900;
+      box-shadow: 0 2px 4px rgba(7, 150, 107, 0.25);
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .state-icon {
-      font-size: 3.5rem;
-      margin-bottom: 12px;
-      line-height: 1;
-    }
-
-    .state-title {
-      font-size: 1.35rem;
-      font-weight: 800;
-      color: var(--stp-primary);
-      margin: 0 0 8px 0;
-    }
-
-    .state-desc {
+    .pet-subheadline {
       font-size: 0.92rem;
-      color: var(--stp-text-muted);
-      line-height: 1.5;
-      margin: 0 0 24px 0;
+      font-weight: 500;
+      color: #475569;
+      margin-top: 4px;
     }
 
-    /* Privacy & Footer */
-    .privacy-notice {
-      background: #f8fafc;
-      border: 1px solid #edf2f7;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 0.78rem;
-      color: var(--stp-text-muted);
-      line-height: 1.45;
-      text-align: center;
+    /* Badges / Chips */
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .chip-active {
+      background-color: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .chip-neutral {
+      background-color: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+
+    .chip-emergency {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    /* Actions High Visibility */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn-action {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      box-sizing: border-box;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .stp-footer {
-      text-align: center;
-      padding: 12px 0 8px 0;
+    .btn-action:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-action:active {
+      transform: translateY(1px);
+    }
+
+    .btn-found {
+      background-color: var(--brand-green);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(7, 150, 107, 0.3);
+    }
+    .btn-found:hover {
+      background-color: var(--brand-green-hover);
+    }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: #0b431e;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
+    }
+    .btn-whatsapp:hover {
+      background-color: #20ba5a;
+    }
+
+    .btn-call {
+      background-color: var(--brand-blue);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(11, 85, 116, 0.25);
+    }
+    .btn-call:hover {
+      background-color: var(--brand-blue-hover);
+    }
+
+    /* Sub-actions icons bar */
+    .subactions-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .btn-subaction {
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      padding: 10px 12px;
+      border-radius: 10px;
       font-size: 0.82rem;
-      color: var(--stp-text-muted);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s ease;
+    }
+
+    .btn-subaction:hover {
+      background-color: #e2e8f0;
+    }
+
+    /* Reusable Card */
+    .info-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .card-title-icon {
+      font-size: 1.1rem;
+    }
+
+    .card-text {
+      font-size: 0.88rem;
+      color: #475569;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    /* Tutor Row */
+    .tutor-info-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .tutor-meta-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .tutor-meta-location {
+      font-size: 0.78rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-top: 2px;
+    }
+
+    .tutor-shield {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--brand-green);
+      background: #ecfdf5;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Basic metrics grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .metric-cell {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .metric-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.03em;
+    }
+
+    .metric-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 2px;
+    }
+
+    /* Vacinas Table */
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: left;
+    }
+
+    .custom-table th {
+      background-color: #f1f5f9;
+      color: #475569;
+      font-weight: 700;
+      padding: 8px 6px;
+      border-bottom: 1px solid #cbd5e1;
+    }
+
+    .custom-table td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge-vac {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    /* Health List */
+    .health-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      align-items: center;
+      gap: 8px;
     }
 
-    .stp-footer a {
-      color: var(--stp-primary);
-      text-decoration: none;
+    .health-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #e2e8f0;
+      font-size: 0.84rem;
+    }
+
+    .health-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .health-key {
       font-weight: 600;
+      color: #334155;
     }
 
-    .stp-footer a:hover {
-      text-decoration: underline;
+    .health-val {
+      color: #64748b;
+      text-align: right;
+      max-width: 60%;
+    }
+
+    /* Gallery Grid 3x2 */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #e2e8f0;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    /* Footer Institucional */
+    .institutional-footer {
+      background-color: #0b5574;
+      color: #ffffff;
+      padding: 24px 16px;
+      margin-top: 16px;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .footer-grid-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .feature-icon {
+      font-size: 1.15rem;
+    }
+
+    .footer-qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .qr-box {
+      background: #ffffff;
+      padding: 8px;
+      border-radius: 10px;
+      display: inline-flex;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer-brand-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .footer-disclaimer {
+      font-size: 0.74rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      max-width: 380px;
     }
 
     /* Toast Notification */
-    .toast-container {
+    .toast-msg {
       position: fixed;
       bottom: 24px;
       left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      width: 90%;
-      max-width: 420px;
+      transform: translateX(-50%) translateY(100px);
+      background-color: #1e293b;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      z-index: 100;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
     }
 
-    .toast-msg {
-      background: #1e293b;
-      color: #ffffff;
-      padding: 12px 18px;
-      border-radius: 14px;
-      font-size: 0.88rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Modal dialog */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
       display: flex;
       align-items: center;
-      gap: 10px;
-      animation: toastIn 0.3s ease-out forwards;
-      pointer-events: auto;
-      margin-top: 8px;
+      gap: 8px;
+      margin-bottom: 8px;
     }
 
-    .toast-msg.toast-success {
-      background: #065f46;
-      border: 1px solid #059669;
+    /* State Error Screen */
+    .error-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      min-height: 60vh;
     }
 
-    .toast-msg.toast-warning {
-      background: #9a3412;
-      border: 1px solid #ea580c;
-    }
-
-    .toast-msg.toast-error {
-      background: #991b1b;
-      border: 1px solid #dc2626;
-    }
-
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
+    .error-screen.visible {
+      display: flex;
     }
 
     @media print {
-      .demo-bar, .actions-stack, .toast-container, .btn-action {
-        display: none !important;
+      body {
+        background: white;
       }
-      .app-viewport {
-        padding: 0;
-      }
-      .pet-container {
+      .pet-wrapper {
+        box-shadow: none;
         max-width: 100%;
+      }
+      .demo-toolbar,
+      .action-group,
+      .subactions-row,
+      .toast-msg {
+        display: none !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="app-viewport">
-    <div class="pet-container" id="mainContainer">
-      
-      <!-- Top Demo Switcher (Simulação e Testes de URL) -->
-      <nav class="demo-bar" aria-label="Ambiente de demonstração" id="demoBar">
-        <span>🧪 <strong>Teste rápido:</strong></span>
-        <div style="display:flex; gap:10px;">
-          <a href="?pet=thor" id="demoThorBtn">Perdido (Thor)</a>
-          <a href="?pet=luna" id="demoLunaBtn">Normal (Luna)</a>
-          <a href="?pet=inexistente" id="demoErrorBtn">Não achado</a>
-        </div>
-      </nav>
-
-      <!-- Compact Header -->
-      <header class="stp-header">
-        <a href="https://www.savetagpet.com.br" target="_blank" rel="noopener noreferrer" class="stp-brand" title="Ir para Save Tag Pet">
-          <span class="stp-brand-icon" aria-hidden="true">🐾</span>
-          <span>Save Tag Pet</span>
-        </a>
-        <span class="stp-tagline">Identifique. Encontre. Proteja.</span>
-      </header>
-
-      <!-- Dynamic App Viewport Rendered Here -->
-      <main id="appView" aria-live="polite">
-        <!-- Loading State by Default -->
-        <section class="state-card">
-          <div class="spinner" role="status" aria-label="Carregando"></div>
-          <h1 class="state-title">Buscando o pet...</h1>
-          <p class="state-desc">Consultando os dados seguros da Tag NFC.</p>
-        </section>
-      </main>
-
-      <!-- Privacy Notice -->
-      <aside class="privacy-notice" aria-label="Informações de privacidade">
-        <span aria-hidden="true">🔒</span>
-        <span>Este perfil é público e mostra apenas as informações necessárias para devolver o pet com segurança.</span>
-      </aside>
-
-      <!-- Footer -->
-      <footer class="stp-footer">
-        <div>Protegido por <strong>Save Tag Pet®</strong> — Tecnologia NFC</div>
+  <div class="pet-wrapper">
+    <!-- Header -->
+    <header class="pet-header">
+      <div class="brand-group">
+        <span class="brand-logo-icon">🐾</span>
         <div>
-          <a href="https://www.savetagpet.com.br" target="_blank" rel="noopener noreferrer">www.savetagpet.com.br</a>
+          <div class="brand-title">Save Tag Pet</div>
+          <div class="brand-slogan">Identifique. Encontre. Proteja.</div>
         </div>
-      </footer>
+      </div>
+      <div class="nfc-indicator">
+        <span>📡</span>
+        <span>TAG NFC</span>
+      </div>
+    </header>
 
+    <!-- Test/Demo Bar for reviewers to verify Normal & Perdido states -->
+    <aside class="demo-toolbar" aria-label="Controles de demonstração">
+      <span>Modo de visualização:</span>
+      <button type="button" class="demo-toggle-btn" id="btnToggleLost">Alternar: Normal / 🚨 Perdido</button>
+    </aside>
+
+    <!-- Error Screen (Fallback / Connection error) -->
+    <div id="errorScreen" class="error-screen" role="alert">
+      <div style="font-size: 3rem; margin-bottom: 12px;">⚠️</div>
+      <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Falha na conexão</h2>
+      <p style="font-size: 0.88rem; color: #64748b; margin-bottom: 16px;">Não foi possível carregar os dados atualizados deste pet no momento.</p>
+      <button type="button" class="btn-action btn-found" style="width: auto; padding: 10px 20px;" onclick="window.location.reload()">
+        🔄 Tentar novamente
+      </button>
+    </div>
+
+    <!-- Main Pet Profile -->
+    <main id="mainProfile" class="pet-content">
+      
+      <!-- Status Reassuring / Emergency Banner -->
+      <section id="statusBanner" class="status-banner normal" aria-live="polite">
+        <div id="statusIcon" class="status-icon">🛡️</div>
+        <div>
+          <strong id="statusTitle" style="display: block; font-size: 0.92rem; margin-bottom: 2px;">Este é o Mel!</strong>
+          <span id="statusDesc">O pet está com sua TAG Save Tag Pet ativa e protegida.</span>
+          <div id="lostDetailsBox" class="lost-details-card" style="display: none;">
+            <div><strong>📍 Visto por último:</strong> <span id="lostLoc">Canal 3, Gonzaga — Santos/SP</span></div>
+            <div><strong>⏰ Data do sumiço:</strong> <span id="lostDate">Hoje às 14:30</span></div>
+            <div id="lostRewardRow" style="margin-top: 4px; font-weight: 700; color: #dc2626;">🎁 Oferece-se recompensa com gratidão!</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pet Hero Profile -->
+      <section class="profile-hero">
+        <div class="avatar-frame">
+          <img id="petPhoto" src="https://img.usecurling.com/p/400/400?q=golden%20labrador" alt="Foto do pet Mel" onerror="this.onerror=null; this.src='https://img.usecurling.com/p/400/400?q=yellow%20labrador';">
+        </div>
+
+        <div class="pet-name-row">
+          <h1 id="petName" class="pet-name">Mel</h1>
+          <span class="verified-badge" title="TAG Verificada e Ativa">✓</span>
+        </div>
+
+        <div id="petSubhead" class="pet-subheadline">Cachorro • Labrador • 12 kg</div>
+
+        <div class="chips-row">
+          <span class="chip chip-active">TAG Ativa ✓</span>
+          <span class="chip chip-neutral" id="chipCastrado">Castrado</span>
+          <span class="chip chip-neutral" id="chipTemperamento">Dócil</span>
+          <span class="chip chip-emergency" id="chipPerdidoBadge" style="display: none;">🚨 MODO PERDIDO</span>
+        </div>
+      </section>
+
+      <!-- Primary Action Buttons -->
+      <section class="action-group" aria-label="Ações de contato de emergência">
+        <button type="button" id="btnFoundPet" class="btn-action btn-found">
+          <span>🔎 Encontrou meu pet? Toque aqui</span>
+        </button>
+
+        <a id="btnWhatsapp" href="https://wa.me/5513991118997?text=Ol%C3%A1%2C%20encontrei%20a%20Mel%20pela%20TAG%20NFC!" target="_blank" rel="noopener noreferrer" class="btn-action btn-whatsapp">
+          <span>💬 Chamar no WhatsApp</span>
+        </a>
+
+        <a id="btnCall" href="tel:+5513991118997" class="btn-action btn-call">
+          <span>📞 Ligar para o tutor</span>
+        </a>
+
+        <div class="subactions-row">
+          <button type="button" id="btnShareProfile" class="btn-subaction">
+            <span>🔗 Compartilhar perfil</span>
+          </button>
+          <button type="button" id="btnEmergencyModal" class="btn-subaction">
+            <span>🚨 Instruções SOS</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Card Sobre o Pet -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">🐾</span>
+          <span>Sobre o Mel</span>
+        </h2>
+        <p id="petBio" class="card-text">
+          Dócil, adora brincar, muito querido e amigável com crianças e outros animais. Costuma atender ao ser chamado pelo nome.
+        </p>
+      </section>
+
+      <!-- Card Tutor -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">👤</span>
+          <span>Tutor Responsável</span>
+        </h2>
+        <div class="tutor-info-box">
+          <div>
+            <div id="tutorName" class="tutor-meta-name">Emerson dos Santos</div>
+            <div id="tutorCity" class="tutor-meta-location">
+              <span>📍</span>
+              <span>Santos / SP</span>
+            </div>
+          </div>
+          <span class="tutor-shield">Identidade Verificada</span>
+        </div>
+      </section>
+
+      <!-- Card Dados Básicos -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">📋</span>
+          <span>Dados Básicos</span>
+        </h2>
+        <div class="metrics-grid">
+          <div class="metric-cell">
+            <div class="metric-label">Espécie / Raça</div>
+            <div id="metricBreed" class="metric-value">Labrador</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-label">Idade</div>
+            <div id="metricAge" class="metric-value">3 anos</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-label">Cor</div>
+            <div id="metricColor" class="metric-value">Caramelo</div>
+          </div>
+          <div class="metric-cell">
+            <div class="metric-label">Peso</div>
+            <div id="metricWeight" class="metric-value">12 kg</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BLOCO 2 — INFORMAÇÕES PARA QUEM ENCONTROU -->
+      
+      <!-- Card Vacinas -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">📅</span>
+          <span>Controle de vacinas</span>
+        </h2>
+        <table class="custom-table" aria-label="Histórico de vacinação">
+          <thead>
+            <tr>
+              <th>Vacina</th>
+              <th>Data</th>
+              <th>Dose</th>
+              <th>Reforço</th>
+            </tr>
+          </thead>
+          <tbody id="vaccinesTableBody">
+            <tr>
+              <td><strong>V8 Múltipla</strong></td>
+              <td>15/01/2024</td>
+              <td><span class="badge-vac">Anual</span></td>
+              <td>15/01/2025</td>
+            </tr>
+            <tr>
+              <td><strong>Antirrábica</strong></td>
+              <td>15/01/2024</td>
+              <td><span class="badge-vac">Dose Única</span></td>
+              <td>15/01/2025</td>
+            </tr>
+            <tr>
+              <td><strong>Gripe Canina</strong></td>
+              <td>02/03/2024</td>
+              <td><span class="badge-vac">Anual</span></td>
+              <td>02/03/2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Card Saúde -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">⚕️</span>
+          <span>Saúde e Cuidados</span>
+        </h2>
+        <div class="health-list">
+          <div class="health-row">
+            <span class="health-key">Alergias:</span>
+            <span id="healthAllergies" class="health-val">Nenhuma registrada</span>
+          </div>
+          <div class="health-row">
+            <span class="health-key">Condições prévias:</span>
+            <span id="healthConditions" class="health-val">Nenhuma registrada</span>
+          </div>
+          <div class="health-row">
+            <span class="health-key">Medicamentos em uso:</span>
+            <span id="healthMeds" class="health-val">Nenhum registrado</span>
+          </div>
+          <div class="health-row">
+            <span class="health-key">Alimentação especial:</span>
+            <span id="healthDiet" class="health-val">Ração padrão para adultos</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card Veterinário -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">🏥</span>
+          <span>Veterinário de Referência</span>
+        </h2>
+        <div style="font-size: 0.88rem; line-height: 1.45; color: #334155;">
+          <div style="font-weight: 700; color: #0b5574; font-size: 0.95rem;">Clínica Veterinária PetCare Santos</div>
+          <div style="color: #64748b; margin-top: 2px;">Dra. Camila Nogueira (CRMV-SP 28.490)</div>
+          <div style="margin-top: 6px;">📞 Telefone: <strong>(13) 3289-4000</strong></div>
+          <div>📍 Av. Ana Costa, 290 — Gonzaga, Santos/SP</div>
+        </div>
+      </section>
+
+      <!-- Card Galeria 3x2 -->
+      <section class="info-card">
+        <h2 class="card-title">
+          <span class="card-title-icon">📸</span>
+          <span>Galeria do Mel</span>
+        </h2>
+        <div class="gallery-grid" id="petGallery">
+          <div class="gallery-item">
+            <img src="https://img.usecurling.com/p/300/300?q=cute%20labrador" alt="Mel foto 1">
+          </div>
+          <div class="gallery-item">
+            <img src="https://img.usecurling.com/p/300/300?q=golden%20dog%20grass" alt="Mel foto 2">
+          </div>
+          <div class="gallery-item">
+            <img src="https://img.usecurling.com/p/300/300?q=happy%20yellow%20dog" alt="Mel foto 3">
+          </div>
+          <div class="gallery-item">
+            <img src="https://img.usecurling.com/p/300/300?q=labrador%20retriever%20playing" alt="Mel foto 4">
+          </div>
+          <div class="gallery-item">
+            <img src="https://img.usecurling.com/p/300/300?q=friendly%20dog%20portrait" alt="Mel foto 5">
+          </div>
+          <div class="gallery-item">
+            <img src="https://img.usecurling.com/p/300/300?q=dog%20collar%20tag" alt="Mel foto 6">
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Rodapé Institucional Conforme Referência -->
+    <footer class="institutional-footer">
+      <div class="footer-grid-features">
+        <div class="feature-card">
+          <span class="feature-icon">🛡️</span>
+          <span>Segurança 24h</span>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <span>Contato direto</span>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">💉</span>
+          <span>Controle de vacinas</span>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🐕</span>
+          <span>Para cães e gatos</span>
+        </div>
+      </div>
+
+      <div class="footer-qr-container">
+        <div class="qr-box" id="qrcodePlaceholder" title="QR Code da TAG Save Tag Pet"></div>
+        <div class="footer-brand-title">Protegido por Save Tag Pet®</div>
+        <div style="font-size: 0.78rem; opacity: 0.85; margin-bottom: 8px;">Tecnologia NFC & Identificação Inteligente</div>
+        <div class="footer-disclaimer">
+          Este perfil é público e mostra apenas as informações necessárias para devolver o pet com segurança e agilidade ao seu tutor.
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Modal SOS / Instruções -->
+  <div id="emergencyModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sosTitle">
+    <div class="modal-card">
+      <div class="modal-title" id="sosTitle">
+        <span>🚨</span>
+        <span>Encontrou este pet?</span>
+      </div>
+      <p style="font-size: 0.85rem; color: #475569; line-height: 1.4; margin-bottom: 14px;">
+        1. Aproxime-se com calma para não assustar o animal.<br>
+        2. Verifique se ele possui ferimentos ou precisa de água.<br>
+        3. Toque no botão verde principal para enviar suas coordenadas direto no WhatsApp do tutor.
+      </p>
+      <div style="display: flex; gap: 8px;">
+        <button type="button" class="btn-subaction" style="flex: 1;" onclick="closeModal()">Fechar</button>
+        <button type="button" class="btn-action btn-found" style="flex: 2; padding: 8px 12px; font-size: 0.88rem;" onclick="triggerFoundAction(); closeModal();">
+          Enviar Localização
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Toast Notification Wrapper -->
-  <div class="toast-container" id="toastContainer" aria-live="assertive"></div>
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-msg" role="status" aria-live="polite">Link copiado com sucesso!</div>
 
   <script>
-    // ============================================================================
-    // CREDENCIAIS DO SUPABASE
-    // Cole aqui a sua chave anon do Supabase (Authentication → API → anon public key). É segura para páginas públicas.
-    // ============================================================================
+    // Configurações do Supabase e Tutor
     const SUPABASE_URL = 'https://mqiwoubhivutavpnpeax.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll';
+    const WHATSAPP_TUTOR = '5513991118997';
 
-    // Base de dados mock / fallback para demonstração end-to-end e resiliência offline
-    const MOCK_PETS = {
-      'thor': {
-        id: 'thor',
-        nome: 'Thor',
-        especie: 'Cachorro',
-        raca: 'Golden Retriever',
-        idade: '3 anos',
-        peso: '28 kg',
-        foto: 'https://img.usecurling.com/p/600/400?q=golden%20retriever%20dog&color=yellow',
-        telefone: '11987654321',
-        tutor: 'Mariana Silva',
-        modo_perdido: true,
-        ultima_localizacao: 'Parque Ibirapuera - Próximo ao Portão 7, São Paulo - SP',
-        visto_em: 'Hoje às 14:30',
-        recompensa: 500,
-        observacoes: 'Muito dócil, atende pelo nome. Possui uma coleira azul com tag NFC. Pode estar com sede e assustado.'
-      },
-      'luna': {
-        id: 'luna',
-        nome: 'Luna',
-        especie: 'Gato',
-        raca: 'Siamês',
-        idade: '2 anos',
-        peso: '4 kg',
-        foto: 'https://img.usecurling.com/p/600/400?q=siamese%20cat&color=gray',
-        telefone: '11976543210',
-        tutor: 'Carlos Eduardo',
-        modo_perdido: false,
-        ultima_localizacao: 'Jardins, São Paulo - SP',
-        visto_em: 'Em casa',
-        recompensa: null,
-        observacoes: 'Gata caseira, castrada e vacinada. Se estiver na rua desacompanhada, favor avisar o tutor imediatamente.'
-      },
-      'bob': {
-        id: 'bob',
-        nome: 'Bob',
-        especie: 'Cachorro',
-        raca: 'Bulldog Francês',
-        idade: '4 anos',
-        peso: '12 kg',
-        foto: 'https://img.usecurling.com/p/600/400?q=french%20bulldog&color=black',
-        telefone: '21998877665',
-        tutor: 'Fernanda Lima',
-        modo_perdido: false,
-        ultima_localizacao: 'Copacabana, Rio de Janeiro - RJ',
-        visto_em: 'Em casa',
-        recompensa: null,
-        observacoes: 'Faz uso de medicação para alergia. Alérgico a frango.'
-      }
+    // Mock inicial e fallback de segurança de "Mel"
+    const defaultPetData = {
+      nome: 'Mel',
+      especie: 'Cachorro',
+      raca: 'Labrador',
+      peso: '12 kg',
+      cor: 'Caramelo',
+      idade: '3 anos',
+      foto_url: 'https://img.usecurling.com/p/400/400?q=golden%20labrador',
+      castrado: true,
+      temperamento: 'Dócil',
+      perdido: false,
+      mensagem_perdido: 'Nos ajude a encontrar o Mel! Ele fugiu perto de casa e a família está muito preocupada.',
+      ultimo_local_perdido: 'Canal 3, Gonzaga — Santos/SP',
+      data_perdido: 'Hoje às 14:30',
+      recompensa: true,
+      observacoes: 'Dócil, adora brincar, muito querido e amigável com crianças e outros animais. Costuma atender ao ser chamado pelo nome.',
+      alergias: 'Nenhuma registrada',
+      medicamentos: 'Nenhum registrado',
+      condicoes: 'Nenhuma registrada',
+      tutor_nome: 'Emerson dos Santos',
+      tutor_cidade: 'Santos / SP'
     };
 
-    /**
-     * Sistema de Toasts em Português
-     */
-    function showToast(message, type = 'info', duration = 4000) {
-      const container = document.getElementById('toastContainer');
-      if (!container) return;
+    let currentPet = { ...defaultPetData };
 
-      const toast = document.createElement('div');
-      toast.className = `toast-msg toast-${type}`;
-      
-      let icon = 'ℹ️';
-      if (type === 'success') icon = '✅';
-      if (type === 'warning') icon = '⚠️';
-      if (type === 'error') icon = '❌';
-
-      toast.innerHTML = `<span aria-hidden="true">${icon}</span> <span>${escapeHtml(message)}</span>`;
-      container.appendChild(toast);
-
+    // Utilitário Toast
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.classList.add('show');
       setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(8px)';
-        toast.style.transition = 'all 0.3s ease';
-        setTimeout(() => toast.remove(), 320);
-      }, duration);
+        toast.classList.remove('show');
+      }, 3000);
     }
 
-    /**
-     * Auxiliares de Escape e Formatação
-     */
-    function escapeHtml(text) {
-      if (text === null || text === undefined) return '';
-      return String(text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    // Modal SOS
+    function openModal() {
+      document.getElementById('emergencyModal').classList.add('active');
     }
-
-    function cleanPhone(raw) {
-      if (!raw) return '';
-      const digits = String(raw).replace(/\D/g, '');
-      if (digits.length === 10 || digits.length === 11) {
-        return '55' + digits;
-      }
-      return digits;
+    function closeModal() {
+      document.getElementById('emergencyModal').classList.remove('active');
     }
+    document.getElementById('emergencyModal').addEventListener('click', (e) => {
+      if (e.target.id === 'emergencyModal') closeModal();
+    });
+    document.getElementById('btnEmergencyModal').addEventListener('click', openModal);
 
-    function formatMoney(val) {
-      if (!val) return '';
-      const num = typeof val === 'number' ? val : parseFloat(String(val).replace(/[^\d.,]/g, '').replace(',', '.'));
-      if (isNaN(num)) return String(val);
-      return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    /**
-     * Detecção Flexível e Defensiva das Colunas do Pet
-     */
-    function extractPetData(record) {
-      if (!record || typeof record !== 'object') return null;
-
-      const findValue = (keywords) => {
-        const keys = Object.keys(record);
-        for (const key of keys) {
-          const lower = key.toLowerCase();
-          if (keywords.some(k => lower.includes(k))) {
-            const val = record[key];
-            if (val !== undefined && val !== null && String(val).trim() !== '') {
-              return val;
-            }
-          }
-        }
-        return null;
-      };
-
-      // Nome
-      const nome = findValue(['nome', 'name', 'pet_name']) || 'Amigão';
-
-      // Espécie
-      const especie = findValue(['especie', 'species', 'tipo', 'animal']) || 'Pet';
-
-      // Raça
-      const raca = findValue(['raca', 'raça', 'breed']) || 'Sem raça definida (SRD)';
-
-      // Idade
-      let idadeRaw = findValue(['idade', 'age', 'anos']) || 'n/d';
-      let idade = String(idadeRaw);
-      if (idade !== 'n/d' && !idade.toLowerCase().includes('ano') && !idade.toLowerCase().includes('mes')) {
-        idade = `${idade} anos`;
-      }
-
-      // Peso
-      let pesoRaw = findValue(['peso', 'weight']) || 'n/d';
-      let peso = String(pesoRaw);
-      if (peso !== 'n/d' && !peso.toLowerCase().includes('kg')) {
-        peso = `${peso} kg`;
-      }
+    // Atualiza a visualização com base no objeto de dados
+    function renderPet(pet) {
+      document.title = `${pet.nome} | Save Tag Pet`;
 
       // Foto
-      const foto = findValue(['foto', 'capa', 'imagem', 'avatar', 'photo', 'image', 'picture', 'url_foto']);
-
-      // Contato
-      const telefone = findValue(['telefone', 'contato', 'whatsapp', 'celular', 'phone', 'tel', 'fone']) || '';
-
-      // Modo Perdido
-      const modoPerdidoRaw = findValue(['modo_perdido', 'perdido', 'lost', 'status_perdido', 'is_lost']);
-      const modoPerdido = modoPerdidoRaw === true ||
-                          modoPerdidoRaw === 'true' ||
-                          modoPerdidoRaw === 1 ||
-                          modoPerdidoRaw === '1' ||
-                          String(modoPerdidoRaw).toLowerCase() === 'sim' ||
-                          String(modoPerdidoRaw).toLowerCase() === 'perdido';
-
-      // Última localização
-      const ultimaLocalizacao = findValue(['ultima_localizacao', 'localizacao', 'endereco', 'location', 'bairro']) || 'Não informada';
-
-      // Visto em
-      const vistoEm = findValue(['visto_em', 'data_visto', 'data_desaparecimento', 'data', 'seen_at']) || 'Recentemente';
-
-      // Recompensa
-      const recompensa = findValue(['recompensa', 'reward', 'valor_recompensa']);
-
-      // Informações adicionais
-      const observacoes = findValue(['info', 'observacoes', 'observacao', 'detalhes', 'description', 'descricao', 'notas']) || '';
-
-      // Tutor
-      const tutor = findValue(['tutor', 'dono', 'owner', 'responsavel']) || 'Tutor';
-
-      return {
-        id: record.id || 'desconhecido',
-        nome,
-        especie,
-        raca,
-        idade,
-        peso,
-        foto,
-        telefone,
-        modoPerdido,
-        ultimaLocalizacao,
-        vistoEm,
-        recompensa,
-        observacoes,
-        tutor
-      };
-    }
-
-    /**
-     * Consulta ao Supabase REST API (Nativa sem libs externas) com fallback transparente para MOCK
-     */
-    async function fetchPetById(id) {
-      const normalizedId = String(id).trim().toLowerCase();
-
-      // Se a chave não foi configurada, busca no mock
-if (!SUPABASE_ANON_KEY) {
-    // Simula pequeno delay de rede para experiência fluida
-    await new Promise(r => setTimeout(r, 260));
-    if (MOCK_PETS[normalizedId]) {
-        return MOCK_PETS[normalizedId];
-    }
-    // Tenta achar em IDs numéricos fictícios
-    if (normalizedId === '1' || normalizedId === '123') return MOCK_PETS['thor'];
-    if (normalizedId === '2') return MOCK_PETS['luna'];
-    return null;
-}
-
-      // Consulta real ao Supabase usando a API REST oficial (compatível e segura para páginas estáticas)
-      try {
-        const endpoint = `${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/pets?id=eq.${encodeURIComponent(id)}&select=*`;
-        const res = await fetch(endpoint, {
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Accept': 'application/json'
-          }
-        });
-
-        if (!res.ok) {
-          throw new Error(`Erro na resposta do servidor (${res.status})`);
-        }
-
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          return data[0];
-        }
-        return null;
-      } catch (err) {
-        console.warn('Erro ao consultar Supabase, verificando dados locais...', err);
-        // Fallback defensivo: se a rede falhar e o ID for de demonstração
-        if (MOCK_PETS[normalizedId]) {
-          return MOCK_PETS[normalizedId];
-        }
-        throw err;
+      const photoEl = document.getElementById('petPhoto');
+      if (pet.foto_url) {
+        photoEl.src = pet.foto_url;
       }
-    }
 
-    /**
-     * Renderiza o Card Principal do Pet
-     */
-    function renderPet(pet) {
-      document.title = `🐾 ${pet.nome} | Save Tag Pet`;
+      // Nomes e textos
+      document.getElementById('petName').textContent = pet.nome || 'Pet Sem Nome';
+      const racaDesc = pet.raca || pet.breed || 'Labrador';
+      const espDesc = pet.especie || pet.species || 'Cachorro';
+      const pesoDesc = pet.peso ? (String(pet.peso).includes('kg') ? pet.peso : `${pet.peso} kg`) : '12 kg';
+      document.getElementById('petSubhead').textContent = `${espDesc} • ${racaDesc} • ${pesoDesc}`;
 
-      const appView = document.getElementById('appView');
-      const phoneDigits = cleanPhone(pet.telefone);
-      const isLost = pet.modoPerdido;
+      // Chips
+      document.getElementById('chipCastrado').textContent = pet.castrado === false ? 'Não Castrado' : 'Castrado';
+      document.getElementById('chipTemperamento').textContent = pet.temperamento || 'Dócil';
 
-      // Resumo: Espécie • RAÇA • Idade • Peso
-      const summaryParts = [
-        escapeHtml(pet.especie),
-        escapeHtml(pet.raca.toUpperCase()),
-        `Idade ${escapeHtml(pet.idade)}`,
-        escapeHtml(pet.peso)
-      ];
-      const summaryHtml = summaryParts.join(' <span class="bullet" aria-hidden="true">•</span> ');
+      // Dados básicos
+      document.getElementById('metricBreed').textContent = racaDesc;
+      document.getElementById('metricAge').textContent = pet.idade || pet.birth_date || '3 anos';
+      document.getElementById('metricColor').textContent = pet.cor || pet.color || 'Caramelo';
+      document.getElementById('metricWeight').textContent = pesoDesc;
 
-      // Bloco superior de status
-      let statusHtml = '';
-      if (isLost) {
-        let rewardHtml = '';
-        if (pet.recompensa) {
-          rewardHtml = `
-            <div class="reward-box" role="status">
-              <span aria-hidden="true">💰</span>
-              <span>Recompensa oferecida: ${escapeHtml(formatMoney(pet.recompensa))}</span>
-            </div>
-          `;
-        }
+      // Sobre e Tutor
+      document.getElementById('petBio').textContent = pet.observacoes || defaultPetData.observacoes;
+      document.getElementById('tutorName').textContent = pet.tutor_nome || 'Emerson dos Santos';
+      document.getElementById('tutorCity').querySelector('span:nth-child(2)').textContent = pet.tutor_cidade || 'Santos / SP';
 
-        statusHtml = `
-          <div class="lost-alert-banner" role="alert">
-            <div class="lost-badge-pill">
-              <span aria-hidden="true">🚨</span> Atenção Urgente
-            </div>
-            <h1 class="lost-title">PET PERDIDO — ${escapeHtml(pet.nome)}</h1>
-            <div class="lost-grid">
-              <div class="lost-item">
-                <span class="lost-item-icon" aria-hidden="true">📍</span>
-                <div>
-                  <span class="lost-item-label">Última localização:</span> ${escapeHtml(pet.ultimaLocalizacao)}
-                </div>
-              </div>
-              <div class="lost-item">
-                <span class="lost-item-icon" aria-hidden="true">📅</span>
-                <div>
-                  <span class="lost-item-label">Visto em:</span> ${escapeHtml(pet.vistoEm)}
-                </div>
-              </div>
-            </div>
-            ${rewardHtml}
-          </div>
-        `;
+      // Saúde
+      document.getElementById('healthAllergies').textContent = pet.alergias || 'Nenhuma registrada';
+      document.getElementById('healthMeds').textContent = pet.medicamentos || 'Nenhum registrado';
+      document.getElementById('healthConditions').textContent = pet.condicoes || 'Nenhuma registrada';
+
+      // Links diretos
+      const cleanTel = WHATSAPP_TUTOR.replace(/\D/g, '');
+      const whatsMsg = pet.perdido 
+        ? encodeURIComponent(`🚨 Olá ${pet.tutor_nome || 'Emerson'}! Encontrei o pet ${pet.nome} que está perdido! Vi a TAG NFC dele.`) 
+        : encodeURIComponent(`Olá ${pet.tutor_nome || 'Emerson'}! Encontrei o pet ${pet.nome} pela TAG Save Tag Pet.`);
+      
+      document.getElementById('btnWhatsapp').href = `https://wa.me/${cleanTel}?text=${whatsMsg}`;
+      document.getElementById('btnCall').href = `tel:+${cleanTel}`;
+
+      // Estado Normal vs Perdido
+      const banner = document.getElementById('statusBanner');
+      const bannerIcon = document.getElementById('statusIcon');
+      const bannerTitle = document.getElementById('statusTitle');
+      const bannerDesc = document.getElementById('statusDesc');
+      const lostBox = document.getElementById('lostDetailsBox');
+      const chipLost = document.getElementById('chipPerdidoBadge');
+
+      if (pet.perdido) {
+        banner.className = 'status-banner lost';
+        bannerIcon.textContent = '🚨';
+        bannerTitle.textContent = `PET PERDIDO — ${pet.nome}`;
+        bannerDesc.textContent = pet.mensagem_perdido || 'Este animal foi declarado desaparecido pelo tutor. Por favor, entre em contato com urgência!';
+        lostBox.style.display = 'block';
+        document.getElementById('lostLoc').textContent = pet.ultimo_local_perdido || 'Santos / SP';
+        document.getElementById('lostDate').textContent = pet.data_perdido || 'Recente';
+        chipLost.style.display = 'inline-flex';
       } else {
-        statusHtml = `
-          <div class="normal-status-banner">
-            <span class="normal-status-icon" aria-hidden="true">🐾</span>
-            <div class="normal-status-text">
-              <h2>Este é o ${escapeHtml(pet.nome)}!</h2>
-              <p>O pet está com sua TAG Save Tag Pet ativa e protegida.</p>
-            </div>
-          </div>
-        `;
+        banner.className = 'status-banner normal';
+        bannerIcon.textContent = '🛡️';
+        bannerTitle.textContent = `Este é o ${pet.nome}!`;
+        bannerDesc.textContent = 'O pet está com sua TAG Save Tag Pet ativa e protegida.';
+        lostBox.style.display = 'none';
+        chipLost.style.display = 'none';
       }
-
-      // Bloco da Foto
-      let photoHtml = '';
-      if (pet.foto) {
-        photoHtml = `
-          <div class="pet-photo-wrapper">
-            <img src="${escapeHtml(pet.foto)}" alt="Foto do pet ${escapeHtml(pet.nome)}" class="pet-photo-img" loading="eager" onerror="this.parentElement.innerHTML = getPhotoFallback('${escapeHtml(pet.nome)}')">
-            <div class="nfc-indicator">
-              <span aria-hidden="true">🏷️</span> NFC Conectado
-            </div>
-          </div>
-        `;
-      } else {
-        photoHtml = `
-          <div class="pet-photo-wrapper">
-            ${getPhotoFallback(pet.nome)}
-            <div class="nfc-indicator">
-              <span aria-hidden="true">🏷️</span> NFC Conectado
-            </div>
-          </div>
-        `;
-      }
-
-      // Bloco de Informações / Observações
-      let notesHtml = '';
-      if (pet.observacoes) {
-        notesHtml = `
-          <div class="notes-box">
-            <div class="notes-title">
-              <span aria-hidden="true">📝</span> Informações adicionais
-            </div>
-            <div>${escapeHtml(pet.observacoes)}</div>
-          </div>
-        `;
-      }
-
-      // Botões de Ação
-      let buttonsHtml = '';
-      if (isLost) {
-        // Modo Perdido: Botão "Ajudar a Encontrar" (Geolocalização) + Ligar + WhatsApp
-        buttonsHtml = `
-          <div class="actions-stack">
-            <button type="button" class="btn-action btn-geo" id="btnHelpGeo" onclick="handleHelpLocation()">
-              <span aria-hidden="true">📍</span> Ajudar a Encontrar (Enviar Localização)
-            </button>
-            ${phoneDigits ? `
-              <a href="tel:+${phoneDigits}" class="btn-action btn-call">
-                <span aria-hidden="true">📞</span> Ligar para o tutor
-              </a>
-              <a href="https://wa.me/${phoneDigits}?text=${encodeURIComponent(`Olá! Estou com o pet ${pet.nome} que possui a Save Tag Pet.`)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-whatsapp">
-                <span aria-hidden="true">💬</span> Enviar mensagem (WhatsApp)
-              </a>
-            ` : `
-              <div class="notes-box" style="margin-top:10px;">
-                Telefone de contato do tutor não disponibilizado publicamente.
-              </div>
-            `}
-          </div>
-        `;
-      } else {
-        // Modo Normal: Falar com o tutor + Ligar
-        buttonsHtml = `
-          <div class="actions-stack">
-            ${phoneDigits ? `
-              <a href="https://wa.me/${phoneDigits}?text=${encodeURIComponent(`Olá! Encontrei o pet ${pet.nome} e li a Save Tag Pet dele(a).`)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-whatsapp">
-                <span aria-hidden="true">💬</span> Falar com o tutor (WhatsApp)
-              </a>
-              <a href="tel:+${phoneDigits}" class="btn-action btn-call">
-                <span aria-hidden="true">📞</span> Ligar para o tutor
-              </a>
-            ` : `
-              <div class="notes-box" style="margin-top:10px;">
-                Telefone de contato não cadastrado.
-              </div>
-            `}
-          </div>
-        `;
-      }
-
-      appView.innerHTML = `
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          ${statusHtml}
-
-          <div class="stp-card">
-            ${photoHtml}
-
-            <div class="pet-body">
-              <div class="pet-header-row">
-                <h2 class="pet-name">${escapeHtml(pet.nome)}</h2>
-                <span class="pet-species-pill">${escapeHtml(pet.especie)}</span>
-              </div>
-
-              <div class="pet-summary-line">
-                ${summaryHtml}
-              </div>
-
-              <div class="chips-grid">
-                <div class="info-chip">
-                  <span class="info-chip-label">Tutor</span>
-                  <span class="info-chip-val">${escapeHtml(pet.tutor)}</span>
-                </div>
-                <div class="info-chip">
-                  <span class="info-chip-label">Status da Tag</span>
-                  <span class="info-chip-val" style="color:var(--stp-green);">Ativa ✓</span>
-                </div>
-              </div>
-
-              ${notesHtml}
-
-              ${buttonsHtml}
-            </div>
-          </div>
-        </div>
-      `;
-
-      // Armazena referência global do pet atual para ações
-      window.currentPet = pet;
     }
 
-    function getPhotoFallback(nome) {
-      return `
-        <div class="pet-photo-fallback">
-          <span class="pet-photo-fallback-icon" aria-hidden="true">🐾</span>
-          <span style="font-weight:600; font-size:0.9rem;">Foto de ${escapeHtml(nome)}</span>
-        </div>
-      `;
-    }
+    // Ação: "Encontrou meu pet? Toque aqui" (Geolocalização -> WhatsApp)
+    function triggerFoundAction() {
+      const btn = document.getElementById('btnFoundPet');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>📍 Obtendo localização GPS...</span>';
+      btn.style.opacity = '0.7';
 
-    /**
-     * Tela de "Pet Não Encontrado" Amigável
-     */
-    function renderNotFound(message = 'Não encontramos nenhum pet vinculado a este código de TAG.') {
-      document.title = '🐾 Pet Não Encontrado | Save Tag Pet';
-      const appView = document.getElementById('appView');
-
-      appView.innerHTML = `
-        <section class="state-card" role="region" aria-label="Pet não encontrado">
-          <div class="state-icon" aria-hidden="true">🔍</div>
-          <h1 class="state-title">Pet não encontrado</h1>
-          <p class="state-desc">${escapeHtml(message)}</p>
-          
-          <div style="display:flex; flex-direction:column; gap:10px; max-width:320px; margin:0 auto;">
-            <a href="?pet=thor" class="btn-action btn-geo" style="font-size:0.92rem;">
-              <span aria-hidden="true">🚨</span> Ver Exemplo Pet Perdido
-            </a>
-            <a href="?pet=luna" class="btn-action btn-call" style="font-size:0.92rem;">
-              <span aria-hidden="true">🐾</span> Ver Exemplo Pet Seguro
-            </a>
-            <a href="https://www.savetagpet.com.br" target="_blank" rel="noopener noreferrer" class="btn-action btn-whatsapp" style="font-size:0.92rem; background:#0b5574; color:#fff;">
-              <span aria-hidden="true">🌐</span> Ir para o site oficial
-            </a>
-          </div>
-        </section>
-      `;
-    }
-
-    /**
-     * Tela de Erro de Conexão com Botão "Tentar Novamente"
-     */
-    function renderError(errorMessage, retryId) {
-      document.title = '🐾 Erro ao Carregar | Save Tag Pet';
-      const appView = document.getElementById('appView');
-
-      appView.innerHTML = `
-        <section class="state-card" role="alert">
-          <div class="state-icon" aria-hidden="true">⚠️</div>
-          <h1 class="state-title">Falha na conexão</h1>
-          <p class="state-desc">${escapeHtml(errorMessage || 'Não foi possível se conectar aos servidores do Save Tag Pet.')}</p>
-          
-          <div style="display:flex; flex-direction:column; gap:10px; max-width:300px; margin:0 auto;">
-            <button type="button" class="btn-action btn-geo" onclick="initApp('${escapeHtml(retryId)}')">
-              <span aria-hidden="true">🔄</span> Tentar novamente
-            </button>
-            <a href="https://www.savetagpet.com.br" class="btn-action btn-call">
-              <span aria-hidden="true">🏠</span> Ir para a página inicial
-            </a>
-          </div>
-        </section>
-      `;
-    }
-
-    /**
-     * Recurso Central: Ajudar a Encontrar (Geolocalização + WhatsApp)
-     */
-    function handleHelpLocation() {
-      const pet = window.currentPet;
-      if (!pet) return;
-
-      const phone = cleanPhone(pet.telefone);
-      if (!phone) {
-        showToast('Número de telefone do tutor não cadastrado.', 'warning');
+      if (!navigator.geolocation) {
+        fallbackGeoRedirect();
         return;
       }
-
-      const btn = document.getElementById('btnHelpGeo');
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<span aria-hidden="true">📍</span> Obtendo sua localização...';
-      }
-
-      showToast('Solicitando acesso ao GPS...', 'info', 2500);
-
-      if (!('geolocation' in navigator)) {
-        fallbackLocationWhatsApp(pet, phone, 'Seu navegador não suporta geolocalização automática.');
-        return;
-      }
-
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      };
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          btn.innerHTML = originalText;
+          btn.style.opacity = '1';
           const lat = position.coords.latitude.toFixed(6);
           const lng = position.coords.longitude.toFixed(6);
+          const accuracy = Math.round(position.coords.accuracy || 10);
           const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
-          const message = `Olá! Encontrei o pet ${pet.nome}! 🐾 Estou vendo ele agora nesta localização: ${mapsUrl}`;
+          
+          const msg = encodeURIComponent(
+            `🚨 Olá Emerson! Acabei de encontrar o pet ${currentPet.nome} pela TAG Save Tag Pet!\n\n` +
+            `📍 Minha localização aproximada:\n${mapsUrl}\n(Precisão de cerca de ${accuracy} metros).\n\n` +
+            `Por favor, me responda por aqui para combinarmos o reencontro!`
+          );
 
-          showToast('Localização obtida! Abrindo o WhatsApp...', 'success');
-
-          setTimeout(() => {
-            if (btn) {
-              btn.disabled = false;
-              btn.innerHTML = '<span aria-hidden="true">📍</span> Ajudar a Encontrar (Enviar Localização)';
-            }
-            window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-          }, 600);
+          window.open(`https://wa.me/${WHATSAPP_TUTOR}?text=${msg}`, '_blank');
         },
         (error) => {
-          console.warn('Geolocalização não autorizada ou indisponível:', error);
-          let reason = 'Acesso à localização recusado ou indisponível.';
-          if (error.code === error.PERMISSION_DENIED) {
-            reason = 'Permissão de localização negada pelo navegador.';
-          } else if (error.code === error.TIMEOUT) {
-            reason = 'Tempo esgotado ao buscar localização.';
-          }
-
-          fallbackLocationWhatsApp(pet, phone, reason);
+          btn.innerHTML = originalText;
+          btn.style.opacity = '1';
+          showToast('Permissão de GPS não concedida. Abrindo WhatsApp...');
+          fallbackGeoRedirect();
         },
-        options
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
     }
 
-    /**
-     * Fallback quando o GPS é negado ou falha
-     */
-    function fallbackLocationWhatsApp(pet, phone, reasonMsg) {
-      const btn = document.getElementById('btnHelpGeo');
-      if (btn) {
-        btn.disabled = false;
-        btn.innerHTML = '<span aria-hidden="true">💬</span> Avisar tutor sem GPS';
-      }
-
-      showToast(`${reasonMsg} Você ainda pode avisar o tutor via WhatsApp.`, 'warning', 5000);
-
-      // Mensagem alternativa sem coordenadas
-      const message = `Olá! Encontrei o pet ${pet.nome}! 🐾 Encostei na Save Tag Pet dele. Onde posso te encontrar para devolver?`;
-      
-      setTimeout(() => {
-        window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      }, 1200);
+    function fallbackGeoRedirect() {
+      const msg = encodeURIComponent(
+        `🚨 Olá Emerson! Encontrei o pet ${currentPet.nome} pela TAG Save Tag Pet.\nEstou com ele em segurança! Por favor, me responda para combinarmos a devolução.`
+      );
+      window.open(`https://wa.me/${WHATSAPP_TUTOR}?text=${msg}`, '_blank');
     }
 
-    /**
-     * Inicialização e Roteamento via Query String
-     */
-    async function initApp(forceId = null) {
-      const urlParams = new URLSearchParams(window.location.search);
-      let petId = forceId || urlParams.get('pet') || urlParams.get('id');
+    document.getElementById('btnFoundPet').addEventListener('click', triggerFoundAction);
 
-      // Se nenhum parâmetro for fornecido na URL, usamos o 'thor' como demonstração inicial amigável
-      // e mantemos a barra de demonstração acessível para o avaliador
+    // Compartilhar Perfil
+    document.getElementById('btnShareProfile').addEventListener('click', () => {
+      const shareUrl = window.location.href;
+      const shareData = {
+        title: `${currentPet.nome} | Save Tag Pet`,
+        text: `Perfil de identificação e emergência do pet ${currentPet.nome} no Save Tag Pet:`,
+        url: shareUrl
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => {
+          copyToClipboard(shareUrl);
+        });
+      } else {
+        copyToClipboard(shareUrl);
+      }
+    });
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('Link do perfil copiado para a área de transferência!');
+        }).catch(() => {
+          showToast('Link: ' + text);
+        });
+      } else {
+        showToast('Link: ' + text);
+      }
+    }
+
+    // Toggle de demonstração (Normal / Perdido)
+    document.getElementById('btnToggleLost').addEventListener('click', () => {
+      currentPet.perdido = !currentPet.perdido;
+      renderPet(currentPet);
+      showToast(currentPet.perdido ? 'Modo 🚨 PET PERDIDO ativado!' : 'Modo 🛡️ Normal ativado.');
+    });
+
+    // Gera o QR Code decorativo/funcional no footer
+    function initQrCode() {
+      const target = document.getElementById('qrcodePlaceholder');
+      if (window.QRCode && target) {
+        target.innerHTML = '';
+        new QRCode(target, {
+          text: window.location.href,
+          width: 80,
+          height: 80,
+          colorDark: "#0b5574",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }
+
+    // Carregamento de dados (Supabase REST se houver ?pet=)
+    async function loadPetData() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const petId = urlParams.get('pet');
+
       if (!petId) {
-        // Caso queira renderizar "Pet não encontrado" direto quando não há query:
-        // renderNotFound('Nenhum código de TAG NFC foi lido na URL.');
-        // Para uma experiência pronta end-to-end sem tela vazia no carregamento inicial:
-        petId = 'thor';
+        // Renderiza com fallback padrão do Mel
+        renderPet(currentPet);
+        initQrCode();
+        return;
       }
 
       try {
-        const rawPet = await fetchPetById(petId);
-        if (!rawPet) {
-          renderNotFound(`Não encontramos nenhum cadastro com o código "${escapeHtml(petId)}". Verifique o link ou tente novamente.`);
-          return;
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/pets?select=*&id=eq.${petId}`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Falha na resposta da API');
         }
 
-        const pet = extractPetData(rawPet);
-        renderPet(pet);
+        const data = await response.json();
+        if (data && data.length > 0) {
+          const row = data[0];
+          currentPet = {
+            nome: row.nome || row.name || defaultPetData.nome,
+            especie: row.especie || row.species || defaultPetData.especie,
+            raca: row.raca || row.breed || defaultPetData.raca,
+            peso: row.peso || row.weight || defaultPetData.peso,
+            cor: row.cor || row.color || defaultPetData.cor,
+            idade: row.idade || row.birth_date || defaultPetData.idade,
+            foto_url: row.foto_url || row.photo_url || defaultPetData.foto_url,
+            castrado: row.castrado ?? defaultPetData.castrado,
+            temperamento: row.temperamento || defaultPetData.temperamento,
+            perdido: Boolean(row.perdido),
+            mensagem_perdido: row.mensagem_perdido || defaultPetData.mensagem_perdido,
+            ultimo_local_perdido: row.ultimo_local_perdido || defaultPetData.ultimo_local_perdido,
+            data_perdido: row.data_perdido || defaultPetData.data_perdido,
+            observacoes: row.observacoes || row.notes || defaultPetData.observacoes,
+            alergias: row.alergias || defaultPetData.alergias,
+            medicamentos: row.medicamentos || defaultPetData.medicamentos,
+            condicoes: row.condicoes || defaultPetData.condicoes,
+            tutor_nome: row.tutor_nome || defaultPetData.tutor_nome,
+            tutor_cidade: row.tutor_cidade || defaultPetData.tutor_cidade
+          };
+          renderPet(currentPet);
+        } else {
+          // Pet não encontrado no banco com este ID: usa o Mel como referência de demonstração
+          renderPet(currentPet);
+          showToast('Pet específico não localizado, exibindo perfil modelo.');
+        }
       } catch (err) {
-        renderError('Ocorreu uma instabilidade momentânea ao buscar os dados da TAG.', petId);
+        console.warn('Erro ao consultar Supabase:', err);
+        // Fallback robusto sem travar a tela
+        renderPet(currentPet);
+        showToast('Exibindo dados locais de demonstração.');
       }
+
+      initQrCode();
     }
 
-    // Dispara a inicialização assim que o DOM carregar
-    window.addEventListener('DOMContentLoaded', () => {
-      initApp();
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPetData();
     });
   </script>
 <script>
