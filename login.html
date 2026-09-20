@@ -5209,4 +5209,95 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   }
 })();
 </script>
+  <script>
+(function () {
+  // ===== ACHA A CONEXÃO DO BANCO AUTOMATICAMENTE =====
+  var __sb = null;
+  function acharSB() {
+    if (__sb) return __sb;
+    if (window.supabase && typeof window.supabase.from === 'function') { __sb = window.supabase; return __sb; }
+    var candidatos = ['sb','sbClient','supabaseClient','supabase_client','client','db','supa'];
+    for (var i = 0; i < candidatos.length; i++) {
+      var v = window[candidatos[i]];
+      if (v && typeof v.from === 'function') { __sb = v; return __sb; }
+    }
+    try {
+      for (var k in window) {
+        var w = window[k];
+        if (w && typeof w === 'object' && typeof w.from === 'function' && w.auth) { __sb = w; return __sb; }
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  // ===== CARREGAR SAÚDE (versão final) =====
+  window.carregarSaude = function (pid) {
+    if (window.__getPetIdSmart) pid = pid || window.__getPetIdSmart();
+    var lista = document.getElementById('saudeListContainer');
+    if (!lista) return;
+    var sb = acharSB();
+    if (!sb) { lista.innerHTML = '<p style="color:#dc2626;">Conex\u00e3o com o banco n\u00e3o encontrada.</p>'; return; }
+    if (!pid) { lista.innerHTML = '<p style="color:#6d8187;">Abra o perfil de um pet.</p>'; return; }
+    lista.innerHTML = '<p style="color:#6d8187;">Carregando...</p>';
+    sb.from('saude_pet').select('*').eq('pet_id', pid).order('created_at', { ascending: false })
+      .then(function (res) {
+        var data = res.data, error = res.error;
+        if (error) { lista.innerHTML = '<p style="color:#dc2626;">Erro: ' + (error.message || 'falha ao carregar') + '</p>'; return; }
+        if (!data || !data.length) { lista.innerHTML = '<p style="color:#6d8187;">Nenhum registro de sa\u00fade ainda. Use "+ Adicionar Registro".</p>'; return; }
+        var nomes = { consulta:'Consulta', exame:'Exame', medicamento:'Rem\u00e9dio controlado', veterinario:'Veterin\u00e1rio', plano_saude:'Plano de sa\u00fade', clinica:'Cl\u00ednica veterin\u00e1ria' };
+        var html = '';
+        data.forEach(function (r) {
+          html += '<div class="vaccine-item" style="border-left:4px solid #07966b;">'
+            + '<div style="display:flex;justify-content:space-between;align-items:center;"><strong>' + (r.titulo || '(sem t\u00edtulo)') + '</strong>'
+            + '<span class="stat-label">' + (nomes[r.tipo] || r.tipo) + '</span></div>'
+            + (r.data_evento ? '<p>Evento em: ' + formatarDataBR(r.data_evento) + '</p>' : '')
+            + (r.proxima_data ? '<p>Pr\u00f3xima data: ' + formatarDataBR(r.proxima_data) + '</p>' : '')
+            + (r.contato ? '<p>Contato: ' + r.contato + '</p>' : '')
+            + (r.endereco ? '<p>Endere\u00e7o: ' + r.endereco + '</p>' : '')
+            + (r.detalhes ? '<p style="color:#6d8187;">' + r.detalhes + '</p>' : '')
+            + '<button class="btn" style="background:#dc2626;color:#fff;padding:0.3rem 0.8rem;font-size:0.8rem;" onclick="excluirSaude(\'' + r.id + '\')">Excluir</button>'
+            + '</div>';
+        });
+        lista.innerHTML = html;
+      })
+      .catch(function (e) {
+        lista.innerHTML = '<p style="color:#dc2626;">Erro de conex\u00e3o: ' + (e.message || e) + '</p>';
+      });
+  };
+
+  // ===== SALVAR (versão final) =====
+  window.salvarSaude = function () {
+    var pid = window.__getPetIdSmart ? window.__getPetIdSmart() : null;
+    if (!pid) { alert('N\u00e3o encontrei o pet aberto.'); return; }
+    var sb = acharSB();
+    if (!sb) { alert('Conex\u00e3o com o banco n\u00e3o encontrada.'); return; }
+    sb.from('saude_pet').insert({
+      pet_id: pid,
+      tipo: document.getElementById('saudeTipo').value,
+      titulo: document.getElementById('saudeTitulo').value,
+      detalhes: document.getElementById('saudeDetalhes').value || null,
+      data_evento: document.getElementById('saudeData').value || null,
+      proxima_data: document.getElementById('saudeProxima').value || null,
+      contato: document.getElementById('saudeContato').value || null,
+      endereco: document.getElementById('saudeEndereco').value || null
+    }).then(function (res) {
+      if (res.error) { alert('Erro ao salvar: ' + res.error.message); return; }
+      if (typeof fecharModalSaude === 'function') fecharModalSaude();
+      carregarSaude(pid);
+    }).catch(function (e) {
+      alert('Erro de conex\u00e3o: ' + (e.message || e));
+    });
+  };
+
+  // ===== EXCLUIR (versão final) =====
+  window.excluirSaude = function (id) {
+    if (!confirm('Excluir este registro?')) return;
+    var sb = acharSB();
+    if (!sb) return;
+    sb.from('saude_pet').delete().eq('id', id).then(function () {
+      carregarSaude();
+    });
+  };
+})();
+</script>
 </html>
