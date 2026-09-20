@@ -4937,4 +4937,77 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   }
 })();
 </script>
+  <script>
+(function () {
+  // ===== RESOLVEDOR INTELIGENTE DO ID DO PET =====
+  window.__getPetIdSmart = function () {
+    if (window.currentPetId) return window.currentPetId;
+    if (window.currentPet && window.currentPet.id) return window.currentPet.id;
+    if (window.petAtualId) return window.petAtualId;
+    if (window.selectedPetId) return window.selectedPetId;
+    if (window.activePetId) return window.activePetId;
+    // Plano B: extrai o ID do link público da TAG (techTagLinkInput)
+    var inp = document.getElementById('techTagLinkInput');
+    if (inp && inp.value) {
+      try {
+        var url = new URL(inp.value, location.origin);
+        var pid = url.searchParams.get('id') || url.searchParams.get('pet') || url.searchParams.get('pet_id');
+        if (pid) return pid;
+      } catch (e) {}
+    }
+    return null;
+  };
+
+  // ===== BOTÃO "+ Adicionar Registro" e "Fechar" funcionam por conta própria =====
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('button');
+    if (!b) return;
+    var oc = b.getAttribute('onclick') || '';
+    if (oc.indexOf('modalSaude') === -1) return;
+    e.stopPropagation();
+    var m = document.getElementById('modalSaude');
+    if (!m) return;
+    if ((b.textContent || '').indexOf('Fechar') !== -1) {
+      m.style.display = 'none';
+    } else {
+      m.style.display = 'flex';
+    }
+  }, true);
+
+  // ===== SALVAR (versão com resolvedor inteligente) =====
+  window.salvarSaude = function () {
+    var pid = window.__getPetIdSmart();
+    if (!pid) { alert('N\u00e3o encontrei o pet aberto. Abra o perfil do pet primeiro.'); return; }
+    supabase.from('saude_pet').insert({
+      pet_id: pid,
+      tipo: document.getElementById('saudeTipo').value,
+      titulo: document.getElementById('saudeTitulo').value,
+      detalhes: document.getElementById('saudeDetalhes').value || null,
+      data_evento: document.getElementById('saudeData').value || null,
+      proxima_data: document.getElementById('saudeProxima').value || null,
+      contato: document.getElementById('saudeContato').value || null,
+      endereco: document.getElementById('saudeEndereco').value || null
+    }).then(function (res) {
+      if (res.error) { alert('Erro: ' + res.error.message); return; }
+      var m = document.getElementById('modalSaude');
+      if (m) m.style.display = 'none';
+      carregarSaude(pid);
+    });
+  };
+
+  // ===== EXCLUIR (versão com resolvedor inteligente) =====
+  window.excluirSaude = function (id) {
+    if (!confirm('Excluir este registro?')) return;
+    supabase.from('saude_pet').delete().eq('id', id).then(function () {
+      carregarSaude(window.__getPetIdSmart());
+    });
+  };
+
+  // ===== ENCAIXE: carregarSaude e alertas passam a usar o resolvedor =====
+  var origCarregar = window.carregarSaude;
+  window.carregarSaude = function (pid) { origCarregar(pid || window.__getPetIdSmart()); };
+  var origAlertas = window.verificarAlertas;
+  window.verificarAlertas = function (pid) { origAlertas(pid || window.__getPetIdSmart()); };
+})();
+</script>
 </html>
