@@ -4772,4 +4772,169 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
 
 </script>
 </body>
+  <script>
+(function () {
+  function injetarHTML() {
+    if (!document.getElementById('bannerAlertas')) {
+      var b = document.createElement('div');
+      b.id = 'bannerAlertas';
+      b.style.cssText = 'display:none;background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:1rem;margin:1rem 1.25rem;color:#92400e;font-weight:600;';
+      document.body.prepend(b);
+    }
+    var aba = document.getElementById('tabContentSaude');
+    if (aba && !document.getElementById('saudeListContainer')) {
+      var sec = document.createElement('div');
+      sec.innerHTML = '<div style="margin-top:1.5rem;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">'
+        + '<h4>Hist\u00f3rico de Sa\u00fade</h4>'
+        + '<button class="btn-action btn-green" onclick="openModal(\'modalSaude\')">+ Adicionar Registro</button>'
+        + '</div>'
+        + '<div id="saudeListContainer" class="vaccine-list"></div>'
+        + '</div>';
+      aba.appendChild(sec);
+    }
+    if (!document.getElementById('modalSaude')) {
+      var m = document.createElement('div');
+      m.id = 'modalSaude';
+      m.className = 'modal-overlay';
+      m.style.display = 'none';
+      m.innerHTML = '<div class="modal-box">'
+        + '<h3>Novo Registro de Sa\u00fade</h3>'
+        + '<select id="saudeTipo"><option value="consulta">Consulta</option><option value="exame">Exame</option><option value="medicamento">Rem\u00e9dio controlado</option><option value="veterinario">Veterin\u00e1rio</option><option value="plano_saude">Plano de sa\u00fade</option><option value="clinica">Cl\u00ednica veterin\u00e1ria</option></select>'
+        + '<input id="saudeTitulo" placeholder="T\u00edtulo (ex: Cl\u00ednica Vet Vida...)">'
+        + '<input id="saudeDetalhes" placeholder="Detalhes / observa\u00e7\u00f5es">'
+        + '<input id="saudeData" type="date" title="Data do evento">'
+        + '<input id="saudeProxima" type="date" title="Pr\u00f3xima data (gera alerta)">'
+        + '<input id="saudeContato" placeholder="Telefone / contato">'
+        + '<input id="saudeEndereco" placeholder="Endere\u00e7o (cl\u00ednica)">'
+        + '<button class="btn btn-green btn-block" onclick="salvarSaude()">Salvar Registro</button>'
+        + '<button class="btn btn-block" onclick="closeModal(\'modalSaude\')" style="background:#e2e8f0;">Fechar</button>'
+        + '</div>';
+      document.body.appendChild(m);
+    }
+  }
+
+  function getPetId() {
+    if (window.currentPetId) return window.currentPetId;
+    if (window.currentPet && window.currentPet.id) return window.currentPet.id;
+    if (window.petAtualId) return window.petAtualId;
+    return null;
+  }
+
+  window.formatarDataBR = function (d) {
+    try { return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR'); } catch (e) { return d; }
+  };
+
+  window.carregarSaude = function (petId) {
+    injetarHTML();
+    var pid = petId || getPetId();
+    var lista = document.getElementById('saudeListContainer');
+    if (!lista) return;
+    if (!pid) { lista.innerHTML = '<p>Abra o perfil de um pet.</p>'; return; }
+    lista.innerHTML = '<p>Carregando...</p>';
+    supabase.from('saude_pet').select('*').eq('pet_id', pid).order('created_at', { ascending: false })
+      .then(function (res) {
+        var data = res.data, error = res.error;
+        if (error) { lista.innerHTML = '<p>Erro ao carregar.</p>'; return; }
+        if (!data || !data.length) { lista.innerHTML = '<p>Nenhum registro de sa\u00fade ainda.</p>'; return; }
+        var nomes = { consulta:'Consulta', exame:'Exame', medicamento:'Rem\u00e9dio', veterinario:'Veterin\u00e1rio', plano_saude:'Plano de sa\u00fade', clinica:'Cl\u00ednica' };
+        var html = '';
+        data.forEach(function (r) {
+          html += '<div class="vaccine-item" style="border-left:4px solid #07966b;">'
+            + '<div style="display:flex;justify-content:space-between;"><strong>' + (r.titulo || '(sem t\u00edtulo)') + '</strong>'
+            + '<span class="stat-label">' + (nomes[r.tipo] || r.tipo) + '</span></div>'
+            + (r.data_evento ? '<p>Evento em: ' + formatarDataBR(r.data_evento) + '</p>' : '')
+            + (r.proxima_data ? '<p>Pr\u00f3xima data: ' + formatarDataBR(r.proxima_data) + '</p>' : '')
+            + (r.contato ? '<p>Contato: ' + r.contato + '</p>' : '')
+            + (r.endereco ? '<p>Endere\u00e7o: ' + r.endereco + '</p>' : '')
+            + (r.detalhes ? '<p style="color:#6d8187;">' + r.detalhes + '</p>' : '')
+            + '<button class="btn" style="background:#dc2626;color:#fff;padding:0.3rem 0.8rem;font-size:0.8rem;" onclick="excluirSaude(\'' + r.id + '\')">Excluir</button>'
+            + '</div>';
+        });
+        lista.innerHTML = html;
+      });
+  };
+
+  window.salvarSaude = function () {
+    var pid = getPetId();
+    if (!pid) { alert('Nenhum pet selecionado.'); return; }
+    supabase.from('saude_pet').insert({
+      pet_id: pid,
+      tipo: document.getElementById('saudeTipo').value,
+      titulo: document.getElementById('saudeTitulo').value,
+      detalhes: document.getElementById('saudeDetalhes').value || null,
+      data_evento: document.getElementById('saudeData').value || null,
+      proxima_data: document.getElementById('saudeProxima').value || null,
+      contato: document.getElementById('saudeContato').value || null,
+      endereco: document.getElementById('saudeEndereco').value || null
+    }).then(function (res) {
+      if (res.error) { alert('Erro: ' + res.error.message); return; }
+      if (typeof closeModal === 'function') closeModal('modalSaude');
+      carregarSaude(pid);
+    });
+  };
+
+  window.excluirSaude = function (id) {
+    if (!confirm('Excluir este registro?')) return;
+    supabase.from('saude_pet').delete().eq('id', id).then(function () {
+      carregarSaude(getPetId());
+    });
+  };
+
+  window.verificarAlertas = function (pid) {
+    injetarHTML();
+    var banner = document.getElementById('bannerAlertas');
+    var petId = pid || getPetId();
+    if (!banner || !petId) return;
+    var hoje = new Date();
+    var avisos = [];
+    supabase.from('vacinas').select('*').eq('pet_id', petId).then(function (res) {
+      (res.data || []).forEach(function (v) {
+        var data = v.data_proxima || v.proxima_dose || v.data_reforco;
+        if (!data) return;
+        var dias = Math.ceil((new Date(data) - hoje) / 86400000);
+        if (dias <= 7) {
+          var nome = v.nome || v.nome_vacina || 'Vacina';
+          avisos.push(dias < 0
+            ? nome + ' — refor\u00e7o ATRASADO (' + formatarDataBR(data) + ')'
+            : nome + ' — refor\u00e7o em ' + dias + ' dia(s) (' + formatarDataBR(data) + ')');
+        }
+      });
+      supabase.from('saude_pet').select('*').eq('pet_id', petId).then(function (res2) {
+        (res2.data || []).forEach(function (s) {
+          if (!s.proxima_data) return;
+          var dias = Math.ceil((new Date(s.proxima_data) - hoje) / 86400000);
+          if (dias <= 7) {
+            avisos.push(dias < 0
+              ? s.titulo + ' — data passou em ' + Math.abs(dias) + ' dia(s)'
+              : s.titulo + ' — em ' + dias + ' dia(s) (' + formatarDataBR(s.proxima_data) + ')');
+          }
+        });
+        if (avisos.length) {
+          banner.innerHTML = 'ALERTAS: ' + avisos.join(' \u00b7 ');
+          banner.style.display = 'block';
+        } else {
+          banner.style.display = 'none';
+        }
+      });
+    });
+  };
+
+  document.addEventListener('click', function (e) {
+    var alvo = e.target.closest && e.target.closest('button, a, .tab');
+    if (!alvo) return;
+    var txt = (alvo.textContent || '').toLowerCase();
+    if (txt.indexOf('sa\u00fade') !== -1 || txt.indexOf('saude') !== -1) {
+      injetarHTML();
+      setTimeout(function () { carregarSaude(); verificarAlertas(getPetId()); }, 300);
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injetarHTML);
+  } else {
+    injetarHTML();
+  }
+})();
+</script>
 </html>
