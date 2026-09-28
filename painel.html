@@ -2124,6 +2124,16 @@ textarea:focus{
                 Ver planos
             </a>
 
+            <button
+                type="button"
+                id="btnCancelarAssinatura"
+                class="plan-mini-cancel"
+                style="display:none; background:none; border:none; color:#e11d48; font-size:12px; text-decoration:underline; cursor:pointer; padding:4px 0;"
+                onclick="cancelarAssinatura()"
+            >
+                Cancelar assinatura
+            </button>
+
         </div>
 
 
@@ -3994,6 +4004,93 @@ async function verificarLogin(){
 
     await prepararAtivacaoTag();
 
+    await carregarPlanoAtual();
+
+}
+
+
+/* =========================================================
+   PLANO / ASSINATURA (Mercado Pago)
+========================================================= */
+
+async function carregarPlanoAtual(){
+
+    const elNome = document.getElementById("planoAtual");
+    const elCancelar = document.getElementById("btnCancelarAssinatura");
+    if(!elNome) return;
+
+    try {
+
+        const { data: assinaturas } = await supabaseClient
+            .from("assinaturas")
+            .select("*")
+            .eq("status", "ativa")
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+        const assinatura = assinaturas && assinaturas[0];
+
+        if(assinatura){
+
+            const nomesPlano = {
+                save_tag: "Plano Save Tag",
+                save_tag_familia: "Plano Save Tag Família"
+            };
+
+            elNome.textContent = nomesPlano[assinatura.plano] || assinatura.plano;
+
+            if(elCancelar){
+                elCancelar.style.display = "inline-block";
+            }
+
+        } else {
+
+            elNome.textContent = "TAG Avulsa";
+
+            if(elCancelar){
+                elCancelar.style.display = "none";
+            }
+        }
+
+    } catch (err) {
+
+        console.error("Erro ao carregar plano atual:", err);
+    }
+}
+
+async function cancelarAssinatura(){
+
+    if(!confirm("Tem certeza que deseja cancelar sua assinatura? Você perderá os benefícios do plano ao final do período já pago.")){
+        return;
+    }
+
+    try {
+
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const token = sessionData && sessionData.session && sessionData.session.access_token;
+
+        const res = await fetch("/api/mercadopago/cancel-subscription", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const resultado = await res.json();
+
+        if(!res.ok){
+            throw new Error(resultado.error || "Não foi possível cancelar.");
+        }
+
+        mostrarMensagem("Assinatura cancelada.", "success");
+
+        await carregarPlanoAtual();
+
+    } catch (err) {
+
+        mostrarMensagem("Erro ao cancelar: " + err.message, "error");
+    }
 }
 
 
