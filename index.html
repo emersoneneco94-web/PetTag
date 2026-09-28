@@ -1418,9 +1418,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <li><span class="check-icon">✓</span> Sem mensalidade</li>
           </ul>
 
-          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20quero%20adquirir%20uma%20TAG%20Avulsa.%20%F0%9F%90%BE" class="btn-cta-primary" target="_blank" rel="noopener noreferrer">
+          <button type="button" class="btn-cta-primary btn-checkout" data-tipo="produto" data-item="tag_avulsa" onclick="iniciarCompra(this)">
             Pedir TAG Avulsa
-          </a>
+          </button>
         </div>
 
         <!-- Card 2: PLANO SAVE TAG (Featured) -->
@@ -1450,9 +1450,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <li><span class="check-icon">✓</span> Atualização contínua de recursos</li>
           </ul>
 
-          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20tenho%20interesse%20no%20plano%20Save%20Tag.%20%F0%9F%90%BE" class="btn-cta-green" target="_blank" rel="noopener noreferrer">
+          <button type="button" class="btn-cta-green btn-checkout" data-tipo="plano" data-item="save_tag" onclick="iniciarCompra(this)">
             Assinar agora
-          </a>
+          </button>
         </div>
 
         <!-- Card 3: SAVE TAG FAMÍLIA -->
@@ -1479,9 +1479,9 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
             <li><span class="check-icon">✓</span> Atendimento VIP e suporte humanizado</li>
           </ul>
 
-          <a href="https://wa.me/5513991118997?text=Ol%C3%A1%20Emerson!%20Vim%20pelo%20site%20Save%20Tag%20Pet%20e%20tenho%20interesse%20no%20plano%20Save%20Tag%20Fam%C3%ADlia.%20%F0%9F%90%BE" class="btn-cta-primary" target="_blank" rel="noopener noreferrer">
+          <button type="button" class="btn-cta-primary btn-checkout" data-tipo="plano" data-item="save_tag_familia" onclick="iniciarCompra(this)">
             Assinar plano família
-          </a>
+          </button>
         </div>
       </div>
     </div>
@@ -1894,6 +1894,72 @@ table.shell-table tbody tr:hover { background: color-mix(in srgb, var(--accent) 
   window.skipChart = { bar: bar, line: line, donut: donut };
 })();
 
+</script>
+
+<!-- Checkout (Mercado Pago) — botões dos planos em #planos -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  const SUPABASE_URL = 'https://mqiwoubhivutavpnpeax.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_JV-XGEU9DeEG2ZfjGbUw1g_ul0dflll';
+  const checkoutClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const PENDING_KEY = 'stp_pending_checkout';
+
+  async function executarCheckout(tipo, item, btn) {
+    const { data: { session } } = await checkoutClient.auth.getSession();
+    if (!session) {
+      sessionStorage.setItem(PENDING_KEY, JSON.stringify({ tipo, item }));
+      window.location.href = 'login.html?redirect=' + encodeURIComponent('index.html#planos');
+      return;
+    }
+
+    const textoOriginal = btn ? btn.textContent : null;
+    if (btn) { btn.disabled = true; btn.textContent = 'Abrindo pagamento...'; }
+
+    try {
+      const endpoint = tipo === 'plano' ? '/api/mercadopago/create-subscription' : '/api/mercadopago/create-preference';
+      const payload = tipo === 'plano' ? { plano: item } : { produto: item };
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.init_point) {
+        throw new Error(data.error || 'Não foi possível iniciar o pagamento.');
+      }
+
+      window.location.href = data.init_point;
+    } catch (err) {
+      alert(err.message || 'Não foi possível iniciar o pagamento. Tente novamente.');
+      if (btn) { btn.disabled = false; btn.textContent = textoOriginal; }
+    }
+  }
+
+  // Chamado pelos botões "Pedir TAG Avulsa" / "Assinar agora" / "Assinar plano família"
+  window.iniciarCompra = function (btn) {
+    const tipo = btn.dataset.tipo; // 'produto' (pagamento único) | 'plano' (recorrente)
+    const item = btn.dataset.item; // 'tag_avulsa' | 'save_tag' | 'save_tag_familia'
+    executarCheckout(tipo, item, btn);
+  };
+
+  // Retomada automática: se o tutor foi mandado pro login no meio da compra,
+  // ao voltar logado para #planos a compra continua de onde parou.
+  document.addEventListener('DOMContentLoaded', async () => {
+    const pendingRaw = sessionStorage.getItem(PENDING_KEY);
+    if (!pendingRaw) return;
+    const { data: { session } } = await checkoutClient.auth.getSession();
+    if (!session) return;
+    sessionStorage.removeItem(PENDING_KEY);
+    const { tipo, item } = JSON.parse(pendingRaw);
+    executarCheckout(tipo, item, null);
+  });
+})();
 </script>
 </body>
 </html>

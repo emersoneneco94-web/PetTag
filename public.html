@@ -1211,6 +1211,25 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     // A localização vai APENAS na mensagem do WhatsApp para o tutor, NUNCA é exibida na tela,
     // nunca armazenada, nunca compartilhada publicamente.
     // Se a pessoa negar a permissão de localização, abre o WhatsApp sem o link de mapa.
+    // Dispara o alerta automático via backend (WhatsApp Cloud API) para o
+    // TUTOR REAL do pet — não depende de quem encontrou apertar "enviar".
+    // Chamada em paralelo, sem travar a abertura do wa.me abaixo (que continua
+    // funcionando como um canal extra de contato direto com quem encontrou).
+    function notificarTutorAutomatico(lat, lng) {
+      if (!currentPet.id) return;
+      fetch('/api/whatsapp/found-alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pet_id: currentPet.id,
+          lat: typeof lat === 'number' ? lat : null,
+          lng: typeof lng === 'number' ? lng : null,
+        }),
+      }).catch(() => {
+        // Falha silenciosa: o wa.me manual abaixo já garante um canal de contato.
+      });
+    }
+
     function triggerFoundAction() {
       const btn = document.getElementById('btnFoundPet');
       const originalText = btn.innerHTML;
@@ -1223,6 +1242,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       function sendWithoutLocation() {
         btn.innerHTML = originalText;
         btn.style.opacity = '1';
+        notificarTutorAutomatico(null, null);
         const msg = encodeURIComponent(`Encontrei o pet ${petName}! Estou com ele agora.`);
         window.open(`https://wa.me/${cleanTel}?text=${msg}`, '_blank');
       }
@@ -1238,6 +1258,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
           btn.style.opacity = '1';
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
+          notificarTutorAutomatico(lat, lng);
           const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
           const msg = encodeURIComponent(`Encontrei o pet ${petName}! Estou vendo ele agora nesta localização: ${mapsUrl}`);
           window.open(`https://wa.me/${cleanTel}?text=${msg}`, '_blank');
@@ -1370,6 +1391,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
           const sanitizedTutorFirst = extractFirstName(p.tutor_nome || p.tutor || 'Emerson');
 
           currentPet = {
+            id: p.id || petId,
             nome: p.nome || p.name || defaultPetData.nome,
             especie: p.especie || p.species || defaultPetData.especie,
             raca: p.raca || p.breed || defaultPetData.raca,
