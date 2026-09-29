@@ -170,10 +170,15 @@ variáveis de ambiente novas em builds novos).
   dentro da seção **#planos** (TAG Avulsa, Save Tag, Save Tag Família) agora
   abrem o checkout do Mercado Pago. Se quiser que todos os pontos de venda
   usem o checkout automático, me avise.
-- A tabela `pets` hoje tem uma policy `SELECT` pública (`Permitir leitura
-  publica de pets`) que libera **todas** as colunas para qualquer pessoa via
-  REST — inclusive `phone`, `whatsapp`, `alergias`, `medicamentos` etc., que
-  não deveriam ficar públicas. Isso é anterior a mim e não fazia parte do que
-  você pediu, mas como mexe diretamente com privacidade dos seus usuários,
-  vale eu corrigir isso também? Se sim, o ajuste é trocar essa policy por uma
-  baseada na função `get_pet_public` (que já filtra os campos certos).
+- ✅ **Corrigido em 2026-09-28**: a tabela `pets` tinha uma policy `SELECT`
+  pública (`Permitir leitura publica de pets`) que liberava **todas** as
+  colunas para qualquer pessoa via REST, sem login — inclusive `phone`,
+  `whatsapp`, `alergias`, `medicamentos`, `lost_contact`, `tutor_id`, bastando
+  saber o UUID do pet. Troquei por uma função `get_pet_public_by_id(uuid)`
+  (ver `supabase/migrations/20260928b_restringir_leitura_publica_pets.sql`,
+  já aplicada no banco) que devolve só os campos que o perfil público
+  realmente mostra, e removi a policy antiga. `public.html` foi atualizado
+  para usar essa função em vez do SELECT direto — nenhuma TAG física já
+  impressa precisa de link novo, porque a busca continua sendo feita pelo
+  mesmo `?pet=<uuid>` de sempre. Testado com um pet real marcado como
+  perdido antes de publicar.

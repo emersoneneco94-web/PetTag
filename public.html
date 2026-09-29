@@ -1340,13 +1340,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       }
 
       try {
-        // Somente GET seguro
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/pets?select=*&id=eq.${encodeURIComponent(petId)}`, {
-          method: 'GET',
+        // Busca via função do banco (get_pet_public_by_id), que devolve SOMENTE
+        // os campos seguros para exibição pública — nunca telefone, whatsapp,
+        // email, alergias, medicamentos ou o id do tutor. A tabela `pets` não
+        // tem mais leitura pública direta (corrigido em 2026-09-28); todo o
+        // acesso do perfil público passa por essa função.
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_pet_public_by_id`, {
+          method: 'POST',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-          }
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ p_pet_id: petId })
         });
 
         if (!response.ok) {
@@ -1357,56 +1363,33 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (data && data.length > 0) {
           const p = data[0];
 
-          // 1. Verificar AMBOS os campos: se QUALQUER um dos dois for true, ativa modo perdido
-          const isLost = (p.perdido === true) || (p.is_lost === true);
+          const isLost = p.perdido === true;
+          const formattedLostDate = formatDateBR(p.data_perdido || null);
+          const lostNotes = (p.mensagem_perdido && String(p.mensagem_perdido).trim()) || null;
+          const rewardVal = (p.recompensa !== undefined && p.recompensa !== null && p.recompensa !== false && p.recompensa !== '')
+            ? p.recompensa
+            : null;
 
-          // 2. Preencher dados do banner de perdido com fallback inteligente (campo novo primeiro, depois antigo)
-          // Data: p.last_since -> senão p.data_perdido -> senão ocultar a linha
-          const rawDate = p.last_since || p.data_perdido || null;
-          const formattedLostDate = formatDateBR(rawDate);
-
-          // Informações adicionais: p.lost_notes -> senão p.mensagem_perdido -> senão ocultar
-          const lostNotes = (p.lost_notes && String(p.lost_notes).trim()) || (p.mensagem_perdido && String(p.mensagem_perdido).trim()) || null;
-
-          // Recompensa: p.last_reward -> senão p.recompensa -> senão ocultar
-          let rewardVal = null;
-          if (p.last_reward !== undefined && p.last_reward !== null && p.last_reward !== false && p.last_reward !== '') {
-            rewardVal = p.last_reward;
-          } else if (p.recompensa !== undefined && p.recompensa !== null && p.recompensa !== false && p.recompensa !== '') {
-            rewardVal = p.recompensa;
-          }
-
-          // Cidade/região ampla: derivar APENAS o trecho da cidade de p.last_scan_location se existir -> senão p.city ou p.cidade -> senão ocultar
-          let broadLostLocation = null;
-          if (p.last_scan_location) {
-            broadLostLocation = extractBroadLocation(p.last_scan_location);
-          }
-          if (!broadLostLocation && (p.city || p.cidade)) {
-            broadLostLocation = extractBroadLocation(p.city || p.cidade);
-          }
-
-          // Higienização de dados gerais para exibição no perfil
-          const rawCity = p.cidade || p.city || p.tutor_cidade || 'Santos/SP';
-          const sanitizedCity = extractBroadLocation(rawCity) || 'Santos/SP';
-          const sanitizedTutorFirst = extractFirstName(p.tutor_nome || p.tutor || 'Emerson');
+          const broadLostLocation = p.local_perdido ? extractBroadLocation(p.local_perdido) : null;
+          const sanitizedCity = extractBroadLocation(p.cidade || 'Santos/SP') || 'Santos/SP';
 
           currentPet = {
             id: p.id || petId,
-            nome: p.nome || p.name || defaultPetData.nome,
-            especie: p.especie || p.species || defaultPetData.especie,
-            raca: p.raca || p.breed || defaultPetData.raca,
-            peso: p.peso || p.weight || defaultPetData.peso,
-            cor: p.cor || p.color || defaultPetData.cor,
-            idade_aproximada: formatApproximateAge(p.idade || p.birth_date || defaultPetData.idade_aproximada),
-            foto_url: p.foto_url || p.photo_url || defaultPetData.foto_url,
-            temperamento: p.temperamento || defaultPetData.temperamento,
+            nome: p.nome || defaultPetData.nome,
+            especie: p.especie || defaultPetData.especie,
+            raca: p.raca || defaultPetData.raca,
+            peso: p.peso || defaultPetData.peso,
+            cor: p.cor || defaultPetData.cor,
+            idade_aproximada: defaultPetData.idade_aproximada,
+            foto_url: p.foto_url || defaultPetData.foto_url,
+            temperamento: defaultPetData.temperamento,
             perdido: isLost,
             regiao_ampla: broadLostLocation,
             data_desaparecimento: formattedLostDate,
             informacoes_adicionais: lostNotes,
             recompensa: rewardVal,
-            sobre: p.observacoes || p.notes || defaultPetData.sobre,
-            tutor_primeiro_nome: sanitizedTutorFirst,
+            sobre: p.observacoes || defaultPetData.sobre,
+            tutor_primeiro_nome: defaultPetData.tutor_primeiro_nome,
             tutor_cidade_ampla: sanitizedCity
           };
           renderPet(currentPet);
